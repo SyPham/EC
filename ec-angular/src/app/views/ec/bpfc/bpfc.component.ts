@@ -265,10 +265,10 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   articleNONameClone: any;
   artProcessNameClone: any;
   articleNOIDClone: any;
-  modelNameSelect: boolean = false;
-  modelNoSelect: boolean = false;
-  modelArtSelect: boolean = false;
-  modelProcessSelect: boolean = false;
+  modelNameSelect = false;
+  modelNoSelect = false;
+  modelArtSelect = false;
+  modelProcessSelect = false;
   public value: any;
   public valuemodelNo: any;
   constructor(
@@ -529,11 +529,9 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     } else {
       const duplicatePositon = details.filter((obj => obj.position === args.value));
       if (duplicatePositon.length > 0) {
-        console.log('duplicatePositon')
         details = this.getLocalStore('details');
         this.alertify.warning('Duplicate position!', true);
         if (this.positionDropdownlist) {
-          console.log(this.positionDropdownlist.toArray()[index])
           this.positionDropdownlist.toArray()[index].value = '';
         }
       }
@@ -1520,8 +1518,6 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     }
   }
   ClickProcessData(args) {
-    console.log('onClickProcessData', this.artProcessIDClone)
-    // this.artProcessIDClone =
   }
 
   /// Begin event Clone
@@ -1548,7 +1544,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     this.clone(clone);
   }
   onChangeModelNameClone(args) {
-    let valueChange = args.value;
+    const valueChange = args.value;
     if (this.value !== valueChange) {
       this.modelNOsDataClone = [];
       // this.artProcessDataClone2 = [];
