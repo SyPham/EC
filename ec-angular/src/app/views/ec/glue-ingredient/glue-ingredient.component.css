@@ -1,0 +1,8 @@
+/* .e-grid.e-gridhover .e-gridcontent tr.e-row:hover .e-rowcell:not(.e-cellselectionbackground):not(.e-active):not(.e-updatedtd):not(.e-indentcell){
+    background-color:#007bff!important;
+    } */
+
+.e-grid td.e-active {
+    background: #6597ce!important;
+    color: #000;
+}

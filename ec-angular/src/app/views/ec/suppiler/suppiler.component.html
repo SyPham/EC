@@ -1,0 +1,148 @@
+<div class="row" >
+        <!-- <div class="col-md-12 my-3">
+            <button (click)="save()" class="btn bg-gradient-secondary btn-sm">
+                <i class="fas fa-save"></i> Save
+            </button>
+        </div> -->
+        <!-- <div class="col-md-12 card-body table-responsive">
+    
+            <div class="row form-group">
+    
+                <div class="col-2">
+                    <label for="">Supplier Name</label>
+                    <input [(ngModel)]="modalSup.name" name="name" type="text"  class="form-control Name" />
+                </div>
+                <div class="col-md-12 my-3">
+                    <button (click)="save()"  class="btn bg-gradient-secondary btn-sm">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                </div>
+    
+        </div> -->
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">List Plan</h5>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+    
+                <ejs-grid #grid [searchSettings]="searchSettings" 
+                        (actionBegin)="actionBegin($event)"
+                        (onDoubleClick)='onDoubleClick($event)' 
+                        (actionComplete)='actionComplete($event)' 
+                        [toolbar]='toolbar' 
+                        [dataSource]='supplier' 
+                        allowPaging='true' 
+                        [pageSettings]='pageSettings' 
+                        [editSettings]='editSettings'>
+                    <e-columns>
+                        <e-column field='id' isPrimaryKey="true" headerText='#' width='70' textAlign='Center' isPrimaryKey='true' >
+                            <ng-template #template let-data>
+                                {{data.id}}
+                            </ng-template>
+                        </e-column>
+                        <e-column field='name' headerText='Suppiler Name' width='200' textAlign='Center' >
+                        </e-column>
+                        <!-- <e-column isPrimaryKey='true' headerText='Manage Records' textAlign='Center' width='200'   >
+                            <ng-template #template let-data>
+                                <button (click)="delete(data.id)" ejs-button iconCss='e-icons e-delete' cssClass= 'e-flat'></button>
+                            </ng-template>
+                        </e-column> -->
+                    </e-columns>
+                </ejs-grid>
+                
+            </div>
+        </div>
+    
+        <!-- <ng-template #addModalPlan let-modal>
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <i class="fas fa-plus"></i> Add Plan
+                </h4>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="Name">Title</label>
+                            <span style="color:red">(*)</span>
+                            <input [(ngModel)]="modalPlan.title" name="name" type="text"  class="form-control Name" />
+                        </div>
+                    </div>   
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="Name">Line Name</label>
+                            <span style="color:red">(*)</span>
+                            <ejs-dropdownlist 
+                                id='ddltooltip'
+                                #glueDropdownlist 
+                                [dataSource]='lineName' 
+                                [fields]='fieldsGlue' 
+                                [allowFiltering]='true'
+                                (change)='onChangeLineName($event)'
+                                [placeholder]='textGlueLineName'
+                                >
+                            </ejs-dropdownlist>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="Name">Model Name</label>
+                            <span style="color:red">(*)</span>
+                            <ejs-dropdownlist 
+                                id='ddltooltip'
+                                #glueDropdownlist 
+                                [dataSource]='modelName' 
+                                [fields]='fieldsGlue' 
+                                [allowFiltering]='true'
+                                (change)='onChangeModelName($event)'
+                                [placeholder]='textGlueLineName'
+                                >
+                            </ejs-dropdownlist>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="Name">Glue Name</label>
+                            <span style="color:red">(*)</span>
+                            <ejs-dropdownlist 
+                                id='ddltooltip'
+                                #glueDropdownlist 
+                                [dataSource]='glueName' 
+                                [fields]='fieldsGlue' 
+                                [allowFiltering]='true'
+                                (change)='onChangeGlueName($event)'
+                                [placeholder]='textGlueLineName'
+                                >
+                            </ejs-dropdownlist>
+                        </div>
+                    </div> 
+                    
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="Name">Qty</label>
+                            <span style="color:red">(*)</span>
+                            <input [(ngModel)]="modalPlan.title" name="name" type="text"  class="form-control Name" />
+                        </div>
+                    </div>
+    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+                <button type="submit" (click)="save()" class="btn btn-primary">Save changes</button>
+            </div>
+        </ng-template> -->
+    
+        
+    </div>
+    
+    
+    

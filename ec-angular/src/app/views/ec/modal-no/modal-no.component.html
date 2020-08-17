@@ -1,0 +1,103 @@
+<div class="row" >
+        <div class="col-md-12 my-3">
+            <button (click)="openaddModalNo(addModalNo)" class="btn bg-gradient-secondary btn-sm">
+                <i class="fa fa-plus"></i> Add Model No
+            </button>
+        </div>
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">List Model No</h5>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+    
+                <ejs-grid #grid [searchSettings]="searchSettings" (actionBegin)="actionBegin($event)" (rowSelected)="rowSelected($event)"  [toolbar]='toolbarOptions' [dataSource]='data' allowPaging='true' [pageSettings]='pageSettings' [editSettings]='editSettings'>
+                    <e-columns>
+                        <e-column field='id' headerText='#' width='70' textAlign='Center' isPrimaryKey='true' >
+                            <ng-template #template let-data>
+                                {{data.index}}
+                            </ng-template>
+                        </e-column>
+                        <e-column field='name' headerText='Name' width='120' textAlign='Center' ></e-column>
+                        <e-column field='modelName'  headerText='Modal Name' width='120' textAlign='Center' > </e-column>
+                        <e-column isPrimaryKey='true' headerText='Manage Records' textAlign='Center' width='120'   >
+                            <ng-template #template let-data>
+                                <button (click)="EditModalNo(data.id,editModalNo)" ejs-button iconCss='e-icons e-edit' cssClass= 'e-flat'></button>
+                                <button (click)="delete(data.id)" ejs-button iconCss='e-icons e-delete' cssClass= 'e-flat'></button>
+                            </ng-template>
+                        </e-column>
+                    </e-columns>
+                </ejs-grid>
+                
+            </div>
+        </div>
+    
+        <ng-template #addModalNo let-modal>
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <i class="fas fa-plus"></i> Add Model No
+                </h4>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="Name">Model No</label>
+                            <span style="color:red">(*)</span>
+                            <input [(ngModel)]="modalno.name" name="name" type="text"  class="form-control Name" />
+                        </div>
+                    </div>     
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="Name">Modal Name</label>
+                            <ejs-dropdownlist id='ddlelement' (change)='changeModalName($event)' #samples [dataSource]='dataModalName' [fields]='fields' [placeholder]='textNo'></ejs-dropdownlist>
+                        </div>
+                    </div>                 
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+                <button type="submit" (click)="save()" class="btn btn-primary">Save changes</button>
+            </div>
+        </ng-template>
+        
+        <ng-template #editModalNo let-modal>
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <i class="fas fa-plus"></i> Edit Model No
+                </h4>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="Name">Model No</label>
+                            <span style="color:red">(*)</span>
+                            <input [(ngModel)]="modalno.name" name="name" type="text"  class="form-control Name" />
+                        </div>
+                    </div>     
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="Name">Model Name</label>
+                            <ejs-dropdownlist id='ddlelement' [value]='value' (change)='changeModalName($event)' #samples [dataSource]='dataModalName' [fields]='fields' [placeholder]='textNo'></ejs-dropdownlist>
+                        </div>
+                    </div>                 
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+                <button type="submit" (click)="update()" class="btn btn-primary">Save changes</button>
+            </div>
+        </ng-template>
+    </div>
+

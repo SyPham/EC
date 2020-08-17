@@ -1,0 +1,183 @@
+
+<div class="row pt-2" >
+    <div class="col-md-12 ">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Work Plan</h5>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+
+           <div class="card-body table-responsive p-0">
+            <ejs-grid #grid 
+                    [dataSource]='data' 
+                    [searchSettings]="searchSettings" 
+                    showColumnMenu='true' 
+                    allowPaging='true' 
+                    allowSorting='true' 
+                    allowResizing= 'true' 
+                    gridLines='Both'
+                    (actionBegin)="actionBegin($event)" 
+                    (actionComplete)="actionComplete($event)"
+                    (rowSelected)="rowSelected($event)"  
+                    [toolbar]='toolbarOptions' 
+                    [pageSettings]='pageSettings' 
+                    [editSettings]='editSettings'>
+                    <e-columns>
+                        <e-column field='id' headerText='#' width='50' textAlign='Center' isPrimaryKey='true' >
+                            <ng-template #template let-data>
+                                {{count(data.index)}}
+                            </ng-template>
+                        </e-column>
+                        <e-column field='buildingName' headerText='Line' width='100' textAlign='Center' >
+                            <ng-template #editTemplate let-data>
+                                <ejs-dropdownlist 
+                                    #buildingNameDropdownlist 
+                                    [dataSource]='buildingName' 
+                                    [(ngModel)]="data.buildingName"
+                                    popupHeight='200px' popupWidth='250px'
+                                    [fields]='fieldsLine' 
+                                    [allowFiltering]='true'
+                                    (change)='onChangeBuildingNameEdit($event)'
+                                    >
+                                </ejs-dropdownlist>
+                            </ng-template>
+                        </e-column>
+                        <e-column field='bpfcName' headerText='BPFC Name' width='300' textAlign='Center' >
+                                <ng-template #editTemplate let-data>
+                                        <ejs-dropdownlist 
+                                            #modelNameDropdownlist 
+                                            [dataSource]='BPFCs' 
+                                            [(ngModel)]="data.bpfcName"
+                                            popupHeight='300px' popupWidth='450px'
+                                            [fields]='fieldsBPFC' 
+                                            [allowFiltering]='true'
+                                            (change)='onChangeBPFCEdit($event)'
+                                            >
+                                        </ejs-dropdownlist>
+                                    </ng-template>
+                        </e-column>
+                        <e-column field='workingHour' headerText='Working Hours' width='150' textAlign='Center' >
+                            <ng-template #editTemplate let-data>
+                               <input class="e-input e-field" (keyup)='onChangeWorkingHour($event)' type="text" [(ngModel)]="data.workingHour">
+                            </ng-template>
+                        </e-column>
+                        <e-column field='hourlyOutput' headerText='Hourly Output' width='150' textAlign='Center' >
+                            <ng-template #editTemplate let-data>
+                                <input class="e-input e-field" (keyup)='onChangeHourlyOutput($event)' type="text" [(ngModel)]="data.hourlyOutput">
+                             </ng-template>
+                        </e-column>
+                        <e-column field='dueDate' type='date' format='dd MMM, yyyy' headerText='Due Date' width='200' textAlign='Center' >
+                            <ng-template #editTemplate let-data>
+                                <ejs-datepicker 
+                                [value]='data.dueDate' 
+                                (change)='onChangeDueDateEdit($event)'
+                                format='dd MMM, yyyy'></ejs-datepicker>
+                            </ng-template>
+                        </e-column>
+                    </e-columns>
+            </ejs-grid>
+           </div>
+            
+        </div>
+    </div>
+</div>
+<!-- 
+<e-columns>
+    <e-column field='id' headerText='#' width='50' textAlign='Center' isPrimaryKey='true' >
+        <ng-template #template let-data>
+            {{data.index}}
+        </ng-template>
+    </e-column>
+    <e-column field='buildingName' headerText='Line' width='100' textAlign='Center' >
+        <ng-template #editTemplate let-data>
+            <ejs-dropdownlist 
+                #buildingNameDropdownlist 
+                [dataSource]='buildingName' 
+                [(ngModel)]="data.buildingName"
+                popupHeight='200px' popupWidth='250px'
+                [fields]='fieldsLine' 
+                [allowFiltering]='true'
+                (change)='onChangeBuildingNameEdit($event)'
+                >
+            </ejs-dropdownlist>
+        </ng-template>
+    </e-column>
+    <e-column field='bpfcName' headerText='BPFC Name' width='200' textAlign='Center' >
+            <ng-template #editTemplate let-data>
+                    <ejs-dropdownlist 
+                        #modelNameDropdownlist 
+                        [dataSource]='BPFCs' 
+                        [(ngModel)]="data.bpfcName"
+                        popupHeight='300px' popupWidth='250px'
+                        [fields]='fieldsBPFC' 
+                        [allowFiltering]='true'
+                        (change)='onChangeBPFCEdit($event)'
+                        >
+                    </ejs-dropdownlist>
+                </ng-template>
+    </e-column>
+    <e-column field='modelNoName' headerText='Model #' width='200' textAlign='Center' >
+        <ng-template #editTemplate let-data>
+            <ejs-dropdownlist 
+                #modelNosDropdownlist 
+                [dataSource]='modelNos' 
+                [(ngModel)]="data.modelNoName"
+                popupHeight='200px' popupWidth='250px'
+                [fields]='fieldsModelNo' 
+                [allowFiltering]='true'
+                (change)='onChangeModelNoEdit($event)'
+                >
+            </ejs-dropdownlist>
+        </ng-template>
+    </e-column>
+    <e-column field='articleName' headerText='Article #' width='150' textAlign='Center' >
+        <ng-template #editTemplate let-data>
+            <ejs-dropdownlist 
+                #articleNosDropdownlist 
+                [dataSource]='articleNos' 
+                [value]="data.articleName"
+                popupHeight='200px' popupWidth='250px'
+                [fields]='fieldsArticleNo' 
+                [allowFiltering]='true'
+                (change)='onChangeArticleNoEdit($event)'
+                >
+            </ejs-dropdownlist>
+        </ng-template>
+    </e-column>
+    <e-column field='processName' headerText='Process' width='150' textAlign='Center' >
+        <ng-template #editTemplate let-data>
+            <ejs-dropdownlist 
+                #artProcessesDropdownlist 
+                [dataSource]='artProcesses' 
+                [(ngModel)]="data.processName"
+                popupHeight='200px' popupWidth='250px'
+                [fields]='fieldsArtProcess' 
+                [allowFiltering]='true'
+                (change)='onChangeArtProcessEdit($event)'
+                >
+            </ejs-dropdownlist>
+        </ng-template>
+    </e-column>
+    <e-column field='workingHour' headerText='Work Hourly' width='150' textAlign='Center' >
+        <ng-template #editTemplate let-data>
+           <input class="e-input e-field" (change)='onChangeWorkingHour($event)' type="text" [(ngModel)]="data.workingHour">
+        </ng-template>
+    </e-column>
+    <e-column field='hourlyOutput' headerText='Hourly Output' width='150' textAlign='Center' >
+        <ng-template #editTemplate let-data>
+            <input class="e-input e-field" (change)='onChangeHourlyOutput($event)' type="text" [(ngModel)]="data.hourlyOutput">
+         </ng-template>
+    </e-column>
+    <e-column field='dueDate' type='date' format='dd MMM, yyyy' headerText='Due Date' width='200' textAlign='Center' >
+        <ng-template #editTemplate let-data>
+            <ejs-datepicker 
+            [value]='data.dueDate' 
+            (change)='onChangeDueDateEdit($event)'
+            format='dd MMM, yyyy'></ejs-datepicker>
+        </ng-template>
+    </e-column>
+</e-columns> -->

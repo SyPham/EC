@@ -1,0 +1,50 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{title}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="form-group d-none">
+    <label for="">ID</label>
+    <input [(ngModel)]="glue.id" type="text" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="">Glue Name</label>
+    <input [(ngModel)]="glue.gluename" type="text" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="">Choose Part Name</label>
+        <ejs-dropdownlist 
+          id='glueDropdownlist'  
+          #glueDropdownlist 
+          [dataSource]='partName' 
+          [fields]='fieldsGlue' 
+          [allowFiltering]='true'
+          (change)='onChangepartName($event)'
+          [placeholder]='textGlue'>
+        </ejs-dropdownlist>
+  </div>
+  <div class="form-group">
+      <label for="">Choose Material Name</label>
+        <ejs-dropdownlist 
+          id='glueDropdownlist'  
+          #glueDropdownlist 
+          [dataSource]='MaterialName' 
+          [fields]='fieldsGlue' 
+          [allowFiltering]='true'
+          (change)='onChangeMaterialName($event)'
+          [placeholder]='textGlue'>
+        </ejs-dropdownlist>
+  </div>
+  <div class="form-group d-none">
+    <label for="">Code</label>
+    <input type="text" class="form-control">
+  </div>
+  <ejs-barcodegenerator *ngIf="showBarCode" style="display: block;" #barcode id="barcode" width="300px" height="100px" mode="SVG"
+  type="Code32" [value]="glue.code"></ejs-barcodegenerator> 
+</div>
+<div class="modal-footer justify-content-between">
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+  <button type="button" class="btn btn-outline-dark" (click)="save()">Save</button>
+</div>

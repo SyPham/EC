@@ -1,0 +1,35 @@
+/* input:focus{
+    background-color: rgb(252, 248, 54);
+  } */
+  input.error-scan {
+    width: 100%;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: none;
+    background-color: #dc3545;
+    color: white;
+  }
+  input.success-scan {
+    width: 100%;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: none;
+    background-color: #3CBC8D;
+    color: white;
+    font-weight: bold
+  }
+  input.noHover{
+    pointer-events: none;
+}
+input.lock {
+  pointer-events: none;
+}
+input.warning-focus {
+  animation: warning-frames .5s infinite;
+  /* border: 1px solid #3CBC8D; */
+
+}
+@keyframes warning-frames {
+  from {background-color: #fade40;}
+  to {background-color:  #e7f70c;}
+}

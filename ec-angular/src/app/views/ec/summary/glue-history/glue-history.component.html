@@ -1,0 +1,38 @@
+<div class="row" >
+  <div class="col-md-12">
+      <div class="card">
+          <div class="card-header">
+              <h5 class="card-title">History </h5>
+              <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+                  </button>
+              </div>
+          </div>
+
+          <ejs-grid #grid  [toolbar]='toolbarOptions'  (toolbarClick)='toolbarClick($event)' [dataSource]='data' allowPaging='true' [pageSettings]='pageSettings' >
+              <e-columns>
+                  <e-column field='id' headerText='#' width='70' textAlign='Center' isPrimaryKey='true' >
+                      <ng-template #template let-data>
+                          {{count(data.index)}}
+                      </ng-template>
+                  </e-column>
+                  <e-column field='code' headerText='QRCode' width='200' textAlign='Center' >
+                    <ng-template #template let-data>
+                      <ejs-qrcodegenerator style="display: block;"  #barcode [id]="'barcode' + data.index" width="200px" height="150px" mode="SVG" [value]="data.code"></ejs-qrcodegenerator>
+                    </ng-template>
+                  </e-column>
+                  <e-column field='glue.name' headerText='Glue Name' width='200' textAlign='Center' >
+                  </e-column>
+                  <e-column field='realTotal' headerText='Real Total' width='200' textAlign='Center' >
+                  </e-column>
+                  <e-column field='expiredTime' headerText='Expired Time' type='date' format='dd/MM/yyyy hh:mm a' width='200' textAlign='Center' >
+                  </e-column>
+                  <e-column field='createdTime' headerText='Created Time' type='date' format='dd/MM/yyyy hh:mm:ss a' width='200' textAlign='Center' >
+                  </e-column>
+              </e-columns>
+          </ejs-grid>
+          
+      </div>
+  </div>
+</div>

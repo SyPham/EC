@@ -1,0 +1,21 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <i class="fas fa-plus"></i> {{title}}
+  </h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <input name="Building"  type="text" [(ngModel)]="building.name" placeholder="Building Name" class="form-control Name" />
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-light" (click)="activeModal.close('Close click')">Close</button>
+  <button type="submit" (click)='createBuilding()' class="btn btn-primary">Save</button>
+</div>

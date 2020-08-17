@@ -1,0 +1,153 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header"><strong>Addition</strong></div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-2">
+            <div class="form-group">
+              <!-- <input type="text" [(ngModel)]="line" class="form-control form-control-sm"> -->
+              <label for="" class="text-white">Building</label>
+              <ejs-dropdownlist [dataSource]='lines' 
+              (filtering)='onFilteringBuilding($event)' 
+              [allowFiltering]='true'  
+              (change)='changeLine($event)' 
+              [fields]='fields2' 
+              [placeholder]='textLine'></ejs-dropdownlist>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="" class="text-white">Search or tag Model name</label>
+              <ejs-dropdownlist  
+                (change)='changeModalName($event)' 
+                (filtering)='onFilteringModel($event)' 
+                [allowFiltering]='true'  
+                [(ngModel)]="modelNameid"
+                [dataSource]='dataModalName' 
+                [fields]='fields2'
+                [placeholder]='textName'>
+             
+              </ejs-dropdownlist>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div *ngIf="existGlue" class="card-body table-responsive p-0">
+            <div class="control-section">
+              <ejs-grid #gridglue [dataSource]='gluess' showColumnMenu='true' allowSorting='true' allowResizing='true'
+                gridLines='Both' height='600px' (actionBegin)="actionBegin($event)"
+                (toolbarClick)='clickHandler($event)' (rowSelected)="rowSelected($event)" [editSettings]='editSettings'
+                [toolbar]='toolbar'>
+                <e-columns>
+                  <e-column field='name' headerText='Glue' textAlign='Center' width='150'></e-column>
+                  <e-column field='consumption' headerText='Consumption' textAlign='Center' width='150'></e-column>
+                  <e-column field='consumption' headerText='Make Glue' textAlign='Center' width='150'>
+                    <ng-template #template let-data>
+                      <button type="button" (click)="mixingSection(data)"
+                        class="btn bg-gradient-success btn-sm">
+                        Make Glue
+                      </button>
+                    </ng-template>
+
+                  </e-column>
+                </e-columns>
+              </ejs-grid>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="show">
+          <div class="col-md-12">
+            <h3 class="text-center text-danger" *ngIf="weight">Glue Name: {{makeGlue.name}} </h3>
+          </div>
+          <!-- <div class="col-md-4">
+            <h3 class="text-center text-danger" *ngIf="weight">Glue Code: {{makeGlue.code}} </h3>
+          </div>
+          <div class="col-md-4">
+            <h3 class="text-center text-danger" *ngIf="weight">Amount: {{weight}} (Gram) </h3>
+          </div> -->
+        </div>
+        <div class="row" *ngIf="show">
+          <div class="col-md-4">
+            <div class="chart-wrapper">
+              <canvas baseChart class="chart" [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+                (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)" [options]="pieChartOptions"
+                [plugins]="pieChartPlugins"></canvas>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="row">
+              <div class="form-group col-sm-3">
+                <label class="font-weight-bold" for="">Ingredient Name</label>
+              </div>
+              <div class="form-group col-sm-3">
+                <label class="font-weight-bold" for="">Expected</label>
+              </div>
+              <div class="form-group col-sm-3">
+                <label class="font-weight-bold" for="">Real</label>
+              </div>
+            </div>
+            <ng-container *ngFor="let item of ingredients ;let i=index">
+              <div class="row">
+                <div class="form-group col-sm-3">
+                  <input class="form-control" [value]="item.name + ' ( ' + item.percentage + '% )'" type="text">
+                </div>
+                <div class="form-group col-sm-3">
+                  <input class="form-control" [value]='item.expected' (keyup)='expected(item, $event)' type="text">
+                </div>
+                <div class="form-group col-sm-3">
+                  <input class="form-control" [value]='item.real' (keyup)='real(item, $event)' type="text">
+                </div>
+              </div>
+            </ng-container>
+        
+            <div class="text-center my-2">
+              <button type="button" (click)="Finish()" class="btn btn-success"><i class="fas fa-save"></i>
+                Finish</button>
+                <button type="button" (click)="back()" class="btn btn-primary ml-2"><i class="fa fa-arrow-circle-left"></i>
+                  Back</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #inputModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">
+        <i class="fas fa-plus"></i> Input
+      </h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <input name="pairOfShoeInput" (keyup)='onPairOfShoeInput($event)' (change)='onPairOfShoeInput($event)'
+              [(ngModel)]="pairOfShoeInput" type="text" placeholder="Enter pair of shoe" class="form-control Name" />
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group">
+            <input name="kilogramInput" (keyup)=onKilogramInput($event) (change)=onKilogramInput($event)
+              [(ngModel)]="kilogramInput" type="text" placeholder="Enter (kg)" class="form-control Name" />
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group">
+            <input name="gramInput" (keyup)=onGramInput($event) (change)=onGramInput($event) [(ngModel)]="gramInput"
+              type="text" placeholder="Enter (g)" class="form-control Name" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+      <button type="submit" (click)='mix()' class="btn btn-primary">OK</button>
+    </div>
+  </ng-template>
+</div>

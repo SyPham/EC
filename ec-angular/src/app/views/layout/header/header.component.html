@@ -1,0 +1,111 @@
+<nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
+  <div class="container-fluid">
+    <a href="/ec/guidance" style="cursor:pointer" class="navbar-brand">
+      <img
+        src="../../../../assets/img/logo-1.png"
+        alt="AdminLTE Logo"
+        class="brand-image img-circle"
+        style="opacity: .8"
+      />
+      <span class="brand-text font-weight-light">DMR System</span>
+    </a>
+
+    <button
+      class="navbar-toggler order-1"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarCollapse"
+      aria-controls="navbarCollapse"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse order-3" id="navbarCollapse">
+      <ul class="navbar-nav" >
+        <li class="nav-item dropdown" *ngIf="level === ADMIN || level === SUPERVISOR">
+          <a class="nav-link dropdown-toggle" style="cursor: pointer" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ 'SETTING' | translate }}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" [routerLink]="[ '/ec/setting/account-1']">{{ 'ACCOUNT1' | translate }}</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/setting/account-2']">{{ 'ACCOUNT2' | translate }}</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/setting/building']">{{ 'BUILDING' | translate }}</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/setting/supplier']">{{ 'SUPPLIER' | translate }}</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/setting/ingredient']">{{ 'INGREDIENT' | translate }} </a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/setting/kind']">{{ 'KIND' | translate }}</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/setting/part']">{{ 'PART' | translate }}</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/setting/material']">{{ 'MATERIAL' | translate }}</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/setting/glue']">{{ 'GLUE' | translate }}</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown" *ngIf="level === ADMIN || level === SUPERVISOR || level === STAFF">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ 'ESTABLISH' | translate }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item"  [routerLink]="[ '/ec/manage/bpfc-schedule']">{{ 'BPFC_SCHEDULE' | translate }}</a>
+              <a class="dropdown-item" [routerLink]="[ '/ec/establish/bpfc']">{{ 'BPFC' | translate }}</a>
+          </div>
+        </li>
+          <li class="nav-item dropdown" *ngIf="level === ADMIN || level === SUPERVISOR || level === STAFF">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ 'MANAGE' | translate }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" [routerLink]="[ '/ec/manage/bpfc-status']">{{ 'BPFC_STATUS' | translate }}</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/manage/workplan']">{{ 'WORK_PLAN' | translate }}</a>
+            
+          </div>
+        </li>
+        
+        <li class="nav-item dropdown" *ngIf="level === ADMIN || level === SUPERVISOR || level === STAFF || level === WORKER">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ 'EXECUTION' | translate }}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" [routerLink]="[ '/ec/execution/todolist']">{{ 'TODOLIST' | translate }}</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/execution/addition']">{{ 'ADDITION' | translate }}</a>
+            <!-- <a class="dropdown-item" [routerLink]="[ '/ec/line']">Addition</a> -->
+          </div>
+        </li>
+        <li class="nav-item dropdown" *ngIf="level === ADMIN || level === SUPERVISOR || level === STAFF">
+          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ 'REPORT' | translate }}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" [routerLink]="[ '/ec/report/established-record']" >{{ 'ESTABLISHED_RECORD' | translate }}</a>
+          <a class="dropdown-item" onclick="alert('This function will be coming soon')" >{{ 'CONSUMPTION' | translate }}</a>
+        </div>
+      </li>
+      </ul>
+
+    </div>
+
+    <!-- Right navbar links -->
+    <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+      <li class="nav-item" style="width: 120px;">
+        <ejs-dropdownlist id='langs' #langs [dataSource]='langsData' (change)='onChange($event)' [value]='value' [fields]='fields'></ejs-dropdownlist>
+      </li>
+      <li class="nav-item user-menu" (click)='openAvatarModal()'>
+        <a class="nav-link">
+          <i class="fa fa-sign-out"></i>
+          <img [src]="avatar" class="user-image img-circle elevation-2" [alt]="currentUser" />
+          <span class="font-weight-bold text-danger">{{ currentUser | titlecase  }}</span>
+        </a>
+      </li>
+        <li class="nav-item">
+          <a class="nav-link">
+            <i class="fa fa-sign-out"></i>
+            <span class="font-weight-bold text-info">{{currentTime}}</span>
+          </a>
+        </li>
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:;" (click)="logout()"
+          ><i class="fas fa-sign-out-alt"></i> {{ 'SIGN_OUT' | translate }}
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>

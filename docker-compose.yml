@@ -1,0 +1,39 @@
+version: '3'
+
+#VOLUMES
+# volumes:
+#   my-dir:
+#     dirver
+
+#NETWORK
+networks: 
+  web-net:
+    external: true
+
+#SERVICES
+services:
+  #WEBAPP
+  web-ec-api:
+    container_name: web-ec-api
+    build: ./api-ecs
+    hostname: web-ec-api
+    restart: always
+    networks: 
+      - web-net
+    #ports:
+      #- 1234:80 #api port
+  web-ec-ui:
+     container_name: web-ec-ui
+     hostname: web-ec-ui
+     image: nginx:latest
+     #build: ./AngularExample
+     volumes:
+       - ./ec-angular/dist/WM:/usr/share/nginx/html
+       - ./ec-angular/default.conf:/etc/nginx/conf.d/default.conf
+     restart: always
+     networks: 
+       - web-net
+     ports:
+       - 4568:80 #web-ui public
+   
+  

@@ -1,0 +1,295 @@
+<div class="row" >
+  <!-- <div class="col-md-12 my-3">
+      <button (click)="openaddLine(addLine)" class="btn bg-gradient-secondary btn-sm">
+          <i class="fa fa-plus"></i> Add Line
+      </button>
+  </div>
+  <div class="col-md-12">
+      <div class="card">
+          <div class="card-header">
+              <h5 class="card-title">List Line</h5>
+              <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+                  </button>
+              </div>
+          </div>
+
+          <ejs-grid #grid [searchSettings]="searchSettings" (actionBegin)="actionBegin($event)" (rowSelected)="rowSelected($event)"  [toolbar]='toolbarOptions' [dataSource]='data' allowPaging='true' [pageSettings]='pageSettings' [editSettings]='editSettings'>
+              <e-columns>
+                  <e-column field='id' headerText='#' width='70' textAlign='Center' isPrimaryKey='true' >
+                      <ng-template #template let-data>
+                          {{data.index}}
+                      </ng-template>
+                  </e-column>
+                  <e-column field='name' headerText='Name' width='120' textAlign='Center' >
+                      
+                  </e-column>
+                  <e-column isPrimaryKey='true' headerText='Manage Records' textAlign='Center' width='120'   >
+                      <ng-template #template let-data>
+                          <button (click)="delete(data.id)" ejs-button iconCss='e-icons e-delete' cssClass= 'e-flat'></button>
+                      </ng-template>
+                  </e-column>
+              </e-columns>
+          </ejs-grid>
+          
+      </div>
+  </div>
+
+  <ng-template #addLine let-modal>
+      <div class="modal-header">
+          <h4 class="modal-title">
+              <i class="fas fa-plus"></i> Add Line
+          </h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body">
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="form-group">
+                      <label for="Name">Line</label>
+                      <span style="color:red">(*)</span>
+                      <input [(ngModel)]="line.name" name="name" type="text"  class="form-control Name" />
+                  </div>
+              </div>                 
+          </div>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+          <button type="submit" (click)="save()" class="btn btn-primary">Save changes</button>
+      </div>
+  </ng-template> -->
+
+  <table id="ContentPlaceHolder1_tbl_kanban" class="table table-bordered" style="min-height: 681px;">
+        <tbody>
+            <tr>
+                <td class="td_all align-middle" rowspan="11"><input type="button"  value="SHC" class="btn_all "></td>
+                <td class="td_dept align-middle" rowspan="3"><input type="button"  value="Dept 1" class="btn_dept"></td>
+                <td class="td_build" rowspan="1"><input type="button"  value="E" class="btn_build"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="E01" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="E02" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="E03" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="E04" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="E05" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="E06" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="E07" class="btn_line"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+            </tr>
+            <tr>
+                <td class="td_build" rowspan="1"><input type="button" value="O" class="btn_build"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="O1A" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="O1B" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="O2A" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"value="O2B" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="O3A" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="O3B" class="btn_line"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+            </tr>
+            <tr>
+                <td class="td_build" rowspan="1"><input type="button" value="P" class="btn_build"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="P01" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="P02" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="P03" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="P04" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="P05" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="P06" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="P07" class="btn_line"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+            </tr>
+            <tr>
+                <td class="td_dept align-middle" rowspan="3"><input type="button" value="Dept 2" class="btn_dept"></td>
+                <td class="td_build" rowspan="1"><input type="button" value="J" class="btn_build"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="J01" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="J02" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button" value="J03" class="btn_line"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+            </tr>
+            <tr>
+                <td class="td_build" rowspan="1"><input type="button"  value="L" class="btn_build"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="L1A" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="L1B" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="L2A" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="L2B" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="L3A" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="L3B" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="L4A" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="L4B" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="L5A" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="L5B" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="L6A" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="L6B" class="btn_line"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+            </tr>
+            <tr>
+                <td class="td_build" rowspan="1"><input type="button"  value="M" class="btn_build"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="M1A" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="M1B" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="M2A" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="M2B" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="M3A" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="M3B" class="btn_line"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+            </tr>
+            <tr>
+                <td class="td_dept align-middle" rowspan="3"><input type="button"  value="Dept 3" class="btn_dept"></td>
+                <td class="td_build" rowspan="1"><input type="button"  value="H" class="btn_build"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="RSA" class="btn_line"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+            </tr>
+            <tr>
+                <td class="td_build" rowspan="1"><input type="button"  value="I" class="btn_build"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="I01" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="I02" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="I03" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="I04" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="I05" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="I06" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="I07" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="I08" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="I09" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="I10" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="I11" class="btn_line"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+            </tr>
+            <tr>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+            </tr>
+            <tr>
+                <td class="td_dept align-middle" rowspan="1"><input type="button"  value="Dept 5" class="btn_dept"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="A1" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="A2" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="A3" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="B1" class="btn_line"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="K" class="btn_line"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+            </tr>
+            <tr>
+                <td class="td_dept align-middle" rowspan="1"><input type="button"  value="Dept 6" class="btn_dept"></td>
+                <td class="td_build" rowspan="1"><input type="button"  value="Q" class="btn_build"></td>
+                <td class="td_line" rowspan="1"><input type="button"  value="Q01" class="btn_line"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+                <td class="td_line" rowspan="1"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{name}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+
+  <div class="row">
+    <div [class]="!show ? 'col-lg-12': 'd-none'">
+      <ejs-uploader #defaultupload  (change)="fileChangeEvent($event)"></ejs-uploader>
+    </div>
+    <div class="col-lg-6">
+      <image-cropper *ngIf="show" [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
+        format="png" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
+        (loadImageFailed)="loadImageFailed()"></image-cropper>
+    </div>
+    <div class="col-lg-3" *ngIf="show">
+      <div class="text-center align-content-center">
+        <img [src]="croppedImage" class="img-thumbnail" width="100" height="100" />
+        <p class="text-gray">Preview</p>
+      </div>
+    </div>
+    <div class="col-lg-3" *ngIf="show">
+      <div class="text-center align-content-center">
+        <img [src]="croppedImage" class="img-thumbnail" style="border-radius: 100%!important;" width="100" height="100" />
+        <p class="text-gray">Preview</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer justify-content-between">
+  <button type="button" *ngIf="show" class="btn btn-outline-dark" (click)="back()">Back</button>
+  <button type="button" *ngIf="show" class="btn btn-outline-dark" (click)="save()">Save</button>
+  <button type="button" *ngIf="!show" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Cancel</button>
+</div>

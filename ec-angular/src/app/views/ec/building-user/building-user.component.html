@@ -1,0 +1,63 @@
+<div class="row">
+<div class="col-md-4">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title"><i class="fas fa-building"></i> Building List 
+      </h3>
+    </div>
+    <!-- /.card-header -->
+
+    <div class="card-body table-responsive p-0">
+      <ejs-treegrid #treegrid [dataSource]="data" 
+                    contextMenuClick='contextMenuClick($event)' 
+                    [treeColumnIndex]='1' 
+                    allowSorting='true'
+                    gridLines='Both' 
+                    (created)='created()'
+                    [toolbar]='toolbar' 
+                    childMapping="childNodes" 
+                    (rowSelected)="rowSelected($event)"
+      >
+        <e-columns>
+          <e-column field="entity.level" width="80" isPrimaryKey="true" headerText="Level">
+          </e-column>
+          <e-column field="entity.name" headerText="Building Name"> </e-column>
+        </e-columns>
+      </ejs-treegrid>
+    </div>
+    <!-- /.card-body -->
+  </div>
+</div>
+<div class="col-md-8">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title"><i class="fas fa-users"></i> User List 
+      </h3>
+    </div>
+    <!-- /.card-header -->
+
+    <div class="card-body table-responsive p-0">
+      <ejs-treegrid #treegrid [dataSource]="userData" 
+                    contextMenuClick='contextMenuClick($event)' 
+                    [treeColumnIndex]='1' 
+                    allowSorting='true'
+                    gridLines='Both' 
+                    (created)='createdUsers()'
+                    [toolbar]='toolbar' 
+                    childMapping="childNodes"
+      >
+        <e-columns>
+          <e-column field="ID" width="80" isPrimaryKey="true" headerText="">
+            <ng-template #template let-data>
+            <ejs-switch (change)='onChangeMap($event, data)' [(ngModel)]="data.Status" [checked]="data.Status"></ejs-switch>
+            </ng-template>
+          </e-column>
+          <e-column field="Username" headerText="Username"> </e-column>
+          <e-column field="Email" headerText="Email"> </e-column>
+        </e-columns>
+      </ejs-treegrid>
+    </div>
+    <!-- /.card-body -->
+  </div>
+</div>
+</div>

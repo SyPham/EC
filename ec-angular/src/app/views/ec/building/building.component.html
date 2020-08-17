@@ -1,0 +1,35 @@
+<div class="col-md-12">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title"><i class="fas fa-project-diagram"></i> Building List
+      </h3>
+    </div>
+    <!-- /.card-header -->
+
+    <div class="card-body table-responsive p-0">
+      <ejs-treegrid #treegrid [dataSource]="data" 
+                    (contextMenuClick)='contextMenuClick($event)' 
+                    (toolbarClick)='toolbarClick($event)' 
+                    [treeColumnIndex]='1' 
+                    allowSorting='true'
+                    gridLines='Both' 
+                    (created)='created()'
+                    [editSettings]="editing" 
+                    [contextMenuItems]='contextMenuItems'
+                    (actionComplete)="actionComplete($event)" 
+                    [toolbar]='toolbar' 
+                    childMapping="childNodes" 
+                    allowExcelExport='true' 
+                    allowPdfExport='true'
+                    (rowSelected)="rowSelected($event)"
+      >
+        <e-columns>
+          <e-column field="entity.level" width="80" isPrimaryKey="true" headerText="Level">
+          </e-column>
+          <e-column field="entity.name" headerText="Building Name"> </e-column>
+        </e-columns>
+      </ejs-treegrid>
+    </div>
+    <!-- /.card-body -->
+  </div>
+</div>

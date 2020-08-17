@@ -1,0 +1,257 @@
+<div class="row">
+    <!-- <div class="col-md-12 my-3">
+            <button (click)="openaddModalName(addModalName)" class="btn bg-gradient-secondary btn-sm">
+                <i class="fa fa-plus"></i> Add Model Name
+            </button>
+        </div> -->
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">BPFC Status</h5>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <ejs-grid #gridModel 
+                [searchSettings]="searchSettings" 
+                (dataBound)='dataBound'
+                (toolbarClick)='toolbarClick($event)'
+                (actionBegin)="actionBegin($event)" 
+                (recordDoubleClick)='onDoubleClick($event)'
+                (actionComplete)='actionComplete($event)' 
+                [toolbar]='toolbar' 
+                [dataSource]='data' 
+                allowPaging='true'
+                showColumnMenu='true'  
+                allowSorting='true' 
+                allowResizing= 'true' 
+                gridLines='Both'
+                [pageSettings]='pageSettings' 
+                [editSettings]='editSettings'>
+                <e-columns>
+                    <e-column field='' headerText='#' isPrimaryKey='true' width='30' textAlign='Center'
+                        isPrimaryKey='true'>
+                        <ng-template #template let-data>
+                            {{no(data)}}
+                        </ng-template>
+                    </e-column>
+                    <e-column field='name' headerText="Model Name" width='120' textAlign='Center'>
+                        <ng-template #headerTemplate let-data>
+                            {{'MODEL_NAME_LABEL' | translate}}
+                        </ng-template>
+                    </e-column>
+                    <e-column field='modelNo' headerText='Model No' width='120' textAlign='Center'>
+                        <ng-template #headerTemplate let-data>
+                            {{'MODEL_NO_LABEL' | translate}}
+                        </ng-template>
+                    </e-column>
+                    <e-column field='createdDate' headerText='Created Date Time' type='date' format='d MMM, yyyy hh:mm:ss a' width='120' textAlign='Center'>
+                        <ng-template #headerTemplate let-data>
+                            {{'CREATED_DATETIME_LABEL' | translate}}
+                        </ng-template>
+                    </e-column>
+                    <e-column field='createdBy' headerText='PIC' width='100' textAlign='Center'>
+                        <ng-template #headerTemplate let-data>
+                            {{'PIC_LABEL' | translate}}
+                        </ng-template>
+                    </e-column>
+
+                    <e-column field='createdStatus' isPrimaryKey='true' headerText='Finished' width='80'
+                        textAlign='Center'>
+                        <ng-template #headerTemplate let-data>
+                            {{'FINISH_LABEL' | translate}}
+                        </ng-template>
+                        <ng-template #template let-data>
+                           <span *ngIf="data.createdStatus == true" class="badge badge-success">YES</span>
+                           <span *ngIf="data.createdStatus == false" class="badge badge-danger">No</span>
+                        </ng-template>
+                    </e-column>
+                    <e-column field='approvedStatus' isPrimaryKey='true' headerText='Approval Status' width='80' textAlign='Center'>
+                        <ng-template #headerTemplate let-data>
+                            {{'APPROVAL_STATUS_LABEL' | translate}}
+                        </ng-template>
+                        <ng-template #template let-data>
+                            <span *ngIf="data.approvedStatus == false  && data.approvedBy === '#N/A'" class="badge badge-danger">YET</span>
+                            <span *ngIf="data.createdStatus == false &&data.approvedStatus == false && data.approvedBy !== '#N/A'" class="badge badge-warning">NG</span>
+                            <span *ngIf="data.approvedStatus == true && data.approvedBy !== '#N/A'" class="badge badge-success">OK</span>
+                        </ng-template>
+                    </e-column>
+                    <e-column field='approvedBy' headerText='Approval By' width='100' textAlign='Center'>
+                        <ng-template #headerTemplate let-data>
+                            {{'APPROVAL_BY_LABEL' | translate}}
+                        </ng-template>
+                    </e-column>
+                 
+                    <e-column field='tool' isPrimaryKey='true' headerText='Detail' width='80' textAlign='Center'>
+                        <ng-template #headerTemplate let-data>
+                            {{'DETAIL_LABEL' | translate}}
+                        </ng-template>
+                        <ng-template #template let-data>
+                            <button ejs-button (click)='openModalDetail(detailModal, data.id)' cssClass="e-info"><i
+                                    class="fa fa-eye"></i></button>
+                        </ng-template>
+                    </e-column>
+                </e-columns>
+            </ejs-grid>
+
+        </div>
+    </div>
+
+    <ng-template #addModalName let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">
+                <i class="fas fa-plus"></i> Add Model Name
+            </h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="Name">Model Name</label>
+                        <span style="color:red">(*)</span>
+                        <input [(ngModel)]="modalname.name" name="name" type="text" class="form-control Name" />
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="Name">Model No</label>
+                        <span style="color:red">(*)</span>
+                        <input [(ngModel)]="modalname.modelNo" name="name" type="text" class="form-control Name" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+            <!-- <button type="submit" (click)="save()" class="btn btn-primary">Save changes</button> -->
+        </div>
+    </ng-template>
+
+    <ng-template #detailModal let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title">
+                <i class="fas fa-plus"></i> Model Name - Model No Detail
+            </h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <ejs-grid #gridglue 
+                              showColumnMenu='true'  
+                              allowSorting='true' 
+                              allowResizing= 'true' 
+                              gridLines='Both'
+                              [dataSource]='glues' 
+                              height='250px' 
+                              (rowSelected)='rowSelected($event)'>
+                        <e-columns>
+                            <e-column field='name' isPrimaryKey="true" headerText='Chemical' textAlign='Center'
+                                width='150'>
+                                <ng-template #template let-data>
+                                    <div data-toggle="tooltip" data-placement="top" title='{{data.name}}'>
+                                        {{data.name}}
+                                    </div>
+                                </ng-template>
+                            </e-column>
+                            <e-column field='consumption' headerText='Std. Con.(g)' textAlign='Center' width='150'>
+                            </e-column>
+                            <e-column field='createdDate' headerText='Created Date Time' type='date' format='d MMM, yyyy hh:mm:ss a' width='150' textAlign='Center'></e-column>
+                            <e-column field='createdBy' headerText='PIC' width='100' textAlign='Center'></e-column>
+
+                            <e-column field='modelNo' headerText='Kind' textAlign='Center' width='150'>
+                            </e-column>
+                            <e-column field='pathName' headerText='Part' textAlign='Center' width='150'>
+                            </e-column>
+                            <e-column field='materialName' headerText='Material' textAlign='Center' width='150'>
+                            </e-column>
+                        </e-columns>
+                    </ejs-grid>
+                </div>
+                <div class="col-md-6">
+                    <ejs-grid #grid 
+                            showColumnMenu='true'  
+                            allowSorting='true' 
+                            allowResizing= 'true' 
+                            gridLines='Both'
+                            [dataSource]='ingredients' 
+                            [allowSorting]='true' height='250px'>
+                        <e-columns>
+                            <e-column field='position' headerText='Item' width=80 textAlign='Center'>
+                            </e-column>
+
+                            <e-column field='name' isPrimaryKey="true" headerText='Name' width=150 textAlign='Center'>
+                            </e-column>
+
+                            <e-column field='percentage' headerText='%' textAlign='Center' width=70></e-column>
+                            <e-column field='allow' headerText='Allow (%)' textAlign='Center' width=70>
+                                <ng-template #headerTemplate let-data>
+                                    <div>
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    </div>
+                                </ng-template>
+                                <ng-template #template let-data>
+                                    <span>&#177; {{data.allow}}</span>
+                                </ng-template>
+                            </e-column>
+                        </e-columns>
+                    </ejs-grid>
+                </div>
+            </div>
+          
+        </div>
+        <div class="modal-footer">
+            <button type="submit" (click)='release()' *ngIf="level !== 3 && level !== 4" class="btn btn-success">Release</button>
+            <button type="submit" (click)='reject()' *ngIf="level !== 3 && level !== 4" class="btn btn-warning">Reject</button>
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">Close</button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row bootstrap snippets">
+                        <div class="col-md-12 col-md-offset-2 col-sm-12">
+                            <div class="comment-wrapper">
+                                <div class="panel panel-info">
+                                    <div class="panel-body">
+                                        <textarea class="form-control" [(ngModel)]="content" placeholder="write a comment..." rows="3"></textarea>
+                                        <br>
+                                        <button type="button" (click)='createComment()' class="btn btn-info pull-right">Post</button>
+                                        <div class="clearfix"></div>
+                                        <hr>
+                                        <ul class="media-list" style="padding: 0;">
+                                            <li class="media" *ngFor="let item of comments">
+                                                <a href="#" class="pull-left">
+                                                    <img src="../../../../assets/img/logo-1.png" alt="" class="img-circle">
+                                                </a>
+                                                <div class="media-body ml-1">
+                                                    <span class="text-muted pull-right">
+                                                        <small class="text-muted"> {{datetime(item.createdDate)}}</small>
+                                                    </span>
+                                                    <strong class="text-success"> {{username(item.createdBy)}}</strong>
+                                                    <p>
+                                                        {{item.content}}
+                                                    </p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+</div>

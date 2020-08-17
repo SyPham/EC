@@ -1,0 +1,66 @@
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">BPFC Schedule</h3>
+  </div>
+  <div class="card-body p-0">
+    <div class="row">
+      <div class="col-md-12">
+        <ejs-grid #grid [dataSource]='data'
+        allowSorting='true'
+        allowResizing= 'true'
+        [editSettings]='editSettings'
+        [toolbar]='toolbar'
+        [allowExcelExport]='true'
+        gridLines='Both'
+        (toolbarClick)='toolbarClick($event)'
+        (actionBegin)='actionBegin($event)'
+        >
+          <e-columns>
+            <e-column field='modelName' isPrimaryKey='true' textAlign='Center' headerText='Model Name' width=150>
+            </e-column>
+            <e-column field='modelNo' isPrimaryKey='true' textAlign='Center' headerText='Model No' width=80>
+            </e-column>
+            <e-column field='articleNo' isPrimaryKey='true' textAlign='Center' headerText='Article #' width=80>
+            </e-column>
+            <e-column field='artProcess' isPrimaryKey='true' textAlign='Center' headerText='Process' width=80>
+            </e-column>
+            <e-column field='finishedStatus' isPrimaryKey='true' textAlign='Center' headerText='Status' width=80>
+              <ng-template #template let-data>{{data.finishedStatus == true? 'Yes': 'No'}}</ng-template>
+            </e-column>
+            <e-column field='createdDate' isPrimaryKey='true' type='date' format='d MMM, yyyy hh:mm:ss a' headerText='Update Time'  textAlign='Center' width=130></e-column>
+            <e-column field='approvedBy' isPrimaryKey='true' textAlign='Center' headerText='Approval By Supervisor' width=150></e-column>
+            <e-column field='season' textAlign='Center' headerText='Season' width=150></e-column>
+          </e-columns>
+        </ejs-grid>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer"></div>
+</div>
+<ng-template #importModal let-modal>
+  <div class="modal-header">
+      <h4 class="modal-title">
+          <i class="fas fa-plus"></i> Import Excel
+      </h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+  <div class="modal-body">
+      <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="Name">Select File (*Notice: Excel file must be followed a system template. If you do not have a template, please <a [href]="excelDownloadUrl">click here</a> to download. Thank you!)</label>
+              <input (change)="fileProgress($event)"  name="file" type="file"  class="form-control" />
+          </div>
+          </div>
+      </div>
+
+  </div>
+  <div class="modal-footer">
+
+    <button type="button" class="btn btn-primary" (click)="uploadFile()">Upload File</button>
+    <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">Close</button>
+  </div>
+
+</ng-template>

@@ -1,0 +1,41 @@
+.btn_build {
+    background-color: #d39e00;
+    border-color: #c69500;
+    color: #212529;
+    border-radius: 4px;
+}
+.btn_build:active, .btn_build:focus {
+    box-shadow: 0 0 0 0.25em rgba(198, 149, 0, 0.5);
+}
+.btn_line{
+    background-color: #1e7e34;
+    border-color: #1c7430;
+    color: #fff;
+    border-radius: 4px;
+
+}
+.btn_line:active, .btn_line:focus {
+    box-shadow: 0 0 0 0.25em rgba(28, 116, 48, 0.5);
+
+}
+.btn_dept {
+    background-color: #0062cc;
+    border-color: #005cbf;
+    color: #fff;
+    outline: #6c757d 0 solid;
+    border-radius: 4px;
+
+}
+.btn_dept:active, .btn_dept:focus {
+    box-shadow: 0 0 0 0.25em rgba(0, 92, 191, 0.5);
+}
+.btn_all  {
+    background-color: #bd2130;
+    border-color: #b21f2d;
+    color: #fff;
+    border-radius: 4px;
+}
+.btn_all:active, .btn_all:focus {
+    box-shadow: 0 0 0 0.25em rgba(178, 31, 45, 0.5);
+    
+}

@@ -1,0 +1,492 @@
+<div class="row">
+
+  <div class="col-md-5">
+    <div class="card">
+      <div class="col-md-12 card-body table-responsive">
+        <!--  Model Name -->
+        <div class="row">
+          <div class="col-md-3 mt-2">
+            <label>Model Name: </label>
+          </div>
+          <div class="col-md-8 mt-2">
+            <ejs-dropdownlist #modelNameDropdownlist
+              (open)='openPopupDropdownlist()'
+              class="w-100 float-left"
+              [dataSource]='modelNameData'
+              [fields]='fieldsBPFCs'
+              [allowFiltering]='true'
+              [(ngModel)]="modelNameID"
+              (filtering)='onFilteringModelName($event)'
+              (change)='onChangeModelName($event)'
+              placeholder="Select a Model Name">
+            </ejs-dropdownlist>
+          </div>
+          <div *ngIf="modelNameSelect && modelNoSelect && modelArtSelect && modelProcessSelect" class="col-md-1 mt-2">
+            <button ejs-button (click)='openModal(cloneModal)' cssClass="e-info"  class="float-right ml-1"><i class="fa fa-clone"></i></button>
+          </div>
+        </div>
+        <!-- End Model Name -->
+
+        <!--  Model No -->
+
+        <div class="row">
+          <div class="col-md-3 mt-2">
+            <label>Model NO: </label>
+          </div>
+          <div class="col-md-8 mt-2">
+            <ejs-dropdownlist #modelNoDropdownlist
+              (open)='openPopupDropdownlist()'
+              class="w-100 float-left"
+              [dataSource]='modelNoData'
+              [fields]='fieldsBPFCs'
+              [allowFiltering]='true'
+              [(ngModel)]="modelNoID"
+              (filtering)='onFilteringModelNO($event)'
+              (change)='onChangeModelNo($event)'
+              placeholder="Select a Model NO">
+            </ejs-dropdownlist>
+          </div>
+          <div class="col-md-1 mt-2">
+          </div>
+        </div>
+        <!-- End Model No -->
+
+        <!-- Article No -->
+        <div class="row">
+                <div class="col-md-3 mt-2">
+                  <label>Article NO: </label>
+                </div>
+                  <div class="col-md-8 mt-2">
+                    <ejs-dropdownlist #modelNameDropdownlist
+                      (open)='openPopupDropdownlist()'
+                      class="w-100 float-left"
+                      [dataSource]='articleNosData'
+                      [fields]='fieldsBPFCs'
+                      [allowFiltering]='true'
+                      [(ngModel)]="articleNoID"
+                      (filtering)='onFilteringArticleNO($event)'
+                      (change)='onChangeArticleNo($event)'
+                      placeholder="Select article NO   ">
+                    </ejs-dropdownlist>
+                  </div>
+                  <div class="col-md-1 mt-2">
+                  </div>
+                </div>
+        <!-- End Article No -->
+
+        <!-- ArtProcess -->
+        <div class="row">
+          <div class="col-md-3 mt-2">
+            <label>Process: </label>
+          </div>
+          <div class="col-md-9 mt-2">
+            <ng-container *ngFor="let item of artProcessData">
+              <ejs-radiobutton [label]="item.name" name="process"  [value]="item.id" (click)='onClickProcess($event)' ></ejs-radiobutton>
+            </ng-container>
+          </div>
+        </div>
+        <!-- End Art Process -->
+      </div>
+    </div>
+
+    <div class="card">
+      <div *ngIf="existGlue">
+        <ejs-barcodegenerator *ngIf="showBarCode" style="display: block;" #barcode id="barcode" width="300px"
+          height="100px" mode="SVG" type="Code32" [value]="glue.code"></ejs-barcodegenerator>
+      </div>
+
+      <div class="card-body table-responsive p-0">
+        <div class="control-section" *ngIf="existGlue">
+          <ejs-grid #gridglue [dataSource]='glues'height='250px'
+            [editSettings]='editSettings'
+            [toolbar]='toolbar'
+            [allowSorting]='true'
+            showColumnMenu='true'
+            allowSorting='true'
+            allowResizing= 'true'
+            gridLines='Both'
+            [selectedRowIndex]='rowIndex'
+            (rowDeselected)=rowDeselected($event)
+            (actionBegin)="actionBeginGlue($event)"
+            (rowSelected)="rowSelected($event)"
+            (created)="onCreatedGridGlue()"
+            (toolbarClick)='toolbarClick($event)'
+            (dataBound)='dataBoundGlue()' >
+            <e-columns>
+              <e-column field='name' isPrimaryKey="true" headerText='Chemical' textAlign='Center' width='150'>
+                <ng-template #headerTemplate let-data>
+                  {{'GLUE' | translate}}
+                </ng-template>
+                <ng-template #template let-data>
+                  <div data-toggle="tooltip" data-placement="top" title='{{data.name}}'>
+                    {{data.name}}
+                  </div>
+                </ng-template>
+              </e-column>
+              <e-column field='consumption' headerText='Std. Con.(g)' textAlign='Center' width='150'>
+                <ng-template #headerTemplate let-data>
+                  {{'CONSUMPTION' | translate}}
+                </ng-template>
+              </e-column>
+              <e-column field='expiredTime' headerText='Expired Time' isPrimaryKey="true" textAlign='Center' width='150'>
+                <ng-template #headerTemplate let-data>
+                  {{'EXPIRED_TIME' | translate}}
+                </ng-template>
+              </e-column>
+              <e-column field='modelNo' headerText='Kind' textAlign='Center' width='150'>
+                <ng-template #headerTemplate let-data>
+                  {{'KIND' | translate}}
+                </ng-template>
+                <ng-template #editTemplate let-data>
+                  <ejs-dropdownlist id='glueDropdownlist' #glueDropdownlist [dataSource]='parts'
+                    [(ngModel)]="data.partID" [fields]='fieldsGlueEdit' [allowFiltering]='true'
+                    (change)='onChangePartEdit($event)'>
+                  </ejs-dropdownlist>
+                </ng-template>
+              </e-column>
+              <e-column field='pathName' headerText='Part' textAlign='Center' width='150'>
+                <ng-template #headerTemplate let-data>
+                  {{'PART' | translate}}
+                </ng-template>
+                <ng-template #editTemplate let-data>
+                  <ejs-dropdownlist id='glueDropdownlist' #glueDropdownlist [dataSource]='kinds'
+                    [(ngModel)]="data.kindID" popupHeight='200px' popupWidth='250px' [fields]='fieldsGlueEdit'
+                    [allowFiltering]='true' (change)='onChangeKindEdit($event)'>
+                  </ejs-dropdownlist>
+                </ng-template>
+              </e-column>
+              <e-column field='materialName' headerText='Material' textAlign='Center' width='150'>
+                <ng-template #headerTemplate let-data>
+                  {{'MATERIAL' | translate}}
+                </ng-template>
+                <ng-template #editTemplate let-data>
+                  <ejs-dropdownlist id='glueDropdownlist' #glueDropdownlist [dataSource]='materials'
+                    [(ngModel)]="data.materialID" popupHeight='200px' popupWidth='250px' [fields]='fieldsGlueEdit'
+                    [allowFiltering]='true' (change)='onChangeMaterialEdit($event)'>
+                  </ejs-dropdownlist>
+                </ng-template>
+              </e-column>
+
+            </e-columns>
+          </ejs-grid>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="col-md-7">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{'PREVIEW' | translate}} </h3>
+        <div class="card-tools" *ngIf="existGlue">
+          <button type="button" class="btn btn-danger btn-sm mr-2 d-none"><i class="fas fa-undo"></i> Reset
+          </button>
+          <ejs-switch onLabel="Done" offLabel="{{'UNDONE' | translate}}" [disabled]='approvalStatus' style="width: 100px; margin-right: 10px;" (change)='done()' *ngIf='modelNameID > 0' [(ngModel)]="createdStatus" [checked]="createdStatus"></ejs-switch>
+         <ng-container *ngIf="(level !== 3 && level !== 4)">
+           <ejs-switch onLabel="Approved" offLabel="{{'NOT_APPROVED' | translate}}" style="width: 120px;" (change)='approval()' *ngIf='modelNameID > 0' [(ngModel)]="approvalStatus" [checked]="approvalStatus"></ejs-switch>
+         </ng-container>
+
+          <button type="button" (click)='finished()' *ngIf='modelNameID > 0' ejs-button cssClass="e-small e-success ml-2"><i class="fas fa-save"></i> {{ 'FINISHED' | translate}}
+          </button>
+        </div>
+      </div>
+      <div class="card-body" *ngIf="existGlue">
+        <ul *ngIf="renderchemical().length > 0">
+          <li style="list-style-type:square; font-weight: bold;">
+            {{formula()}}
+            <ul>
+              <li style="list-style: none;" *ngFor="let item of renderchemical(); let i=index">
+                <a>
+                  {{item.position}}. {{item.ingredientName}} <span
+                    class="font-weight-bold text-danger">({{item.percentage}}%)</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <div class="row">
+          <div class="col-lg-12 col-xs-12 col-12" style="text-align: center;">
+            <button type="button" (click)="sortBySup(0)" class="btn bg-gradient-secondary btn-sm rounded-pill">
+              {{ 'DEFAULT' | translate}}
+            </button>
+            <button type="button" *ngFor="let item of supplier" style="margin: 3px" (click)="sortBySup(item.id)"
+              class="btn btn-info btn-sm rounded-pill">
+              <i class="fas fa-cannabis"></i> {{item.name}}
+            </button>
+          </div>
+        </div>
+
+
+      <div class="row" >
+        <div class="col-md-6">
+          <div  class="card-body table-responsive p-0">
+            <div class="control-section">
+              <ejs-grid #grid [dataSource]='ingredients1'
+                [allowSorting]='true' height='675px'
+                gridLines='Both'
+                [allowSorting]='true'
+                showColumnMenu='true'
+                allowSorting='true'
+                allowResizing= 'true'
+                (actionComplete)='actionCompleteIngredient($event)'
+                (recordDoubleClick)='onDoubleClickIngredient($event)'
+                (actionBegin)="actionBeginIngridient($event)"
+                (toolbarClick)='tollbarClickIngredient($event)'
+                (rowSelected)="rowSelectedIngridient($event)"
+                [editSettings]='editSettings'
+                [toolbar]='toolbarOptions2'>
+                <e-columns>
+
+                  <e-column field='Item' isPrimaryKey="true" headerText='Item' width=80 textAlign='Center'>
+                    <ng-template #headerTemplate let-data>
+                      {{'ITEM' | translate}}
+                    </ng-template>
+                    <ng-template #template let-data>
+                      <ejs-dropdownlist #positionDropdownlist [dataSource]='dataPosition' [value]='data.position'
+                        [fields]='fieldsposition' [allowFiltering]='true'
+                        (change)='onChangeposition($event,data, data.index)'>
+                      </ejs-dropdownlist>
+                    </ng-template>
+                  </e-column>
+
+                  <e-column field='name' isPrimaryKey="true" headerText='Name' width=150 textAlign='Center'>
+                    <ng-template #headerTemplate let-data>
+                      {{'INGREDIENT_NAME' | translate}}
+                    </ng-template>
+                  </e-column>
+
+                  <e-column field='percentage' headerText='%' textAlign='Center' width=70></e-column>
+                  <e-column field='allow' headerText='Allow (%)' textAlign='Center' width=70>
+                    <ng-template #headerTemplate let-data>
+                      <div>
+                        <i class="fas fa-exclamation-circle"></i>
+                      </div>
+                    </ng-template>
+                    <ng-template #template let-data>
+                      <span>&#177; {{data.allow}}</span>
+                    </ng-template>
+                  </e-column>
+                </e-columns>
+              </ejs-grid>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card-body table-responsive p-0">
+            <div class="control-section">
+              <ejs-grid #grid height='675px'
+                        [dataSource]='ingredients2'
+                        [allowSorting]='true'
+                        showColumnMenu='true'
+                        allowSorting='true'
+                        allowResizing= 'true'
+                        gridLines='Both'
+                        (actionComplete)='actionCompleteIngredient($event)'
+                        (recordDoubleClick)='onDoubleClickIngredient($event)'
+                        (actionBegin)="actionBeginIngridient($event)"
+                        (toolbarClick)='tollbarClickIngredient($event)'
+                        (rowSelected)="rowSelectedIngridient($event)"
+                        [editSettings]='editSettings'
+                        [toolbar]='toolbarOptions2'>
+                <e-columns>
+                  <e-column field='Item' isPrimaryKey="true" headerText='Item' width=80 textAlign='Center'>
+                    <ng-template #headerTemplate let-data>
+                      {{'ITEM' | translate}}
+                    </ng-template>
+                    <ng-template #template let-data>
+                      <ejs-dropdownlist #positionDropdownlist [dataSource]='dataPosition'
+                        [value]='data.position' [fields]='fieldsposition' [allowFiltering]='true'
+                        (change)='onChangeposition($event,data, data.id)'>
+                      </ejs-dropdownlist>
+                    </ng-template>
+                  </e-column>
+
+                  <e-column field='name' isPrimaryKey="true" headerText='Name' width=150 textAlign='Center'>
+                    <ng-template #headerTemplate let-data>
+                      {{'INGREDIENT_NAME' | translate}}
+                    </ng-template>
+                  </e-column>
+
+                  <e-column field='percentage' headerText='%' textAlign='Center' width=70></e-column>
+                  <e-column field='allow' headerText='Allow (%)' textAlign='Center' width=70>
+                    <ng-template #headerTemplate let-data>
+                      <div>
+                        <i class="fas fa-exclamation-circle"></i>
+                      </div>
+                    </ng-template>
+                    <ng-template #template let-data>
+                      <span>&#177; {{data.allow}}</span>
+                    </ng-template>
+                  </e-column>
+                </e-columns>
+              </ejs-grid>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #cloneArticleModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <i class="fas fa-plus"></i> Clone Article
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="Name">Article Name</label>
+                    <span style="color:red">(*)</span>
+                    <input type="text" [(ngModel)]="articleName" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="Name">Process</label>
+                    <ejs-dropdownlist #processDropdownlist class="w-100"
+                    [value]='valueProcess'
+                    (change)='onChangeProcessCloneModal($event)'
+                    [dataSource]='processData'
+                    [allowFiltering]='true'
+                   [fields]='processfields'
+                   placeholder='Select a process'>
+                </ejs-dropdownlist>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+        <button type="submit" (click)='cloneArticleModelname()' class="btn btn-primary">Clone</button>
+    </div>
+</ng-template>
+  <ng-template #cloneModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">
+            <i class="fas fa-plus"></i> Clone BPFC
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="Name">Model Name</label>
+                    <span style="color:red">(*)</span>
+                    <ejs-dropdownlist #modelNameDropdownlist
+                    (open)='openPopupDropdownlist()'
+                    class="w-100 float-left"
+                    [dataSource]='modelNameDataClone'
+                    [fields]='fieldsBPFCs'
+                    [allowFiltering]='true'
+                    [value]='value'
+                    (filtering)='onFilteringModelNameClone($event)'
+                    (change)='onChangeModelNameClone($event)'
+                    placeholder="Select a Model Name">
+                  </ejs-dropdownlist>
+                  {{modelNameIDClone}}
+                  <!-- [(ngModel)]="modelNameIDClone" -->
+              </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="Name">Model NO</label>
+                    <span style="color:red">(*)</span>
+                    <ejs-dropdownlist #modelNoDropdownlist
+                    class="w-100 float-left"
+                    [dataSource]='modelNOsDataClone'
+                    (dataBound)='OndataBound($event)'
+                    [fields]='fieldsBPFCs'
+                    [allowFiltering]='true'
+                    [value]="valuemodelNo"
+                    (filtering)='onFilteringModelNOClone($event)'
+                    (change)='onChangeModelNoClone($event)'
+                    placeholder="Select a Model NO">
+                  </ejs-dropdownlist>
+                  {{modelNOIDClone}}
+                </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                  <label for="Name">Article NO</label>
+                  <span style="color:red">(*)</span>
+                  <ejs-dropdownlist #modelNameDropdownlist
+                  class="w-100 float-left"
+                  [dataSource]='articleNosDataClone'
+                  [fields]='fieldsBPFCs'
+                  [allowFiltering]='true'
+                  (filtering)='onFilteringArticleNOClone($event)'
+                  [(ngModel)]="articleNOIDClone"
+                  (change)='onChangeArticleNoClone($event)'
+                  placeholder="Select article NO   ">
+                </ejs-dropdownlist>
+                {{articleNOIDClone}}
+              </div>
+          </div>
+
+          <!-- <div class="col-md-12">
+            <div class="form-group">
+                <label for="Name">Process</label>
+                <span style="color:red">(*)</span>
+                <ejs-dropdownlist #modelNameDropdownlist
+                class="w-100 float-left"
+                [dataSource]='artProcessDataClone'
+                [fields]='fieldsBPFCs'
+                [allowFiltering]='true'
+                (filtering)='onFilteringArtProcessClone($event)'
+                [(ngModel)]="artProcessIDClone"
+                (change)='onChangeProcessClone($event)'
+                placeholder="Select a process">
+              </ejs-dropdownlist>
+              {{artProcessIDClone}}
+              </div>
+          </div> -->
+
+          <!-- <div class="col-md-12">
+            <div class="form-group">
+                <label for="Name">Process</label>
+                <span style="color:red">(*)</span>
+                <ejs-dropdownlist #modelNameDropdownlist
+                class="w-100 float-left"
+                [dataSource]='artProcessDataClone2'
+                [fields]='fieldsBPFCs'
+                [allowFiltering]='true'
+                (filtering)='onFilteringArtProcessClone($event)'
+                [(ngModel)]="artProcessIDClone"
+                (change)='onChangeProcessClone($event)'
+                placeholder="Select a process">
+              </ejs-dropdownlist>
+              {{artProcessIDClone}}
+              </div>
+          </div> -->
+
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="Name">Process</label>
+              <span style="color:red">(*)</span>
+              <div class="col-md-9 mt-2">
+                <ng-container *ngFor="let item of artProcessDataClone2">
+                  <ejs-radiobutton [label]="item.name" name="process2"  [value]="item.id" [(ngModel)]="artProcessIDClone" ></ejs-radiobutton>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+      <button type="submit" (click)='onClickClone()' class="btn btn-primary">Clone</button>
+    </div>
+</ng-template>
+</div>

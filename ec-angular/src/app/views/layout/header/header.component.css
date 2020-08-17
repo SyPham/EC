@@ -1,0 +1,13 @@
+.fix-width {
+    max-width: 800px !important;
+    width: 800px !important;
+    height: 500px !important;
+    overflow-y: scroll !important;
+    text-overflow: ellipsis;
+  }
+  .fix-notify {
+    min-width: 800px !important;
+    max-height: 600px !important;
+    text-overflow: ellipsis;
+    overflow-y: scroll !important;
+  }

@@ -1,0 +1,52 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-users"></i> User List
+        </h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body table-responsive p-0">
+        <ejs-grid #grid 
+          [dataSource]="userData" 
+          allowPaging='true'
+          gridLines='Both'
+          (created)='createdUsers()' 
+          (dataBound)='dataBound()'
+          (actionBegin)="actionBegin($event)"
+          (actionComplete)="actionComplete($event)"
+          [toolbar]='toolbar' 
+          [pageSettings]='pageSettings'
+          [editSettings]='editSettings'
+        >
+          <e-columns>
+            <e-column field="ID" width="80" isPrimaryKey="true" headerText="ID">
+              <ng-template #template let-data>
+                {{data.index}}
+              </ng-template>
+            </e-column>
+            <e-column field="Username" headerText="Username"> </e-column>
+            <e-column field="EmployeeID" headerText="EmployeeID"> </e-column>
+            <e-column field="Password" isPrimaryKey="true" headerText="Password">
+              <ng-template #editTemplate let-data>
+                <div class="e-input-group">
+                  <input type="password" [(ngModel)]="password" class="e-input">
+                </div>
+              </ng-template>
+            </e-column>
+            <e-column field="Email" headerText="Email"> </e-column>
+            <e-column field="BuildingName" headerText="Building">
+              <ng-template #editTemplate let-data>
+                <ejs-dropdownlist #positionDropdownlist [dataSource]='buildings' [value]="data.BuildingName"
+                  [fields]='fieldsBuilding' [allowFiltering]='true'
+                  (change)='onChangeBuilding($event,data)'>
+                </ejs-dropdownlist>
+              </ng-template>
+            </e-column>
+          </e-columns>
+        </ejs-grid>
+      </div>
+      <!-- /.card-body -->
+    </div>
+  </div>
+</div>

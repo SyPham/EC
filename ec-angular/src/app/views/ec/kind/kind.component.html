@@ -1,0 +1,51 @@
+<div class="row mb-4">
+  <div class="col-md-4">
+    <div class="input-group input-group-sm">
+      <input type="text" [(ngModel)]="kind.name"  placeholder="Key in Kind Name"  class="form-control">
+      <span class="input-group-append">
+        <button type="button" (click)='create()' class="btn btn-secondary btn-flat"><i class="fas fa-save"></i> Save</button>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="row" >
+  <!-- <div class="col-md-12 my-3">
+      <button (click)="save()" class="btn bg-gradient-secondary btn-sm">
+          <i class="fas fa-save"></i> Save
+      </button>
+  </div> -->
+
+  <div class="col-md-12">
+      <div class="card">
+          <div class="card-header">
+              <h5 class="card-title">Kind List</h5>
+              <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+                  </button>
+              </div>
+          </div>
+
+          <ejs-grid #grid [searchSettings]="searchSettings" (actionBegin)="actionBegin($event)"   [toolbar]='toolbarOptions' [dataSource]='data' allowPaging='true' [pageSettings]='pageSettings' [editSettings]='editSettings'>
+              <e-columns>
+                  <e-column field='id' headerText='#' width='70' textAlign='Center' isPrimaryKey='true' >
+                      <ng-template #template let-data>
+                          {{data.index}}
+                      </ng-template>
+                  </e-column>
+                  <e-column field='name' headerText='Kind Name' width='200' textAlign='Center' >
+                  </e-column>
+                  <e-column isPrimaryKey='true' headerText='Manage Records' textAlign='Center' width='200'   >
+                      <ng-template #template let-data>
+                          <button (click)="delete(data.id)" ejs-button iconCss='e-icons e-delete' cssClass= 'e-flat'></button>
+                      </ng-template>
+                  </e-column>
+              </e-columns>
+          </ejs-grid>
+          
+      </div>
+  </div>
+
+</div>
+
+

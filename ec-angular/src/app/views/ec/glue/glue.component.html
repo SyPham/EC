@@ -1,0 +1,67 @@
+<div class="card">
+  <div class="card-header">
+    <h3 class="title">
+      Glue List
+    </h3>
+  </div>
+  <div class="card-body">
+    <div class="btn-group pb-3">
+      <button type="button" (click)="openGlueModalComponent()" class="btn btn-success">Add</button>
+    </div>
+    <div class="btn-group pb-3">
+      <button type="button" (click)="printBarcode()" *ngIf="!show" class="btn btn-success ml-2">Print Barcode</button>
+    </div>
+    <div class="btn-group pb-3">
+      <button type="button" (click)="backList()" *ngIf="show" class="btn btn-success ml-2">Back List</button>
+    </div>
+    <table class="table table-hover" *ngIf="show">
+      <thead class="thead-dark">
+        <tr>
+          <th>Name</th>
+          <th>Barcode</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of data; let i= index">
+          <td>{{item.name}}</td>
+          <td>
+            <ejs-qrcodegenerator style="display: block;" [displayText]='displayTextMethod' #barcode width="200px" height="150px" mode="SVG" [value]="item.code"></ejs-qrcodegenerator> 
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table table-hover" *ngIf="!show">
+      <thead class="thead-dark">
+        <tr>
+          <th>#</th>
+          <th>Barcode</th>
+          <th>Name</th>
+          <th>Create Date</th>
+          <th>Option</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of data; let i= index">
+          <td scope="row">{{ (pagination.currentPage - 1) * pagination.itemsPerPage + i + 1 }}</td>
+          <td>
+            <ejs-qrcodegenerator style="display: block;" [displayText]='displayTextMethod' #barcode width="200px" height="150px" mode="SVG" [value]="item.code"></ejs-qrcodegenerator>
+          </td>
+          <td>{{item.name}}</td>
+          <td>{{item.createdDate}}</td>
+          <td>
+            <div class="btn-group">
+              <button type="button" (click)='openGlueEditModalComponent(item)' class="btn btn-primary">Edit</button>
+            </div>
+            <div class="btn-group">
+              <button type="button" (click)='delete(item)' class="btn btn-danger">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer">
+    <ngb-pagination (pageChange)="onPageChange($event)" [collectionSize]="pagination.totalItems"  [directionLinks]='true' [(page)]="pagination.currentPage" [pageSize]='pagination.itemsPerPage' [maxSize]="5" [rotate]="true" [boundaryLinks]="true"></ngb-pagination>
+  </div>
+</div>
+

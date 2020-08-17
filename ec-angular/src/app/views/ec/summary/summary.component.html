@@ -1,0 +1,187 @@
+<div class="card">
+  <div class="card-header">
+    <h3>To do list</h3>
+
+  </div>
+  <div class="card-body">
+    <div class="row" *ngIf="existGlue">
+      <div class="col-md-12">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <ng-container *ngFor="let item of lineColumns; let i = index">
+                <th class="text-center" colspan="2" *ngIf="item.field === 'TotalComsumption'">{{item.field}}</th>
+                <th class="text-center" style="vertical-align: middle;" rowspan="2"
+                  *ngIf="item.field !== 'TotalComsumption'">{{item.field}}</th>
+              </ng-container>
+              <th style="vertical-align: middle;" class="text-center" rowspan="2">Count</th>
+              <th style="vertical-align: middle;" class="text-center" rowspan="2">Option</th>
+            </tr>
+            <tr>
+              <th>Standard</th>
+              <th>Real</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let values of linevalue; let i = index">
+              <td class="text-center" *ngFor="let value of values">{{value}}</td>
+              <td>
+                <div class="btn-group">
+                  <button type="button" (click)="mixingSection(values)"
+                    class="btn btn-success btn-sm mr-2">Mixing</button>
+                  <button type="button" (click)="pushHistory(values)" class="btn btn-sm btn-info">History</button>
+                </div>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="show">
+      <div class="col-md-12 my-2">
+        <h3 class="text-center text-danger">Glue Name: {{makeGlue.name}} </h3>
+
+      </div>
+      <div class="col-md-4"></div>
+      <div class="col-md-4">
+        <!-- <input #scanText id='scanText' autoselect *ngIf="scanStatus; else scanStatusBlock" [(ngModel)]="qrCode" (ngModelChange)='onChangeScanQRCode($event)' name="scanQRCode" autofocus class="form-control" type="text"  />            
+        <ng-template #scanStatusBlock>
+          <input #scanText id='scanText' autoselect [(ngModel)]="qrCode"  (ngModelChange)='onChangeScanQRCode($event)' name="scanQRCode" class="form-control" type="text"  />            
+        </ng-template> -->
+      </div>
+
+    </div>
+
+    <div class="row" *ngIf="show">
+
+      <!-- <div class="col-md-4">
+        <div class="chart-wrapper">
+          <canvas baseChart class="chart" [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
+            (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)" [options]="pieChartOptions"
+            [plugins]="pieChartPlugins"></canvas>
+        </div>
+      </div> -->
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-sm-1 text-center">
+            <label class="font-weight-bold" for="">Step</label>
+          </div>
+          <div class="col-sm-2 text-center">
+            <label class="font-weight-bold" for="">Scan QRCode</label>
+          </div>
+          <div class="col-sm-3 text-center">
+            <label class="font-weight-bold" for="">Ingredient Name</label>
+          </div>
+          <div class="col-sm-3 text-center">
+            <label class="font-weight-bold" for="">Expected</label>
+          </div>
+          <div class="col-sm-3 text-center">
+            <label class="font-weight-bold" for="">Real</label>
+          </div>
+        </div>
+
+        <ng-container *ngFor="let item of ingredients ;let i=index">
+          <div class="row">
+            <div class="col-sm-1 text-center">
+              <img *ngIf="showArrow(item)" src="../../../../assets/img/gif/arrow.gif" style="width: 30px;height: 30px;"
+                alt="">
+            </div>
+            <div class="col-md-2">
+              <input *ngIf="item.scanStatus; else scanBlock" 
+                    class="form-control" 
+                    autofocus 
+                    autoselect
+                    [name]="item.code" 
+                    [(ngModel)]="item.scanCode" 
+                    [class]="item.info" 
+                    [ngClass]="lockClass(item)"
+                    (ngModelChange)='onNgModelChangeScanQRCode($event, item)' 
+                    type="text">
+              <ng-template #scanBlock>
+                <input class="form-control" 
+                      [(ngModel)]="item.scanCode" 
+                      [name]="item.code" 
+                      [class]="item.info"
+                      [ngClass]="lockClass(item)" 
+                      (ngModelChange)='onNgModelChangeScanQRCode($event, item)' 
+                      type="text">
+              </ng-template>
+            </div>
+            <div class="form-group col-sm-3">
+              <input [class]="item.info" class="form-control lock" [value]="item.name + ' ( ' + item.percentage + '% )'"
+                type="text">
+            </div>
+            <div class="form-group col-sm-3">
+              <input *ngIf="item.focusExpected; else expectedBlock" class="form-control" [value]='item.expected'
+                autofocus autoselect [class]="item.info" (keyup)='onKeyupExpected(item, $event)' type="text">
+              <ng-template #expectedBlock>
+                <input class="form-control lock" [value]='item.expected' [class]="item.info"
+                  (keyup)='onKeyupExpected(item, $event)' type="text">
+              </ng-template>
+            </div>
+            <div class="form-group col-sm-3">
+              <input class="form-control"
+                     *ngIf="item.focusReal; else realElse" 
+                     [value]='item.real' 
+                     [id]='item.position'
+                     [class]="realClass(item)" 
+                     autofocus 
+                     autoselect 
+                     (keyup)='onKeyupReal(item, $event)' 
+                    type="text">
+              <ng-template #realElse>
+                <input class="form-control lock" 
+                       [value]='item.real' 
+                       autoselect 
+                       [id]='item.position' 
+                       [class]="realClass(item)"
+                       (keyup)='onKeyupReal(item, $event)' 
+                       type="text">
+              </ng-template>
+            </div>
+            <!-- <div class="col-sm-1 text-center">
+              <img *ngIf="check(item)" src="../../../../assets/img/gif/check.jpg" style="width: 30px;height: 30px;" alt="">
+              <img *ngIf="cancel" src="../../../../assets/img/gif/x.png" style="width: 30px;height: 30px;" alt="">
+            </div> -->
+          </div>
+        </ng-container>
+
+        <div class="text-center my-2">
+          <button type="button" [disabled]="disabled" (click)="Finish()" class="btn btn-success"><i
+              class="fas fa-save"></i>
+            Finish</button>
+          <button type="button" (click)="back()" class="btn btn-primary ml-2"><i class="fa fa-arrow-circle-left"></i>
+            Back</button>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="showQRCode">
+      <div class="col-md-4"></div>
+      <div class="col-md-4 text-center">
+        <button type="button" (click)="back()" class="btn btn-primary ml-2"><i class="fa fa-arrow-circle-left"></i>
+          Back</button>
+        <button type="button" (click)="printGlue()" class="btn btn-success ml-2"><i class="fa fa-print"></i>
+          Print</button>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+    <hr>
+
+
+
+    <div class="row" *ngIf="showQRCode">
+      <div class="col-md-4"></div>
+      <div class="col-md-4 text-center">
+        <ejs-qrcodegenerator style="display: block;" [displayText]='displayTextMethod' id='qrcode' #qrcode width="400px"
+          height="400px" mode="SVG" [value]="code"></ejs-qrcodegenerator>
+        <label id='glueName' for="">{{makeGlue.name }}</label> <br>
+        <label id='glueNameExpiredTime' for="">Expired on: {{expiredTime | date:'M/d , h:mm a '}}</label>
+      </div>
+      <div class="col-md-4"></div>
+
+    </div>
+
+  </div>
+</div>
