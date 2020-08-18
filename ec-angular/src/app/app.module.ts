@@ -16,7 +16,7 @@ import { LoginComponent } from './views/login/login.component';
 import { P404Component } from './views/p404/p404.component';
 import { P500Component } from './views/p500/p500.component';
 
-//service
+// service
 import { AlertifyService } from './_core/_service/alertify.service';
 import { AuthService } from './_core/_service/auth.service';
 import { AuthGuard } from './_core/_guards/auth.guard';

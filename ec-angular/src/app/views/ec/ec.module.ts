@@ -59,7 +59,7 @@ import { BpfcStatusComponent } from './bpfc-status/bpfc-status.component';
 import { AutofocusDirective } from './focus.directive';
 import { AutoSelectDirective } from './select.directive';
 import { GlueHistoryComponent } from './summary/glue-history/glue-history.component';
- 
+
 setCulture('de-DE');
 
 const lang = localStorage.getItem('lang');
