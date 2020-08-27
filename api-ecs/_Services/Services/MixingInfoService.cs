@@ -16,14 +16,19 @@ namespace EC_API._Services.Services
     public class MixingInfoService : IMixingInfoService
     {
         private readonly IMixingInfoRepository _repoMixingInfor;
+        private readonly IMixingService _repoMixing;
         private readonly IGlueRepository _repoGlue;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configMapper;
 
-        public MixingInfoService(IMixingInfoRepository repoMixingInfor, IMapper mapper, IGlueRepository repoGlue,
+        public MixingInfoService(
+            IMixingInfoRepository repoMixingInfor,
+            IMixingService repoMixing,
+            IMapper mapper, IGlueRepository repoGlue,
             MapperConfiguration configMapper)
         {
             _repoMixingInfor = repoMixingInfor;
+            _repoMixing = repoMixing;
             _repoGlue = repoGlue;
             _mapper = mapper;
             _configMapper = configMapper;
@@ -38,6 +43,7 @@ namespace EC_API._Services.Services
             item.ExpiredTime = DateTime.Now.AddMinutes(glue.ExpiredTime);
             _repoMixingInfor.Add(item);
             await _repoMixingInfor.SaveAll();
+            await _repoMixing.AddOrUpdate(item.ID);
             return item;
 
         }

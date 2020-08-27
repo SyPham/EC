@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, Renderer2, ElementRef, QueryList, Query } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, Renderer2, ElementRef, QueryList, Query, HostListener } from '@angular/core';
 import { ColumnModel, ResizeService, GridComponent } from '@syncfusion/ej2-angular-grids';
 import { orderDetails } from './data';
 import { PlanService } from 'src/app/_core/_service/plan.service';
@@ -25,6 +25,7 @@ declare var Swal: any;
   styleUrls: ['./summary.component.css']
 })
 export class SummaryComponent implements OnInit, AfterViewInit {
+
   @ViewChild('scanQRCode') scanQRCodeElement: ElementRef;
   public displayTextMethod: DisplayTextModel = {
     visibility: false
@@ -116,6 +117,14 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   disabled = true;
   // check: boolean = true;
   cancel = false;
+  // @HostListener('window:keyup.w', ['$event']) w(e: KeyboardEvent) {
+  //   console.log('w captured', e);
+  // }
+  @HostListener('window:keyup.alt.enter', ['$event']) enter(e: KeyboardEvent) {
+    if (!this.disabled) {
+      this.Finish();
+    }
+  }
   constructor(
     private planService: PlanService,
     private authService: AuthService,
@@ -129,6 +138,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   ) { }
   public ngOnInit(): void {
     this.showQRCode = false;
+    this.disabled = true;
     this.qrCode = '';
     this.getBuilding();
     this.existGlue = true;
@@ -145,6 +155,21 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   created(args) {
   }
   dataBound() {
+  }
+  labelLang(text) {
+    if (text === 'Chemical') {
+      return 'GLUE';
+    }
+    if (text === 'GlueID') {
+      return 'ID';
+    }
+    if (text === 'Supplier') {
+      return 'SUPPLIER';
+    }
+    if (text === 'TotalComsumption') {
+      return 'TOTAL_COMSUMPTION';
+    }
+    return text;
   }
   summary() {
     const E_BUILDING = 8;
@@ -255,6 +280,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       });
     });
   }
+
   onNgModelChangeScanQRCode(args, item) {
     this.qrCode = args;
     const position = item.position;
@@ -262,7 +288,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       // alert warning
       this.scanQRCode().then(res => {
         if (args !== item.code) {
-          this.alertify.warning(`Please scan the chemical ${item.position}`, true);
+          this.alertify.warning(`Please scan the chemical ${item.position}`);
           this.qrCode = '';
           this.errorScan();
         } else {
@@ -272,14 +298,16 @@ export class SummaryComponent implements OnInit, AfterViewInit {
             this.changeInfo('success-scan', ingredient.code);
             if (ingredient.expected === 0 && ingredient.position === 'A') {
               this.changeFocusStatus(ingredient.code, false, true);
+              this.changeScanStatus(ingredient.code, false);
             } else {
+              this.changeScanStatus(ingredient.code, false);
               this.changeFocusStatus(code, true, false);
             }
           }
         }
       }).catch(err => {
         this.errorScan();
-        this.alertify.warning('This chemical does not exists!', true);
+        this.alertify.error('Wrong Chemical!');
         this.qrCode = '';
       });
     }
@@ -294,7 +322,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   }
 
   showArrow(item): boolean {
-    if (item.scanStatus === false && item.focusReal === false && item.focusReal === false) {
+    if (item.scanStatus === false && item.focusExpected === false && item.focusReal === false) {
       return false;
     }
     return true;
@@ -317,7 +345,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   }
   calculatorIngredient(weight, percentage) {
     const result = (weight * percentage) / 100;
-    return result ?? 0;
+    return result * 1000 ?? 0;
   }
   onKeyupExpected(item, args) {
     if (args.keyCode === 13) {
@@ -325,13 +353,13 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         const weight = parseFloat(args.target.value);
         this.changeExpected('A', args.target.value);
         const expectedB = this.calculatorIngredient(weight, this.findIngredient('B')?.percentage);
-        this.changeExpected('B', expectedB);
+        this.changeExpected('B', this.toFixedIfNecessary(expectedB, 3));
         const expectedC = this.calculatorIngredient(weight + expectedB, this.findIngredient('C')?.percentage);
-        this.changeExpected('C', expectedC);
+        this.changeExpected('C', this.toFixedIfNecessary(expectedC, 3));
         const expectedD = this.calculatorIngredient(weight + expectedB + expectedC, this.findIngredient('D')?.percentage);
-        this.changeExpected('D', expectedD);
+        this.changeExpected('D', this.toFixedIfNecessary(expectedD, 3));
         const expectedE = this.calculatorIngredient(weight + expectedB + expectedC + expectedD, this.findIngredient('E')?.percentage);
-        this.changeExpected('E', expectedE);
+        this.changeExpected('E', this.toFixedIfNecessary(expectedE, 3));
         // this.loadDataChart();
         this.changeFocusStatus(item.code, true, false);
       }
@@ -371,9 +399,9 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         this.D = expected;
       }
       const allow = this.calculatorIngredient(expected, this.findIngredient(position)?.allow);
-      const min =  expected - allow;
-      const max = expected + allow ;
-      const expectedRange = `${this.toFixedIfNecessary(min, 3)} - ${this.toFixedIfNecessary(max, 3)}`;
+      const min = Math.abs(this.toFixedIfNecessary(expected - allow, 3));
+      const max = Math.abs(this.toFixedIfNecessary(expected + allow, 3));
+      const expectedRange = `${min / 1000} - ${max / 1000} ( ${min}g - ${max}g )`;
       if (allow === 0) {
         this.changeExpected(position, expected);
       } else {
@@ -386,11 +414,12 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     let max;
     const currentValue = parseFloat(args.target.value);
     if (ingredient.allow === 0) {
-       min = parseFloat(ingredient.expected),
-       max = parseFloat(ingredient.expected);
+      min = parseFloat(ingredient.expected),
+        max = parseFloat(ingredient.expected);
     } else {
-      min = parseFloat(ingredient.expected.split(' - ')[0]),
-      max = parseFloat(ingredient.expected.split(' - ')[1]);
+      const exp = ingredient.expected.split(' ( ')[0];
+      min = parseFloat(exp.split(' - ')[0]),
+        max = parseFloat(exp.split(' - ')[1]);
     }
     // if Chemical is A, focus in chemical B
     if (ingredient.position === 'A') {
@@ -401,16 +430,20 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       this.changeScanStatusFocus('A', false);
       this.changeScanStatusFocus('B', true);
       this.changeFocusStatus(ingredient.code, false, false);
-
+      if (this.ingredients.length === 1) {
+        this.disabled = false;
+      }
     }
     // if Chemical is B, focus in chemical C
-    if (ingredient.position === 'B' ) {
+    if (ingredient.position === 'B') {
       if (currentValue <= max && currentValue >= min) {
         this.changeScanStatusFocus('B', false);
         this.changeScanStatusFocus('C', true);
         this.changeValidStatus(ingredient.code, false);
         this.changeFocusStatus(ingredient.code, false, false);
-        this.disabled = false;
+        if (this.ingredients.length === 2) {
+          this.disabled = false;
+        }
       } else {
         this.disabled = true;
         this.changeFocusStatus(ingredient.code, true, false);
@@ -418,14 +451,16 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         this.alertify.warning(`Invaild!`, true);
       }
     }
-      // if Chemical is C, focus in chemical D
-    if (ingredient.position === 'C' ) {
+    // if Chemical is C, focus in chemical D
+    if (ingredient.position === 'C') {
       if (currentValue <= max && currentValue >= min) {
         this.changeScanStatusFocus('C', false);
         this.changeScanStatusFocus('D', true);
         this.changeValidStatus(ingredient.code, false);
         this.changeFocusStatus(ingredient.code, false, false);
-        this.disabled = false;
+        if (this.ingredients.length === 3) {
+          this.disabled = false;
+        }
       } else {
         this.disabled = true;
         this.changeFocusStatus(ingredient.code, true, false);
@@ -433,14 +468,16 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         this.alertify.warning(`Invaild!`, true);
       }
     }
-      // if Chemical is D, focus in chemical E
-    if (ingredient.position === 'D' ) {
+    // if Chemical is D, focus in chemical E
+    if (ingredient.position === 'D') {
       if (currentValue <= max && currentValue >= min) {
         this.changeScanStatusFocus('D', false);
         this.changeScanStatusFocus('E', true);
         this.changeValidStatus(ingredient.code, false);
         this.changeFocusStatus(ingredient.code, false, false);
-        this.disabled = false;
+        if (this.ingredients.length >= 4) {
+          this.disabled = false;
+        }
       } else {
         this.disabled = true;
         this.changeFocusStatus(ingredient.code, true, false);
@@ -448,6 +485,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         this.alertify.warning(`Invaild!`, true);
       }
     }
+
     this.changeReal(ingredient.code, args.target.value);
   }
   onKeyupReal(item, args) {
@@ -462,7 +500,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   }
   realClass(item) {
     const validClass = item.valid === true ? ' warning-focus' : '';
-    const className =  item.info + validClass;
+    const className = item.info + validClass;
     return className;
   }
 
@@ -511,6 +549,14 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     for (const i in this.ingredients) {
       if (this.ingredients[i].code === code) {
         this.ingredients[i].info = info;
+        break; // Stop this loop, we found it!
+      }
+    }
+  }
+  changeScanStatus(code, scanStatus) {
+    for (const i in this.ingredients) {
+      if (this.ingredients[i].code === code) {
+        this.ingredients[i].scanStatus = scanStatus;
         break; // Stop this loop, we found it!
       }
     }
@@ -575,6 +621,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     this.existGlue = true;
     this.show = false;
     this.showQRCode = false;
+    this.disabled = true;
     this.glue = [];
     this.qrCode = '';
     this.expiredTime = null;

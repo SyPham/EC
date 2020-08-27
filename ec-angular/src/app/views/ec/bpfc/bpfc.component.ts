@@ -1243,28 +1243,28 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     if (this.gridglue.getSelectedRowIndexes().length === 0) {
       this.alertify.warning('Please select a glue and make the fomula!', true);
     } else {
-      // const details = this.getLocalStore('details');
-      // const selectedrecords = this.gridglue.getSelectedRecords()[0] as IGlue;  // Get the selected records.
-      // selectedrecords.expiredTime = details.filter(item => item.position === 'A')[0].expiredTime;
-      // selectedrecords.kindID = selectedrecords.kindID === 0 ? null : selectedrecords.kindID;
-      // selectedrecords.partID = selectedrecords.partID === 0 ? null : selectedrecords.partID;
-      // selectedrecords.materialID = selectedrecords.materialID === 0 ? null : selectedrecords.materialID;
-      // this.selectedRow = this.gridglue.getSelectedRowIndexes();
-      // this.glueService.update(selectedrecords).subscribe(res => {
-      //   this.alertify.success('Updated successed!');
-      //   this.getAllGluesByBPFCID(this.BPFCID);
-      //   this.detailGlue = true;
-      //   this.modified = true;
-      //   this.getAllBPFC();
+      const details = this.getLocalStore('details');
+      const selectedrecords = this.gridglue.getSelectedRecords()[0] as IGlue;  // Get the selected records.
+      selectedrecords.expiredTime = details.filter(item => item.position === 'A')[0].expiredTime;
+      selectedrecords.kindID = selectedrecords.kindID === 0 ? null : selectedrecords.kindID;
+      selectedrecords.partID = selectedrecords.partID === 0 ? null : selectedrecords.partID;
+      selectedrecords.materialID = selectedrecords.materialID === 0 ? null : selectedrecords.materialID;
+      this.selectedRow = this.gridglue.getSelectedRowIndexes();
+      this.glueService.update(selectedrecords).subscribe(res => {
+        this.alertify.success('Updated successed!');
+        this.getAllGluesByBPFCID(this.BPFCID);
+        this.detailGlue = true;
+        this.modified = true;
+        this.getAllBPFC();
 
-      // });
-      // if (details.length > 0) {
-      //   for (const item of details) {
-      //     this.mapGlueIngredient(item);
-      //   }
-      //   this.alertify.success('Successfully!');
-      //   this.modified = true;
-      // }
+      });
+      if (details.length > 0) {
+        for (const item of details) {
+          this.mapGlueIngredient(item);
+        }
+        this.alertify.success('Successfully!');
+        this.modified = true;
+      }
     }
   }
   clearGlueForm() {

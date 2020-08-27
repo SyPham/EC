@@ -99,9 +99,20 @@ export class LoginComponent implements OnInit {
           res = res || {};
           localStorage.setItem('level', JSON.stringify(res));
           this.level = res.level;
-          const lang = localStorage.getItem('lang');
-          if (!lang) {
-            localStorage.setItem('lang', 'en');
+          if (this.level === WORKER) {
+            const currentLang = localStorage.getItem('lang');
+            if (currentLang) {
+              localStorage.setItem('lang', currentLang);
+            } else {
+              localStorage.setItem('lang', 'vi');
+            }
+          } else {
+            const currentLang = localStorage.getItem('lang');
+            if (currentLang) {
+              localStorage.setItem('lang', currentLang);
+            } else {
+              localStorage.setItem('lang', 'en');
+            }
           }
           this.checkRole();
         });
@@ -181,7 +192,7 @@ export class LoginComponent implements OnInit {
       } else {
         this.router.navigate(['/ec/establish/bpfc']);
       }
-    }  else if (this.level === WORKER) {
+    } else if (this.level === WORKER) {
       if (uri !== 'undefined') {
         if (this.checkRouteWorker(uri)) {
           this.router.navigate([uri]);

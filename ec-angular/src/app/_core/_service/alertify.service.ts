@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { resolve } from 'dns';
-declare let alertify: any;
 declare let Swal: any;
 @Injectable({
   providedIn: 'root'
 })
 export class AlertifyService {
   public $swal = Swal;
-  constructor() {}
+  constructor() { }
   private Toast = Swal.mixin({
     toast: true,
     position: 'bottom-end',
@@ -38,14 +37,6 @@ export class AlertifyService {
         );
       }
     });
-    // alertify
-    //   .confirm(message, (e) => {
-    //     if (e) {
-    //       okCallback();
-    //     } else {
-    //     }
-    //   })
-    //   .setHeader(title);
   }
   valid(title: string, message: string): Promise<boolean> {
     return new Promise((resolve, rejects) => {
@@ -67,9 +58,6 @@ export class AlertifyService {
   }
   validation(title: string, message: string) {
     Swal.fire(title, message, 'warning');
-    // alertify
-    //   .confirm(message)
-    //   .setHeader(title);
   }
 
   success(message: string, noToast?: boolean) {
@@ -79,7 +67,7 @@ export class AlertifyService {
         title: message
       });
     } else {
-    Swal.fire('Successfully!', message, 'success');
+      Swal.fire('Successfully!', message, 'success');
     }
   }
 
@@ -90,9 +78,8 @@ export class AlertifyService {
         title: message
       });
     } else {
-     Swal.fire('Error!', message, 'error');
+      Swal.fire('Error!', message, 'error');
     }
-    //alertify.error(message);
   }
 
   warning(message: string, noToast?: boolean) {
@@ -102,9 +89,8 @@ export class AlertifyService {
         title: message
       });
     } else {
-    Swal.fire('Warning!', message, 'warning');
+      Swal.fire('Warning!', message, 'warning');
     }
-    //alertify.warring(message);
   }
 
   message(message: string, noToast?: boolean) {
@@ -116,6 +102,5 @@ export class AlertifyService {
     } else {
       Swal.fire('Info!', message, 'info');
     }
-    //alertify.message(message);
   }
 }

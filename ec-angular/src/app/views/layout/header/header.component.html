@@ -49,7 +49,7 @@
               <a class="dropdown-item" [routerLink]="[ '/ec/establish/bpfc']">{{ 'BPFC' | translate }}</a>
           </div>
         </li>
-          <li class="nav-item dropdown" *ngIf="level === ADMIN || level === SUPERVISOR || level === STAFF">
+          <li class="nav-item dropdown" *ngIf="level === ADMIN || level === SUPERVISOR || level === STAFF || level === WORKER">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {{ 'MANAGE' | translate }}
             </a>

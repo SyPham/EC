@@ -56,6 +56,7 @@ namespace EC_API
                     .AllowCredentials());
             });
             services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<IoTContext>(options => options.UseMySQL(Configuration.GetConnectionString("IoTConnection")));
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
@@ -147,8 +148,10 @@ namespace EC_API
             services.AddScoped<IModelNoRepository, ModelNoRepository>();
             services.AddScoped<IBPFCEstablishRepository, BPFCEstablishRepository>();
             services.AddScoped<IMixingInfoRepository, MixingInfoRepository>();
+            services.AddScoped<IMixingRepository, MixingRepository>();
 
             //Services
+            services.AddScoped<IMixingService, MixingService>();
             services.AddScoped<IGlueIngredientService, GlueIngredientService>();
             services.AddScoped<IGlueService, GlueService>();
             services.AddScoped<IMakeGlueService, MakeGlueService>();

@@ -715,6 +715,105 @@ namespace EC_API._Services.Services
                                  && x.ArtProcessID == clone.ArtProcessID);
             return bpfc;
         }
+        public async Task<BPFCEstablish> CreateNewBPFCByCloneDto(CloneDto clone, int artProcessID)
+        {
+
+            var bpfcData = new BPFCEstablish();
+            bpfcData.ModelNameID = clone.ModelNameID;
+            bpfcData.ModelNoID = clone.ModelNOID;
+
+            bpfcData.ArticleNoID = clone.ArticleNOID;
+            bpfcData.ArtProcessID = artProcessID;
+
+            bpfcData.ApprovalStatus = false;
+            bpfcData.FinishedStatus = false;
+            bpfcData.CreatedBy = clone.CloneBy;
+            bpfcData.ApprovalBy = 0;
+            bpfcData.CreatedBy = clone.CloneBy;
+            bpfcData.UpdateTime = DateTime.Now;
+            bpfcData.BuildingDate = DateTime.Now;
+            bpfcData.CreatedDate = DateTime.Now;
+            _repoBPFC.Add(bpfcData);
+            await _repoBPFC.SaveAll();
+            return bpfcData;
+        }
+        public async Task CloneGlueByCloneDto(CloneDto clone, BPFCEstablish bpfc, BPFCEstablish bpfcClone)
+        {
+
+            var gluesData = new List<Glue>();
+            if (bpfcClone.Glues == null)
+            {
+                gluesData = bpfc.Glues.ToList();
+            }
+            else
+            {
+                var list2 = bpfcClone.Glues.Select(x => x.Name);
+                var list1 = bpfc.Glues.Select(x => x.Name);
+                var check = list1.Except(list2);
+                gluesData = bpfc.Glues.Where(x => check.Contains(x.Name)).ToList();
+            }
+            if (gluesData.Count == 0)
+                return;
+            foreach (var item in gluesData)
+            {
+                var glue = new Glue();
+                glue.Code = await this.GenatateGlueCode(item.Code);
+                glue.Name = item.Name;
+                glue.Consumption = item.Consumption;
+                glue.CreatedBy = clone.CloneBy;
+                glue.MaterialID = item.MaterialID;
+                glue.KindID = item.KindID;
+                glue.PartID = item.PartID;
+                glue.ExpiredTime = item.ExpiredTime;
+                glue.BPFCEstablishID = bpfcClone.ID;
+                _repoGlue.Add(glue);
+                await _repoGlue.SaveAll();
+
+                var glueIngredients = item.GlueIngredients.ToList();
+                var glueIngredientData = glueIngredients.Select(x => new GlueIngredient
+                {
+                    GlueID = glue.ID,
+                    IngredientID = x.IngredientID,
+                    Allow = x.Allow,
+                    Percentage = x.Percentage,
+                    CreatedDate = DateTime.Now.ToString("MMMM dd, yyyy HH:mm:ss tt"),
+                    Position = x.Position,
+                }).ToList();
+                _repoGlueIngredient.AddRange(glueIngredientData);
+                await _repoGlueIngredient.SaveAll();
+            }
+        }
+        public async Task<ArtProcess> FindArtProcessByCloneDto(CloneDto clone)
+        {
+            var artProcess = await _repoArtProcess.FindAll().FirstOrDefaultAsync(x => x.ArticleNoID == clone.ArticleNOID && x.ProcessID == clone.ArtProcessID);
+            if (artProcess != null)
+                return artProcess;
+            else
+            {
+                var artProcessData = new ArtProcess();
+                artProcessData.ArticleNoID = clone.ArticleNOID;
+                artProcessData.ProcessID = clone.ArtProcessID;
+                _repoArtProcess.Add(artProcessData);
+                await _repoGlueIngredient.SaveAll();
+                return artProcessData;
+            }
+        }
+        public async Task<BPFCEstablish> FindBPFCByCloneDto(CloneDto clone, ArtProcess artProcess)
+        {
+            var bpfcForClone = await _repoBPFC.FindAll()
+                                              .Include(x => x.ModelName)
+                                              .Include(x => x.ModelNo)
+                                              .Include(x => x.ArtProcess)
+                                              .Include(x => x.ArticleNo)
+                                              .Include(x => x.Glues)
+                                              .ThenInclude(x => x.GlueIngredients)
+                                              .Include(x => x.Plans)
+                                              .FirstOrDefaultAsync(x => x.ModelNameID == clone.ModelNameID
+                                                                                              && x.ModelNoID == clone.ModelNOID
+                                                                                              && x.ArticleNoID == clone.ArticleNOID
+                                                                                          && x.ArtProcessID == artProcess.ID);
+            return bpfcForClone;
+        }
         public async Task<object> CloneModelName(CloneDto clone)
         {
             try
@@ -731,84 +830,67 @@ namespace EC_API._Services.Services
                                         .Include(x => x.Glues).ThenInclude(x => x.GlueIngredients)
                                         .Include(x => x.Plans)
                                         .FirstOrDefaultAsync(x => x.ID == clone.BPFCID);
-
-                    var artProcessFirstAdd = _repoArtProcess.FindAll().FirstOrDefaultAsync(x => x.ArticleNoID == bpfc.ArticleNoID && x.ProcessID == clone.ArtProcessID);
                     if (bpfc == null)
                         return new
                         {
                             message = "The BPFC is invalid!",
                             status = false
                         };
-
-                    if(artProcessFirstAdd.Result != null)
+                    /// Case 1: 
+                    // IF keep model Name
+                    if (bpfc.ModelNameID == clone.ModelNameID)
                     {
-
-                        if(clone.ArtProcessID == artProcessFirstAdd.Result.ProcessID)
+                        /// Case 1.1: 
+                        // Change model NO
+                        if (bpfc.ModelNoID != clone.ModelNOID)
                         {
-                            clone.ArtProcessID = artProcessFirstAdd.Result.ArticleNoID;
-                            await CheckExistBPFC(clone);
-                            return new
+                            var artProcess = await FindArtProcessByCloneDto(clone);
+                            var bpfcForClone = await FindBPFCByCloneDto(clone, artProcess);
+                            // Not exists bpfc -> add new -> clone
+                            if (bpfcForClone == null)
                             {
-                                message = "The BPFC exists!",
-                                status = false
-                            };
+                                var bpfcClone = await CreateNewBPFCByCloneDto(clone, artProcess.ID);
+                                await CloneGlueByCloneDto(clone, bpfc, bpfcClone);
+                            }
+                            else
+                            {
+                                await CloneGlueByCloneDto(clone, bpfc, bpfcForClone);
+                            }
+                        }
+                        // IF keep model NO
+                        if (bpfc.ModelNoID == clone.ModelNOID)
+                        {
+                            var artProcess = await FindArtProcessByCloneDto(clone);
+                            var bpfcForClone = await FindBPFCByCloneDto(clone, artProcess);
+                            if (bpfcForClone == null)
+                            {
+                                var bpfcClone = await CreateNewBPFCByCloneDto(clone, artProcess.ID);
+                                await CloneGlueByCloneDto(clone, bpfc, bpfcClone);
+                            }
+                            else
+                            {
+                                await CloneGlueByCloneDto(clone, bpfc, bpfcForClone);
+                            }
                         }
                     }
-
-                    var artProcessData = new ArtProcess();
-                    artProcessData.ArticleNoID = clone.ArticleNOID;
-                    artProcessData.ProcessID = clone.ArtProcessID;
-                    _repoArtProcess.Add(artProcessData);
-                    await _repoArtProcess.SaveAll();
-
-                    var artProcessLastAdd = _repoArtProcess.FindAll().FirstOrDefaultAsync(x => x.ArticleNoID == bpfc.ArticleNoID && x.ProcessID == clone.ArtProcessID);
-
-                    var bpfcData = new BPFCEstablish();
-                    bpfcData.ModelNameID = clone.ModelNameID;
-                    bpfcData.ModelNoID = clone.ModelNOID;
-                    bpfcData.ArticleNoID = clone.ArticleNOID;
-                    bpfcData.ArtProcessID = artProcessLastAdd.Result.ID;
-
-                    bpfcData.ApprovalStatus = false;
-                    bpfcData.FinishedStatus = false;
-                    bpfcData.CreatedBy = clone.CloneBy;
-                    bpfcData.ApprovalBy = 0;
-                    bpfcData.CreatedBy = clone.CloneBy;
-                    bpfcData.UpdateTime = DateTime.Now;
-                    bpfcData.BuildingDate = DateTime.Now;
-                    bpfcData.CreatedDate = DateTime.Now;
-                    _repoBPFC.Add(bpfcData);
-                    await _repoBPFC.SaveAll();
-                    var gluesData = bpfc.Glues.ToList();
-                    foreach (var item in gluesData)
+                    /// Case 2: 
+                    // Change different ModelName
+                    if (bpfc.ModelNameID != clone.ModelNameID)
                     {
-                        var glue = new Glue();
-                        glue.Code = await this.GenatateGlueCode(item.Code);
-                        glue.Name = item.Name;
-                        glue.Consumption = item.Consumption;
-                        glue.CreatedBy = clone.CloneBy;
-                        glue.MaterialID = item.MaterialID;
-                        glue.KindID = item.KindID;
-                        glue.PartID = item.PartID;
-                        glue.ExpiredTime = item.ExpiredTime;
-                        glue.BPFCEstablishID = bpfcData.ID;
-                        _repoGlue.Add(glue);
-                        await _repoGlue.SaveAll();
-
-                        var glueIngredients = item.GlueIngredients.ToList();
-                        var glueIngredientData = glueIngredients.Select(x => new GlueIngredient
+                        var artProcess = await FindArtProcessByCloneDto(clone);
+                        // Check BPFC
+                        var bpfcForClone = await FindBPFCByCloneDto(clone, artProcess);
+                        // Not exists bpfc -> add new BPFC -> CloneGlueByCloneDto
+                        if (bpfcForClone == null)
                         {
-                            GlueID = glue.ID,
-                            IngredientID = x.IngredientID,
-                            Allow = x.Allow,
-                            Percentage = x.Percentage,
-                            CreatedDate = DateTime.Now.ToString("MMMM dd, yyyy HH:mm:ss tt"),
-                            Position = x.Position,
-                        }).ToList();
-                        _repoGlueIngredient.AddRange(glueIngredientData);
-                        await _repoGlueIngredient.SaveAll();
+                            var cloneBPFC = await CreateNewBPFCByCloneDto(clone, artProcess.ID);
+                            await CloneGlueByCloneDto(clone, bpfc, cloneBPFC);
+                        }
+                        else
+                        {
+                            await CloneGlueByCloneDto(clone, bpfc, bpfcForClone);
+                        }
                     }
-
                     scope.Complete();
                 }
                 return new

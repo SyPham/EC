@@ -78,10 +78,10 @@ export class MakeGlueComponent implements OnInit {
       },
     }
   };
-  public dataModalName: { [key: string]: Object }[] = [];
-  public dataModalNo: { [key: string]: Object }[] = [];
+  public dataModalName: { [key: string]: object }[] = [];
+  public dataModalNo: { [key: string]: object }[] = [];
   public queryString: string;
-  public fields2: Object = {
+  public fields2: object = {
     text: 'name', value: 'id', itemCreated: (e: any) => {
       highlightSearch(e.item, this.queryString, true, 'StartsWith');
     }
@@ -321,7 +321,6 @@ export class MakeGlueComponent implements OnInit {
       this.calculatorWeight(this.gramInput);
     }
     this.modalService.dismissAll();
-    console.log(this.modelNameid)
   }
 
   getAllModelName() {

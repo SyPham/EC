@@ -157,7 +157,6 @@ export class PlanComponent implements OnInit {
       this.modalPlan.workingHour = this.workHour;
       this.modalPlan.BPFCEstablishID = this.bpfcEdit;
       this.modalPlan.hourlyOutput = this.hourlyOutput;
-      this.modalPlan.dueDate = new Date();
       console.log(this.modalPlan);
       if (this.validForm()) {
         if (args.data.id > 0) {

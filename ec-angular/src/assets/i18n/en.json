@@ -52,6 +52,20 @@
     "MODEL_PLACEHOLDER": "Select Model Name - Model # - Article # - Process",
     "PROCESS_PLACEHOLDER": "Select Process",
     "ASY": "ASY",
-    "STF": "STF"
-   
+    "STF": "STF",
+    "STEP": "Step",
+    "GLUE_NAME": "Glue Name",
+    "EXPECTED": "Expected",
+    "REAL": "Real",
+    "FINISHED": "Finished",
+    "BACK": "Back",
+    "SCAN_QRCODE": "Scan QRCode",
+    "HISTORY": "History",
+    "MIXING": "Mixing",
+    "OPTION": "Option",
+    "COUNT": "Count",
+    "TOTAL_COMSUMPTION": "TotalComsumption",
+    "CHEMICAL": "Chemical",
+    "STANDARD": "Standard",
+    "NOTE": "*** Press Alt + Enter or click \"Finish\" button to complete the process! ***"
 }

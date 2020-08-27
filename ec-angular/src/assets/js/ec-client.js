@@ -17,6 +17,7 @@ function start() {
             console.log("UserDisconnected", conId);
 
         });
+       
         console.log("Signalr connected");
     }).catch(function (err) {
         setTimeout(() => start(), 5000);

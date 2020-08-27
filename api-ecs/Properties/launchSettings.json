@@ -33,5 +33,6 @@
       "publishAllPorts": true,
       "useSSL": true
     }
+    
   }
 }

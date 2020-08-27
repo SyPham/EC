@@ -15,3 +15,7 @@ body{margin-top:20px;}
     border-bottom:1px dashed #efefef;
     margin-bottom:25px;
 }
+.e-grid td.e-active {
+    background: #6597ce!important;
+    color: #000;
+}

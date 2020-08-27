@@ -1,28 +1,30 @@
-import { Directive, AfterViewInit, ElementRef, Input, OnChanges } from '@angular/core';
+import { Directive, AfterViewInit, ElementRef, Input, OnChanges, HostListener } from '@angular/core';
 
 @Directive({
   // tslint:disable-next-line:directive-selector
   selector: '[autofocus]'
 })
 export class AutofocusDirective implements AfterViewInit {
-  constructor(private host: ElementRef) { }
-  // @Input('autofocus') focusStatus: boolean;
-  ngAfterViewInit() {
-    setTimeout(() => {
+  @Input('autofocus') autofocusStatus: boolean;
+  @HostListener('focusout') onFocusout() {
+    setTimeout( () => {
       this.host.nativeElement.focus();
+      this.host.nativeElement.select();
     }, 0);
   }
-  // ngOnChanges(changes) {
-  //   if (changes.focusStatus) {
-  //     console.log('input changed', changes);
+  @HostListener('focus') onBlur() {
+    setTimeout( () => {
+      this.host.nativeElement.select();
+    }, 0);
+  }
 
-  //     if (changes.focusStatus.currentValue === false
-  //       || changes.focusStatus.currentValue === null
-  //       || changes.focusStatus.currentValue === undefined) {
-  //       this.host.nativeElement.blur();
-  //     }
-  //   } else {
-  //     this.host.nativeElement.focus();
-  //   }
-  // }
+  constructor(private host: ElementRef) { }
+  ngAfterViewInit() {
+    if (this.autofocusStatus === true) {
+      setTimeout(() => {
+        this.host.nativeElement.focus();
+        this.host.nativeElement.select();
+      }, 0);
+    }
+  }
 }
