@@ -35,6 +35,7 @@ namespace EC_API.Data
         public DbSet<MixingInfo> MixingInfos { get; set; }
         public DbSet<BuildingGlue> BuildingGlues { get; set; }
         public DbSet<IngredientInfo> IngredientsInfos { get; set; }
+        public DbSet<IngredientInfoReport> IngredientInfoReports { get; set; }
         public DbSet<BPFCHistory> BPFCHistories { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
