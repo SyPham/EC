@@ -22,6 +22,9 @@ export class PlanService {
   getAll() {
     return this.http.get<Plan[]>(this.baseUrl + 'Plan/GetAll', {});
   }
+  getAllPlanByDefaultRange() {
+    return this.http.get<Plan[]>(this.baseUrl + 'Plan/GetAllPlanByDefaultRange', {});
+  }
   getAllModalName() {
     return this.http.get<ModalName[]>(this.baseUrl + 'ModelName/GetAll', {});
   }
@@ -54,5 +57,11 @@ export class PlanService {
   }
   summary(buildingID) {
     return this.http.get(this.baseUrl + 'Plan/summary/' + buildingID);
+  }
+  dispatchGlue(obj) {
+    return this.http.post(this.baseUrl + 'Plan/DispatchGlue', obj);
+  }
+  clonePlan(obj) {
+    return this.http.post(this.baseUrl + 'Plan/ClonePlan', obj);
   }
 }

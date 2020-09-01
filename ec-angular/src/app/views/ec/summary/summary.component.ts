@@ -25,13 +25,11 @@ declare var Swal: any;
   styleUrls: ['./summary.component.css']
 })
 export class SummaryComponent implements OnInit, AfterViewInit {
-
   @ViewChild('scanQRCode') scanQRCodeElement: ElementRef;
   public displayTextMethod: DisplayTextModel = {
     visibility: false
   };
   @ViewChild('scanText', { static: false }) scanText: ElementRef;
-
   // make glue
   public ingredients: any;
   public show: boolean;
@@ -143,7 +141,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     this.getBuilding();
     this.existGlue = true;
     this.connection = signalr.CONNECTION_HUB;
-    if (signalr.CONNECTION_HUB.state) {
+    if (signalr.CONNECTION_HUB.state === 'Connected') {
       signalr.CONNECTION_HUB.on('summaryRecieve', (status) => {
         if (status === 'ok') { this.summary(); }
       });
@@ -151,6 +149,10 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   }
   public ngAfterViewInit(): void {
     this.screenHeight = screen.height - 200;
+    $('input.mixing').tooltip({
+      placement: 'right',
+      trigger: 'focus'
+    });
   }
   created(args) {
   }
@@ -166,7 +168,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     if (text === 'Supplier') {
       return 'SUPPLIER';
     }
-    if (text === 'TotalComsumption') {
+    if (text === 'TotalConsumption') {
       return 'TOTAL_COMSUMPTION';
     }
     return text;
@@ -181,10 +183,49 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     this.planService.summary(this.buildingID).subscribe((res: any) => {
       this.lineColumns = res.header;
       this.data = res.data;
-      this.linevalue = res.data.map(item => {
-        return Object.values(item);
-      });
+      this.linevalue = res.data;
+      // this.linevalue = res.data.map(item => {
+      //   return Object.values(item);
+      // });
     });
+  }
+  hasLineValue(value) {
+    const labels = ['Chemical', 'GlueID', 'Real', 'Standard ', 'Supplier', 'Count'];
+    for (const key in value) {
+      if (labels.includes(key)) {
+        return true;
+      }
+    }
+  }
+  hasRowspan(index) {
+      const labels = ['Chemical', 'Real', 'GlueID', 'Standard', 'Supplier', 'Count', 'TotalConsumption', 'Delivered'];
+      return labels.includes(this.lineColumns[index + 1].field);
+  }
+  hasValue(col, cell) {
+    if (col.field === Object.keys(cell).toString()) {
+      return true;
+    }
+    return false;
+  }
+  hasArray(value) {
+    if (value instanceof Array) {
+      return true;
+    }
+    return false;
+  }
+  getValueCell(cellObject) {
+    return Object.values(cellObject);
+  }
+  cells(values) {
+    delete values.rowCountInfo;
+    delete values.rowRealInfo;
+    return values;
+  }
+  getCellValue(values): any {
+    const res = Object.values(values).filter(item => {
+      return !this.hasArray(item);
+    });
+    return res.slice(1, res.length);
   }
 
   getBuilding() {
@@ -288,7 +329,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       // alert warning
       this.scanQRCode().then(res => {
         if (args !== item.code) {
-          this.alertify.warning(`Please scan the chemical ${item.position}`);
+          this.alertify.warning(`Please you should look for the chemical name "${item.name}"`);
           this.qrCode = '';
           this.errorScan();
         } else {
@@ -336,11 +377,10 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     });
   }
   mixingSection(data) {
-    this.glueName = data[2];
-    this.glueID = data[0];
+    this.glueName = data.Chemical;
+    this.glueID = data.GlueID;
     this.glue = data;
     this.scanStatus = true;
-    this.consumption = parseFloat(data[data.length - 3]);
     this.getGlueWithIngredientByGlueID(this.glueID);
   }
   calculatorIngredient(weight, percentage) {
@@ -391,6 +431,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       const expected = this.calculatorIngredient(weight, this.findIngredient(position)?.percentage);
       if (position === 'B') {
         this.B = expected;
+        console.log('changeExpectedRange', this.B, expected)
       }
       if (position === 'C') {
         this.C = expected;
@@ -398,10 +439,12 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       if (position === 'D') {
         this.D = expected;
       }
-      const allow = this.calculatorIngredient(expected, this.findIngredient(position)?.allow);
-      const min = Math.abs(this.toFixedIfNecessary(expected - allow, 3));
-      const max = Math.abs(this.toFixedIfNecessary(expected + allow, 3));
-      const expectedRange = `${min / 1000} - ${max / 1000} ( ${min}g - ${max}g )`;
+      const allow = this.calculatorIngredient(expected / 1000, this.findIngredient(position)?.allow);
+      const min = expected - allow;
+      const max = expected + allow;
+      const minRange = this.toFixedIfNecessary(min / 1000, 3);
+      const maxRange = this.toFixedIfNecessary(max / 1000, 3);
+      const expectedRange = `${minRange}kg - ${maxRange}kg ( ${this.toFixedIfNecessary(min, 3)}g - ${this.toFixedIfNecessary(max, 3)}g )`;
       if (allow === 0) {
         this.changeExpected(position, expected);
       } else {
@@ -418,8 +461,8 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         max = parseFloat(ingredient.expected);
     } else {
       const exp = ingredient.expected.split(' ( ')[0];
-      min = parseFloat(exp.split(' - ')[0]),
-        max = parseFloat(exp.split(' - ')[1]);
+      min = parseFloat(exp.split(' - ')[0].replace('kg', '')),
+      max = parseFloat(exp.split(' - ')[1].replace('kg', ''));
     }
     // if Chemical is A, focus in chemical B
     if (ingredient.position === 'A') {
@@ -448,7 +491,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         this.disabled = true;
         this.changeFocusStatus(ingredient.code, true, false);
         this.changeValidStatus(ingredient.code, true);
-        this.alertify.warning(`Invaild!`, true);
+        this.alertify.warning(`Invalid!`, true);
       }
     }
     // if Chemical is C, focus in chemical D
@@ -465,7 +508,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         this.disabled = true;
         this.changeFocusStatus(ingredient.code, true, false);
         this.changeValidStatus(ingredient.code, true);
-        this.alertify.warning(`Invaild!`, true);
+        this.alertify.warning(`Invalid!`, true);
       }
     }
     // if Chemical is D, focus in chemical E
@@ -482,7 +525,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         this.disabled = true;
         this.changeFocusStatus(ingredient.code, true, false);
         this.changeValidStatus(ingredient.code, true);
-        this.alertify.warning(`Invaild!`, true);
+        this.alertify.warning(`Invalid!`, true);
       }
     }
 
@@ -594,26 +637,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  openModal(ref, data) {
-    this.glueName = data[2];
-    this.glueID = data[0];
-    this.glue = data;
-    this.consumption = parseFloat(data[data.length - 3]);
-    this.modalService.open(ref).result.then((result) => {
-      this.pairOfShoeInput = undefined;
-      this.kilogramInput = undefined;
-      this.gramInput = undefined;
-      this.glueName = undefined;
-      this.glue = undefined;
-      this.makeGlue = undefined;
-    }, (reason) => {
-      this.pairOfShoeInput = undefined;
-      this.kilogramInput = undefined;
-      this.gramInput = undefined;
-      this.glueName = undefined;
-      this.glue = undefined;
-    });
-  }
 
   chartHovered($event) { }
   chartClicked($event) { }
@@ -660,6 +683,33 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     // }
   }
   pushHistory(data) {
-    this.router.navigate([`/ec/execution/todolist/history/${data[0]}`]);
+    this.router.navigate([`/ec/execution/todolist/history/${data.GlueID}`]);
+  }
+
+  blurTd(data) {
+    data.editable = false;
+    this.summary();
+  }
+  editDomain(data: any) {
+    data.editable = !data.editable;
+  }
+  dispatchGlue(args, data) {
+    if (args.key === 'Enter') {
+      const obj = {
+        glueID: data.glueID,
+        buildingID: data.lineID,
+        qty: args.target.value,
+        createdBy: Number(JSON.parse(localStorage.getItem('user')).User.ID)
+      };
+      // call api here
+      this.planService.dispatchGlue(obj)
+        .subscribe(res => {
+          if (res) {
+            this.alertify.success('Successfully!');
+            this.summary();
+          }
+        });
+    }
+
   }
 }

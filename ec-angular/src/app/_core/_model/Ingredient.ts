@@ -9,4 +9,6 @@ export interface IIngredient  {
     position: number;
     allow: number;
     expiredTime: number;
+    materialNO: string;
+    unit: string;
 }

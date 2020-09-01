@@ -1,5 +1,6 @@
 ﻿using EC_API.DTO;
 using EC_API.Helpers.Enum;
+using EC_API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,10 @@ namespace EC_API._Services.Interface
         Task<object> Release(int bpfcID, int userid);
         Task<object> Reject(int bpfcID, int userid);
         Task SendMailForPIC(string email);
-
+        Task<List<BPFCHistoryDto>> GetAllHistoryAsync();
+        Task<bool> Create(BPFCHistoryDto entity);
+        Task<bool> UpdateBPFCHistory(BPFCHistory entity);
+        Task<object> LoadBPFCHistory(int bpfcID);
         Task<List<BPFCStatusDto>> FilterByApprovedStatus();
         Task<List<BPFCStatusDto>> FilterByFinishedStatus();
         Task<List<BPFCStatusDto>> FilterByNotApprovedStatus();

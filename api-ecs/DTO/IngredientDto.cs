@@ -16,7 +16,10 @@ namespace EC_API.DTO
         public int SupplierID { get; set; }
         public string VOC { get; set; } = "0";
         public string Supplier { get; set; }
+        
         public string Position { get; set; }
+        public string MaterialNO { get; set; }
+        public string Unit { get; set; }
         public int ExpiredTime { get; set; }
         public DateTime ManufacturingDate { get; set; }
 

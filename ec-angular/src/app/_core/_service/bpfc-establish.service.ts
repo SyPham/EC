@@ -63,7 +63,7 @@ export class BPFCEstablishService {
   sendMailForPIC(email: string) {
     return this.http.get(this.baseUrl + 'BPFCEstablish/SendMailForPIC/' + email);
   }
- 
+
   filterByStatus(status) {
     return this.http.get(`${this.baseUrl}BPFCEstablish/GetAllBPFCRecord/${status}/${'%20'}/${'%20'}`);
   }
@@ -75,5 +75,16 @@ export class BPFCEstablishService {
   }
   updateSeason(entity) {
     return this.http.put(this.baseUrl + 'BPFCEstablish/UpdateSeason', entity);
+  }
+  AddHistoryBPFC(entity) {
+    return this.http.post(this.baseUrl + 'BPFCEstablish/AddBPFCHistory', entity);
+  }
+
+  LoadHistoryBPFC(id?: number) {
+    return this.http.get(this.baseUrl + `BPFCEstablish/LoadBPFCHistory/${id}` , {});
+  }
+
+  UpdateHistoryBPFC(entity) {
+    return this.http.put(this.baseUrl + 'BPFCEstablish/UpdateBPFCHistory' , entity);
   }
 }

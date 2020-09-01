@@ -37,6 +37,7 @@ import { AnyAaaaRecord } from 'dns';
 import { KindService } from 'src/app/_core/_service/kind.service';
 import { PartService } from 'src/app/_core/_service/part.service';
 import { MaterialService } from 'src/app/_core/_service/material.service';
+import { constants } from 'crypto';
 
 declare const $: any;
 const LEVEL_1 = 3;
@@ -96,7 +97,9 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     position: 0,
     allow: 0,
     voc: '0',
-    expiredTime: 0
+    expiredTime: 0,
+    materialNO: '',
+    unit: ''
   };
   Editpercentage = {
     glueID: 0,
@@ -389,7 +392,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     if (args.value === '') {
       // this.delete(this.glueid, data.id);
     } else {
-      let duplicatePositon = details.filter((obj => obj.position === args.value));
+      const duplicatePositon = details.filter((obj => obj.position === args.value));
       if (duplicatePositon.length > 0) {
         details = this.getLocalStore('details');
         this.alertify.warning('Duplicate position!', true);
@@ -405,7 +408,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
         if (flag.length !== 0) {
           // update localstore
           // Find index of specific object using findIndex method.
-          let objIndex = details.findIndex((obj => obj.ingredientName === data.name));
+          const objIndex = details.findIndex((obj => obj.ingredientName === data.name));
           details[objIndex].position = args.value;
           this.setLocalStore('details', details);
           this.glueIngredientDetail = this.getLocalStore('details');
@@ -588,8 +591,8 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
   }
   makeid(length) {
     let result = '';
-    let characters = '0123456789';
-    let charactersLength = characters.length;
+    const characters = '0123456789';
+    const charactersLength = characters.length;
     for (let i = 0; i < length; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
@@ -649,9 +652,9 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
       this.ingredients1 = res.list1;
       this.ingredients2 = res.list2;
       if (id === 0) {
-        let details = this.getLocalStore('details');
+        const details = this.getLocalStore('details');
         this.ingredients1 = details.map(item => {
-          let ingredient: IIngredient = {
+          const ingredient: IIngredient = {
             id: item.ingredientID,
             name: item.ingredientName,
             code: '',
@@ -661,7 +664,9 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
             allow: item.allow,
             position: item.position,
             expiredTime: item.expiredTime,
-            voc: item.voc
+            voc: item.voc,
+            materialNO: '',
+            unit: ''
           };
           return ingredient;
         });
@@ -675,9 +680,9 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     this.ingredientService.sortBySup(this.glueid, this.subID).subscribe((res: any) => {
       this.ingredients1 = res.list1;
       this.ingredients2 = res.list2;
-      let details = this.getLocalStore('details');
+      const details = this.getLocalStore('details');
       for (const item of details) {
-        let index = this.ingredients1.findIndex((obj => obj.name === item.ingredientName && obj.id === item.ingredientID));
+        const index = this.ingredients1.findIndex((obj => obj.name === item.ingredientName && obj.id === item.ingredientID));
         if (index !== -1) {
           this.ingredients1[index].position = item.position;
           this.ingredients1[index].percentage = item.percentage;
@@ -685,7 +690,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
         }
       }
       for (const item of details) {
-        let index2 = this.ingredients2.findIndex((obj => obj.name === item.ingredientName && obj.id === item.ingredientID));
+        const index2 = this.ingredients2.findIndex((obj => obj.name === item.ingredientName && obj.id === item.ingredientID));
         if (index2 !== -1) {
           this.ingredients2[index2].position = item.position;
           this.ingredients2[index2].percentage = item.percentage;
@@ -713,12 +718,12 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
   }
   setLocalStore(key: string, value: any) {
     localStorage.removeItem(key);
-    let result = JSON.stringify(value);
+    const result = JSON.stringify(value);
     localStorage.setItem(key, result);
   }
   getLocalStore(key: string) {
-    let data = JSON.parse(localStorage.getItem(key)) || [];
-    let details = data.sort(this.dynamicSort('position'));
+    const data = JSON.parse(localStorage.getItem(key)) || [];
+    const details = data.sort(this.dynamicSort('position'));
     return details;
   }
   removeLocalStore(key: string) {
@@ -742,12 +747,12 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
   }
   renderchemical(): any[] {
     this.glueIngredientDetail = this.glueIngredientDetail || [];
-    let details = this.glueIngredientDetail.sort(this.dynamicSort('position'));
+    const details = this.glueIngredientDetail.sort(this.dynamicSort('position'));
     return details;
   }
   makeFormula() {
-    let details = this.getLocalStore('details');
-    let glueIngredient = details.filter(item => item.position === 'A') || [];
+    const details = this.getLocalStore('details');
+    const glueIngredient = details.filter(item => item.position === 'A') || [];
     this.nameGlue = glueIngredient[0]?.ingredientName || '';
     this.A = glueIngredient[0].ingredientName;
     this.glueIngredientDetail = this.renderchemical();
@@ -837,12 +842,12 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
         this.E = this.glueIngredientDetail[4].percentage + '%' + this.glueIngredientDetail[4].ingredientName;
       }
       if (this.glueIngredientDetail.length > 0) {
-        let list: any = [];
+        const list: any = [];
         this.percentageCount = this.glueIngredientDetail.map((item) => {
           return item.percentage;
         });
-        let aaa = this.percentageCount;
-        let str = this.percentageCount.join('+');
+        const aaa = this.percentageCount;
+        const str = this.percentageCount.join('+');
         this.percentageCountEdit = this.glueIngredientDetail.map((item) => {
           return item;
         });
@@ -864,21 +869,21 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     }
   }
   checkTotalPercentage(percentageEdit, arrPercentageEdit): number {
-    let temp = arrPercentageEdit.map(item => {
+    const temp = arrPercentageEdit.map(item => {
       if (item.ingredientID !== percentageEdit.id) {
         return item.percentage;
       } else return 0;
     });
-    let numbers: any = temp;
-    let length = numbers.push(percentageEdit.percentage);
-    let sum = numbers.reduce((acc, cur) => acc + cur, 0);
+    const numbers: any = temp;
+    const length = numbers.push(percentageEdit.percentage);
+    const sum = numbers.reduce((acc, cur) => acc + cur, 0);
     return sum;
   }
 
   updateChemicalList() {
-    let details = this.getLocalStore('details');
+    const details = this.getLocalStore('details');
     for (const item of details) {
-      let index = this.ingredients1.findIndex((obj => obj.name === item.ingredientName && obj.id === item.ingredientID));
+      const index = this.ingredients1.findIndex((obj => obj.name === item.ingredientName && obj.id === item.ingredientID));
       if (index !== -1) {
         this.ingredients1[index].position = item.position;
         this.ingredients1[index].percentage = item.percentage;
@@ -886,7 +891,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
       }
     }
     for (const item of details) {
-      let index2 = this.ingredients2.findIndex((obj => obj.name === item.ingredientName && obj.id === item.ingredientID));
+      const index2 = this.ingredients2.findIndex((obj => obj.name === item.ingredientName && obj.id === item.ingredientID));
       if (index2 !== -1) {
         this.ingredients2[index2].position = item.position;
         this.ingredients2[index2].percentage = item.percentage;
@@ -920,8 +925,8 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
       if (percentageChanged) {
         // update lai percentage
         this.modified = false;
-        let details = this.getLocalStore('details');
-        let objIndex = details.findIndex((obj => obj.ingredientName === args.data.name && obj.ingredientID === args.data.id));
+        const details = this.getLocalStore('details');
+        const objIndex = details.findIndex((obj => obj.ingredientName === args.data.name && obj.ingredientID === args.data.id));
         details[objIndex].percentage = args.data.percentage;
         this.setLocalStore('details', details);
         // this.glueIngredientDetail = this.getLocalStore('details');
@@ -930,8 +935,8 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
 
       if (AllowChanged) {
         // update lai allow
-        let details = this.getLocalStore('details');
-        let objIndex = details.findIndex((obj => obj.ingredientName === args.data.name && obj.ingredientID === args.data.id));
+        const details = this.getLocalStore('details');
+        const objIndex = details.findIndex((obj => obj.ingredientName === args.data.name && obj.ingredientID === args.data.id));
         details[objIndex].allow = args.data.allow;
         this.setLocalStore('details', details);
         this.modified = false;
@@ -941,7 +946,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     }
     if (args.requestType === 'delete') {
       this.ingredientService.delete(this.ingridientID).subscribe(() => {
-        let details = this.getLocalStore('details').filter(item => item.ingredientID !== this.ingridientID);
+        const details = this.getLocalStore('details').filter(item => item.ingredientID !== this.ingridientID);
         this.setLocalStore('details', details);
         this.glueIngredientDetail = details;
         this.getIngredients();
@@ -1003,7 +1008,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
   rowSelected(args: any) {
     console.log('row Selected: ', args);
     // console.log('modified: ', this.modified);
-    let data = args.data[0] || args.data;
+    const data = args.data[0] || args.data;
     this.selIndex = [args.rowIndex];
     if (!args.isInteracted && args.previousRowIndex) {
       this.selIndex = [args.previousRowIndex];

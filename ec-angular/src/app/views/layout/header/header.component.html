@@ -66,6 +66,7 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" [routerLink]="[ '/ec/execution/todolist']">{{ 'TODOLIST' | translate }}</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/setting/ingredient/scanQrcode']">WMS</a>
             <a class="dropdown-item" [routerLink]="[ '/ec/execution/addition']">{{ 'ADDITION' | translate }}</a>
             <!-- <a class="dropdown-item" [routerLink]="[ '/ec/line']">Addition</a> -->
           </div>
@@ -76,7 +77,7 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" [routerLink]="[ '/ec/report/established-record']" >{{ 'ESTABLISHED_RECORD' | translate }}</a>
-          <a class="dropdown-item" onclick="alert('This function will be coming soon')" >{{ 'CONSUMPTION' | translate }}</a>
+          <a class="dropdown-item" onclick="alert('This function will be coming soon')" >{{ 'CONSUMPTION_LABEL' | translate }}</a>
         </div>
       </li>
       </ul>

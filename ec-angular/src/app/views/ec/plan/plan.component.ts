@@ -4,7 +4,7 @@ import { GlueIngredientService } from './../../../_core/_service/glue-ingredient
 import { LineService } from './../../../_core/_service/line.service';
 import { PlanService } from './../../../_core/_service/plan.service';
 import { Plan } from './../../../_core/_model/plan';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { AlertifyService } from 'src/app/_core/_service/alertify.service';
 import { PageSettingsModel, GridComponent, CellEditArgs } from '@syncfusion/ej2-angular-grids';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -25,13 +25,21 @@ import { BPFCEstablishService } from 'src/app/_core/_service/bpfc-establish.serv
   ]
 })
 export class PlanComponent implements OnInit {
+  @ViewChild('cloneModal') public cloneModal: TemplateRef<any>;
   @ViewChild('planForm')
   public orderForm: FormGroup;
   public pageSettings: PageSettingsModel;
-  public toolbarOptions = ['Add', 'Save', 'Cancel', 'Delete', 'Search'];
+  public toolbarOptions = ['Add', 'Save', 'Cancel', 'Delete', 'Search',
+    { text: 'Clone', tooltipText: 'Copy', prefixIcon: 'fa fa-copy', id: 'Clone' }
+  ];
   public editSettings: object;
+  bpfcID: number;
+  public bpfcData: object;
+  public plansSelected: any;
+  public date = new Date();
   public toolbar: string[];
   public editparams: object;
+  @ViewChild('grid')
   public grid: GridComponent;
   dueDate: any;
   modalReference: NgbModalRef;
@@ -84,10 +92,10 @@ export class PlanComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.pageSettings = { pageSize: 6 };
+    this.pageSettings = { pageSize: 15 };
     this.editparams = { params: { popupHeight: '300px' } };
     this.editSettings = { showDeleteConfirmDialog: false, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
-    this.toolbar = ['Add', 'Delete', 'Search'];
+    this.toolbar = ['Add', 'Delete', 'Search', 'Copy'];
     this.getAll();
     this.getAllBPFC();
     this.getAllModelName();
@@ -131,26 +139,36 @@ export class PlanComponent implements OnInit {
   onChangeDueDateEdit(args) {
     this.dueDate = (args.value as Date).toDateString();
   }
+  onChangeDueDateClone(args) {
+    console.log('onChangeDueDateClone', (args.value as Date));
+    this.date = (args.value as Date);
+    this.plansSelected.map(item => {
+      item.dueDate = (args.value as Date);
+    });
+  }
   onChangeBPFCEdit(args) {
     this.bpfcEdit = args.itemData.id;
   }
 
   actionComplete(args) {
     if (args.requestType === 'beginEdit' || args.requestType === 'edit') {
-      (args.form.elements.namedItem('id') as HTMLInputElement).disabled = true;
+      // (args.form.elements.namedItem('id') as HTMLInputElement).disabled = true;
 
     }
   }
 
   actionBegin(args) {
     console.log('actionBegin', args);
-    if (args.requestType === 'beginEdit' || args.requestType === 'edit') {
+    if (args.action === 'edit') {
       // args.cancel = true;
+      // this.hourlyOutput = args.data.hourlyOutput;
+      // this.workHour = args.data.workingHour;
+
     }
     if (args.requestType === 'cancel') {
       this.ClearForm();
     }
-    if (args.requestType === 'save') {
+    if (args.requestType === 'save' && args.action === 'edit') {
       this.modalPlan.id = args.data.id || 0;
       this.modalPlan.buildingID = this.buildingNameEdit;
       this.modalPlan.dueDate = this.dueDate;
@@ -191,10 +209,13 @@ export class PlanComponent implements OnInit {
     return array.every( item => item > 0);
   }
   onChangeWorkingHour(args) {
-    this.workHour = args.target.value;
+    console.log('onChangeWorkingHour', args);
+    this.workHour = args;
   }
   onChangeHourlyOutput(args) {
-    this.hourlyOutput = args.target.value;
+    console.log('onChangeWorkingHour', args);
+
+    this.hourlyOutput = args;
   }
   rowSelected(args) {
   }
@@ -214,7 +235,7 @@ export class PlanComponent implements OnInit {
   }
 
   getAll() {
-    this.planService.getAll().subscribe((res: any) => {
+    this.planService.getAllPlanByDefaultRange().subscribe((res: any) => {
       this.data = res.map( item => {
         return {
           id: item.id,
@@ -224,11 +245,12 @@ export class PlanComponent implements OnInit {
           hourlyOutput: item.hourlyOutput,
           buildingName: item.buildingName,
           buildingID: item.buildingID,
-          BPFCEstablishID: item.BPFCEstablishID
+          bpfcEstablishID: item.bpfcEstablishID
         };
       });
     });
   }
+
   delete(id) {
     this.alertify.confirm('Delete Plan', 'Are you sure you want to delete this Plan "' + id + '" ?', () => {
       this.planService.delete(id).subscribe(() => {
@@ -288,6 +310,38 @@ export class PlanComponent implements OnInit {
           name: item.processID === 1 ? 'ASY' : 'STF'
         };
       });
+    });
+  }
+  openModal(ref) {
+    const selectedRecords = this.grid.getSelectedRecords();
+    if (selectedRecords.length !== 0) {
+      this.plansSelected = selectedRecords.map((item: any) => {
+        return {
+          id: 0,
+          bpfcEstablishID: item.bpfcEstablishID,
+          workingHour: item.workingHour,
+          hourlyOutput: item.hourlyOutput,
+          dueDate: item.dueDate,
+          buildingID: item.buildingID
+        };
+      });
+      this.modalReference = this.modalService.open(ref);
+    } else {
+      this.alertify.warning('Please select the plan');
+    }
+  }
+  toolbarClick(args: any): void {
+    // console.log(args.item.text);
+    switch (args.item.text) {
+      case 'Clone':
+        this.openModal(this.cloneModal);
+        break;
+    }
+  }
+  onClickClone() {
+    console.log('Clone Plan', this.plansSelected);
+    this.planService.clonePlan(this.plansSelected).subscribe((res: any) => {
+      this.alertify.success('Successfully!');
     });
   }
   // End API

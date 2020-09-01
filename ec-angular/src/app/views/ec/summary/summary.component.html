@@ -1,75 +1,97 @@
 <div class="card">
   <div class="card-header">
     <h3>{{ 'TODOLIST' | translate }}</h3>
-
   </div>
-  <div class="card-body">
-    <div class="row" *ngIf="existGlue">
-      <div class="col-md-12">
-        <table class="table table-bordered">
-          <thead>
+  <div class="row" *ngIf="existGlue">
+    <div class="col-md-12">
+      <div class="card-body" style="padding: 0">
+        <table class="table table-bordered table-sm table-responsive" id='todolist'>
+          <thead class="thead-dark">
             <tr>
               <ng-container *ngFor="let item of lineColumns; let i = index">
-                <th class="text-center" colspan="2" *ngIf="item.field === 'TotalComsumption'">{{ labelLang(item.field) | translate }}</th>
-                <th class="text-center" style="vertical-align: middle;" rowspan="2"
-                  *ngIf="item.field !== 'TotalComsumption'">{{ labelLang(item.field) | translate }}</th>
+                <th class="text-center" colspan="2" *ngIf="item.field === 'TotalConsumption'">
+                  {{ labelLang(item.field) | translate }}</th>
+                <th class="my-align" rowspan="2"
+                  *ngIf="item.field !== 'GlueID' && item.field !== 'TotalConsumption' && item.field !== 'Standard' && item.field !== 'Real' && item.field !== 'Count'">
+                  {{ labelLang(item.field) | translate }}</th>
               </ng-container>
-              <th style="vertical-align: middle;" class="text-center" rowspan="2">{{ 'COUNT' | translate }}</th>
+              <th class="my-align" rowspan="2">{{ 'COUNT' | translate }}</th>
               <th style="vertical-align: middle;" class="text-center" rowspan="2">{{ 'OPTION' | translate }}</th>
             </tr>
             <tr>
-              <th>{{ 'STANDARD' | translate }}</th>
-              <th>{{ 'REAL' | translate }}</th>
+              <th class="my-align">{{ 'STANDARD' | translate }}</th>
+              <th class="my-align">{{ 'ACTUAL_TODOLIST' | translate }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let values of linevalue; let i = index">
-              <td class="text-center" *ngFor="let value of values">{{value}}</td>
-              <td>
-                <div class="btn-group">
-                  <button type="button" (click)="mixingSection(values)"
-                    class="btn btn-success btn-sm mr-2">{{ 'MIXING' | translate }}</button>
-                  <button type="button" (click)="pushHistory(values)" class="btn btn-sm btn-info">{{ 'HISTORY' | translate }}</button>
-                </div>
-              </td>
-
-            </tr>
+          <tbody>
+            <ng-container *ngFor="let values of linevalue">
+              <!-- value -->
+              <tr>
+                <ng-container *ngFor="let value of getCellValue(values); let i = index">
+                  <td rowspan=3 class="my-align" *ngIf="hasRowspan(i); else elseBlock">
+                    {{value == 0 || value === '0kg' ? 0 : value}}
+                  </td>
+                  <ng-template #elseBlock>
+                    <td class="my-align">
+                      {{value == 0 || value === '0kg' ? 0 : value}}
+                    </td>
+                  </ng-template>
+                </ng-container>
+                <td rowspan=3 class="my-align">
+                  <div class="btn-group">
+                    <button type="button" (click)="mixingSection(values)"
+                      class="btn btn-success btn-sm mr-2">{{ 'MIXING' | translate }}</button>
+                    <button type="button" onclick="alert('This function will be coming soon')"
+                      class="btn btn-warning btn-sm mr-2">{{ 'STIR' | translate }}</button>
+                    <button type="button" (click)="pushHistory(values)"
+                      class="btn btn-sm btn-info">{{ 'HISTORY' | translate }}</button>
+                  </div>
+                </td>
+              </tr>
+              <!-- count -->
+              <tr>
+                <td class="my-align" *ngFor="let value of getValueCell(values.rowCountInfo)">
+                  {{value.count}}
+                </td>
+              </tr>
+                <!-- actual -->
+              <tr>
+                <td class="my-align" (click)='editDomain(value)'
+                  *ngFor="let value of getValueCell(values.rowRealInfo); let i = index">
+                  <input type="text" *ngIf="!value.editable"
+                    [value]="value.value == 0 || value.value === '0kg' ? 0 : value.value + 'kg'"
+                    class="form-control my-align summaryhide">
+                  <input type="text" (blur)='blurTd(value)' *ngIf="value.editable" autofocustext
+                    (keypress)='dispatchGlue($event, value)' [(ngModel)]="value.value" style="pointer-events: initial"
+                    [value]="value.value" class="form-control my-align summary">
+                </td>
+              </tr>
+            </ng-container>
           </tbody>
         </table>
       </div>
     </div>
-
-    <div class="row" *ngIf="show">
+  </div>
+  <div class="card-body" *ngIf="show">
+    <div class="row">
       <div class="col-md-12 my-2">
         <h3 class="text-center text-danger">{{ 'GLUE_NAME' | translate }}: {{makeGlue.name}} </h3>
 
       </div>
       <div class="col-md-4"></div>
       <div class="col-md-4">
-        <!-- <input #scanText id='scanText' autoselect *ngIf="scanStatus; else scanStatusBlock" [(ngModel)]="qrCode" (ngModelChange)='onChangeScanQRCode($event)' name="scanQRCode" autofocus class="form-control form-control-lg" type="text"  />            
-        <ng-template #scanStatusBlock>
-          <input #scanText id='scanText' autoselect [(ngModel)]="qrCode"  (ngModelChange)='onChangeScanQRCode($event)' name="scanQRCode" class="form-control form-control-lg" type="text"  />            
-        </ng-template> -->
       </div>
 
     </div>
-
-    <div class="row" *ngIf="show">
-
-      <!-- <div class="col-md-4">
-        <div class="chart-wrapper">
-          <canvas baseChart class="chart" [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType"
-            (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)" [options]="pieChartOptions"
-            [plugins]="pieChartPlugins"></canvas>
-        </div>
-      </div> -->
+    <div class="row">
       <div class="col-md-12">
         <div class="row">
-         
+
           <div class="col-md-2 col-xl-2 text-center">
             <div class="row">
               <div class="col-md-2">
-              <label class="font-weight-bold" for="">{{ 'STEP' | translate }}</label>
+                <label class="font-weight-bold" for="">{{ 'STEP' | translate }}</label>
               </div>
               <div class="col-md-10">
                 <label class="font-weight-bold" for="">{{ 'SCAN_QRCODE' | translate }}</label>
@@ -83,16 +105,16 @@
             <label class="font-weight-bold" for="">{{ 'EXPECTED' | translate }}</label>
           </div>
           <div class="col-md-2 col-xl-2 text-center">
-            <label class="font-weight-bold" for="">{{ 'REAL' | translate }}</label>
+            <label class="font-weight-bold" for="">{{ 'ACTUAL_TODOLIST' | translate }}</label>
           </div>
         </div>
 
         <ng-container *ngFor="let item of ingredients ;let i=index">
           <div class="row">
             <!-- <div class="col-md-1 col-xl-1 text-center">
-              <img *ngIf="showArrow(item)" src="../../../../assets/img/gif/arrow.gif" style="width: 30px;height: 30px;"
-                alt="">
-            </div> -->
+                  <img *ngIf="showArrow(item)" src="../../../../assets/img/gif/arrow.gif" style="width: 30px;height: 30px;"
+                    alt="">
+                </div> -->
             <div class="col-md-2 col-xl-2">
               <div class="row">
                 <div class="col-xl-2">
@@ -101,59 +123,46 @@
                   </div>
                 </div>
                 <div class="col-xl-10">
-                  <input *ngIf="item.scanStatus; else scanBlock" class="form-control form-control-lg" [autofocus]='item.scanStatus'
-                    autoselect [name]="item.code" [(ngModel)]="item.scanCode" [class]="item.info" [ngClass]="lockClass(item)"
+                  <input *ngIf="item.scanStatus; else scanBlock" class="form-control form-control-lg"
+                    [autofocus]='item.scanStatus' autoselect [name]="item.code" [(ngModel)]="item.scanCode"
+                    [class]="item.info" [ngClass]="lockClass(item)"
                     (ngModelChange)='onNgModelChangeScanQRCode($event, item)' type="text">
                   <ng-template #scanBlock>
-                    <input class="form-control form-control-lg" [(ngModel)]="item.scanCode" [name]="item.code" [class]="item.info"
-                      [ngClass]="lockClass(item)" (ngModelChange)='onNgModelChangeScanQRCode($event, item)' type="text">
+                    <input class="form-control form-control-lg" [(ngModel)]="item.scanCode" [name]="item.code"
+                      [class]="item.info" [ngClass]="lockClass(item)"
+                      (ngModelChange)='onNgModelChangeScanQRCode($event, item)' type="text">
                   </ng-template>
                 </div>
               </div>
-             
+
             </div>
             <div class="form-group col-md-4 col-xl-4">
-              <input [class]="item.info" class="form-control form-control-lg lock" [value]="item.name + ' ( ' + item.percentage + '% )'"
-                type="text">
+              <input [class]="item.info" class="form-control form-control-lg lock"
+                [value]="item.name + ' ( ' + item.percentage + '% )'" type="text">
             </div>
             <div class="form-group col-md-4 col-xl-4">
-              <input *ngIf="item.focusExpected; else expectedBlock" 
-                      class="form-control form-control-lg" 
-                      [value]='item.expected'
-                      [autofocus]='item.focusExpected'
-                      [class]="item.info" 
-                      (keyup)='onKeyupExpected(item, $event)' 
-                      type="text">
+              <input *ngIf="item.focusExpected; else expectedBlock" class="form-control form-control-lg"
+                [value]='item.expected' [autofocus]='item.focusExpected' [class]="item.info"
+                (keyup)='onKeyupExpected(item, $event)' type="text">
               <ng-template #expectedBlock>
-                <input class="form-control form-control-lg lock" 
-                      [value]='item.expected' 
-                      [class]="item.info"
-                      (keyup)='onKeyupExpected(item, $event)' 
-                      type="text">
+                <input class="form-control form-control-lg lock" [value]='item.expected' [class]="item.info"
+                  (keyup)='onKeyupExpected(item, $event)' type="text">
               </ng-template>
             </div>
             <div class="form-group col-md-2 col-xl-2">
-              <input class="form-control form-control-lg"
-                     *ngIf="item.focusReal; else realElse" 
-                     [value]='item.real' 
-                     [id]='item.position'
-                     [class]="realClass(item)" 
-                     [autofocus]='item.focusReal' 
-                     (keyup)='onKeyupReal(item, $event)' 
-                    type="text">
+              <input class="form-control form-control-lg mixing" data-toggle="tooltip" title="tooltip on second input!"
+                *ngIf="item.focusReal; else realElse" [value]='item.real' [id]='item.position' [class]="realClass(item)"
+                [autofocus]='item.focusReal' (keyup)='onKeyupReal(item, $event)' type="text">
               <ng-template #realElse>
-                <input class="form-control form-control-lg lock" 
-                       [value]='item.real' 
-                       [id]='item.position' 
-                       [class]="realClass(item)"
-                       (keyup)='onKeyupReal(item, $event)' 
-                       type="text">
+                <input class="form-control form-control-lg lock mixing" data-toggle="tooltip"
+                  title="tooltip on second input!" [value]='item.real' [id]='item.position' [class]="realClass(item)"
+                  (keyup)='onKeyupReal(item, $event)' type="text">
               </ng-template>
             </div>
             <!-- <div class="col-md-1 text-center">
-              <img *ngIf="check(item)" src="../../../../assets/img/gif/check.jpg" style="width: 30px;height: 30px;" alt="">
-              <img *ngIf="cancel" src="../../../../assets/img/gif/x.png" style="width: 30px;height: 30px;" alt="">
-            </div> -->
+                  <img *ngIf="check(item)" src="../../../../assets/img/gif/check.jpg" style="width: 30px;height: 30px;" alt="">
+                  <img *ngIf="cancel" src="../../../../assets/img/gif/x.png" style="width: 30px;height: 30px;" alt="">
+                </div> -->
           </div>
         </ng-container>
 
@@ -167,7 +176,10 @@
         <p class="text-center my-2 text-danger" *ngIf="!disabled">{{ 'NOTE' | translate }}</p>
       </div>
     </div>
-    <div class="row" *ngIf="showQRCode">
+  </div>
+
+  <div class="card-body" *ngIf="showQRCode">
+    <div class="row">
       <div class="col-md-4"></div>
       <div class="col-md-4 text-center">
         <button type="button" (click)="back()" class="btn btn-primary ml-2"><i class="fa fa-arrow-circle-left"></i>

@@ -1,6 +1,14 @@
 /* input:focus{
     background-color: rgb(252, 248, 54);
   } */
+  #todolist th:nth-child(1), #delegateTable tr td:nth-child(1){
+  /* display: none; */
+}
+   .my-align{
+    vertical-align: middle!important;
+    text-align: center!important;
+  }
+
   input.error-scan {
     width: 100%;
     padding: 12px 20px;
@@ -57,3 +65,15 @@ input {
     border-radius: .3rem;
  }
 } */
+input.summaryhide {
+  border:none !important;
+  padding: 0!important;
+}
+input.summary {
+  border:none !important;
+  padding: 0!important;
+}
+input.summary:focus {
+  border-bottom: 3px solid #dc3545 !important;
+  border-radius: 0;
+}

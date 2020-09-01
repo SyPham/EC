@@ -58,7 +58,7 @@ namespace EC_API._Services.Services
         public async Task<PagedList<IngredientDto>> GetIngredientsWithPaginations(PaginationParams param, int glueid)
         {
             var glueIngredient = _repoGlueIngredient.GetAll();
-            var lists = _repoIngredient.FindAll().ProjectTo<IngredientDto>(_configMapper).OrderByDescending(x => x.ID).Select(x => new IngredientDto
+            var lists = _repoIngredient.FindAll().Where(x => x.isShow == true).ProjectTo<IngredientDto>(_configMapper).OrderByDescending(x => x.ID).Select(x => new IngredientDto
             {
                 ID = x.ID,
                 Name = x.Name,
@@ -75,7 +75,7 @@ namespace EC_API._Services.Services
         {
             var glueIngredient = _repoGlueIngredient.GetAll();
             var supplier = _repoSup.GetAll();
-            var lists = _repoIngredient.FindAll();
+            var lists = _repoIngredient.FindAll().Where(x => x.isShow == true);
             if (subID != 0)
             {
                 lists = lists.Where(x => x.SupplierID == subID).AsQueryable();
@@ -113,7 +113,7 @@ namespace EC_API._Services.Services
         {
             var glueIngredient = _repoGlueIngredient.GetAll();
             var supplier = _repoSup.GetAll();
-            var lists = _repoIngredient.FindAll();
+            var lists = _repoIngredient.FindAll().Where(x => x.isShow == true);
             //if (subID != 0)
             //{
             //    lists = lists.Where(x => x.SupplierID == subID).AsQueryable();
@@ -170,7 +170,7 @@ namespace EC_API._Services.Services
         {
             var glueIngredient = (from a in _repoGlueIngredient.FindAll()
                                   join b in _repoGlue.FindAll() on a.GlueID equals b.ID
-                                  join c in _repoIngredient.FindAll() on a.IngredientID equals c.ID
+                                  join c in _repoIngredient.FindAll().Where(x => x.isShow == true) on a.IngredientID equals c.ID
                                   where a.GlueID == glueid
                                   select new GlueIngredientDetailDto
                                   {

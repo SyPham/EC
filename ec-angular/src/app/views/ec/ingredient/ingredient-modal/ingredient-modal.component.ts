@@ -21,7 +21,9 @@ export class IngredientModalComponent implements OnInit {
     position: 0,
     allow: 0,
     voc: '0',
-    expiredTime: 0
+    expiredTime: 0,
+    materialNO: '',
+    unit: ''
   };
   supplier: any [] = [];
   public fieldsGlue: object = { text: 'name', value: 'id' };

@@ -3,7 +3,7 @@
     <h3 class="title">
       Ingredient List
     </h3>
- 
+
   </div>
   <div class="card-body">
     <div class="btn-group pb-3">
@@ -22,93 +22,129 @@
       <button type="button" (click)="backList()" *ngIf="show" class="btn btn-success ml-2">Back List</button>
     </div>
     <div class="btn-group pb-3">
-      <button type="button" (click)="printData()" *ngIf="show" class="btn btn-success ml-2"> <i class="fa fa-print"></i> Print</button>
+      <button type="button" (click)="printData()" *ngIf="show" class="btn btn-success ml-2"> <i class="fa fa-print"></i>
+        Print</button>
     </div>
-    <div class="input-group input-group-sm pb-3 float-right" style="width: 350px;">
-      <input type="text" name="text"  (keyup.enter)="search()" [(ngModel)]="text" class="form-control float-right" placeholder="Search">
+    <div class="input-group input-group-sm pb-3 float-right" style="width: 350px;" *ngIf="!show">
+      <input type="text" name="text" (keyup.enter)="search()" [(ngModel)]="text" class="form-control float-right"
+        placeholder="Search">
 
       <div class="input-group-append">
         <button type="submit" class="btn btn-default" (click)='search()'><i class="fas fa-search"></i></button>
       </div>
     </div>
-    <table class="table table-hover" id="qrcode" *ngIf="show">
-      <thead class="thead-dark">
-        <tr>
-          <th>Name</th>
-          <th>Barcode</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of data; let i= index">
-          <td>{{item.name}}</td>
-          <td>
-            <ejs-qrcodegenerator style="display: block;" [displayText]='displayTextMethod' #barcode width="200px" height="150px" mode="SVG" [value]="item.code"></ejs-qrcodegenerator>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="row" *ngIf="show">
+      <div class="col-xl-6">
+        <ejs-grid #printGrid id='overviewgrid' [dataSource]='dataPrint' rowHeight='38' [allowSelection]='true'
+          [allowSorting]='true' height='600'(rowDeselected)='rowDeselected($event)' (rowSelected)='rowSelected($event)' [enableHover]='false'
+          [allowSorting]='true' [enableVirtualization]='true'>
+          <e-columns>
+            <e-column type='checkbox' width='60'></e-column>
+            <e-column field='supplier' headerText='Supplier' width='100'></e-column>
+            <e-column field='name' headerText='Ingredient Name' width='130'></e-column>
+            <e-column field='voc' headerText='VOC' width='80'></e-column>
+            <e-column field='expiredTime' headerText='Expired Time (by min)' width='150'></e-column>
+            <e-column field='materialNO' headerText='Material #' width='130'></e-column>
+            <e-column field='unit' headerText='Unit (kg)' width='100'></e-column>
+            <e-column field='createdDate' headerText='Created Date' width='150'></e-column>
+          </e-columns>
+        </ejs-grid>
+      </div>
+      <div class="col-xl-6">
+        <table class="table table-hover" id="qrcode">
+          <thead class="thead-dark">
+            <tr>
+              <th>Barcode</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of dataPicked">
+              <tr>
+                <td class="text-center">
+                  <ejs-qrcodegenerator [id]='item.code' style="display: block;" [displayText]='displayTextMethod' #barcode
+                    width="177px" height="177px" mode="SVG" [value]="item.code"></ejs-qrcodegenerator>
+                  <span>{{item.name}}</span> <br>
+                  <span><label>Expired Time: </label> {{item.expiredTime}} minute</span>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
     <table class="table table-hover" *ngIf="!show">
       <thead class="thead-dark">
         <tr>
           <th>#</th>
-          <th>Supplier</th>
-          <th>Ingredient</th>
-          <th>VOC (%)</th>
-          <th>Expired Time (by mins)</th>
-          <th>Create Date</th>
-          <th style="text-align: center">Option</th>
+          <th class="text-center">Supplier</th>
+          <th class="text-center">Ingredient</th>
+          <th class="text-center">VOC (%)</th>
+          <th class="text-center">Expired Time (by mins)</th>
+          <th class="text-center">Material #</th>
+          <th class="text-center">Unit (kg)</th>
+          <th class="text-center">Create Date</th>
+          <th class="text-center">Option</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of data; let i= index">
-          <td scope="row">{{ (pagination.currentPage - 1) * pagination.itemsPerPage + i + 1 }}</td>
-          <td style="text-align: center">
-           {{item.supplier}}
+          <td class="text-center" scope="row">{{ (pagination.currentPage - 1) * pagination.itemsPerPage + i + 1 }}</td>
+          <td class="text-center">
+            {{item.supplier}}
           </td>
-          <td>{{item.name}}</td>
-          <td>{{item.voc}}</td>
-          <td>{{item.expiredTime}}</td>
-          <td>{{item.createdDate}}</td>
-          <td style="text-align: center">
-            <div class="btn-group">
-              <a  routerLink="/ec/setting/ingredient/print-qrcode/{{item.id}}/{{item.code}}/{{item.name}}"  class="btn btn-success mr-2">Print QRCode</a>
+          <td class="text-center">{{item.name}}</td>
+          <td class="text-center">{{item.voc}}</td>
+          <td class="text-center">{{item.expiredTime}}</td>
+          <td class="text-center">{{item.materialNO}}</td>
+          <td class="text-center">{{item.unit}}</td>
+          <td class="text-center">{{item.createdDate}}</td>
+          <td class="text-center">
+            <div class="btn-group" data-toggle="tooltip" data-placement="top" title="Print QRCode">
+              <a routerLink="/ec/setting/ingredient/print-qrcode/{{item.id}}/{{item.code}}/{{item.name}}"
+                class="btn btn-success mr-2"><i class="fa fa-qrcode" aria-hidden="true"></i></a>
             </div>
             <div class="btn-group">
-              <button type="button" (click)='openIngredientEditModalComponent(item)' class="btn btn-primary">Edit</button>
+              <button type="button" (click)='openIngredientEditModalComponent(item)' class="btn btn-primary"><i
+                  class="fa fa-edit"></i></button>
             </div>
             <div class="btn-group">
               <span style="color: transparent">|</span>
             </div>
             <div class="btn-group">
-              <button type="button" (click)='delete(item)' class="btn btn-danger">Delete</button>
+              <button type="button" (click)='delete(item)' class="btn btn-danger"><i class="fa fa-trash"></i></button>
             </div>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-  <div class="card-footer">
-    <ngb-pagination (pageChange)="onPageChange($event)" [collectionSize]="totalItems"  [directionLinks]='true' [(page)]="currentPage" [pageSize]='itemsPerPage' [maxSize]="5" [rotate]="true" [boundaryLinks]="true"></ngb-pagination>
+  <div class="card-footer" *ngIf="!show">
+    <ngb-pagination (pageChange)="onPageChange($event)" [collectionSize]="totalItems" [directionLinks]='true'
+      [(page)]="currentPage" [pageSize]='itemsPerPage' [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+    </ngb-pagination>
   </div>
 </div>
 <ng-template #importModal let-modal>
   <div class="modal-header">
-      <h4 class="modal-title">
-          <i class="fas fa-plus"></i> Import Excel
-      </h4>
-      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-          <span aria-hidden="true">&times;</span>
-      </button>
+    <h4 class="modal-title">
+      <i class="fas fa-plus"></i> Import Excel
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
   <div class="modal-body">
-      <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-              <label for="Name">Select File (*Notice: Excel file must be followed a system template. If you do not have a template, please <a [href]="excelDownloadUrl">click here</a> to download. Thank you!)</label>
-              <input (change)="fileProgress($event)"  name="file" type="file"  class="form-control" />
-          </div>
-          </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="Name">Select File (*Notice: Excel file must be followed a system template. If you do not have a
+            template, please <a [href]="excelDownloadUrl">click here</a> to download. Thank you!)</label>
+          <input (change)="fileProgress($event)" name="file" type="file" class="form-control" />
+        </div>
       </div>
+    </div>
 
   </div>
   <div class="modal-footer">

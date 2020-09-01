@@ -33,7 +33,9 @@ namespace EC_API.Data
         public DbSet<Part> Parts { get; set; }
         public DbSet<Material> Materials { get; set; }
         public DbSet<MixingInfo> MixingInfos { get; set; }
-
+        public DbSet<BuildingGlue> BuildingGlues { get; set; }
+        public DbSet<IngredientInfo> IngredientsInfos { get; set; }
+        public DbSet<BPFCHistory> BPFCHistories { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BPFCEstablish>().HasKey(x => x.ID);

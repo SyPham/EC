@@ -15,6 +15,7 @@ using EC_API.SignalrHub;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -118,6 +119,7 @@ namespace EC_API
                 });
 
             });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //Repository
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IGlueIngredientRepository, GlueIngredientRepository>();
@@ -149,6 +151,9 @@ namespace EC_API
             services.AddScoped<IBPFCEstablishRepository, BPFCEstablishRepository>();
             services.AddScoped<IMixingInfoRepository, MixingInfoRepository>();
             services.AddScoped<IMixingRepository, MixingRepository>();
+            services.AddScoped<IBuildingGlueRepository, BuildingGlueRepository>();
+            services.AddScoped<IIngredientInfoRepository, IngredientInfoRepository>();
+            services.AddScoped<IBPFCHistoryRepository, BPFCHistoryRepository>();
 
             //Services
             services.AddScoped<IMixingService, MixingService>();

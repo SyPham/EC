@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute } from '@angular/router';
@@ -10,17 +10,21 @@ import { IIngredient } from 'src/app/_core/_model/Ingredient';
 import { ModalNameService } from 'src/app/_core/_service/modal-name.service';
 import { environment } from '../../../../environments/environment';
 import { QRCodeGenerator, DisplayTextModel } from '@syncfusion/ej2-angular-barcode-generator';
+import { GridComponent } from '@syncfusion/ej2-angular-grids';
+declare let $: any;
 @Component({
   selector: 'app-ingredient',
   templateUrl: './ingredient.component.html',
   styleUrls: ['./ingredient.component.scss']
 })
-export class IngredientComponent implements OnInit {
+export class IngredientComponent implements OnInit, AfterViewInit {
   data: IIngredient[];
   modalReference: NgbModalRef;
   excelDownloadUrl: string;
   @ViewChild('barcode')
   public barcode: QRCodeGenerator;
+  @ViewChild('printGrid')
+  public printGrid: GridComponent;
   ingredient: IIngredient = {
     id: 0,
     name: '',
@@ -31,7 +35,9 @@ export class IngredientComponent implements OnInit {
     position: 0,
     allow: 0,
     expiredTime: 0,
-    voc: '0'
+    voc: '0',
+    materialNO: '',
+    unit: ''
   };
   pagination: Pagination;
   page = 1;
@@ -43,6 +49,8 @@ export class IngredientComponent implements OnInit {
     visibility: false
   };
   text: any;
+  dataPrint: any;
+  dataPicked: Array<any> = [];
   constructor(
     private modalNameService: ModalNameService,
     public modalService: NgbModal,
@@ -56,24 +64,160 @@ export class IngredientComponent implements OnInit {
     this.ingredientService.currentIngredient.subscribe(res => {
       if (res === 300) {
         this.getIngredients();
+        this.ingredient = {
+          id: 0,
+          name: '',
+          code: '',
+          percentage: 0,
+          createdDate: '',
+          supplierID: 0,
+          position: 0,
+          allow: 0,
+          voc: '0',
+          expiredTime: 0,
+          materialNO: '',
+          unit: ''
+        };
       }
     });
     this.getIngredients();
+    this.getAllIngredients();
+
+  }
+  ngAfterViewInit() {
+    $('[data-toggle="tooltip"]').tooltip();
+  }
+  configurePrint(html) {
+    const WindowPrt = window.open('', '_blank', 'left=0,top=0,width=1000,height=900,toolbar=0,scrollbars=0,status=0');
+    // WindowPrt.document.write(printContent.innerHTML);
+    WindowPrt.document.write(`
+    <html>
+      <head>
+      </head>
+      <style>
+          body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #FAFAFA;
+        font: 12pt "Tahoma";
+    }
+    * {
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+    }
+    .page {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 20mm;
+        margin: 10mm auto;
+        border: 1px #D3D3D3 solid;
+        border-radius: 5px;
+        background: white;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+    .subpage {
+        padding: 1cm;
+        border: 5px red solid;
+        height: 257mm;
+        outline: 2cm #FFEAEA solid;
+    }
+     .content {
+        height: 221px;
+         border: 1px #D3D3D3 solid;
+    }
+    .content .qrcode {
+      float:left;
+
+      width: 177px;
+      height:177px;
+      margin-top: 12px;
+      margin-bottom: 12px;
+      margin-left: 5px;
+       border: 1px #D3D3D3 solid;
+    }
+    .content .info {
+       float:left;
+       list-style: none;
+    }
+    .content .info ul {
+       float:left;
+       list-style: none;
+       padding: 0;
+       margin: 0;
+      margin-top: 25px;
+    }
+    .content .info ul li.subInfo {
+      padding: .75rem 1.25rem;
+    }
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    @media print {
+        html, body {
+            width: 210mm;
+            height: 297mm;
+        }
+        .page {
+            margin: 0;
+            border: initial;
+            border-radius: initial;
+            width: initial;
+            min-height: initial;
+            box-shadow: initial;
+            background: initial;
+            page-break-after: always;
+        }
+    }
+      </style>
+      <body onload="window.print(); window.close()">
+        ${html}
+      </body>
+    </html>
+    `);
+    WindowPrt.document.close();
   }
   printData() {
-    const printContent = document.getElementById('qrcode');
-    const WindowPrt = window.open('');
-    WindowPrt.document.write(printContent.innerHTML);
-    WindowPrt.document.close();
-    WindowPrt.focus();
-    WindowPrt.print();
-    WindowPrt.close();
+    let html = '';
+    for (const item of this.dataPicked) {
+      const content = document.getElementById(item.code);
+      html += `
+       <div class='content'>
+        <div class='qrcode'>
+         ${content.innerHTML}
+         </div>
+          <div class='info'>
+          <ul>
+            <li class='subInfo'>${ item.name}</li>
+              <li class='subInfo'>NSX: </li>
+              <li class='subInfo'>NHH: </li>
+          </ul>
+         </div>
+      </div>
+      `;
+    }
+    this.configurePrint(html);
   }
   printBarcode() {
     this.show = true;
+    this.getAllIngredients();
+
+  }
+  rowSelected(args) {
+    console.log('rowSelected', args.data);
+    const data = args.data as any;
+    this.dataPicked.unshift(data);
+  }
+  rowDeselected(args) {
+    console.log('rowDeselected', args.data[0])
+    this.dataPicked.shift();
+
   }
   backList() {
     this.show = false;
+    this.dataPicked = [];
   }
   getIngredients() {
     // this.spinner.show();
@@ -84,6 +228,16 @@ export class IngredientComponent implements OnInit {
         this.totalItems = res.pagination.totalItems;
         this.currentPage = res.pagination.currentPage;
         this.itemsPerPage = res.pagination.itemsPerPage;
+        //    this.spinner.hide();
+      }, error => {
+        this.alertify.error(error);
+      });
+  }
+  getAllIngredients() {
+    // this.spinner.show();
+    this.ingredientService.getAllIngredient()
+      .subscribe((res: any) => {
+        this.dataPrint = res;
         //    this.spinner.hide();
       }, error => {
         this.alertify.error(error);

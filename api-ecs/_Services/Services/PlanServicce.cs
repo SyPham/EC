@@ -24,10 +24,10 @@ namespace EC_API._Services.Services
         private readonly IPlanRepository _repoPlan;
         private readonly IGlueRepository _repoGlue;
         private readonly IGlueIngredientRepository _repoGlueIngredient;
-        private readonly IIngredientRepository _repoIngredient;
         private readonly IBuildingRepository _repoBuilding;
         private readonly IBPFCEstablishRepository _repoBPFC;
         private readonly IMixingInfoRepository _repoMixingInfo;
+        private readonly IBuildingGlueRepository _repoBuildingGlue;
         private readonly IModelNameRepository _repoModelName;
         private readonly IHubContext<ECHub> _hubContext;
         private readonly IMapper _mapper;
@@ -36,11 +36,11 @@ namespace EC_API._Services.Services
             IPlanRepository repoPlan,
             IGlueRepository repoGlue,
             IGlueIngredientRepository repoGlueIngredient,
-            IIngredientRepository repoIngredient,
             IBuildingRepository repoBuilding,
             IBPFCEstablishRepository repoBPFC,
             IMixingInfoRepository repoMixingInfo,
             IModelNameRepository repoModelName,
+            IBuildingGlueRepository repoBuildingGlue,
             IHubContext<ECHub> hubContext,
             IMapper mapper,
             MapperConfiguration configMapper)
@@ -49,13 +49,13 @@ namespace EC_API._Services.Services
             _mapper = mapper;
             _repoGlue = repoGlue;
             _repoGlueIngredient = repoGlueIngredient;
-            _repoIngredient = repoIngredient;
             _repoPlan = repoPlan;
             _repoBuilding = repoBuilding;
             _repoModelName = repoModelName;
             _hubContext = hubContext;
             _repoBPFC = repoBPFC;
             _repoMixingInfo = repoMixingInfo;
+            _repoBuildingGlue= repoBuildingGlue;
         }
 
         //Thêm Brand mới vào bảng Plan
@@ -104,14 +104,17 @@ namespace EC_API._Services.Services
             var plan = _mapper.Map<Plan>(model);
             plan.CreatedDate = DateTime.Now;
             _repoPlan.Update(plan);
+            var result = await _repoPlan.SaveAll();
             await _hubContext.Clients.All.SendAsync("summaryRecieve", "ok");
 
-            return await _repoPlan.SaveAll();
+            return result;
         }
 
         //Lấy toàn bộ danh sách Brand 
         public async Task<List<PlanDto>> GetAllAsync()
         {
+            var min = DateTime.Now.Date;
+            var max = DateTime.Now.AddDays(15).Date;
             return await _repoPlan.FindAll()
                 .Include(x => x.Building)
                 .Include(x => x.BPFCEstablish)
@@ -215,57 +218,70 @@ namespace EC_API._Services.Services
 
         public async Task<object> Summary(int building)
         {
+            var currentDate = DateTime.Now.Date;
             var item = _repoBuilding.FindById(building);
             var lineList = await _repoBuilding.FindAll().Where(x => x.ParentID == item.ID).ToListAsync();
             var plannings = await _repoPlan.FindAll().Where(x => lineList.Select(x => x.ID).Contains(x.BuildingID)).ToListAsync();
 
             // Header
-            var header = new List<object> {
-                     new
+            var header = new List<HeaderForSummary> {
+                     new HeaderForSummary
                 {
                     field = "GlueID",
-                    headerText = "GlueID",
-                    width = 60,
-                    textAlign = "Center",
-                    minWidth = 10
+                    summaryInfo = new List<SummaryInfo>(),
+                    real = 0,
+                    count = 0
                 },
-                  new
+                  new HeaderForSummary
                 {
                     field = "Supplier",
-                    headerText = "Supplier",
-                    width = 60,
-                    textAlign = "Center",
-                    minWidth = 10
+                    summaryInfo = new List<SummaryInfo>(),
+                    real = 0,
+                    count = 0
                 },
-                new
+                new HeaderForSummary
                 {
                     field = "Chemical",
-                    headerText = "Chemical",
-                    width = 60,
-                    textAlign = "Center",
-                    minWidth = 10
+                    summaryInfo = new List<SummaryInfo>(),
+                    real = 0,
+                    count = 0
                 }
 
 
             };
-          
+
             foreach (var line in lineList)
             {
-                var itemHeader = new
+                var itemHeader = new HeaderForSummary
                 {
                     field = line.Name,
-                    headerText = line.Name,
-                    width = 20,
-                    textAlign = "Center",
-                    minWidth = 5
+                    summaryInfo = new List<SummaryInfo>(),
+                    real = 0,
+                    count = 0
                 };
                 header.Add(itemHeader);
             }
+            // header.Add(new HeaderForSummary
+            // {
+            //     field = "Delivered",
+            //     summaryInfo = new List<SummaryInfo>(),
+            //     real = 0,
+            //     count = 0
+            // });
+            header.Add(new HeaderForSummary
+            {
+                field = "TotalConsumption",
+                summaryInfo = new List<SummaryInfo>(),
+                real = 0,
+                count = 0
+            });
             // end header
 
             // Data
             var data = new List<object>();
             var data2 = new List<object>();
+            var listBuildingGlueInfo = new List<object>();
+
             var model = (from glue in _repoGlue.FindAll().ToList()
                          join bpfc in _repoBPFC.FindAll().ToList() on glue.BPFCEstablishID equals bpfc.ID
                          join plan in _repoPlan.FindAll().ToList() on bpfc.ID equals plan.BPFCEstablishID
@@ -283,10 +299,10 @@ namespace EC_API._Services.Services
                          }).ToList();
 
             var glueList = await _repoGlue.FindAll()
-                .Include(x=>x.GlueIngredients)
-                .ThenInclude(x=>x.Ingredient)
-                .ThenInclude(x=>x.Supplier)
-                .Include(x=>x.MixingInfos)
+                .Include(x => x.GlueIngredients)
+                .ThenInclude(x => x.Ingredient)
+                .ThenInclude(x => x.Supplier)
+                .Include(x => x.MixingInfos)
                 .Where(x => plannings.Select(p => p.BPFCEstablishID).Contains(x.BPFCEstablishID))
                 .ToListAsync();
             var glueDistinct = glueList.DistinctBy(x => x.Name);
@@ -301,46 +317,88 @@ namespace EC_API._Services.Services
                 var listStandardTotal = new List<double>();
                 var listWorkingHour = new List<double>();
                 var listHourlyOuput = new List<double>();
-
+                var rowRealInfo = new List<object>();
+                var rowCountInfo = new List<object>();
                 foreach (var line in lineList.OrderBy(x => x.Name))
                 {
-
                     var sdtCon = model.FirstOrDefault(x => x.GlueName == glue.Name && x.BuildingID == line.ID);
+
+                    var listBuildingGlue =  _repoBuildingGlue.FindAll().Where(x=>x.GlueID == glue.ID && x.BuildingID== line.ID && x.CreatedDate == currentDate).ToList();
+                    rowCountInfo.Add(new SummaryInfo {
+                        glueName = glue.Name,
+                        line = line.Name,
+                        lineID=line.ID,
+                        glueID = glue.ID,
+                        value = 0,
+                        count = listBuildingGlue.Count
+                    });
+                    List<double> real = listBuildingGlue.Select(x=>x.Qty).ToList().ConvertAll<double>(Convert.ToDouble);
+                    rowRealInfo.Add(new SummaryInfo
+                    {
+                        glueName = glue.Name,
+                        line = line.Name,
+                        lineID = line.ID,
+                        glueID = glue.ID,
+                        value = Math.Round(real.Sum(), 3),
+                    });
                     if (sdtCon != null)
                     {
-                        itemData.Add(line.Name, sdtCon.Comsumption.ToDouble());
+                        var comsumption = sdtCon.Comsumption.ToDouble() * sdtCon.WorkingHour.ToDouble() * sdtCon.HourlyOutput.ToDouble();
+                        itemData.Add(line.Name, Math.Round(comsumption / 1000, 3) + "kg");
                         listTotal.Add(sdtCon.Comsumption.ToDouble());
                         listWorkingHour.Add(sdtCon.WorkingHour.ToDouble());
                         listHourlyOuput.Add(sdtCon.HourlyOutput.ToDouble());
-                        var standard = sdtCon.Comsumption.ToDouble() * sdtCon.WorkingHour.ToDouble() * sdtCon.HourlyOutput.ToDouble();
-                        listStandardTotal.Add(standard);
+                        listStandardTotal.Add(comsumption / 1000);
                     }
                     else
                     {
                         itemData.Add(line.Name, 0);
-                    }
-                }
 
-                itemData.Add("Standard", Math.Round(listStandardTotal.Sum(), 2));
-                var mixingInfos = _repoMixingInfo.FindAll().Where(x => x.GlueID == glue.ID).ToList();
+                    }
+                   
+                }
+                var delivered = await _repoBuildingGlue.FindAll().Where(x=>x.GlueID == glue.ID && lineList.Select(a=>a.ID).Contains(x.BuildingID) && x.CreatedDate == currentDate).Select(x=>x.Qty).ToListAsync();
+                // itemData.Add("Delivered", delivered.ConvertAll<double>(Convert.ToDouble).Sum() + "kg");
+                itemData.Add("Standard", Math.Round(listStandardTotal.Sum(), 3) + "kg");
+                var mixingInfos = _repoMixingInfo.FindAll().Where(x => x.GlueID == glue.ID && x.CreatedTime == currentDate).ToList();
                 double realTotal = 0;
                 foreach (var real in mixingInfos)
                 {
                     realTotal += real.ChemicalA.ToDouble() + real.ChemicalB.ToDouble() + real.ChemicalC.ToDouble() + real.ChemicalD.ToDouble() + real.ChemicalE.ToDouble();
                 }
-
-                itemData.Add("Real", Math.Round(realTotal,3));
-                itemData.Add("Count", glue.MixingInfos.Count());
+                var deliver = delivered.ConvertAll<double>(Convert.ToDouble).Sum() + "kg";
+                itemData.Add("Real", $"{deliver} / {Math.Round(realTotal, 3)}kg");
+                itemData.Add("Count", glue.MixingInfos.Where(x=>x.CreatedTime == currentDate).Count());
+                itemData.Add("rowRealInfo", rowRealInfo);
+                itemData.Add("rowCountInfo", rowCountInfo);
                 data.Add(itemData);
+
             }
-            header.Add(new
-            {
-                field = "TotalComsumption",
-                headerText = "Total Consumption",
-                width = 60,
-                textAlign = "Center",
-                minWidth = 10
-            });
+            var infoList = new List<HeaderForSummary>() {
+                     new HeaderForSummary
+                {
+                    field = "Standard",
+                    summaryInfo = new List<SummaryInfo>(),
+                    real = 0,
+                    count = 0
+                },
+                  new HeaderForSummary
+                {
+                    field = "Real",
+                    summaryInfo = new List<SummaryInfo>(),
+                    real = 0,
+                    count = 0
+                },
+                new HeaderForSummary
+                {
+                    field = "Count",
+                    summaryInfo = new List<SummaryInfo>(),
+                    real = 0,
+                    count = 0
+                }};
+
+            header.AddRange(infoList);
+
             // End Data
             return new { header, data };
 
@@ -373,6 +431,58 @@ namespace EC_API._Services.Services
         {
             var lists = await _repoGlue.FindAll().ProjectTo<PlanDto>(_configMapper).Where(x => x.BPFCEstablishID == bpfcID).OrderByDescending(x => x.ID).ToListAsync();
             return lists.ToList();
+        }
+        public async Task<object> DispatchGlue(BuildingGlueForCreateDto obj )
+        {
+            var buildingGlue = _mapper.Map<BuildingGlue>(obj);
+            _repoBuildingGlue.Add(buildingGlue);
+            return await _repoBuildingGlue.SaveAll();
+        }
+        public async Task<object> ClonePlan(List<PlanForCloneDto> plansDto) {
+            var plans = _mapper.Map<List<Plan>>(plansDto);
+            _repoPlan.AddRange(plans);
+            return await _repoBuildingGlue.SaveAll();
+        }
+
+        public async Task<object> GetAllPlanByDefaultRange()
+        {
+            var min = DateTime.Now.Date;
+            var max = DateTime.Now.AddDays(15).Date;
+            return await _repoPlan.FindAll()
+                .Where(x => x.DueDate.Date >= min && x.DueDate <= max)
+                .Include(x => x.Building)
+                .Include(x => x.BPFCEstablish)
+                .ThenInclude(x => x.ModelName)
+                .Include(x => x.BPFCEstablish)
+                .ThenInclude(x => x.ModelNo)
+                .Include(x => x.BPFCEstablish)
+                .ThenInclude(x => x.ArticleNo)
+                .Include(x => x.BPFCEstablish)
+                .ThenInclude(x => x.ArtProcess)
+                .ThenInclude(x => x.Process)
+                .ProjectTo<PlanDto>(_configMapper)
+                .OrderByDescending(x => x.ID)
+                .ToListAsync();
+        }
+
+        public async Task<object> GetAllPlanByRange(DateTime min, DateTime max)
+        {
+           
+            return await _repoPlan.FindAll()
+                .Where(x=>x.DueDate.Date >= min.Date && x.DueDate.Date <= max.Date)
+                .Include(x => x.Building)
+                .Include(x => x.BPFCEstablish)
+                .ThenInclude(x => x.ModelName)
+                .Include(x => x.BPFCEstablish)
+                .ThenInclude(x => x.ModelNo)
+                .Include(x => x.BPFCEstablish)
+                .ThenInclude(x => x.ArticleNo)
+                .Include(x => x.BPFCEstablish)
+                .ThenInclude(x => x.ArtProcess)
+                .ThenInclude(x => x.Process)
+                .ProjectTo<PlanDto>(_configMapper)
+                .OrderByDescending(x => x.ID)
+                .ToListAsync();
         }
     }
 }

@@ -9,7 +9,7 @@ import { PaginatedResult } from '../_model/pagination';
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type': 'application/json',
-    // 'Authorization': 'Bearer ' + localStorage.getItem('token'),
+    //'Authorization': 'Bearer ' + localStorage.getItem('token'),
   }),
 };
 @Injectable({
@@ -72,10 +72,19 @@ export class IngredientService {
   scanQRCode(qrCode) {
     return this.http.get(this.baseUrl + 'ingredient/ScanQRCode/' + qrCode, {});
   }
+  scanQRCodeFromChemicalWareHouse(qrCode) {
+    return this.http.get(this.baseUrl + 'ingredient/ScanQRCodeFromChemialWareHouse/' + qrCode, {});
+  }
   getAllSupplier() {
     return this.http.get<ISupplier[]>(this.baseUrl + 'Suppier/GetAll', {});
   }
 
+  getAllIngredientInfo() {
+    return this.http.get(this.baseUrl + `ingredient/GetAllIngredientInfo`, {});
+  }
+  UpdateConsumption(qrcode: string , consump: number){
+    return this.http.post(this.baseUrl + `ingredient/UpdateConsumptionChemialWareHouse/${qrcode}/${consump}`, {});
+  }
   createSub(supplier: ISupplier) {
     return this.http.post(this.baseUrl + 'suppier/create', supplier);
   }

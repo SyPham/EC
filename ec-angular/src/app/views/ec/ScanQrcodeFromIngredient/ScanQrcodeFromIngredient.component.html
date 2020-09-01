@@ -1,0 +1,71 @@
+<div class="card">
+  <div class="card-header">
+    <h3>Ingredient Info</h3>
+
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-sm-12 text-center">
+            <label class="font-weight-bold" for="">Scan QRCode</label>
+          </div>
+        </div>
+        <ng-container>
+          <div class="row">
+            <div class="col-md-2">
+              <div style="text-align: right;">
+                <img src="../../../../assets/img/gif/1981.gif" height="40px" width="50%" alt="">
+              </div>
+            </div>
+            <div class="col-md-8">
+              <input [ngClass]="test" [autofocus]="true" autoselect  [ngModel]="qrcodeChange"  (ngModelChange)='onNgModelChangeScanQRCode($event)' type="text">
+            </div>
+            <div class="col-md-2">
+              <!-- <button type="button" class="btn btn-success"><i class="fas fa-save"></i> Submit</button> -->
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table table-bordered">
+          <thead class="thead-dark">
+            <tr>
+              <th style="text-align: center;" scope="col">Time</th>
+              <th style="text-align: center;" scope="col">Supplier</th>
+              <th style="text-align: center;" scope="col">Ingredient</th>
+              <th style="text-align: center;" scope="col">Production Date</th>
+              <th style="text-align: center;" scope="col">批次(Batch)</th>
+              <th style="text-align: center;" scope="col">Expired date</th>
+              <th style="text-align: center;" scope="col">Received Qty</th>
+              <th style="text-align: center;" scope="col">Options</th>
+              <!-- <th style="text-align: center;" scope="col">Comsumption</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data; let i=index">
+              <th scope="row" style="text-align: center;">{{item.createdTime | date:'yyyy-MM-dd , hh:mm:ss a'}}</th>
+              <td style="text-align: center;">{{item.supplierName}}</td>
+              <td style="text-align: center;">{{item.name }}</td>
+              <td style="text-align: center;">{{item.manufacturingDate | date:'yyyy-MM-dd'}}</td>
+              <td style="text-align: center;">No Data</td>
+              <td style="text-align: center;">{{item.expiredTime}}</td>
+              <td style="text-align: center;">{{item.qty}}</td>
+              <td style="text-align: center;">
+                <button  (click)="delete(item.id)" type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+              </td>
+              <!-- <td style="text-align: center;">{{item.consumption}}</td> -->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div>

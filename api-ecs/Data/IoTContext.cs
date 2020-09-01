@@ -11,7 +11,7 @@ namespace EC_API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Mixing>().HasKey(x => x.ID);
+            modelBuilder.Entity<Mixing>().HasKey(x => x.ID);// um
         }
 
     }

@@ -6,6 +6,7 @@ using EC_API._Services.Interface;
 using EC_API.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace EC_API.Controllers
 {
@@ -111,6 +112,27 @@ namespace EC_API.Controllers
             var model = await _planService.Summary(buildingID);
                 return Ok(model);
         }
-        
+        [HttpPost]
+        public async Task<IActionResult> ClonePlan(List<PlanForCloneDto> create)
+        {
+            return Ok(await _planService.ClonePlan(create));
+        }
+        [HttpPost]
+        public async Task<IActionResult> DispatchGlue(BuildingGlueForCreateDto create)
+        {
+            return Ok(await _planService.DispatchGlue(create));
+        }
+        [HttpGet("{min}/{max}")]
+        public async Task<IActionResult> Search(DateTime min, DateTime max)
+        {
+            var lists = await _planService.GetAllPlanByRange(min, max);
+            return Ok(lists);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllPlanByDefaultRange()
+        {
+            var lists = await _planService.GetAllPlanByDefaultRange();
+            return Ok(lists);
+        }
     }
 }

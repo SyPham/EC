@@ -13,6 +13,8 @@ namespace EC_API.DTO
         public string CreatedDate { get; set; }
         public int Percentage { get; set; }
         public bool Status { get; set; }
+        public string MaterialNO { get; set; }
+        public string Unit { get; set; }
         public string VOC { get; set; } = "0";
         public string Supplier { get; set; }
         public int SupplierID { get; set; }

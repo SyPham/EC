@@ -123,6 +123,42 @@ namespace EC_API.Migrations
                     b.ToTable("BPFCEstablishes");
                 });
 
+            modelBuilder.Entity("EC_API.Models.BPFCHistory", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Action")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("After")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("BPFCEstablishID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Before")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GlueID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("BPFCHistories");
+                });
+
             modelBuilder.Entity("EC_API.Models.Building", b =>
                 {
                     b.Property<int>("ID")
@@ -142,6 +178,33 @@ namespace EC_API.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Buildings");
+                });
+
+            modelBuilder.Entity("EC_API.Models.BuildingGlue", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BuildingID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GlueID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Qty")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("BuildingGlues");
                 });
 
             modelBuilder.Entity("EC_API.Models.BuildingUser", b =>
@@ -300,20 +363,74 @@ namespace EC_API.Migrations
                     b.Property<DateTime>("ManufacturingDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("MaterialNO")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ModifiedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SupplierID")
                         .HasColumnType("int");
 
+                    b.Property<string>("Unit")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("VOC")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isShow")
+                        .HasColumnType("bit");
 
                     b.HasKey("ID");
 
                     b.HasIndex("SupplierID");
 
                     b.ToTable("Ingredients");
+                });
+
+            modelBuilder.Entity("EC_API.Models.IngredientInfo", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Consumption")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ExpiredTime")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ManufacturingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Qty")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SupplierName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("IngredientsInfos");
                 });
 
             modelBuilder.Entity("EC_API.Models.Kind", b =>
@@ -580,8 +697,17 @@ namespace EC_API.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("ModifiedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isShow")
+                        .HasColumnType("bit");
 
                     b.HasKey("ID");
 

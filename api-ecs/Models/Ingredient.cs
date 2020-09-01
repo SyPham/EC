@@ -16,11 +16,16 @@ namespace EC_API.Models
         public string Name { get; set; }
         public string CreatedDate { get; set; }
         public DateTime ManufacturingDate { get; set; }
+        public string MaterialNO { get; set; }
+        public string Unit { get; set; }
         public int SupplierID { get; set; }
         public Supplier Supplier { get; set; }
         public string VOC { get; set; }
         public int CreatedBy { get; set; }
         public int ExpiredTime { get; set; }
+        public bool isShow { get; set; }
+        public int ModifiedBy { get; set; }
+        public DateTime ModifiedDate { get; set; }
 
     }
 }

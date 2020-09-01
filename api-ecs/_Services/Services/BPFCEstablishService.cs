@@ -19,6 +19,7 @@ namespace EC_API._Services.Services
     public class BPFCEstablishService : IBPFCEstablishService
     {
         private readonly IBPFCEstablishRepository _repoBPFCEstablish;
+        private readonly IBPFCHistoryRepository _repoBPFCHistory;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configMapper;
         private readonly IModelNameRepository _repoModelName;
@@ -29,8 +30,10 @@ namespace EC_API._Services.Services
         private readonly IArtProcessRepository _repoArtProcess;
         private readonly IGlueIngredientRepository _repoGlueIngredient;
         private readonly IGlueRepository _repoGlue;
+        private readonly ICommentRepository _repoComment;
         public BPFCEstablishService(
             IBPFCEstablishRepository repoBPFCEstablish,
+            IBPFCHistoryRepository repoBPFCHistory,
             IModelNameRepository repoModelName,
             IModelNoRepository repoModelNo,
             IConfiguration configuration,
@@ -40,12 +43,15 @@ namespace EC_API._Services.Services
             IGlueIngredientRepository repoGlueIngredient,
             IArtProcessRepository repoArtProcess,
             IMapper mapper,
+            ICommentRepository repoComment,
             MapperConfiguration configMapper
             )
         {
             _configMapper = configMapper;
             _mapper = mapper;
+            _repoComment = repoComment;
             _repoBPFCEstablish = repoBPFCEstablish;
+            _repoBPFCHistory = repoBPFCHistory;
             _repoModelName = repoModelName;
             _configuration = configuration;
             _repoModelNo = repoModelNo;
@@ -107,6 +113,126 @@ namespace EC_API._Services.Services
                 .Include(x => x.ArticleNo)
                 .Include(x => x.ArtProcess).ThenInclude(x => x.Process)
                 .ProjectTo<BPFCEstablishDto>(_configMapper).OrderBy(x => x.ID).ToListAsync();
+        }
+        public async Task<List<BPFCHistoryDto>> GetAllHistoryAsync()
+        {
+            return await _repoBPFCHistory.FindAll().ProjectTo<BPFCHistoryDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
+        }
+
+        public async Task<bool> CheckGlueID(int glueid)
+        {
+            return await _repoBPFCHistory.CheckGlueID(glueid);
+        }
+        public async Task<bool> Create(BPFCHistoryDto entity)
+        {
+            var entitys = new BPFCHistory();
+            var GlueNameDefault = string.Empty;
+            if (entity.GlueID != 0)
+            {
+                GlueNameDefault = _repoGlue.FindAll().FirstOrDefault(x => x.ID == entity.GlueID).Name;
+            }
+
+            if (await _repoBPFCHistory.CheckGlueID(entity.GlueID))
+            {
+
+                var result = _repoGlue.FindAll().FirstOrDefault(x => x.ID == entity.GlueID);
+                var checkBPFC = _repoBPFCEstablish.FindById(entity.BPFCEstablishID);
+                if (checkBPFC.FinishedStatus == true && checkBPFC.ApprovalStatus == true)
+                {
+                    if (entity.Action == "Consumption")
+                    {
+                        entitys.Action = "Improve";
+                        entitys.Before = entity.Before;
+                        entitys.After = entity.After;
+                        entitys.BPFCEstablishID = entity.BPFCEstablishID;
+                        entitys.UserID = entity.UserID;
+                        entitys.GlueID = entity.GlueID;
+                    }
+                    else
+                    {
+                        entitys.Action = "Improve";
+                        entitys.Before = entity.BeforeAllow;
+                        entitys.After = entity.AfterAllow;
+                        entitys.BPFCEstablishID = entity.BPFCEstablishID;
+                        entitys.UserID = entity.UserID;
+                        entitys.GlueID = entity.GlueID;
+                    }
+                    checkBPFC.ApprovalStatus = false;
+                    checkBPFC.FinishedStatus = false;
+                    await _repoBPFCEstablish.SaveAll();
+                }
+                else if (checkBPFC.FinishedStatus == true && checkBPFC.ApprovalStatus == false)
+                {
+                    if (entity.Action == "Consumption")
+                    {
+                        entitys.Action = "Modified";
+                        entitys.Before = entity.Before;
+                        entitys.After = entity.After;
+                        entitys.BPFCEstablishID = entity.BPFCEstablishID;
+                        entitys.UserID = entity.UserID;
+                        entitys.GlueID = entity.GlueID;
+                    }
+                    else
+                    {
+                        entitys.Action = "Modified";
+                        entitys.Before = entity.BeforeAllow;
+                        entitys.After = entity.AfterAllow;
+                        entitys.BPFCEstablishID = entity.BPFCEstablishID;
+                        entitys.UserID = entity.UserID;
+                        entitys.GlueID = entity.GlueID;
+                    }
+
+                }
+                else
+                {
+                    if (entity.Action == "Consumption")
+                    {
+                        entitys.Action = "Update";
+                        entitys.Before = entity.Before;
+                        entitys.After = entity.After;
+                        entitys.BPFCEstablishID = entity.BPFCEstablishID;
+                        entitys.UserID = entity.UserID;
+                        entitys.GlueID = entity.GlueID;
+                    }
+                    else
+                    {
+
+                        entitys.Action = "Update";
+                        entitys.Before = entity.BeforeAllow;
+                        entitys.After = entity.AfterAllow;
+                        entitys.BPFCEstablishID = entity.BPFCEstablishID;
+                        entitys.UserID = entity.UserID;
+                        entitys.GlueID = entity.GlueID;
+                    }
+
+                }
+
+            }
+            else
+            {
+                if (entity.Action == "Created")
+                {
+                    entitys.Action = entity.Action;
+                    entitys.Before = "";
+                    entitys.After = "";
+                    entitys.BPFCEstablishID = entity.BPFCEstablishID;
+                    entitys.UserID = entity.UserID;
+                    entitys.GlueID = entity.GlueID;
+                }
+            }
+
+
+            try
+            {
+                _repoBPFCHistory.Add(entitys);
+                await _repoBPFCHistory.SaveAll();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+
+            }
         }
 
         //Lấy Brand theo Brand_Id
@@ -312,7 +438,6 @@ namespace EC_API._Services.Services
 
         public async Task<object> Done(int bpfcID, int userid)
         {
-
             var item = _repoBPFCEstablish.FindById(bpfcID);
             item.CreatedBy = userid;
             try
@@ -338,6 +463,7 @@ namespace EC_API._Services.Services
                 else
                 {
                     item.FinishedStatus = !item.FinishedStatus;
+
                     return new
                     {
                         status = await _repoBPFCEstablish.SaveAll(),
@@ -379,15 +505,56 @@ namespace EC_API._Services.Services
             var item = _repoBPFCEstablish.FindById(bpfcID);
             try
             {
+
                 item.FinishedStatus = false;
                 item.ApprovalStatus = false;
                 item.ApprovalBy = userid;
+                //add Reject vao history
+                var result = new BPFCHistory();
+                result.Action = "Rejected";
+                result.BPFCEstablishID = bpfcID;
+                var remark = _repoComment.FindAll().Where(x => x.BPFCEstablishID == bpfcID).OrderBy(y => y.CreatedDate).LastOrDefault();
+                if (remark == null)
+                {
+                    //rollback
+                    return new
+                    {
+                        status = false,
+                        message = "Please Enter new comment to Reject BPFC !"
+                    };
+                }
+                result.Remark = remark.Content;
+                result.UserID = userid;
+                var timePresent = DateTime.Now;
+                var timeLast = Convert.ToDateTime(remark.CreatedDate);
+                var compare = DateTime.Compare(timePresent.Date, timeLast.Date);
+                if (compare > 0)
+                {
+                    return new
+                    {
+                        status = false,
+                        message = "The Lastest comment allow 1 Hour , Please Enter new comment to Reject BPFC !",
+                        userId = item.CreatedBy
+                    };
+                }
+                if (compare == 0 && timePresent.TimeOfDay.TotalHours - timeLast.TimeOfDay.TotalHours > 1)
+                {
+                    return new
+                    {
+                        status = false,
+                        message = "The Lastest comment allow 1 Hour , Please Enter new comment to Reject BPFC !",
+                        userId = item.CreatedBy
+                    };
+                }
+                _repoBPFCHistory.Add(result);
+                var status2 = await _repoBPFCEstablish.SaveAll();
                 return new
                 {
-                    status = await _repoBPFCEstablish.SaveAll(),
+                    status = status2,
                     message = "The model name has been rejected!!!",
                     userId = item.CreatedBy
                 };
+
             }
             catch (Exception ex)
             {
@@ -397,7 +564,6 @@ namespace EC_API._Services.Services
                     message = ex.Message
                 };
             }
-            throw new System.NotImplementedException();
         }
 
         public async Task<List<BPFCStatusDto>> FilterByApprovedStatus()
@@ -616,6 +782,19 @@ namespace EC_API._Services.Services
             var item = await _repoBPFCEstablish.FindAll().FirstOrDefaultAsync(x => x.ID == entity.ID);
             item.Season = entity.Season;
             return await _repoBPFCEstablish.SaveAll();
+        }
+
+        public async Task<object> LoadBPFCHistory(int bpfcID)
+        {
+            var model = await _repoBPFCHistory.FindAll().Where(x => x.BPFCEstablishID == bpfcID).OrderByDescending(y => y.CreatedTime).ToListAsync();
+            return model;
+        }
+
+        public async Task<bool> UpdateBPFCHistory(BPFCHistory entity)
+        {
+            var item = await _repoBPFCHistory.FindAll().FirstOrDefaultAsync(x => x.ID == entity.ID);
+            item.Remark = entity.Remark;
+            return await _repoBPFCHistory.SaveAll();
         }
     }
 }

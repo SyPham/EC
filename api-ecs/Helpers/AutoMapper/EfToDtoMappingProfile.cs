@@ -77,6 +77,10 @@ namespace EC_API.Helpers.AutoMapper
              .ForMember(d => d.ModelNo, o => o.MapFrom(x => x.ModelNo.Name))
              .ForMember(d => d.ArticleNo, o => o.MapFrom(x => x.ArticleNo.Name))
              .ForMember(d => d.ArtProcess, o => o.MapFrom(x => x.ArtProcess.Process.Name));
+            CreateMap<BuildingGlueForCreateDto, BuildingGlue>();
+            CreateMap<IngredientInfoDto, IngredientInfo>();
+            CreateMap<PlanForCloneDto, Plan>();
+
         }
 
     }

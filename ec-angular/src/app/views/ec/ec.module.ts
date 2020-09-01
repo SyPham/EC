@@ -59,6 +59,8 @@ import { BpfcStatusComponent } from './bpfc-status/bpfc-status.component';
 import { AutofocusDirective } from './focus.directive';
 import { AutoSelectDirective } from './select.directive';
 import { GlueHistoryComponent } from './summary/glue-history/glue-history.component';
+import { SelectTextDirective } from './select.text.directive';
+import { ScanQrcodeFromIngredientComponent } from './ScanQrcodeFromIngredient/ScanQrcodeFromIngredient.component';
 
 setCulture('de-DE');
 
@@ -132,8 +134,10 @@ if (lang) {
     BpfcComponent,
     BpfcStatusComponent,
     AutofocusDirective,
+    SelectTextDirective,
     AutoSelectDirective,
-    GlueHistoryComponent
+    GlueHistoryComponent,
+    ScanQrcodeFromIngredientComponent
   ]
 })
 export class ECModule { }

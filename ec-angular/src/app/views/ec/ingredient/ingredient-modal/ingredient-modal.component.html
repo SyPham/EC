@@ -10,12 +10,20 @@
     <input [(ngModel)]="ingredient.id" type="text" class="form-control">
   </div>
   <div class="form-group">
-    <label for="">Name</label>
+    <label for="">Ingredient Name</label>
     <input type="text" [(ngModel)]="ingredient.name" (blur)="onBlur($event)" class="form-control">
   </div>
   <div class="form-group">
     <label for="">VOC (%)</label>
     <input type="text" [(ngModel)]="ingredient.voc" (blur)="onBlur($event)" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="">Material #</label>
+    <input type="text" [(ngModel)]="ingredient.materialNO" (blur)="onBlur($event)" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="">Unit</label>
+    <input type="text" [(ngModel)]="ingredient.unit" (blur)="onBlur($event)" class="form-control">
   </div>
   <div class="form-group">
     <label for="">Expired Time (by mins)</label>

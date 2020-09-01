@@ -1,0 +1,17 @@
+input.success-scan {
+  width: 100%;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: none;
+  background-color: #3CBC8D;
+  color: white;
+  font-weight: bold
+}
+input.error-scan {
+  width: 100%;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: none;
+  background-color: #dc3545;
+  color: white;
+}

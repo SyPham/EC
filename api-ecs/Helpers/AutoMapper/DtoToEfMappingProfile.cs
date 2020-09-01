@@ -47,7 +47,9 @@ namespace EC_API.Helpers.AutoMapper
             CreateMap<MixingInfo, MixingInfoDto>()
              .ForMember(d => d.RealTotal, o => o.MapFrom(real => real.ChemicalA.ToDouble() + real.ChemicalB.ToDouble() + real.ChemicalC.ToDouble() + real.ChemicalD.ToDouble() + real.ChemicalE.ToDouble()));
             CreateMap<MixingInfo, MixingInfoForCreateDto>();
-
+            CreateMap<BuildingGlue, BuildingGlueForCreateDto>();
+            CreateMap<IngredientInfo, IngredientInfoDto>();
+            CreateMap<Plan, PlanForCloneDto>();
             //CreateMap<AuditTypeDto, MES_Audit_Type_M>();
         }
     }

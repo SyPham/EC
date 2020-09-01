@@ -34,6 +34,7 @@ namespace EC_API.Controllers
             return Ok(ingredients);
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -41,6 +42,12 @@ namespace EC_API.Controllers
             return Ok(ingredients);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllIngredientInfo()
+        {
+            var ingredientsInfo = await _ingredientService.GetAllIngredientInfoAsync();
+            return Ok(ingredientsInfo);
+        }
         [HttpGet("{text}")]
         public async Task<IActionResult> Search([FromQuery] PaginationParams param, string text)
         {
@@ -105,6 +112,24 @@ namespace EC_API.Controllers
         public async Task<IActionResult> ScanQRCode(string qrCode)
         {
             return Ok(await _ingredientService.ScanQRCode(qrCode));
+        }
+
+        [HttpGet("{qrCode}")]
+        public async Task<IActionResult> ScanQRCodeFromChemialWareHouse(string qrCode)
+        {
+            return Ok(await _ingredientService.ScanQRCodeFromChemialWareHouse(qrCode));
+        }
+
+        [HttpGet("{qrCode}/{start}/{end}")]
+        public async Task<IActionResult> ScanQRCodeFromChemialWareHouseDate(string qrCode , string start , string end)
+        {
+            return Ok(await _ingredientService.ScanQRCodeFromChemialWareHouseDate(qrCode,start,end));
+        }
+
+        [HttpPost("{qrCode}/{consump}")]
+        public async Task<IActionResult> UpdateConsumptionChemialWareHouse(string qrCode , int consump)
+        {
+            return Ok(await _ingredientService.UpdateConsumptionChemialWareHouse(qrCode,consump));
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
@@ -282,6 +307,12 @@ namespace EC_API.Controllers
         {
             return Ok(_ingredientService.GetById(ID));
         }
-
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteIngredientInfo(int id)
+        {
+            if (await _ingredientService.DeleteIngredientInfo(id))
+                return NoContent();
+            throw new Exception("Error deleting the brand");
+        }
     }
 }

@@ -6,6 +6,7 @@ using EC_API._Services.Interface;
 using EC_API.DTO;
 using EC_API.Helpers;
 using EC_API.Helpers.Enum;
+using EC_API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
@@ -31,6 +32,29 @@ namespace EC_API.Controllers
         {
             return Ok(await _bPFCEstablishService.GetAllAsync());
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllHistory()
+        {
+            return Ok(await _bPFCEstablishService.GetAllHistoryAsync());
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<BPFCHistoryDto>> AddBPFCHistory(BPFCHistoryDto entity)
+        {
+            return Ok(await _bPFCEstablishService.Create(entity));
+        }
+        [HttpPut]
+        public async Task<ActionResult<BPFCHistory>> UpdateBPFCHistory(BPFCHistory entity)
+        {
+            return Ok(await _bPFCEstablishService.UpdateBPFCHistory(entity));
+        }
+        [HttpGet("{bpfcID}")]
+        public async Task<ActionResult<BPFCHistoryDto>> LoadBPFCHistory(int bpfcID)
+        {
+            return Ok(await _bPFCEstablishService.LoadBPFCHistory(bpfcID));
+        }
+
         [HttpPost]
         public async Task<IActionResult> GetBPFCID(GetBPFCIDDto bpfcInfo)
         {

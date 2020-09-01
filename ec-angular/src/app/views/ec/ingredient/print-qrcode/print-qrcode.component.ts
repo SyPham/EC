@@ -28,13 +28,14 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
   public displayTextMethod: DisplayTextModel = {
     visibility: false
   };
+  public text: any;
   constructor(
     private route: ActivatedRoute,
     private datePipe: DatePipe,
     private ingredientService: IngredientService,
   ) {
-      this.dateprints = this.datePipe.transform(this.dateprint, 'MM-dd-yyyy');
-    }
+    this.dateprints = this.datePipe.transform(this.dateprint, 'MM-dd-yyyy');
+  }
 
   ngOnInit(): void {
     this.onRouteChange();
@@ -64,9 +65,97 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
     <html>
       <head>
       </head>
+      <style>
+          body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #FAFAFA;
+        font: 12pt "Tahoma";
+    }
+    * {
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+    }
+    .page {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 20mm;
+        margin: 10mm auto;
+        border: 1px #D3D3D3 solid;
+        border-radius: 5px;
+        background: white;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+    .subpage {
+        padding: 1cm;
+        border: 5px red solid;
+        height: 257mm;
+        outline: 2cm #FFEAEA solid;
+    }
+     .content {
+        height: 221px;
+         border: 1px #D3D3D3 solid;
+    }
+    .content .qrcode {
+      float:left;
+
+      width: 177px;
+      height:177px;
+      margin-top: 12px;
+      margin-bottom: 12px;
+      margin-left: 5px;
+       border: 1px #D3D3D3 solid;
+    }
+    .content .info {
+       float:left;
+       list-style: none;
+    }
+    .content .info ul {
+       float:left;
+       list-style: none;
+       padding: 0;
+       margin: 0;
+      margin-top: 25px;
+    }
+    .content .info ul li.subInfo {
+      padding: .75rem 1.25rem;
+    }
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    @media print {
+        html, body {
+            width: 210mm;
+            height: 297mm;
+        }
+        .page {
+            margin: 0;
+            border: initial;
+            border-radius: initial;
+            width: initial;
+            min-height: initial;
+            box-shadow: initial;
+            background: initial;
+            page-break-after: always;
+        }
+    }
+      </style>
       <body onload="window.print(); window.close()">
-        <h1 style="text-align: center"> ${printContent.innerHTML}</h1>
-        <h2 style="text-align: center">${ this.barcode.displayText.text} </h2>
+      <div class='content'>
+        <div class='qrcode'>
+         ${printContent.innerHTML}
+         </div>
+          <div class='info'>
+          <ul>
+            <li class='subInfo'>${ this.text}</li>
+              <li class='subInfo'>NSX: </li>
+              <li class='subInfo'>NHH: </li>
+          </ul>
+         </div>
+      </div>
       </body>
     </html>
     `);
@@ -79,6 +168,7 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
     this.route.data.subscribe(data => {
       this.qrcode = this.route.snapshot.paramMap.get('code');
       this.name = this.route.snapshot.paramMap.get('name');
+      this.text = this.route.snapshot.paramMap.get('name');
       this.id = this.route.snapshot.params.id;
     });
   }
@@ -91,18 +181,21 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
     this.dateprints = this.datePipe.transform(d, 'MM-dd-yyyy');
     // tslint:disable-next-line: prefer-const
     let Ingredient = {
-      id: this.route.snapshot.params.id,
+      id: Number(this.route.snapshot.params.id),
       manufacturingDate: printtime
     };
-    this.ingredientService.UpdatePrint(Ingredient).subscribe(() => {
-      // this.barcode.displayText.visibility = true;
-      if (printtime === this.datePipe.transform(this.dateValueDefault, 'MM-dd-yyyy') ) {
-        this.barcode.displayText.text = this.name;
-      } else {
-        this.barcode.displayText.text = this.name + ' - ' +
-        this.datePipe.transform(this.dateValue, 'MM/dd/yyyy') + ' - ' +
-        this.datePipe.transform(this.dateprints, 'MM/dd/yyyy');
-      }
-    });
+    if (printtime !== this.datePipe.transform(this.dateValueDefault, 'MM-dd-yyyy')) {
+      this.ingredientService.UpdatePrint(Ingredient).subscribe(() => {
+        if (printtime === this.datePipe.transform(this.dateValueDefault, 'MM-dd-yyyy')) {
+          this.text = this.name;
+        } else {
+          this.text = this.name +
+            ' ' + this.datePipe.transform(this.dateValue, 'MM/dd/yyyy')
+            + ' ' + this.datePipe.transform(this.dateprints, 'MM/dd/yyyy');
+        }
+      });
+    }
   }
 }
+
+
