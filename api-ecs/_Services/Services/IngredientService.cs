@@ -18,11 +18,12 @@ namespace EC_API._Services.Services
     {
         private readonly IIngredientRepository _repoIngredient;
         private readonly IIngredientInfoRepository _repoIngredientInfo;
+        private readonly IIngredientInfoReportRepository _repoIngredientInfoReport;
         private readonly ISupplierRepository _repoSupplier;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configMapper;
         private readonly IHttpContextAccessor _accessor;
-        public IngredientService(IIngredientRepository repoIngredient,IHttpContextAccessor accessor, IIngredientInfoRepository repoIngredientInfo, ISupplierRepository repoSupplier, IMapper mapper, MapperConfiguration configMapper)
+        public IngredientService(IIngredientInfoReportRepository repoIngredientInfoReport, IIngredientRepository repoIngredient, IHttpContextAccessor accessor, IIngredientInfoRepository repoIngredientInfo, ISupplierRepository repoSupplier, IMapper mapper, MapperConfiguration configMapper)
         {
             _configMapper = configMapper;
             _mapper = mapper;
@@ -30,6 +31,7 @@ namespace EC_API._Services.Services
             _repoIngredientInfo = repoIngredientInfo;
             _repoSupplier = repoSupplier;
             _accessor = accessor;
+            _repoIngredientInfoReport = repoIngredientInfoReport;
         }
         public async Task<bool> CheckExists(int id)
         {
@@ -55,7 +57,7 @@ namespace EC_API._Services.Services
         public async Task<bool> AddRangeAsync(List<IngredientForImportExcelDto> model)
         {
             var ingredients = _mapper.Map<List<Ingredient>>(model);
-            ingredients.ForEach( ingredient => {ingredient.isShow = true;});
+            ingredients.ForEach(ingredient => { ingredient.isShow = true; });
             _repoIngredient.AddRange(ingredients);
             return await _repoIngredient.SaveAll();
         }
@@ -79,7 +81,7 @@ namespace EC_API._Services.Services
         public async Task<PagedList<IngredientDto>> Search(PaginationParams param, object text)
         {
             var lists = _repoIngredient.FindAll().Where(x => x.isShow == true).Include(x => x.Supplier).ProjectTo<IngredientDto>(_configMapper)
-            .Where(x => x.Code.Contains(text.ToSafetyString()) || x.Name.Contains(text.ToSafetyString()) || x.Supplier.Contains(text.ToSafetyString()) )
+            .Where(x => x.Code.Contains(text.ToSafetyString()) || x.Name.Contains(text.ToSafetyString()) || x.Supplier.Contains(text.ToSafetyString()))
             .OrderByDescending(x => x.ID);
             return await PagedList<IngredientDto>.CreateAsync(lists, param.PageNumber, param.PageSize);
         }
@@ -108,7 +110,7 @@ namespace EC_API._Services.Services
         //Lấy toàn bộ danh sách Ingredient 
         public async Task<List<IngredientDto>> GetAllAsync()
         {
-            return await _repoIngredient.FindAll().Where(x=>x.isShow == true).Include(x => x.Supplier).ProjectTo<IngredientDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
+            return await _repoIngredient.FindAll().Where(x => x.isShow == true).Include(x => x.Supplier).ProjectTo<IngredientDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
 
         public async Task<List<IngredientInfoDto>> GetAllIngredientInfoAsync()
@@ -116,6 +118,13 @@ namespace EC_API._Services.Services
             var resultStart = DateTime.Now;
             var resultEnd = DateTime.Now;
             return await _repoIngredientInfo.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date).ProjectTo<IngredientInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
+        }
+
+        public async Task<List<IngredientInfoReportDto>> GetAllIngredientInfoReportAsync()
+        {
+            var resultStart = DateTime.Now;
+            var resultEnd = DateTime.Now;
+            return await _repoIngredientInfoReport.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date && x.Qty > 0).ProjectTo<IngredientInfoReportDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
 
         //Lấy Ingredient theo Ingredient_Id
@@ -145,13 +154,79 @@ namespace EC_API._Services.Services
 
         public async Task<IngredientDto> ScanQRCode(string qrCode)
         {
-            var ingredient =  await _repoIngredient.FindAll().Where(x => x.isShow == true).FirstOrDefaultAsync(x => x.Code.Equals(qrCode));
+            var ingredient = await _repoIngredient.FindAll().Where(x => x.isShow == true).FirstOrDefaultAsync(x => x.Code.Equals(qrCode));
             var result = _mapper.Map<IngredientDto>(ingredient);
             return result;
         }
 
         public async Task<object> ScanQRCodeFromChemialWareHouse(string qrCode)
         {
+
+            var supModel = _repoSupplier.GetAll();
+            var Barcode = qrCode.Split('-', '-')[2];
+            var ingredientID = _repoIngredient.FindAll().FirstOrDefault(x => x.Code.Equals(Barcode)).ID;
+            var model = _repoIngredient.FindById(ingredientID);
+            var ProductionDate = qrCode.Split('-')[0];
+            var Batch = qrCode.Split('-', '-')[1];
+            var ProductionDates = Convert.ToDateTime(ProductionDate.Substring(0, 4) + "/" + ProductionDate.Substring(4, 2) + "/" + ProductionDate.Substring(6, 2));
+            var resultStart = DateTime.Now;
+            var resultEnd = DateTime.Now;
+            var data = await CreateIngredientInfo(new IngredientInfo
+            {
+                Name = model.Name,
+                ExpiredTime = model.ExpiredTime,
+                ManufacturingDate = ProductionDates.Date,
+                SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
+                Qty = model.Unit.ToInt(),
+                Batch = Batch,
+                Consumption = 0,
+                Code = model.Code
+            });
+
+            if (await _repoIngredientInfoReport.CheckBarCodeExists(Barcode))
+            {
+                var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == Barcode && x.CreatedDate <= resultEnd.Date && x.CreatedDate >= resultStart.Date);
+                if (result != null)
+                {
+                    result.Qty = model.Unit.ToInt() + result.Qty;
+                    await UpdateIngredientInfoReport(result);
+                }
+                else
+                {
+                    await CreateIngredientInfoReport(new IngredientInfoReport
+                    {
+
+                        Name = model.Name,
+                        ExpiredTime = model.ExpiredTime,
+                        ManufacturingDate = ProductionDates.Date,
+                        SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
+                        Qty = model.Unit.ToInt(),
+                        Consumption = 0,
+                        Code = model.Code,
+                        Batch = Batch,
+                        IngredientInfoID = data.ID
+                    });
+                }
+            }
+            else
+                await CreateIngredientInfoReport(new IngredientInfoReport
+                {
+                    Name = model.Name,
+                    ExpiredTime = model.ExpiredTime,
+                    ManufacturingDate = ProductionDates.Date,
+                    SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
+                    Qty = model.Unit.ToInt(),
+                    Batch = Batch,
+                    Consumption = 0,
+                    Code = model.Code,
+                    IngredientInfoID = data.ID
+                });
+            return true;
+        }
+
+        public async Task<object> ScanQRCodeFromChemialWareHouseDate(string qrCode, string start, string end)
+        {
+
             var supModel = _repoSupplier.GetAll();
             var modelID = _repoIngredient.FindAll().FirstOrDefault(x => x.Code.Equals(qrCode) && x.isShow == true).ID;
             var model = _repoIngredient.FindById(modelID);
@@ -160,15 +235,16 @@ namespace EC_API._Services.Services
             if (await _repoIngredientInfo.CheckBarCodeExists(qrCode))
             {
                 var result = _repoIngredientInfo.FindAll().FirstOrDefault(x => x.Code == qrCode && x.CreatedDate <= resultEnd.Date && x.CreatedDate >= resultStart.Date);
-                if(result != null)
+                if (result != null)
                 {
                     result.Qty = model.Unit.ToInt() + result.Qty;
                     await UpdateIngredientInfo(result);
-                } else
+                }
+                else
                 {
                     var data = await CreateIngredientInfo(new IngredientInfo
                     {
-                       
+
                         Name = model.Name,
                         ExpiredTime = model.ExpiredTime,
                         ManufacturingDate = model.ManufacturingDate,
@@ -193,27 +269,6 @@ namespace EC_API._Services.Services
                 });
             }
             return true;
-            
-        }
-
-        public async Task<object> ScanQRCodeFromChemialWareHouseDate(string qrCode,string start , string end)
-        {
-            var supModel = _repoSupplier.GetAll();
-            var ingredientID = _repoIngredient.FindAll().FirstOrDefault(x => x.Code.Equals(qrCode)).ID;
-            var model = _repoIngredient.FindById(ingredientID);
-            var resultStart = DateTime.Now;
-            var resultEnd = DateTime.Now;
-            await CreateIngredientInfo(new IngredientInfo
-            {
-                Name = model.Name,
-                ExpiredTime = model.ExpiredTime,
-                ManufacturingDate = model.ManufacturingDate,
-                SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
-                Qty = model.Unit.ToInt(),
-                Consumption = 0,
-                Code = model.Code
-            });
-            return true;
 
         }
 
@@ -231,13 +286,41 @@ namespace EC_API._Services.Services
                 return data;
             }
         }
+        public async Task<IngredientInfoReport> CreateIngredientInfoReport(IngredientInfoReport data)
+        {
+            try
+            {
+                _repoIngredientInfoReport.Add(data);
+                await _repoIngredientInfoReport.SaveAll();
+                return data;
+            }
+            catch (Exception)
+            {
 
+                return data;
+            }
+        }
         public async Task<IngredientInfo> UpdateIngredientInfo(IngredientInfo data)
         {
             try
             {
                 _repoIngredientInfo.Update(data);
                 await _repoIngredientInfo.SaveAll();
+                return data;
+            }
+            catch (Exception)
+            {
+
+                return data;
+            }
+        }
+
+        public async Task<IngredientInfoReport> UpdateIngredientInfoReport(IngredientInfoReport data)
+        {
+            try
+            {
+                _repoIngredientInfoReport.Update(data);
+                await _repoIngredientInfoReport.SaveAll();
                 return data;
             }
             catch (Exception)
@@ -268,13 +351,67 @@ namespace EC_API._Services.Services
 
                 throw;
             }
-           
+
         }
-          public async Task<bool> DeleteIngredientInfo(int id)
+
+        public async Task<bool> UpdateConsumptionIngredientReport(string qrCode,string batch , int consump)
+        {
+            try
+            {
+                if (await _repoIngredientInfoReport.CheckBarCodeExists(qrCode))
+                {
+                    var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == qrCode);
+                    result.Consumption = consump;
+                    if (result.Qty != 0)
+                    {
+                        result.Qty = result.Qty - consump;
+                    }
+                    var data = await UpdateIngredientInfoReport(result);
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+        public async Task<bool> DeleteIngredientInfo(int id , string code , int qty)
         {
             var item = _repoIngredientInfo.FindById(id);
             _repoIngredientInfo.Remove(item);
+            await Update(code ,qty);
             return await _repoIngredientInfo.SaveAll();
+        }
+
+        public async Task<bool> DeleteIngredientInfoReport(int id)
+        {
+            var item = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.IngredientInfoID == id).ID;
+            var item2 = _repoIngredientInfoReport.FindById(item);
+            _repoIngredientInfoReport.Remove(item2);
+
+            return await _repoIngredientInfoReport.SaveAll();
+        }
+
+        public async Task<bool> Update(string code , int qty)
+        {
+            try
+            {
+                if (await _repoIngredientInfoReport.CheckBarCodeExists(code))
+                {
+                    var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == code);
+                    result.Qty = result.Qty - qty;
+                    
+                    var data = await UpdateIngredientInfoReport(result);
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

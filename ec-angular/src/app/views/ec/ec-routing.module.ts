@@ -1,3 +1,4 @@
+import { InventoryComponent } from './inventory/inventory.component';
 import { MaterialNameComponent } from './material-name/material-name.component';
 import { PartName2Component } from './part-name2/part-name2.component';
 import { PartName1Component } from './part-name1/part-name1.component';
@@ -81,6 +82,14 @@ const routes: Routes = [
         component: ScanQrcodeFromIngredientComponent,
         data: {
           title: 'scanQrcode'
+        }
+      },
+      {
+        path: 'setting/ingredient/inventory',
+        // resolve: { ingredients: IngredientResolver },
+        component: InventoryComponent,
+        data: {
+          title: 'Inventory'
         }
       },
       {

@@ -4,14 +4,16 @@ using EC_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EC_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200903013346_version1.0.4-AddColumnBatchInredientInfoAndReportsTbl-leo")]
+    partial class version104AddColumnBatchInredientInfoAndReportsTblleo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -459,9 +461,6 @@ namespace EC_API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ExpiredTime")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IngredientInfoID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ManufacturingDate")

@@ -56,17 +56,18 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" [routerLink]="[ '/ec/manage/bpfc-status']">{{ 'BPFC_STATUS' | translate }}</a>
             <a class="dropdown-item" [routerLink]="[ '/ec/manage/workplan']">{{ 'WORK_PLAN' | translate }}</a>
-            
+
           </div>
         </li>
-        
+
         <li class="nav-item dropdown" *ngIf="level === ADMIN || level === SUPERVISOR || level === STAFF || level === WORKER">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {{ 'EXECUTION' | translate }}
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" [routerLink]="[ '/ec/execution/todolist']">{{ 'TODOLIST' | translate }}</a>
-            <a class="dropdown-item" [routerLink]="[ '/ec/setting/ingredient/scanQrcode']">WMS</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/setting/ingredient/scanQrcode']">Receiving</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/setting/ingredient/inventory']">Inventory</a>
             <a class="dropdown-item" [routerLink]="[ '/ec/execution/addition']">{{ 'ADDITION' | translate }}</a>
             <!-- <a class="dropdown-item" [routerLink]="[ '/ec/line']">Addition</a> -->
           </div>

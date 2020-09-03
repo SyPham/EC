@@ -4,6 +4,7 @@ import { AlertifyService } from 'src/app/_core/_service/alertify.service';
 import { DisplayTextModel } from '@syncfusion/ej2-angular-barcode-generator';
 import { IngredientService } from 'src/app/_core/_service/ingredient.service';
 import { DatePipe } from '@angular/common';
+import { ok } from 'assert';
 
 @Component({
   selector: 'app-ScanQrcodeFromIngredient',
@@ -21,7 +22,9 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   @ViewChild('scanText', { static: false }) scanText: ElementRef;
   qrcodeChange: any;
   data: [];
+  public ingredients: any = [];
   test: any =  'form-control';
+  checkCode: boolean ;
   constructor(
     public modalService: NgbModal,
     private alertify: AlertifyService,
@@ -30,26 +33,45 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   ) { }
   public ngOnInit(): void {
     this.getIngredientInfo();
+    this.getAllIngredient();
   }
   public ngAfterViewInit(): void {
 
   }
   onNgModelChangeScanQRCode(args) {
-    if (args.length === 8) {
-      this.ingredientService.scanQRCodeFromChemicalWareHouse(args).subscribe((res: any) => {
-        // console.log(res);
+    let barcode = args.split('-')[2];
+    console.log(barcode);
+    this.findIngredientCode(barcode);
+    if (this.checkCode === true) {
+        this.ingredientService.scanQRCodeFromChemicalWareHouse(args).subscribe((res: any) => {
         if (res === true) {
           this.getIngredientInfo();
         }
       });
+    } else {
+        this.alertify.error('Wrong Chemical!');
     }
   }
   getIngredientInfo() {
-    let start = this.datePipe.transform(Date.now(), 'yyyy-MM-dd');
-    let end = this.datePipe.transform(Date.now(), 'yyyy-MM-dd');
     this.ingredientService.getAllIngredientInfo().subscribe((res: any) => {
       this.data = res ;
       // this.ConvertClass(res);
+    });
+  }
+  findIngredientCode(code) {
+    for (let item of this.ingredients) {
+      if (item.code === code) {
+        // return true;
+        this.checkCode = true ;
+        break;
+      } else {
+        this.checkCode = false ;
+      }
+    }
+  }
+  getAllIngredient() {
+    this.ingredientService.getAllIngredient().subscribe((res: any) => {
+      this.ingredients = res ;
     });
   }
   ConvertClass(res) {
@@ -60,11 +82,15 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
       this.alertify.error('Wrong Chemical!');
     }
   }
-  delete(id){
-    console.log(id);
-    this.ingredientService.deleteIngredientInfo(id).subscribe(() => {
+  delete(item){
+    this.ingredientService.deleteIngredientInfo(item.id, item.code, item.qty).subscribe(() => {
       this.alertify.success('Delete Success!');
       this.getIngredientInfo();
-    })
+    });
+  }
+  confirm() {
+    this.alertify.confirm('Do you want confirm this', 'Do you want confirm this', () => {
+      this.alertify.success('Confirm Success');
+    });
   }
 }

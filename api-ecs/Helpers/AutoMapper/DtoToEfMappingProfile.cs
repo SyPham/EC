@@ -49,6 +49,7 @@ namespace EC_API.Helpers.AutoMapper
             CreateMap<MixingInfo, MixingInfoForCreateDto>();
             CreateMap<BuildingGlue, BuildingGlueForCreateDto>();
             CreateMap<IngredientInfo, IngredientInfoDto>();
+            CreateMap<IngredientInfoReport, IngredientInfoReportDto>();
             CreateMap<Plan, PlanForCloneDto>();
             //CreateMap<AuditTypeDto, MES_Audit_Type_M>();
         }

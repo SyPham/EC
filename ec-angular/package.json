@@ -6,6 +6,7 @@
     "start": "ng serve --open --host 10.4.4.92 --port 1000 --disableHostCheck",
     "pro": "ng serve --open --host 10.4.0.76 --port 1000 --disableHostCheck",
     "dev_henry": "ng serve --open --host 10.4.4.224 --port 1000 --disableHostCheck",
+    "dev_leo": "ng serve --open --host 10.4.4.92 --port 1000 --disableHostCheck",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

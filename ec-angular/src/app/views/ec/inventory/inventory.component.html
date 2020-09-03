@@ -1,9 +1,9 @@
 <div class="card">
   <div class="card-header">
-    <h3>Receiving</h3>
+    <h3>Report-Inventory</h3>
 
   </div>
-  <div class="card-body">
+  <!-- <div class="card-body">
     <div class="row">
       <div class="col-md-12">
         <div class="row">
@@ -22,13 +22,13 @@
               <input [ngClass]="test" [autofocus]="true" autoselect  [ngModel]="qrcodeChange"  (ngModelChange)='onNgModelChangeScanQRCode($event)' type="text">
             </div>
             <div class="col-md-2">
-              <button (click)="confirm()" type="button" class="btn btn-success"><i class="fas fa-save"></i> Confirm</button>
+              <button type="button" class="btn btn-success"><i class="fas fa-save"></i> Submit</button>
             </div>
           </div>
         </ng-container>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <div class="card-body">
     <div class="row">
@@ -43,7 +43,7 @@
               <th style="text-align: center;" scope="col">Batch</th>
               <th style="text-align: center;" scope="col">Expired date</th>
               <th style="text-align: center;" scope="col">Receive Qty (Kg)</th>
-              <th style="text-align: center;" scope="col">Options</th>
+              <th style="text-align: center;" scope="col">Consumption</th>
               <!-- <th style="text-align: center;" scope="col">Comsumption</th> -->
             </tr>
           </thead>
@@ -56,9 +56,10 @@
               <td style="text-align: center;">{{item.batch}}</td>
               <td style="text-align: center;">{{item.expiredTime}}</td>
               <td style="text-align: center;">{{item.qty}}</td>
-              <td style="text-align: center;">
-                <button  (click)="delete(item)" type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-              </td>
+              <td style="text-align: center;">{{item.consumption}}</td>
+              <!-- <td style="text-align: center;">
+                <button  (click)="delete(item.id)" type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+              </td> -->
               <!-- <td style="text-align: center;">{{item.consumption}}</td> -->
             </tr>
           </tbody>

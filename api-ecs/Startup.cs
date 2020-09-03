@@ -153,6 +153,7 @@ namespace EC_API
             services.AddScoped<IMixingRepository, MixingRepository>();
             services.AddScoped<IBuildingGlueRepository, BuildingGlueRepository>();
             services.AddScoped<IIngredientInfoRepository, IngredientInfoRepository>();
+            services.AddScoped<IIngredientInfoReportRepository, IngredientInfoReportRepository>();
             services.AddScoped<IBPFCHistoryRepository, BPFCHistoryRepository>();
 
             //Services

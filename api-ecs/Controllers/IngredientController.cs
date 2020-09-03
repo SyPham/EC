@@ -48,6 +48,13 @@ namespace EC_API.Controllers
             var ingredientsInfo = await _ingredientService.GetAllIngredientInfoAsync();
             return Ok(ingredientsInfo);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllIngredientInfoReport()
+        {
+            var ingredientsInfoReport = await _ingredientService.GetAllIngredientInfoReportAsync();
+            return Ok(ingredientsInfoReport);
+        }
         [HttpGet("{text}")]
         public async Task<IActionResult> Search([FromQuery] PaginationParams param, string text)
         {
@@ -131,6 +138,13 @@ namespace EC_API.Controllers
         {
             return Ok(await _ingredientService.UpdateConsumptionChemialWareHouse(qrCode,consump));
         }
+
+        [HttpPost("{qrCode}/{batch}/{consump}")]
+        public async Task<IActionResult> UpdateConsumptionIngredientReport(string qrCode , string batch , int consump)
+        {
+            return Ok(await _ingredientService.UpdateConsumptionIngredientReport(qrCode,batch,consump));
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
@@ -307,12 +321,10 @@ namespace EC_API.Controllers
         {
             return Ok(_ingredientService.GetById(ID));
         }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteIngredientInfo(int id)
+        [HttpDelete("{id}/{code}/{qty}")]
+        public async Task<IActionResult> DeleteIngredientInfo(int id, string code, int qty)
         {
-            if (await _ingredientService.DeleteIngredientInfo(id))
-                return NoContent();
-            throw new Exception("Error deleting the brand");
+            return Ok(await _ingredientService.DeleteIngredientInfo(id , code , qty));
         }
     }
 }

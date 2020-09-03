@@ -82,8 +82,12 @@ export class IngredientService {
   getAllIngredientInfo() {
     return this.http.get(this.baseUrl + `ingredient/GetAllIngredientInfo`, {});
   }
-  deleteIngredientInfo(id: number) {
-    return this.http.delete(this.baseUrl + 'ingredient/DeleteIngredientInfo/' + id);
+
+  getAllIngredientInfoReport() {
+    return this.http.get(this.baseUrl + `ingredient/GetAllIngredientInfoReport`, {});
+  }
+  deleteIngredientInfo(id: number , code: string, qty: number) {
+    return this.http.delete(this.baseUrl + `ingredient/DeleteIngredientInfo/${id}/${code}/${qty}`);
   }
   UpdateConsumption(qrcode: string , consump: number) {
     return this.http.post(this.baseUrl + `ingredient/UpdateConsumptionChemialWareHouse/${qrcode}/${consump}`, {});
