@@ -1,14 +1,18 @@
 /* input:focus{
     background-color: rgb(252, 248, 54);
   } */
+ 
   #todolist th:nth-child(1), #delegateTable tr td:nth-child(1){
   /* display: none; */
 }
    .my-align{
     vertical-align: middle!important;
     text-align: center!important;
+    font-weight: 700;
   }
-
+  .real {
+    background-color: #b8daff!important;
+  }
   input.error-scan {
     width: 100%;
     padding: 12px 20px;
@@ -76,4 +80,23 @@ input.summary {
 input.summary:focus {
   border-bottom: 3px solid #dc3545 !important;
   border-radius: 0;
+}
+.my-sticky
+{
+  position:sticky;
+  left:0px;
+  z-index: 999;
+  background-color: #ffffff;
+}
+.my-sticky-glue
+{
+  position:sticky;
+  left:80px;
+  z-index: 999;
+  background-color: #ffffff;
+}
+.my-sticky-top {
+  position: sticky;
+    top: 32px;
+    z-index: 1020;
 }

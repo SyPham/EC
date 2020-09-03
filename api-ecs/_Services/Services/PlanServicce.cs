@@ -221,7 +221,7 @@ namespace EC_API._Services.Services
             var currentDate = DateTime.Now.Date;
             var item = _repoBuilding.FindById(building);
             var lineList = await _repoBuilding.FindAll().Where(x => x.ParentID == item.ID).ToListAsync();
-            var plannings = await _repoPlan.FindAll().Where(x => lineList.Select(x => x.ID).Contains(x.BuildingID)).ToListAsync();
+            var plannings = await _repoPlan.FindAll().Where(x => x.DueDate.Date == currentDate && lineList.Select(x => x.ID).Contains(x.BuildingID)).ToListAsync();
 
             // Header
             var header = new List<HeaderForSummary> {
@@ -284,7 +284,7 @@ namespace EC_API._Services.Services
 
             var model = (from glue in _repoGlue.FindAll().ToList()
                          join bpfc in _repoBPFC.FindAll().ToList() on glue.BPFCEstablishID equals bpfc.ID
-                         join plan in _repoPlan.FindAll().ToList() on bpfc.ID equals plan.BPFCEstablishID
+                         join plan in _repoPlan.FindAll().Where(x=> x.DueDate.Date == currentDate).ToList() on bpfc.ID equals plan.BPFCEstablishID
                          join bui in lineList on plan.BuildingID equals bui.ID
                          select new SummaryDto
                          {

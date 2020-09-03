@@ -33,6 +33,8 @@ export class PlanComponent implements OnInit {
     { text: 'Clone', tooltipText: 'Copy', prefixIcon: 'fa fa-copy', id: 'Clone' }
   ];
   public editSettings: object;
+  startDate: object = new Date();
+  endDate: object = new Date();
   bpfcID: number;
   public bpfcData: object;
   public plansSelected: any;
@@ -159,12 +161,6 @@ export class PlanComponent implements OnInit {
 
   actionBegin(args) {
     console.log('actionBegin', args);
-    if (args.action === 'edit') {
-      // args.cancel = true;
-      // this.hourlyOutput = args.data.hourlyOutput;
-      // this.workHour = args.data.workingHour;
-
-    }
     if (args.requestType === 'cancel') {
       this.ClearForm();
     }
@@ -172,9 +168,9 @@ export class PlanComponent implements OnInit {
       this.modalPlan.id = args.data.id || 0;
       this.modalPlan.buildingID = this.buildingNameEdit;
       this.modalPlan.dueDate = this.dueDate;
-      this.modalPlan.workingHour = this.workHour;
-      this.modalPlan.BPFCEstablishID = this.bpfcEdit;
-      this.modalPlan.hourlyOutput = this.hourlyOutput;
+      this.modalPlan.workingHour = args.data.workingHour;
+      this.modalPlan.BPFCEstablishID = args.data.bpfcEstablishID;
+      this.modalPlan.hourlyOutput = args.data.hourlyOutput;
       console.log(this.modalPlan);
       if (this.validForm()) {
         if (args.data.id > 0) {
@@ -241,6 +237,7 @@ export class PlanComponent implements OnInit {
           id: item.id,
           bpfcName: `${item.modelName} - ${item.modelNoName} - ${item.articleName} - ${item.processName}`,
           dueDate: item.dueDate,
+          createdDate: item.createdDate,
           workingHour: item.workingHour,
           hourlyOutput: item.hourlyOutput,
           buildingName: item.buildingName,
@@ -343,6 +340,26 @@ export class PlanComponent implements OnInit {
     this.planService.clonePlan(this.plansSelected).subscribe((res: any) => {
       this.alertify.success('Successfully!');
     });
+  }
+  search(startDate, endDate) {
+    this.planService.search(startDate.toDateString(), endDate.toDateString()).subscribe((res: any) => {
+      this.data = res.map( item => {
+        return {
+          id: item.id,
+          bpfcName: `${item.modelName} - ${item.modelNoName} - ${item.articleName} - ${item.processName}`,
+          dueDate: item.dueDate,
+          createdDate: item.createdDate,
+          workingHour: item.workingHour,
+          hourlyOutput: item.hourlyOutput,
+          buildingName: item.buildingName,
+          buildingID: item.buildingID,
+          bpfcEstablishID: item.bpfcEstablishID
+        };
+      });
+    });
+  }
+  onClickFilter() {
+    this.search(this.startDate, this.endDate);
   }
   // End API
 }

@@ -15,6 +15,11 @@ namespace EC_API.Models
         public string ChemicalC { get; set; }
         public string ChemicalD { get; set; }
         public string ChemicalE { get; set; }
+        public string BatchA { get; set; }
+        public string BatchB { get; set; }
+        public string BatchC { get; set; }
+        public string BatchD { get; set; }
+        public string BatchE { get; set; }
         public int MixBy { get; set; }
         public DateTime ExpiredTime { get; set; }
         public DateTime CreatedTime { get; set; }
