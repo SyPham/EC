@@ -1,7 +1,7 @@
-import { ModalName } from "./../../../_core/_model/modal-name";
-import { ModalNameService } from "./../../../_core/_service/modal-name.service";
-import { ISupplier } from "./../../../_core/_model/Supplier";
-import { IngredientService } from "./../../../_core/_service/ingredient.service";
+import { ModalName } from './../../../_core/_model/modal-name';
+import { ModalNameService } from './../../../_core/_service/modal-name.service';
+import { ISupplier } from './../../../_core/_model/Supplier';
+import { IngredientService } from './../../../_core/_service/ingredient.service';
 import {
   Component,
   OnInit,
@@ -9,66 +9,66 @@ import {
   AfterViewInit,
   QueryList,
   ViewChildren,
-} from "@angular/core";
-import { EmitType } from "@syncfusion/ej2-base";
-import { FilteringEventArgs } from "@syncfusion/ej2-dropdowns";
-import { Query } from "@syncfusion/ej2-data";
+} from '@angular/core';
+import { EmitType } from '@syncfusion/ej2-base';
+import { FilteringEventArgs } from '@syncfusion/ej2-dropdowns';
+import { Query } from '@syncfusion/ej2-data';
 import {
   AccumulationChartComponent,
   IAccLoadedEventArgs,
   AccumulationTheme,
   AccumulationChart,
-} from "@syncfusion/ej2-angular-charts";
-import * as pluginDataLabels from "chartjs-plugin-datalabels";
-import { ChartOptions } from "chart.js";
-import { ActivatedRoute } from "@angular/router";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { GlueModalComponent } from "../glue/glue-modal/glue-modal.component";
+} from '@syncfusion/ej2-angular-charts';
+import * as pluginDataLabels from 'chartjs-plugin-datalabels';
+import { ChartOptions } from 'chart.js';
+import { ActivatedRoute } from '@angular/router';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { GlueModalComponent } from '../glue/glue-modal/glue-modal.component';
 import {
   PageSettingsModel,
   GridComponent,
   IEditCell,
   ToolbarItems,
-} from "@syncfusion/ej2-angular-grids";
+} from '@syncfusion/ej2-angular-grids';
 import {
   EditService,
   ToolbarService,
   PageService,
-} from "@syncfusion/ej2-angular-grids";
-import { IGlue } from "src/app/_core/_model/glue";
-import { Pagination, PaginatedResult } from "src/app/_core/_model/pagination";
-import { IIngredient } from "src/app/_core/_model/Ingredient";
-import { GlueIngredientService } from "src/app/_core/_service/glue-ingredient.service";
-import { GlueService } from "src/app/_core/_service/glue.service";
-import { AlertifyService } from "src/app/_core/_service/alertify.service";
-import { ChartDataService } from "src/app/_core/_service/chart-data.service";
-import { IngredientModalComponent } from "../ingredient/ingredient-modal/ingredient-modal.component";
-import { Tooltip, TooltipEventArgs } from "@syncfusion/ej2-popups";
-import { DropDownListComponent } from "@syncfusion/ej2-angular-dropdowns";
+} from '@syncfusion/ej2-angular-grids';
+import { IGlue } from 'src/app/_core/_model/glue';
+import { Pagination, PaginatedResult } from 'src/app/_core/_model/pagination';
+import { IIngredient } from 'src/app/_core/_model/Ingredient';
+import { GlueIngredientService } from 'src/app/_core/_service/glue-ingredient.service';
+import { GlueService } from 'src/app/_core/_service/glue.service';
+import { AlertifyService } from 'src/app/_core/_service/alertify.service';
+import { ChartDataService } from 'src/app/_core/_service/chart-data.service';
+import { IngredientModalComponent } from '../ingredient/ingredient-modal/ingredient-modal.component';
+import { Tooltip, TooltipEventArgs } from '@syncfusion/ej2-popups';
+import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
 import {
   IGlueIngredientDetail,
   IGlueIngredient,
-} from "src/app/_core/_model/glue-ingredient-detail";
-import { truncateSync } from "fs";
-import { ArticleNoService } from "src/app/_core/_service/articleNoService.service";
-import { IArticleNo } from "src/app/_core/_model/Iarticle-no";
-import { AuthService } from "src/app/_core/_service/auth.service";
-import { TranslateService } from "@ngx-translate/core";
-import { BPFCEstablishService } from "src/app/_core/_service/bpfc-establish.service";
-import { ModelNoService } from "src/app/_core/_service/model-no.service";
-import { ArtProcessService } from "src/app/_core/_service/art-process.service";
-import { AnyAaaaRecord } from "dns";
-import { KindService } from "src/app/_core/_service/kind.service";
-import { PartService } from "src/app/_core/_service/part.service";
-import { MaterialService } from "src/app/_core/_service/material.service";
-import { BuildingUserService } from "src/app/_core/_service/building.user.service";
+} from 'src/app/_core/_model/glue-ingredient-detail';
+import { truncateSync } from 'fs';
+import { ArticleNoService } from 'src/app/_core/_service/articleNoService.service';
+import { IArticleNo } from 'src/app/_core/_model/Iarticle-no';
+import { AuthService } from 'src/app/_core/_service/auth.service';
+import { TranslateService } from '@ngx-translate/core';
+import { BPFCEstablishService } from 'src/app/_core/_service/bpfc-establish.service';
+import { ModelNoService } from 'src/app/_core/_service/model-no.service';
+import { ArtProcessService } from 'src/app/_core/_service/art-process.service';
+import { AnyAaaaRecord } from 'dns';
+import { KindService } from 'src/app/_core/_service/kind.service';
+import { PartService } from 'src/app/_core/_service/part.service';
+import { MaterialService } from 'src/app/_core/_service/material.service';
+import { BuildingUserService } from 'src/app/_core/_service/building.user.service';
 
 declare const $: any;
 const LEVEL_1 = 3;
 @Component({
-  selector: "app-glue-ingredient",
-  templateUrl: "./bpfc.component.html",
-  styleUrls: ["./bpfc.component.css"],
+  selector: 'app-glue-ingredient',
+  templateUrl: './bpfc.component.html',
+  styleUrls: ['./bpfc.component.css'],
   providers: [ToolbarService, EditService, PageService],
 })
 export class BpfcComponent implements OnInit, AfterViewInit {
@@ -81,7 +81,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   modelNoClone: any;
   approvalStatus = false;
   createdStatus = false;
-  role = JSON.parse(localStorage.getItem("user")).User.Role;
+  role = JSON.parse(localStorage.getItem('user')).User.Role;
   selIndex: number[];
   artQuantity: number;
   articleNoID: number;
@@ -93,36 +93,38 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   modifiedGlue: boolean;
   oldDetail: any[];
   selectedRow = [];
-  LANG = localStorage.getItem("lang") || "vi";
+  LANG = localStorage.getItem('lang') || 'vi';
   public sortOptions: object;
   expiredTime: number;
   glueDefaultName: any;
   glueNewName: any;
   glue: IGlue = {
     id: 0,
-    name: "",
-    gluename: "",
-    code: "",
-    createdDate: "",
+    name: '',
+    gluename: '',
+    code: '',
+    createdDate: '',
     partID: 0,
     kindID: 0,
     materialID: 0,
     BPFCEstablishID: 0,
-    consumption: "",
+    consumption: '',
     expiredTime: 0,
     createdBy: 0,
   };
   ingredient: IIngredient = {
     id: 0,
-    name: "",
-    code: "",
+    name: '',
+    code: '',
     percentage: 0,
-    createdDate: "",
+    createdDate: '',
     supplierID: 0,
     position: 0,
     allow: 0,
-    voc: "0",
+    voc: '0',
     expiredTime: 0,
+    materialNO: '',
+    unit: ''
   };
   Editpercentage = {
     glueID: 0,
@@ -153,14 +155,14 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   allowDefault: any;
   percentageChange: any;
   allowChange: any;
-  public toolbarOptions = ["Search", "Delete"];
-  public toolbarOptions2 = ["Search", "Add", "Delete", "Cancel"];
-  public toolbarOptionsHistory = ["Search"];
-  public selectionOptions = { type: "Multiple", mode: "Both" };
+  public toolbarOptions = ['Search', 'Delete'];
+  public toolbarOptions2 = ['Search', 'Add', 'Delete', 'Cancel'];
+  public toolbarOptionsHistory = ['Search'];
+  public selectionOptions = { type: 'Multiple', mode: 'Both' };
   public editSettings: object;
   public editSettingsHis: any = {
     allowEditing: true,
-    mode: "Normal",
+    mode: 'Normal',
     allowEditOnDblClick: true,
   };
   public toolbar: ToolbarItems[] | object;
@@ -168,18 +170,18 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   public orderidrules: object;
   public customeridrules: object;
   public freightrules: object;
-  @ViewChild("grid")
+  @ViewChild('grid')
   public grid: GridComponent;
-  @ViewChild("gridglue")
+  @ViewChild('gridglue')
   public gridglue: GridComponent;
-  @ViewChild("grid2")
+  @ViewChild('grid2')
   public grid2: GridComponent;
   nameGlue: any;
   nameGlues: any;
   detailGlue: boolean;
-  @ViewChild("modelNameDropdownlist")
+  @ViewChild('modelNameDropdownlist')
   public modelNameDropdownlist: DropDownListComponent;
-  @ViewChild("modelNoDropdownlist")
+  @ViewChild('modelNoDropdownlist')
   public modelNoDropdownlist: DropDownListComponent;
   public detailIngredient: any[] = [];
   public percentageCount: any;
@@ -189,31 +191,31 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   public percentageEdit: {};
   public allowEdit: {};
   public totalPercentage = 0;
-  public fieldsBPFCs: object = { text: "name", value: "id" };
-  public fieldsBPFCss: object = { text: "name", value: "id" };
-  public fieldsGlueChemical: object = { text: "name", value: "name" };
-  public textGlue = "Select Model Name";
-  public textModelName = "Select Model Name - Model #";
-  public textGluePartname1 = "Select ";
-  public textGluePartname2 = "Select";
-  public textGluePartname3 = "Select";
-  public textGlueMaterial = "Select ";
-  public fieldsGlue2: object = { text: "name", value: "id" };
+  public fieldsBPFCs: object = { text: 'name', value: 'id' };
+  public fieldsBPFCss: object = { text: 'name', value: 'id' };
+  public fieldsGlueChemical: object = { text: 'name', value: 'name' };
+  public textGlue = 'Select Model Name';
+  public textModelName = 'Select Model Name - Model #';
+  public textGluePartname1 = 'Select ';
+  public textGluePartname2 = 'Select';
+  public textGluePartname3 = 'Select';
+  public textGlueMaterial = 'Select ';
+  public fieldsGlue2: object = { text: 'name', value: 'id' };
   public valueArticleNo: any;
-  public articleNofields: object = { text: "name", value: "id" };
-  public processfields: object = { text: "name", value: "id" };
+  public articleNofields: object = { text: 'name', value: 'id' };
+  public processfields: object = { text: 'name', value: 'id' };
   public processData = [
     {
       id: 1,
-      name: "ASY",
+      name: 'ASY',
     },
     {
       id: 2,
-      name: "STF",
+      name: 'STF',
     },
   ];
   public valueProcess = 1;
-  public textGlue2 = "Select Model No";
+  public textGlue2 = 'Select Model No';
   existGlue: any = false;
   modelNoText: any;
 
@@ -230,14 +232,14 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   partname2: any;
   partname3: any;
   materialname: any;
-  editparamsHis: any = { params: { format: "n" } };
+  editparamsHis: any = { params: { format: 'n' } };
   public dataPosition: object[] = [
-    { id: "0", name: "" },
-    { id: "1", name: "A" },
-    { id: "2", name: "B" },
-    { id: "3", name: "C" },
-    { id: "4", name: "D" },
-    { id: "5", name: "E" },
+    { id: '0', name: '' },
+    { id: '1', name: 'A' },
+    { id: '2', name: 'B' },
+    { id: '3', name: 'C' },
+    { id: '4', name: 'D' },
+    { id: '5', name: 'E' },
   ];
   public countryParams: IEditCell;
   public ingrediented: object[];
@@ -248,34 +250,34 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   public materials: any;
   public MaterialName: object[];
   editParams: IEditCell;
-  public fieldsGlueEdit: object = { text: "name", value: "name" };
-  public fieldsChemical: object = { text: "name", value: "name" };
-  public fieldsposition: object = { text: "name", value: "name" };
+  public fieldsGlueEdit: object = { text: 'name', value: 'name' };
+  public fieldsChemical: object = { text: 'name', value: 'name' };
+  public fieldsposition: object = { text: 'name', value: 'name' };
   public tooltip: Tooltip;
   public ingredientID: any;
   public subID: any;
-  public rowIndex: any = "";
+  public rowIndex: any = '';
   public glueIngredient2 = {
     ingredientID: 0,
     percentage: 0,
     glueID: 0,
-    position: "",
+    position: '',
   };
   public history = {
-    Action: "Created",
+    Action: 'Created',
     BPFCEstablishID: 0,
     GlueID: 0,
-    Before: "",
-    BeforeAllow: "",
-    After: "",
-    AfterAllow: "",
+    Before: '',
+    BeforeAllow: '',
+    After: '',
+    AfterAllow: '',
     UserID: 0,
-    Remark: "",
+    Remark: '',
   };
-  public valuess = "Badminton";
-  @ViewChild("chemicalDropdownlist")
+  public valuess = 'Badminton';
+  @ViewChild('chemicalDropdownlist')
   public chemicalDropdownlist: DropDownListComponent;
-  @ViewChildren("positionDropdownlist")
+  @ViewChildren('positionDropdownlist')
   public positionDropdownlist: QueryList<DropDownListComponent>;
   public A: any;
   public B: any;
@@ -343,7 +345,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    localStorage.removeItem("details");
+    localStorage.removeItem('details');
     this.getModelNames();
     this.getAllUsers();
     this.modelNameID = 0;
@@ -353,12 +355,12 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     this.existGlue = false;
     this.oldDetail = [];
     this.glueIngredientDetail = [];
-    this.removeLocalStore("details");
+    this.removeLocalStore('details');
     this.glueid = 0;
     this.onService();
     this.getAllSupllier();
-    this.sortOptions = { columns: [{ field: "item", direction: "Decending" }] };
-    this.editParams = { params: { value: "" } };
+    this.sortOptions = { columns: [{ field: 'item', direction: 'Decending' }] };
+    this.editParams = { params: { value: '' } };
     if (this.glue.id === 0) {
       this.showBarCode = false;
       this.genaratorGlueCode();
@@ -382,25 +384,25 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       allowEditing: true,
       allowAdding: true,
       allowDeleting: true,
-      mode: "Normal",
+      mode: 'Normal',
     };
     this.toolbar = [
       {
-        text: "Add New",
-        tooltipText: "Add new row",
-        prefixIcon: "e-add",
-        id: "AddNew",
+        text: 'Add New',
+        tooltipText: 'Add new row',
+        prefixIcon: 'e-add',
+        id: 'AddNew',
       },
-      "Edit",
-      "Delete",
-      "Update",
-      "Cancel",
-      "Search",
+      'Edit',
+      'Delete',
+      'Update',
+      'Cancel',
+      'Search',
     ];
     this.orderidrules = { required: true, number: true };
     this.customeridrules = { required: true };
     this.freightrules = { required: true };
-    this.editparams = { paramss: { popupHeight: "300px" } };
+    this.editparams = { paramss: { popupHeight: '300px' } };
     this.getAllBPFC();
   }
   public onFiltering: EmitType<FilteringEventArgs> = (
@@ -409,40 +411,40 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     let query: Query = new Query();
     // frame the query based on search string with filter type.
     query =
-      e.text !== "" ? query.where("name", "contains", e.text, true) : query;
+      e.text !== '' ? query.where('name', 'contains', e.text, true) : query;
     // pass the filter data source, filter query to updateData method.
     e.updateData(this.modelNameData, query);
-  };
+  }
   public onFilteringModelName: EmitType<FilteringEventArgs> = (
     e: FilteringEventArgs
   ) => {
     let query: Query = new Query();
     // frame the query based on search string with filter type.
     query =
-      e.text !== "" ? query.where("name", "contains", e.text, true) : query;
+      e.text !== '' ? query.where('name', 'contains', e.text, true) : query;
     // pass the filter data source, filter query to updateData method.
     e.updateData(this.modelNameData, query);
-  };
+  }
   public onFilteringModelNO: EmitType<FilteringEventArgs> = (
     e: FilteringEventArgs
   ) => {
     let query: Query = new Query();
     // frame the query based on search string with filter type.
     query =
-      e.text !== "" ? query.where("name", "contains", e.text, true) : query;
+      e.text !== '' ? query.where('name', 'contains', e.text, true) : query;
     // pass the filter data source, filter query to updateData method.
     e.updateData(this.modelNoData, query);
-  };
+  }
   public onFilteringArticleNO: EmitType<FilteringEventArgs> = (
     e: FilteringEventArgs
   ) => {
     let query: Query = new Query();
     // frame the query based on search string with filter type.
     query =
-      e.text !== "" ? query.where("name", "contains", e.text, true) : query;
+      e.text !== '' ? query.where('name', 'contains', e.text, true) : query;
     // pass the filter data source, filter query to updateData method.
     e.updateData(this.articleNoData, query);
-  };
+  }
 
   // step 1 select modelname
   onChangeBPFC(args) {
@@ -451,7 +453,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     this.createdStatus = args.itemData.finishedStatus;
     this.modelNameID = args.value;
     this.BPFCID = args.itemData.id;
-    localStorage.removeItem("details");
+    localStorage.removeItem('details');
     this.glue.BPFCEstablishID = this.BPFCID;
     this.getAllGluesByBPFCID(this.BPFCID);
     this.getAllPart();
@@ -471,7 +473,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     this.selIndex = [];
     this.oldDetail = [];
     this.glueIngredientDetail = [];
-    this.removeLocalStore("details");
+    this.removeLocalStore('details');
     this.ingredients1 = [];
     this.ingredients2 = [];
     this.glues = [];
@@ -502,8 +504,8 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   }
   dataBoundGlue() {
     document.querySelectorAll(
-      "button[aria-label=Update] > span.e-tbar-btn-text"
-    )[0].innerHTML = "Save";
+      'button[aria-label=Update] > span.e-tbar-btn-text'
+    )[0].innerHTML = 'Save';
     $('[data-toggle="tooltip"]').tooltip();
     if (this.selectedRow.length) {
       this.gridglue.selectRows(this.selectedRow);
@@ -514,7 +516,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   }
   actionBeginGlue(args) {
     console.log(args);
-    if (args.requestType === "beginEdit") {
+    if (args.requestType === 'beginEdit') {
       this.chemicalNameEdit = args.rowData.name; // chemicalNameEdit or ingredient
       this.pathNameEdit = args.rowData.pathName; // partname
       this.modelNoEdit = args.rowData.modelNo; // modelNo
@@ -526,16 +528,16 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       this.glue.BPFCEstablishID = args.rowData.materialID;
       this.glue.name = args.rowData.name;
       this.glue.expiredTime = this.expiredTime;
-      if (args.rowData.consumption === "") {
-        this.history.Before = "0";
+      if (args.rowData.consumption === '') {
+        this.history.Before = '0';
       } else {
         this.history.Before = `Consumption ${args.rowData.consumption}`;
       }
       this.detailGlue = true;
     }
-    if (args.requestType === "save") {
+    if (args.requestType === 'save') {
       this.glue.id = args.rowData.id || 0;
-      this.glue.code = args.data.code || "";
+      this.glue.code = args.data.code || '';
       this.glue.consumption = args.data.consumption;
       this.glue.kindID = args.data.kindID || null;
       this.glue.partID = args.data.partID || null;
@@ -543,12 +545,12 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       this.glue.BPFCEstablishID = this.BPFCID;
       this.glue.name = this.chemicalNameEdit;
       this.glue.expiredTime = this.expiredTime;
-      this.history.Action = "Consumption";
+      this.history.Action = 'Consumption';
       this.history.BPFCEstablishID = this.BPFCID;
       this.history.GlueID = this.glueid;
       this.history.After = `Consumption ${args.data.consumption}`;
-      this.glue.createdBy = JSON.parse(localStorage.getItem("user")).User.ID;
-      this.history.UserID = JSON.parse(localStorage.getItem("user")).User.ID;
+      this.glue.createdBy = JSON.parse(localStorage.getItem('user')).User.ID;
+      this.history.UserID = JSON.parse(localStorage.getItem('user')).User.ID;
       console.log(this.history);
       this.bPFCEstablishService.AddHistoryBPFC(this.history).subscribe(() => {
         const bpfcInfo = {
@@ -561,20 +563,20 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       });
       this.saveGlue();
     }
-    if (args.requestType === "delete") {
+    if (args.requestType === 'delete') {
       if (args.data[0].id !== 0) {
         this.glueid = args.data[0].id;
         this.glueService.delete(this.glueid).subscribe(
           () => {
             this.getAllGluesByBPFCID(this.BPFCID);
             this.detailGlue = false;
-            this.removeLocalStore("details");
+            this.removeLocalStore('details');
             this.glueIngredientDetail = [];
             this.oldDetail = [];
-            this.alertify.success("Glue has been deleted");
+            this.alertify.success('Glue has been deleted');
           },
           (error) => {
-            this.alertify.error("Failed to delete the Glue");
+            this.alertify.error('Failed to delete the Glue');
           }
         );
       }
@@ -583,27 +585,27 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   rowDeselected(args) {
     // console.log('rowDeselected', args);
     // neu khong fai dang edit thi moi hoi
-    const localstoreDetails = this.getLocalStore("details").sort(
-      this.dynamicSort("position")
+    const localstoreDetails = this.getLocalStore('details').sort(
+      this.dynamicSort('position')
     );
     const check = this.compareArray(this.oldDetail, localstoreDetails);
     if (check === false) {
       if (args.isInteracted === true) {
         this.alertify
           .valid(
-            "Warning",
-            "Are you sure you want to discard the changes this?"
+            'Warning',
+            'Are you sure you want to discard the changes this?'
           )
           .then((result) => {
             // console.log('Are you sure you want to discard the changes this', result);
             this.modified = true;
             // const index = this.gridglue.getSelectedRowIndexes()[0];
             // this.gridglue.selectRow(index);
-            console.log("rowDeselected user dong y bo qua thay doi", args);
+            console.log('rowDeselected user dong y bo qua thay doi', args);
           })
           .catch((err) => {
             console.log(
-              "rowDeselected user KHONG dong y bo qua thay doi",
+              'rowDeselected user KHONG dong y bo qua thay doi',
               args
             );
 
@@ -641,22 +643,22 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   onChangeposition(args, data, index) {
     this.modified = false;
     this.history.BeforeAllow = this.glueNewName;
-    let details = this.getLocalStore("details");
-    if (args.value === "") {
+    let details = this.getLocalStore('details');
+    if (args.value === '') {
       // this.delete(this.glueid, data.id);
     } else {
       const duplicatePositon = details.filter(
         (obj) => obj.position === args.value
       );
       if (duplicatePositon.length > 0) {
-        details = this.getLocalStore("details");
-        this.alertify.warning("Duplicate position!", true);
+        details = this.getLocalStore('details');
+        this.alertify.warning('Duplicate position!', true);
         if (this.positionDropdownlist) {
-          this.positionDropdownlist.toArray()[index].value = "";
+          this.positionDropdownlist.toArray()[index].value = '';
         }
       }
       if (duplicatePositon.length === 0 && args.value !== null) {
-        details = this.getLocalStore("details");
+        details = this.getLocalStore('details');
         this.percentage = 0;
         this.position = args.value;
         const flag = details.filter((item) => {
@@ -671,19 +673,19 @@ export class BpfcComponent implements OnInit, AfterViewInit {
             (obj) => obj.ingredientName === data.name
           );
           details[objIndex].position = args.value;
-          this.setLocalStore("details", details);
-          this.glueIngredientDetail = this.getLocalStore("details");
+          this.setLocalStore('details', details);
+          this.glueIngredientDetail = this.getLocalStore('details');
           this.makeFormula();
           this.updateChemicalList();
           this.grid.refresh();
         } else {
-          details = this.getLocalStore("details");
+          details = this.getLocalStore('details');
           // insert
           const glueIngredient: IGlueIngredient = {
             id: 0,
             glueID: this.glueid,
             ingredientID: data.id,
-            glueName: "",
+            glueName: '',
             ingredientName: data.name,
             percentage: this.percentage,
             position: args.value,
@@ -691,17 +693,17 @@ export class BpfcComponent implements OnInit, AfterViewInit {
             allow: 0,
             expiredTime: data.expiredTime,
           };
-          if (args.value === "A") {
+          if (args.value === 'A') {
             glueIngredient.percentage = 100;
             glueIngredient.expiredTime = data.expiredTime;
           }
-          details = this.getLocalStore("details");
+          details = this.getLocalStore('details');
           details.push(glueIngredient);
-          this.setLocalStore("details", details);
-          this.glueIngredientDetail = this.getLocalStore("details");
+          this.setLocalStore('details', details);
+          this.glueIngredientDetail = this.getLocalStore('details');
           this.makeFormula();
           this.updateChemicalList();
-          if (args.value === "A") {
+          if (args.value === 'A') {
             this.grid.refresh();
           }
         }
@@ -715,7 +717,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
 
   tollbarClickIngredient(args) {
     switch (args.item.text) {
-      case "Add":
+      case 'Add':
         args.cancel = true;
         this.openIngredientModalComponent();
         break;
@@ -738,8 +740,8 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     this.glue.code = this.makeid(8);
   }
   makeid(length) {
-    let result = "";
-    const characters = "0123456789";
+    let result = '';
+    const characters = '0123456789';
     const charactersLength = characters.length;
     for (let i = 0; i < length; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -756,7 +758,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   }
   getLocalStore(key: string) {
     const data = JSON.parse(localStorage.getItem(key)) || [];
-    const details = data.sort(this.dynamicSort("position"));
+    const details = data.sort(this.dynamicSort('position'));
     return details;
   }
   removeLocalStore(key: string) {
@@ -765,7 +767,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   dynamicSort(property) {
     let sortOrder = 1;
 
-    if (property[0] === "-") {
+    if (property[0] === '-') {
       sortOrder = -1;
       property = property.substr(1);
     }
@@ -787,16 +789,16 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   }
   checkDone(data): string {
     if (data.approvalStatus === true && data.finishedStatus === true) {
-      return "Done";
+      return 'Done';
     } else {
-      return "Undone";
+      return 'Undone';
     }
   }
   checkStatus(approvalStatus, finishedStatus): string {
     if (approvalStatus === true && finishedStatus === true) {
-      return "Done";
+      return 'Done';
     } else {
-      return "Undone";
+      return 'Undone';
     }
   }
   /// End Helper ------------------------------------------------------------------------------
@@ -804,86 +806,86 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   renderchemical(): any[] {
     this.glueIngredientDetail = this.glueIngredientDetail || [];
     const details = this.glueIngredientDetail.sort(
-      this.dynamicSort("position")
+      this.dynamicSort('position')
     );
     return details;
   }
 
   makeFormula() {
-    const details = this.getLocalStore("details");
+    const details = this.getLocalStore('details');
     const glueIngredient =
-      details.filter((item) => item.position === "A") || [];
-    this.nameGlue = glueIngredient[0]?.ingredientName || "";
+      details.filter((item) => item.position === 'A') || [];
+    this.nameGlue = glueIngredient[0]?.ingredientName || '';
     this.nameGlues =
       glueIngredient[0]?.ingredientName +
-        "^" +
+        '^' +
         this.glueIngredientDetail[0].allow +
-        "%" || "";
+        '%' || '';
     this.A = glueIngredient[0].ingredientName;
     this.glueIngredientDetail = this.renderchemical();
     if (this.glueIngredientDetail[1] === undefined) {
-      this.B = "";
+      this.B = '';
     } else {
       this.B =
         this.glueIngredientDetail[1].percentage +
-        "%" +
+        '%' +
         this.glueIngredientDetail[1].ingredientName;
       // tslint:disable-next-line: max-line-length
       this.BB =
         this.glueIngredientDetail[1].percentage +
-        "%" +
+        '%' +
         this.glueIngredientDetail[1].ingredientName +
-        "^" +
+        '^' +
         this.glueIngredientDetail[1].allow +
-        "%";
+        '%';
     }
     if (this.glueIngredientDetail[2] === undefined) {
-      this.C = "";
+      this.C = '';
     } else {
       this.C =
         this.glueIngredientDetail[2].percentage +
-        "%" +
+        '%' +
         this.glueIngredientDetail[2].ingredientName;
       // tslint:disable-next-line: max-line-length
       this.CC =
         this.glueIngredientDetail[2].percentage +
-        "%" +
+        '%' +
         this.glueIngredientDetail[2].ingredientName +
-        "^" +
+        '^' +
         this.glueIngredientDetail[2].allow +
-        "%";
+        '%';
     }
     if (this.glueIngredientDetail[3] === undefined) {
-      this.D = "";
+      this.D = '';
     } else {
       this.D =
         this.glueIngredientDetail[3].percentage +
-        "%" +
+        '%' +
         this.glueIngredientDetail[3].ingredientName;
       // tslint:disable-next-line: max-line-length
       this.DD =
         this.glueIngredientDetail[3].percentage +
-        "%" +
+        '%' +
         this.glueIngredientDetail[3].ingredientName +
-        "^" +
+        '^' +
         this.glueIngredientDetail[3].allow +
-        "%";
+        '%';
     }
     if (this.glueIngredientDetail[4] === undefined) {
-      this.E = "";
+      this.E = '';
     } else {
       this.E =
         this.glueIngredientDetail[4].percentage +
-        "%" +
+        '%' +
         this.glueIngredientDetail[4].ingredientName;
       // tslint:disable-next-line: max-line-length
       this.EE =
         this.glueIngredientDetail[4].percentage +
-        "%" +
+        '%' +
         this.glueIngredientDetail[4].ingredientName +
-        "^" +
+        '^' +
         this.glueIngredientDetail[4].allow +
-        "%";
+        '%';
     }
     if (this.glueIngredientDetail.length > 0) {
       this.percentageCount = this.glueIngredientDetail.map((item) => {
@@ -948,82 +950,82 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   getDetail(id) {
     this.glueIngredientService.getDetail(id).subscribe((res: any) => {
       this.glueIngredientDetail = res.glueIngredients;
-      this.setLocalStore("details", this.glueIngredientDetail);
-      this.setLocalStore("detailsTamp", this.glueIngredientDetail);
+      this.setLocalStore('details', this.glueIngredientDetail);
+      this.setLocalStore('detailsTamp', this.glueIngredientDetail);
       this.glueIngredientDetail = this.renderchemical();
       this.oldDetail = this.renderchemical();
       const glueIngredient =
-        this.glueIngredientDetail.filter((item) => item.position === "A") || [];
-      this.nameGlue = glueIngredient[0]?.ingredientName || "";
+        this.glueIngredientDetail.filter((item) => item.position === 'A') || [];
+      this.nameGlue = glueIngredient[0]?.ingredientName || '';
       this.nameGlues =
         glueIngredient[0]?.ingredientName +
-          "^" +
+          '^' +
           this.glueIngredientDetail[0]?.allow +
-          "%" || "";
-      this.A = glueIngredient[0]?.ingredientName || "";
+          '%' || '';
+      this.A = glueIngredient[0]?.ingredientName || '';
       if (this.glueIngredientDetail[1] === undefined) {
-        this.B = "";
+        this.B = '';
       } else {
         this.B =
           this.glueIngredientDetail[1].percentage +
-          "%" +
+          '%' +
           this.glueIngredientDetail[1].ingredientName;
         // tslint:disable-next-line: max-line-length
         this.BB =
           this.glueIngredientDetail[1].percentage +
-          "%" +
+          '%' +
           this.glueIngredientDetail[1].ingredientName +
-          "^" +
+          '^' +
           this.glueIngredientDetail[1].allow +
-          "%";
+          '%';
       }
       if (this.glueIngredientDetail[2] === undefined) {
-        this.C = "";
+        this.C = '';
       } else {
         this.C =
           this.glueIngredientDetail[2].percentage +
-          "%" +
+          '%' +
           this.glueIngredientDetail[2].ingredientName;
         // tslint:disable-next-line: max-line-length
         this.CC =
           this.glueIngredientDetail[2].percentage +
-          "%" +
+          '%' +
           this.glueIngredientDetail[2].ingredientName +
-          "^" +
+          '^' +
           this.glueIngredientDetail[2].allow +
-          "%";
+          '%';
       }
       if (this.glueIngredientDetail[3] === undefined) {
-        this.D = "";
+        this.D = '';
       } else {
         this.D =
           this.glueIngredientDetail[3].percentage +
-          "%" +
+          '%' +
           this.glueIngredientDetail[3].ingredientName;
         // tslint:disable-next-line: max-line-length
         this.DD =
           this.glueIngredientDetail[3].percentage +
-          "%" +
+          '%' +
           this.glueIngredientDetail[3].ingredientName +
-          "^" +
+          '^' +
           this.glueIngredientDetail[3].allow +
-          "%";
+          '%';
       }
       if (this.glueIngredientDetail[4] === undefined) {
-        this.E = "";
+        this.E = '';
       } else {
         this.E =
           this.glueIngredientDetail[4].percentage +
-          "%" +
+          '%' +
           this.glueIngredientDetail[4].ingredientName;
         // tslint:disable-next-line: max-line-length
         this.EE =
           this.glueIngredientDetail[4].percentage +
-          "%" +
+          '%' +
           this.glueIngredientDetail[4].ingredientName +
-          "^" +
+          '^' +
           this.glueIngredientDetail[4].allow +
-          "%";
+          '%';
       }
       if (this.glueIngredientDetail.length > 0) {
         const list: any = [];
@@ -1031,7 +1033,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
           return item.percentage;
         });
         const aaa = this.percentageCount;
-        const str = this.percentageCount.join("+");
+        const str = this.percentageCount.join('+');
         this.percentageCountEdit = this.glueIngredientDetail.map((item) => {
           return item;
         });
@@ -1048,7 +1050,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   }
 
   updateChemicalList() {
-    const details = this.getLocalStore("details");
+    const details = this.getLocalStore('details');
     for (const item of details) {
       const index = this.ingredients1.findIndex(
         (obj) =>
@@ -1074,17 +1076,17 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   }
 
   actionBeginIngridient(args) {
-    if (args.requestType === "beginEdit") {
+    if (args.requestType === 'beginEdit') {
       this.Editpercentage.glueID = this.glueid;
       this.Editpercentage.ingredientID = args.rowData.id;
       this.percentageDefault = args.rowData.percentage;
       this.Editallow.glueID = this.glueid;
-      this.history.BeforeAllow = "";
-      this.history.AfterAllow = "";
+      this.history.BeforeAllow = '';
+      this.history.AfterAllow = '';
       this.Editallow.ingredientID = args.rowData.id;
       this.allowDefault = args.rowData.allow;
     }
-    if (args.requestType === "save") {
+    if (args.requestType === 'save') {
       this.percentageEdit = {
         percentage: Number(args.data.percentage),
         id: Number(args.rowData.id),
@@ -1102,34 +1104,34 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       if (percentageChanged) {
         // update lai percentage
         this.modified = false;
-        const details = this.getLocalStore("details");
+        const details = this.getLocalStore('details');
         const objIndex = details.findIndex(
           (obj) =>
             obj.ingredientName === args.data.name &&
             obj.ingredientID === args.data.id
         );
         details[objIndex].percentage = args.data.percentage;
-        this.setLocalStore("details", details);
+        this.setLocalStore('details', details);
         // this.glueIngredientDetail = this.getLocalStore('details');
         this.updateChemicals();
       }
 
       if (AllowChanged) {
         // update lai allow
-        const details = this.getLocalStore("details");
+        const details = this.getLocalStore('details');
         const objIndex = details.findIndex(
           (obj) =>
             obj.ingredientName === args.data.name &&
             obj.ingredientID === args.data.id
         );
         details[objIndex].allow = args.data.allow;
-        this.setLocalStore("details", details);
+        this.setLocalStore('details', details);
         this.modified = false;
         this.history.BeforeAllow = this.glueNewName;
         this.updateChemicals();
       }
     }
-    if (args.requestType === "delete") {
+    if (args.requestType === 'delete') {
       this.deleteIngredient();
     }
   }
@@ -1217,10 +1219,10 @@ export class BpfcComponent implements OnInit, AfterViewInit {
 
   openIngredientModalComponent() {
     const modalRef = this.modalService.open(IngredientModalComponent, {
-      size: "md",
+      size: 'md',
     });
     modalRef.componentInstance.ingredient = this.ingredient;
-    modalRef.componentInstance.title = "Add Ingredient";
+    modalRef.componentInstance.title = 'Add Ingredient';
     modalRef.result.then(
       (result) => {},
       (reason) => {}
@@ -1228,9 +1230,9 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   }
 
   actionCompleteIngredient(e: any): void {
-    if (e.requestType === "beginEdit") {
+    if (e.requestType === 'beginEdit') {
       e.form.elements.namedItem(this.setFocus.field).focus(); // Set focus to the Target element
-      e.form.elements.namedItem(this.setFocus.field).value = ""; // Set focus to the Target element
+      e.form.elements.namedItem(this.setFocus.field).value = ''; // Set focus to the Target element
       // // console.log(e.form.elements.namedItem(this.setFocus.field));
     }
   }
@@ -1241,31 +1243,31 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   toolbarClick(args: any): void {
     // console.log(args.item.text);
     switch (args.item.text) {
-      case "Add New":
-        const localstoreDetails = this.getLocalStore("details").sort(
-          this.dynamicSort("position")
+      case 'Add New':
+        const localstoreDetails = this.getLocalStore('details').sort(
+          this.dynamicSort('position')
         );
         const check = this.compareArray(this.oldDetail, localstoreDetails);
         if (check === false) {
           this.alertify
             .valid(
-              "Warning",
-              "Are you sure you want to discard the changes this?"
+              'Warning',
+              'Are you sure you want to discard the changes this?'
             )
             .then((result) => {
               const glue: IGlue = {
                 id: 0,
-                name: "1",
-                code: "",
-                gluename: "",
-                createdDate: "",
+                name: '1',
+                code: '',
+                gluename: '',
+                createdDate: '',
                 BPFCEstablishID: this.BPFCID,
                 kindID: null,
                 partID: null,
                 materialID: null,
-                consumption: "",
+                consumption: '',
                 expiredTime: 0,
-                createdBy: JSON.parse(localStorage.getItem("user")).User.ID,
+                createdBy: JSON.parse(localStorage.getItem('user')).User.ID,
               };
               this.glue = glue;
               this.saveGlue();
@@ -1277,17 +1279,17 @@ export class BpfcComponent implements OnInit, AfterViewInit {
         } else {
           const glue: IGlue = {
             id: 0,
-            name: "1",
-            code: "",
-            gluename: "",
-            createdDate: "",
+            name: '1',
+            code: '',
+            gluename: '',
+            createdDate: '',
             BPFCEstablishID: this.BPFCID,
             kindID: null,
             partID: null,
             materialID: null,
-            consumption: "",
+            consumption: '',
             expiredTime: 0,
-            createdBy: JSON.parse(localStorage.getItem("user")).User.ID,
+            createdBy: JSON.parse(localStorage.getItem('user')).User.ID,
           };
           this.glue = glue;
           this.saveGlue();
@@ -1330,14 +1332,14 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       });
   }
   actionBeginHistory(args) {
-    if (args.requestType === "save") {
+    if (args.requestType === 'save') {
       const obj = {
         ID: args.data.id,
         Remark: args.data.remark,
       };
       this.bPFCEstablishService.UpdateHistoryBPFC(obj).subscribe((res: any) => {
         if (res) {
-          this.alertify.success("Update Success");
+          this.alertify.success('Update Success');
         }
       });
     }
@@ -1349,13 +1351,13 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   }
   createdBy(id) {
     if (id === 0) {
-      return "#N/A";
+      return '#N/A';
     }
-    let result = this.userData.filter((item: any) => item.ID === id)[0] as any;
+    const result = this.userData.filter((item: any) => item.ID === id)[0] as any;
     if (result !== undefined) {
       return result.Username;
     } else {
-      return "#N/A";
+      return '#N/A';
     }
   }
   // End BPFC HISTORY
@@ -1363,8 +1365,8 @@ export class BpfcComponent implements OnInit, AfterViewInit {
 
   cloneModelname() {
     this.alertify.confirm(
-      "Clone Model Name",
-      "Are you sure you want to clone this model name?",
+      'Clone Model Name',
+      'Are you sure you want to clone this model name?',
       () => {
         this.modalNameService
           .cloneModelname(
@@ -1374,7 +1376,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
             this.valueProcess
           )
           .subscribe((res) => {
-            this.alertify.success("the model name has been cloned");
+            this.alertify.success('the model name has been cloned');
             this.getAllBPFC();
             this.modalReference.close();
             this.modelNameDropdownlist.hidePopup();
@@ -1386,8 +1388,8 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   // Begin API ------------------------------------------------------------------------------
   cloneArticleModelname() {
     this.alertify.confirm(
-      "Clone Article",
-      "Are you sure you want to clone this Article?",
+      'Clone Article',
+      'Are you sure you want to clone this Article?',
       () => {
         this.modalNameService
           .cloneArticleModelname(
@@ -1398,7 +1400,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
             this.processID
           )
           .subscribe((res) => {
-            this.alertify.success("The Article name has been cloned");
+            this.alertify.success('The Article name has been cloned');
             this.getAllBPFC();
             this.modalReference.close();
             this.modelNameDropdownlist.hidePopup();
@@ -1409,7 +1411,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
 
   delete(glueid, ingredient) {
     this.glueIngredientService.delete(glueid, ingredient).subscribe((res) => {
-      this.alertify.success("GlueIngredient have been deleted!");
+      this.alertify.success('GlueIngredient have been deleted!');
       this.getIngredients();
       this.getDetail(glueid);
     });
@@ -1417,16 +1419,16 @@ export class BpfcComponent implements OnInit, AfterViewInit {
 
   deleteGlue(glue) {
     this.alertify.confirm(
-      "Delete Glue",
+      'Delete Glue',
       'Are you sure you want to delete this GlueID "' + glue.id + '" ?',
       () => {
         this.glueService.delete(glue.id).subscribe(
           () => {
             this.getGlues();
-            this.alertify.success("Glue has been deleted");
+            this.alertify.success('Glue has been deleted');
           },
           (error) => {
-            this.alertify.error("Failed to delete the Glue");
+            this.alertify.error('Failed to delete the Glue');
           }
         );
       }
@@ -1435,7 +1437,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
 
   deleteIngridient(ingredient: IIngredient) {
     this.alertify.confirm(
-      "Delete Ingredient",
+      'Delete Ingredient',
       'Are you sure you want to delete this IngredientID "' +
         ingredient.id +
         '" ?',
@@ -1443,10 +1445,10 @@ export class BpfcComponent implements OnInit, AfterViewInit {
         this.ingredientService.delete(ingredient.id).subscribe(
           () => {
             this.getIngredients();
-            this.alertify.success("Ingredient has been deleted");
+            this.alertify.success('Ingredient has been deleted');
           },
           (error) => {
-            this.alertify.error("Failed to delete the Ingredient");
+            this.alertify.error('Failed to delete the Ingredient');
           }
         );
       }
@@ -1465,7 +1467,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
         this.glueIngredient2.ingredientID = this.ingredientID;
         this.glueIngredient2.percentage = 100;
         this.glueIngredient2.glueID = this.glueid;
-        this.glueIngredient2.position = "A";
+        this.glueIngredient2.position = 'A';
         this.mapGlueIngredient(this.glueIngredient2);
       }
     });
@@ -1477,7 +1479,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       .subscribe((res: any) => {
         this.ingredients1 = res.list1;
         this.ingredients2 = res.list2;
-        const details = this.getLocalStore("details");
+        const details = this.getLocalStore('details');
         for (const item of details) {
           const index = this.ingredients1.findIndex(
             (obj) =>
@@ -1535,7 +1537,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
 
   sortBySup(id) {
     if (this.gridglue.getSelectedRowIndexes().length === 0) {
-      this.alertify.warning("Please select a glue!", true);
+      this.alertify.warning('Please select a glue!', true);
     } else {
       this.subID = id;
       this.ingredientService
@@ -1544,12 +1546,12 @@ export class BpfcComponent implements OnInit, AfterViewInit {
           this.ingredients1 = res.list1;
           this.ingredients2 = res.list2;
           if (id === 0) {
-            const details = this.getLocalStore("details");
+            const details = this.getLocalStore('details');
             this.ingredients1 = details.map((item) => {
               const ingredient: IIngredient = {
                 id: item.ingredientID,
                 name: item.ingredientName,
-                code: "",
+                code: '',
                 percentage: item.percentage,
                 createdDate: item.createdDate,
                 supplierID: 0,
@@ -1557,7 +1559,9 @@ export class BpfcComponent implements OnInit, AfterViewInit {
                 position: item.position,
                 expiredTime: item.expiredTime,
                 voc: item.voc,
-              };
+                materialNO: item.materialNO,
+                unit: item.unit
+                };
               return ingredient;
             });
             this.glueIngredientDetail = details;
@@ -1569,7 +1573,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   }
   saveGlue() {
     if (this.glue.id === 0 || this.glue.id === undefined) {
-      if (this.glue.code === "") {
+      if (this.glue.code === '') {
         this.genaratorGlueCode();
       }
       this.createGlue();
@@ -1581,14 +1585,14 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       }
     }
     this.oldDetail = [];
-    localStorage.removeItem("details");
+    localStorage.removeItem('details');
     this.glueIngredientDetail = [];
     this.gridglue.refresh();
     this.selectedRow = [0];
     this.selIndex = [0];
   }
   getBuilding() {
-    const userID = JSON.parse(localStorage.getItem("user")).User.ID;
+    const userID = JSON.parse(localStorage.getItem('user')).User.ID;
     this.authService.getBuildingByUserID(userID).subscribe((res: any) => {
       res = res || {};
       if (res !== {}) {
@@ -1604,7 +1608,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   createGlue() {
     this.glueService.create(this.glue).subscribe(
       () => {
-        this.alertify.success("Created successed!");
+        this.alertify.success('Created successed!');
         this.getAllGluesByBPFCID(this.BPFCID);
         this.clearGlueForm();
         this.genaratorGlueCode();
@@ -1618,18 +1622,18 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   }
 
   finished() {
-    const userid = JSON.parse(localStorage.getItem("user")).User.ID;
+    const userid = JSON.parse(localStorage.getItem('user')).User.ID;
     if (this.gridglue.getSelectedRowIndexes().length === 0) {
-      this.alertify.warning("Please select a glue and make the fomula!", true);
+      this.alertify.warning('Please select a glue and make the fomula!', true);
     } else {
       const obj = {
-        Action: "Created",
+        Action: 'Created',
         BPFCEstablishID: this.BPFCID,
         GlueID: this.glueid,
-        Before: "",
+        Before: '',
         After: this.GlueNameDefault,
         UserID: userid,
-        Remark: "",
+        Remark: '',
       };
       // this.history.Action = 'Created';
       this.history.BPFCEstablishID = this.BPFCID;
@@ -1642,10 +1646,10 @@ export class BpfcComponent implements OnInit, AfterViewInit {
         .AddHistoryBPFC(this.history)
         .subscribe(() => {});
 
-      const details = this.getLocalStore("details");
+      const details = this.getLocalStore('details');
       const selectedrecords = this.gridglue.getSelectedRecords()[0] as IGlue; // Get the selected records.
       selectedrecords.expiredTime = details.filter(
-        (item) => item.position === "A"
+        (item) => item.position === 'A'
       )[0].expiredTime;
       selectedrecords.kindID =
         selectedrecords.kindID === 0 ? null : selectedrecords.kindID;
@@ -1655,7 +1659,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
         selectedrecords.materialID === 0 ? null : selectedrecords.materialID;
       this.selectedRow = this.gridglue.getSelectedRowIndexes();
       this.glueService.update(selectedrecords).subscribe((res) => {
-        this.alertify.success("Updated successed!");
+        this.alertify.success('Updated successed!');
         this.getAllGluesByBPFCID(this.BPFCID);
         this.detailGlue = true;
         this.modified = true;
@@ -1672,58 +1676,58 @@ export class BpfcComponent implements OnInit, AfterViewInit {
         for (const item of details) {
           this.mapGlueIngredient(item);
         }
-        this.alertify.success("Successfully!");
+        this.alertify.success('Successfully!');
 
         this.modified = true;
       }
     }
   }
   clearGlueForm() {
-    this.glue.gluename = "";
+    this.glue.gluename = '';
     this.glue.kindID = null;
     this.glue.partID = null;
     this.glue.materialID = null;
-    (this.glue.consumption = ""), (this.showBarCode = false);
+    (this.glue.consumption = ''), (this.showBarCode = false);
   }
   update() {
     this.glueService.update(this.glue).subscribe((res) => {
-      this.alertify.success("Updated successed!");
+      this.alertify.success('Updated successed!');
       this.getAllGluesByBPFCID(this.BPFCID);
       this.detailGlue = false;
-      this.history.Action = "Created";
+      this.history.Action = 'Created';
       this.expiredTime = 0;
     });
   }
   updateChemical() {
     this.glueService.updateChemical(this.glue).subscribe((res) => {
-      this.alertify.success("updateChemical successed!");
+      this.alertify.success('updateChemical successed!');
       this.getAllGluesByBPFCID(this.BPFCID);
       this.detailGlue = false;
       this.onChangeChemical = false;
-      this.history.Action = "Created";
+      this.history.Action = 'Created';
     });
   }
   private deleteIngredient() {
     this.ingredientService.delete(this.ingridientID).subscribe(
       () => {
-        const details = this.getLocalStore("details").filter(
+        const details = this.getLocalStore('details').filter(
           (item) => item.ingredientID !== this.ingridientID
         );
-        this.setLocalStore("details", details);
+        this.setLocalStore('details', details);
         this.glueIngredientDetail = details;
         this.getIngredients();
         this.makeFormula();
-        this.alertify.success("Ingredient has been deleted");
+        this.alertify.success('Ingredient has been deleted');
       },
       (error) => {
-        this.alertify.error("Failed to delete the Ingredient");
+        this.alertify.error('Failed to delete the Ingredient');
       }
     );
   }
   approval() {
-    const userid = JSON.parse(localStorage.getItem("user")).User.ID;
+    const userid = JSON.parse(localStorage.getItem('user')).User.ID;
     this.bPFCEstablishService.approval(this.BPFCID, userid).subscribe((res) => {
-      this.alertify.success("The BPFC has been approved!");
+      this.alertify.success('The BPFC has been approved!');
       this.createdStatus = this.approvalStatus;
       const value = this.modelNameDropdownlist.value;
       const bpfc = this.modelNameDropdownlist.getDataByValue(value) as any;
@@ -1735,9 +1739,9 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     });
   }
   done() {
-    const userid = JSON.parse(localStorage.getItem("user")).User.ID;
+    const userid = JSON.parse(localStorage.getItem('user')).User.ID;
     const obj = {
-      Action: "Done",
+      Action: 'Done',
       BPFCEstablishID: this.BPFCID,
       GlueID: 0,
       UserID: userid,
@@ -1792,14 +1796,14 @@ export class BpfcComponent implements OnInit, AfterViewInit {
         this.artProcessData = res.map((item) => {
           return {
             id: item.id,
-            name: item.processID === 1 ? "ASY" : "STF",
+            name: item.processID === 1 ? 'ASY' : 'STF',
           };
         });
       });
   }
   getAllProcess() {
     this.artProcessService.GetAllProcess().subscribe((res: any) => {
-      console.log("getAllProcess", res);
+      console.log('getAllProcess', res);
       this.artProcessDataClone2 = res;
     });
   }
@@ -1844,7 +1848,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       this.BPFCID = bpfc?.id;
       this.approvalStatus = bpfc.approvalStatus;
       this.createdStatus = bpfc.finishedStatus;
-      localStorage.removeItem("details");
+      localStorage.removeItem('details');
       this.glue.BPFCEstablishID = this.BPFCID;
       this.getAllGluesByBPFCID(this.BPFCID);
       this.getAllPart();
@@ -1894,7 +1898,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
         this.artProcessDataClone = res.map((item) => {
           return {
             id: item.id,
-            name: item.ProcessID === 1 ? "ASY" : "STF",
+            name: item.ProcessID === 1 ? 'ASY' : 'STF',
           };
         });
       });
@@ -1902,12 +1906,12 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   clone(clone) {
     this.modalNameService.clone(clone).subscribe((res: any) => {
       if (res.status === true) {
-        this.alertify.success("The BPFC has been cloned successfully!");
+        this.alertify.success('The BPFC has been cloned successfully!');
         this.modalService.dismissAll();
         this.getArtProcessByArticleNoID(this.articleNoID);
         this.clearFormClone();
       } else {
-        this.alertify.error("The BPFC exists!");
+        this.alertify.error('The BPFC exists!');
         // this.modalService.dismissAll();
         // this.clearFormClone();
       }
@@ -1988,7 +1992,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       articleNOID: this.articleNOIDClone,
       artProcessID: Number(this.artProcessIDClone),
       bpfcID: this.BPFCID,
-      cloneBy: JSON.parse(localStorage.getItem("user")).User.ID,
+      cloneBy: JSON.parse(localStorage.getItem('user')).User.ID,
     };
     // console.log(clone);
     this.clone(clone);
@@ -2034,7 +2038,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     let query: Query = new Query();
     // frame the query based on search string with filter type.
     query =
-      e.text !== "" ? query.where("name", "contains", e.text, true) : query;
+      e.text !== '' ? query.where('name', 'contains', e.text, true) : query;
     // pass the filter data source, filter query to updateData method.
     e.updateData(this.modelNameData, query);
   }
@@ -2044,7 +2048,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     let query: Query = new Query();
     // frame the query based on search string with filter type.
     query =
-      e.text !== "" ? query.where("name", "contains", e.text, true) : query;
+      e.text !== '' ? query.where('name', 'contains', e.text, true) : query;
     // pass the filter data source, filter query to updateData method.
     e.updateData(this.modelNoData, query);
   }
@@ -2054,7 +2058,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     let query: Query = new Query();
     // frame the query based on search string with filter type.
     query =
-      e.text !== "" ? query.where("name", "contains", e.text, true) : query;
+      e.text !== '' ? query.where('name', 'contains', e.text, true) : query;
     // pass the filter data source, filter query to updateData method.
     e.updateData(this.articleNoData, query);
   }
@@ -2064,7 +2068,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     let query: Query = new Query();
     // frame the query based on search string with filter type.
     query =
-      e.text !== "" ? query.where("name", "contains", e.text, true) : query;
+      e.text !== '' ? query.where('name', 'contains', e.text, true) : query;
     // pass the filter data source, filter query to updateData method.
     e.updateData(this.artProcessDataClone, query);
   }
