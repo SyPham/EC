@@ -321,10 +321,11 @@ namespace EC_API.Controllers
         {
             return Ok(_ingredientService.GetById(ID));
         }
-        [HttpDelete("{id}/{code}/{qty}")]
-        public async Task<IActionResult> DeleteIngredientInfo(int id, string code, int qty)
+        [HttpDelete("{id}/{code}/{qty}/{batch}")]
+        public async Task<IActionResult> DeleteIngredientInfo(int id, string code, int qty , string batch)
         {
-            return Ok(await _ingredientService.DeleteIngredientInfo(id , code , qty));
+            return Ok(await _ingredientService.DeleteIngredientInfo(id , code , qty , batch));
         }
+
     }
 }
