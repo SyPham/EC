@@ -1,26 +1,32 @@
 <div class="card">
-  <div class="card-header">
+  <div class="card-header d-flex p-0">
     <h3>{{ 'TODOLIST' | translate }}</h3>
+    <ul class="nav nav-pills ml-auto p-2" *ngIf="existGlue">
+      <li class="nav-item"><a class="nav-link table-success" >(*)Consumption</a></li>
+      <li class="nav-item"><a class="nav-link table-warning">(*)Count</a></li>
+      <li class="nav-item"><a class="nav-link table-primary">(*)Actual</a></li>
+    
+    </ul>
   </div>
   <div class="row" *ngIf="existGlue">
     <div class="col-md-12">
       <div class="card-body" style="padding: 0">
-        <table class="table table-bordered table-sm table-responsive" id='todolist'>
+        <table class="table table-bordered table-sm table-responsive" id='todolist' height='800'>
           <thead class="thead-dark">
             <tr>
               <ng-container *ngFor="let item of lineColumns; let i = index">
-                <th class="text-center" colspan="2" *ngIf="item.field === 'TotalConsumption'">
+                <th class="text-center sticky-top" [ngClass]="frozen(item.field)" colspan="2" *ngIf="item.field === 'TotalConsumption'">
                   {{ labelLang(item.field) | translate }}</th>
-                <th class="my-align" rowspan="2"
+                <th class="my-align sticky-top" [ngClass]="frozen(item.field)" rowspan="2"
                   *ngIf="item.field !== 'GlueID' && item.field !== 'TotalConsumption' && item.field !== 'Standard' && item.field !== 'Real' && item.field !== 'Count'">
                   {{ labelLang(item.field) | translate }}</th>
               </ng-container>
-              <th class="my-align" rowspan="2">{{ 'COUNT' | translate }}</th>
-              <th style="vertical-align: middle;" class="text-center" rowspan="2">{{ 'OPTION' | translate }}</th>
+              <th class="my-align sticky-top" rowspan="2">{{ 'COUNT' | translate }}</th>
+              <th style="vertical-align: middle;" class="text-center sticky-top" rowspan="2">{{ 'OPTION' | translate }}</th>
             </tr>
             <tr>
-              <th class="my-align">{{ 'STANDARD' | translate }}</th>
-              <th class="my-align">{{ 'ACTUAL_TODOLIST' | translate }}</th>
+              <th class="my-align my-sticky-top">{{ 'STANDARD' | translate }}</th>
+              <th class="my-align my-sticky-top">{{ 'ACTUAL_TODOLIST' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -29,11 +35,11 @@
               <!-- value -->
               <tr>
                 <ng-container *ngFor="let value of getCellValue(values); let i = index">
-                  <td rowspan=3 class="my-align" *ngIf="hasRowspan(i); else elseBlock">
+                  <td rowspan=3 class="my-align my-sticky"  [ngClass]="frozenBody(i)" *ngIf="hasRowspan(i); else elseBlock">
                     {{value == 0 || value === '0kg' ? 0 : value}}
                   </td>
                   <ng-template #elseBlock>
-                    <td class="my-align">
+                    <td class="my-align table-success" [ngClass]="frozenBody(i)">
                       {{value == 0 || value === '0kg' ? 0 : value}}
                     </td>
                   </ng-template>
@@ -44,27 +50,26 @@
                       class="btn btn-success btn-sm mr-2">{{ 'MIXING' | translate }}</button>
                     <button type="button" onclick="alert('This function will be coming soon')"
                       class="btn btn-warning btn-sm mr-2">{{ 'STIR' | translate }}</button>
-                    <button type="button" (click)="pushHistory(values)"
-                      class="btn btn-sm btn-info">{{ 'HISTORY' | translate }}</button>
+                    <button type="button" (click)="pushHistory(values)" class="btn btn-sm btn-info">{{ 'HISTORY' | translate }}</button>
                   </div>
                 </td>
               </tr>
               <!-- count -->
-              <tr>
+              <tr class="table-warning">
                 <td class="my-align" *ngFor="let value of getValueCell(values.rowCountInfo)">
                   {{value.count}}
                 </td>
               </tr>
                 <!-- actual -->
-              <tr>
+              <tr  class="table-primary">
                 <td class="my-align" (click)='editDomain(value)'
                   *ngFor="let value of getValueCell(values.rowRealInfo); let i = index">
                   <input type="text" *ngIf="!value.editable"
                     [value]="value.value == 0 || value.value === '0kg' ? 0 : value.value + 'kg'"
-                    class="form-control my-align summaryhide">
+                    class="form-control my-align summaryhide real">
                   <input type="text" (blur)='blurTd(value)' *ngIf="value.editable" autofocustext
                     (keypress)='dispatchGlue($event, value)' [(ngModel)]="value.value" style="pointer-events: initial"
-                    [value]="value.value" class="form-control my-align summary">
+                    [value]="value.value" class="form-control my-align summary real">
                 </td>
               </tr>
             </ng-container>

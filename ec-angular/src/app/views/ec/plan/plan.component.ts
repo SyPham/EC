@@ -33,6 +33,8 @@ export class PlanComponent implements OnInit {
     { text: 'Clone', tooltipText: 'Copy', prefixIcon: 'fa fa-copy', id: 'Clone' }
   ];
   public editSettings: object;
+  startDate: object = new Date();
+  endDate: object = new Date();
   bpfcID: number;
   public bpfcData: object;
   public plansSelected: any;
@@ -151,47 +153,48 @@ export class PlanComponent implements OnInit {
   }
 
   actionComplete(args) {
-    if (args.requestType === 'beginEdit' || args.requestType === 'edit') {
-      // (args.form.elements.namedItem('id') as HTMLInputElement).disabled = true;
+    console.log('actionComplete', args);
 
+    if (args.requestType === 'edit') {
+      (args.form.elements.namedItem('createdDate') as HTMLInputElement).disabled = true;
+    }
+    if (args.requestType === 'add') {
+      (args.form.elements.namedItem('createdDate') as HTMLInputElement).disabled = true;
     }
   }
 
   actionBegin(args) {
     console.log('actionBegin', args);
-    if (args.action === 'edit') {
-      // args.cancel = true;
-      // this.hourlyOutput = args.data.hourlyOutput;
-      // this.workHour = args.data.workingHour;
-
-    }
     if (args.requestType === 'cancel') {
       this.ClearForm();
     }
-    if (args.requestType === 'save' && args.action === 'edit') {
-      this.modalPlan.id = args.data.id || 0;
-      this.modalPlan.buildingID = this.buildingNameEdit;
-      this.modalPlan.dueDate = this.dueDate;
-      this.modalPlan.workingHour = this.workHour;
-      this.modalPlan.BPFCEstablishID = this.bpfcEdit;
-      this.modalPlan.hourlyOutput = this.hourlyOutput;
-      console.log(this.modalPlan);
-      if (this.validForm()) {
-        if (args.data.id > 0) {
-          this.planService.update(this.modalPlan).subscribe(res => {
-            this.alertify.success('Updated successed!');
-            this.ClearForm();
-            this.getAll();
-          });
-        } else {
-          this.planService.create(this.modalPlan).subscribe(res => {
-            this.alertify.success('Created successed!');
-            this.getAll();
-            this.ClearForm();
-          });
-        }
-      } else {
-        args.cancel = true;
+
+    if (args.requestType === 'save') {
+      if (args.action === 'edit') {
+        this.modalPlan.id = args.data.id || 0;
+        this.modalPlan.buildingID = this.buildingNameEdit;
+        this.modalPlan.dueDate = this.dueDate;
+        this.modalPlan.workingHour = args.data.workingHour;
+        this.modalPlan.BPFCEstablishID = args.data.bpfcEstablishID;
+        this.modalPlan.hourlyOutput = args.data.hourlyOutput;
+        console.log(this.modalPlan);
+        this.planService.update(this.modalPlan).subscribe(res => {
+          this.alertify.success('Updated succeeded!');
+          this.ClearForm();
+          this.getAll();
+        });
+      }
+      if (args.action === 'add') {
+        this.modalPlan.buildingID = this.buildingNameEdit;
+        this.modalPlan.dueDate = this.dueDate;
+        this.modalPlan.workingHour = args.data.workingHour;
+        this.modalPlan.BPFCEstablishID = this.bpfcEdit;
+        this.modalPlan.hourlyOutput = args.data.hourlyOutput;
+        this.planService.create(this.modalPlan).subscribe(res => {
+          this.alertify.success('Created succeeded!');
+          this.getAll();
+          this.ClearForm();
+        });
       }
     }
     if (args.requestType === 'delete') {
@@ -206,7 +209,7 @@ export class PlanComponent implements OnInit {
   }
   private validForm(): boolean {
     const array = [this.bpfcEdit];
-    return array.every( item => item > 0);
+    return array.every(item => item > 0);
   }
   onChangeWorkingHour(args) {
     console.log('onChangeWorkingHour', args);
@@ -218,6 +221,7 @@ export class PlanComponent implements OnInit {
     this.hourlyOutput = args;
   }
   rowSelected(args) {
+    console.log(args)
   }
   openaddModalPlan(addModalPlan) {
     this.modalReference = this.modalService.open(addModalPlan);
@@ -225,10 +229,10 @@ export class PlanComponent implements OnInit {
 
   getAllBPFC() {
     this.bPFCEstablishService.filterByApprovedStatus().subscribe((res: any) => {
-      this.BPFCs = res.map( (item) => {
-        return  {
+      this.BPFCs = res.map((item) => {
+        return {
           id: item.id,
-          name: `${item.modelName } - ${item.modelNo } - ${item.articleNo } - ${item.artProcess }`,
+          name: `${item.modelName} - ${item.modelNo} - ${item.articleNo} - ${item.artProcess}`,
         };
       });
     });
@@ -236,11 +240,12 @@ export class PlanComponent implements OnInit {
 
   getAll() {
     this.planService.getAllPlanByDefaultRange().subscribe((res: any) => {
-      this.data = res.map( item => {
+      this.data = res.map(item => {
         return {
           id: item.id,
           bpfcName: `${item.modelName} - ${item.modelNoName} - ${item.articleName} - ${item.processName}`,
           dueDate: item.dueDate,
+          createdDate: item.createdDate,
           workingHour: item.workingHour,
           hourlyOutput: item.hourlyOutput,
           buildingName: item.buildingName,
@@ -279,7 +284,7 @@ export class PlanComponent implements OnInit {
   }
   getArtProcessByArticleNoID(articleNoID) {
     this.artProcessService.getArtProcessByArticleNoID(articleNoID).subscribe((res: any) => {
-      this.artProcesses = res.map( item => {
+      this.artProcesses = res.map(item => {
         return {
           id: item.id,
           name: item.processID === 1 ? 'ASY' : 'STF'
@@ -304,7 +309,7 @@ export class PlanComponent implements OnInit {
   }
   getArtProcesses() {
     this.artProcessService.getAll().subscribe((res: any) => {
-      this.artProcesses = res.map( item => {
+      this.artProcesses = res.map(item => {
         return {
           id: item.id,
           name: item.processID === 1 ? 'ASY' : 'STF'
@@ -343,6 +348,26 @@ export class PlanComponent implements OnInit {
     this.planService.clonePlan(this.plansSelected).subscribe((res: any) => {
       this.alertify.success('Successfully!');
     });
+  }
+  search(startDate, endDate) {
+    this.planService.search(startDate.toDateString(), endDate.toDateString()).subscribe((res: any) => {
+      this.data = res.map(item => {
+        return {
+          id: item.id,
+          bpfcName: `${item.modelName} - ${item.modelNoName} - ${item.articleName} - ${item.processName}`,
+          dueDate: item.dueDate,
+          createdDate: item.createdDate,
+          workingHour: item.workingHour,
+          hourlyOutput: item.hourlyOutput,
+          buildingName: item.buildingName,
+          buildingID: item.buildingID,
+          bpfcEstablishID: item.bpfcEstablishID
+        };
+      });
+    });
+  }
+  onClickFilter() {
+    this.search(this.startDate, this.endDate);
   }
   // End API
 }

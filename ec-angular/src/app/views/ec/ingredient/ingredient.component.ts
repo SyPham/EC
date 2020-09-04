@@ -42,7 +42,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
   pagination: Pagination;
   page = 1;
   currentPage = 1;
-  itemsPerPage = 10;
+  itemsPerPage = 15;
   totalItems: any;
   file: any;
   public displayTextMethod: DisplayTextModel = {
@@ -191,8 +191,8 @@ export class IngredientComponent implements OnInit, AfterViewInit {
           <div class='info'>
           <ul>
             <li class='subInfo'>${ item.name}</li>
-              <li class='subInfo'>NSX: </li>
-              <li class='subInfo'>NHH: </li>
+              <li class='subInfo'>MFG: ${ item.productionDate}</li>
+              <li class='subInfo'>EXP: </li>
           </ul>
          </div>
       </div>
@@ -206,14 +206,61 @@ export class IngredientComponent implements OnInit, AfterViewInit {
 
   }
   rowSelected(args) {
-    console.log('rowSelected', args.data);
-    const data = args.data as any;
-    this.dataPicked.unshift(data);
+    this.dataPicked = this.printGrid.getSelectedRecords().map((item: any) => {
+      return {
+        id: item.id,
+        code: item.code,
+        name: item.name,
+        supplier: item.supplier,
+        batch: item.batch,
+        productionDate: item.productionDate,
+        qrCode: `${item.productionDate}-${item.batch}-${item.code}`
+      };
+    });
+    console.log('rowSelected', this.dataPicked)
   }
   rowDeselected(args) {
-    console.log('rowDeselected', args.data[0])
-    this.dataPicked.shift();
+    this.dataPicked = this.printGrid.getSelectedRecords().map((item: any) => {
+      return {
+        id: item.id,
+        code: item.code,
+        name: item.name,
+        supplier: item.supplier,
+        batch: item.batch,
+        productionDate: item.productionDate,
+        qrCode: `${item.productionDate}-${item.batch}-${item.code}`
+      };
+    });
 
+  }
+  updateBatch(id, batch) {
+    for (const key in this.dataPrint) {
+      if (this.dataPrint[key].id === id) {
+        this.dataPrint[key].batch = batch;
+        break;
+      }
+    }
+  }
+  updateProductionDate(id, batch) {
+    for (const key in this.dataPrint) {
+      if (this.dataPrint[key].id === id) {
+        this.dataPrint[key].productionDate = batch;
+        break;
+      }
+    }
+  }
+  onChange(args, data) {
+    this.updateBatch(data.id, args.target.value);
+  }
+  pad(d) {
+    return (d < 10) ? '0' + d.toString() : d.toString();
+  }
+  onChangeDate(args, data) {
+    const pd = (args.value as Date);
+    const month = this.pad(pd.getMonth() + 1);
+    const date = this.pad(pd.getDate());
+    const productionDate = `${pd.getFullYear()}${month}${date}`;
+    this.updateProductionDate(data.id, productionDate);
   }
   backList() {
     this.show = false;
@@ -237,8 +284,17 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     // this.spinner.show();
     this.ingredientService.getAllIngredient()
       .subscribe((res: any) => {
-        this.dataPrint = res;
-        //    this.spinner.hide();
+        this.dataPrint = res.map((item: any) => {
+          return {
+            id: item.id,
+            code: item.code,
+            name: item.name,
+            supplier: item.supplier,
+            batch: '',
+            productionDate: ''
+          };
+        });
+
       }, error => {
         this.alertify.error(error);
       });
@@ -261,6 +317,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
       this.getIngredients();
     }
   }
+  
   getAll() {
     this.ingredientService.getAllIngredient().subscribe(res => {
       this.data = res;
@@ -280,7 +337,21 @@ export class IngredientComponent implements OnInit, AfterViewInit {
   }
   onPageChange($event) {
     this.currentPage = $event;
-    this.getIngredients();
+    if (this.text) {
+      this.ingredientService.search(this.currentPage, this.itemsPerPage, this.text)
+        .subscribe((res: PaginatedResult<IIngredient[]>) => {
+          this.data = res.result;
+          this.pagination = res.pagination;
+          this.totalItems = res.pagination.totalItems;
+          this.currentPage = res.pagination.currentPage;
+          this.itemsPerPage = res.pagination.itemsPerPage;
+          //    this.spinner.hide();
+        }, error => {
+          this.alertify.error(error);
+        });
+    } else {
+      this.getIngredients();
+    }
   }
   openIngredientModalComponent() {
     const modalRef = this.modalService.open(IngredientModalComponent, { size: 'md' });
@@ -313,5 +384,8 @@ export class IngredientComponent implements OnInit, AfterViewInit {
   }
   showModal(name) {
     this.modalReference = this.modalService.open(name, { size: 'xl' });
+  }
+  NO(index) {
+    return (this.pagination.currentPage - 1) * this.pagination.itemsPerPage + Number(index) + 1;
   }
 }

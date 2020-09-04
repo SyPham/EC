@@ -66,6 +66,11 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   public C1: any;
   public D1: any;
   public E1: any;
+  public batchA: any;
+  public batchB: any;
+  public batchC: any;
+  public batchD: any;
+  public batchE: any;
   public existGlue: any = false;
   @ViewChild('ddlelement')
   public dropDownListObject1: DropDownListComponent;
@@ -198,8 +203,8 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     }
   }
   hasRowspan(index) {
-      const labels = ['Chemical', 'Real', 'GlueID', 'Standard', 'Supplier', 'Count', 'TotalConsumption', 'Delivered'];
-      return labels.includes(this.lineColumns[index + 1].field);
+    const labels = ['Chemical', 'Real', 'GlueID', 'Standard', 'Supplier', 'Count', 'TotalConsumption', 'Delivered'];
+    return labels.includes(this.lineColumns[index + 1].field);
   }
   hasValue(col, cell) {
     if (col.field === Object.keys(cell).toString()) {
@@ -249,6 +254,16 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     }
     return real;
   }
+  findIngredientBatchByPosition(position) {
+    let batch = '';
+    for (const item of this.ingredients) {
+      if (item.position === position) {
+        batch = item.batch;
+        break;
+      }
+    }
+    return batch;
+  }
   Finish() {
     const date = new Date();
     this.guidances = {
@@ -259,7 +274,12 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       chemicalC: this.findIngredientRealByPosition('C'),
       chemicalD: this.findIngredientRealByPosition('D'),
       chemicalE: this.findIngredientRealByPosition('E'),
-      cretedTime: new Date(),
+      batchA: this.findIngredientBatchByPosition('A'),
+      batchB: this.findIngredientBatchByPosition('B'),
+      batchC: this.findIngredientBatchByPosition('C'),
+      batchD: this.findIngredientBatchByPosition('D'),
+      batchE: this.findIngredientBatchByPosition('E'),
+      createdTime: new Date(),
       mixBy: JSON.parse(localStorage.getItem('user')).User.ID
     };
     console.log('Finish', this.guidances);
@@ -280,7 +300,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       this.existGlue = false;
       this.makeGlue = res;
       this.ingredients = res.ingredients as IIngredient[];
-      this.loadDataChart();
     });
   }
   getGlueWithIngredientByGlueID(glueID: number) {
@@ -303,7 +322,8 @@ export class SummaryComponent implements OnInit, AfterViewInit {
           focusReal: false,
           focusExpected: false,
           valid: false,
-          info: ''
+          info: '',
+          batch: ''
         };
       });
       console.log('Begin press mixing button -> focus chemical A', this.ingredients);
@@ -321,37 +341,49 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       });
     });
   }
-
+  setBatch(item, batch) {
+    for (const i in this.ingredients) {
+      if (this.ingredients[i].id === item.id) {
+        this.ingredients[i].batch = batch;
+        break; // Stop this loop, we found it!
+      }
+    }
+  }
   onNgModelChangeScanQRCode(args, item) {
-    this.qrCode = args;
     const position = item.position;
-    if (this.qrCode.length === 8) {
-      // alert warning
-      this.scanQRCode().then(res => {
-        if (args !== item.code) {
-          this.alertify.warning(`Please you should look for the chemical name "${item.name}"`);
-          this.qrCode = '';
-          this.errorScan();
-        } else {
-          const code = res.code;
-          const ingredient = this.findIngredientCode(code);
-          if (ingredient) {
-            this.changeInfo('success-scan', ingredient.code);
-            if (ingredient.expected === 0 && ingredient.position === 'A') {
-              this.changeFocusStatus(ingredient.code, false, true);
-              this.changeScanStatus(ingredient.code, false);
-            } else {
-              this.changeScanStatus(ingredient.code, false);
-              this.changeFocusStatus(code, true, false);
+    const input = args.split('-');
+    if (input.length === 3) {
+      if (input[2].length === 8) {
+        this.qrCode = input[2];
+        // alert warning
+        this.scanQRCode().then(res => {
+          if (this.qrCode !== item.code) {
+            this.alertify.warning(`Please you should look for the chemical name "${item.name}"`);
+            this.qrCode = '';
+            this.errorScan();
+          } else {
+            const code = res.code;
+            const ingredient = this.findIngredientCode(code);
+            this.setBatch(ingredient, input[1]);
+            if (ingredient) {
+              this.changeInfo('success-scan', ingredient.code);
+              if (ingredient.expected === 0 && ingredient.position === 'A') {
+                this.changeFocusStatus(ingredient.code, false, true);
+                this.changeScanStatus(ingredient.code, false);
+              } else {
+                this.changeScanStatus(ingredient.code, false);
+                this.changeFocusStatus(code, true, false);
+              }
             }
           }
-        }
-      }).catch(err => {
-        this.errorScan();
-        this.alertify.error('Wrong Chemical!');
-        this.qrCode = '';
-      });
+        }).catch(err => {
+          this.errorScan();
+          this.alertify.error('Wrong Chemical!');
+          this.qrCode = '';
+        });
+      }
     }
+
   }
   private errorScan() {
     for (const key in this.ingredients) {
@@ -368,14 +400,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     }
     return true;
   }
-  loadDataChart() {
-    this.pieChartLabels = this.ingredients.map(item => {
-      return item.name;
-    });
-    this.pieChartData = this.ingredients.map((item, i) => {
-      return item.expected;
-    });
-  }
+
   mixingSection(data) {
     this.glueName = data.Chemical;
     this.glueID = data.GlueID;
@@ -400,7 +425,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         this.changeExpected('D', this.toFixedIfNecessary(expectedD, 3));
         const expectedE = this.calculatorIngredient(weight + expectedB + expectedC + expectedD, this.findIngredient('E')?.percentage);
         this.changeExpected('E', this.toFixedIfNecessary(expectedE, 3));
-        // this.loadDataChart();
         this.changeFocusStatus(item.code, true, false);
       }
     }
@@ -420,6 +444,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         real: 0,
         focusReal: false,
         focusExpected: false,
+        batch: ''
       };
     });
   }
@@ -446,7 +471,8 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       const maxRange = this.toFixedIfNecessary(max / 1000, 3);
       const expectedRange = `${minRange}kg - ${maxRange}kg ( ${this.toFixedIfNecessary(min, 3)}g - ${this.toFixedIfNecessary(max, 3)}g )`;
       if (allow === 0) {
-        this.changeExpected(position, expected);
+        const kgValue = this.toFixedIfNecessary(expected / 1000, 3);
+        this.changeExpected(position, `${kgValue}kg (${expected}g)`);
       } else {
         this.changeExpected(position, expectedRange);
       }
@@ -462,7 +488,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     } else {
       const exp = ingredient.expected.split(' ( ')[0];
       min = parseFloat(exp.split(' - ')[0].replace('kg', '')),
-      max = parseFloat(exp.split(' - ')[1].replace('kg', ''));
+        max = parseFloat(exp.split(' - ')[1].replace('kg', ''));
     }
     // if Chemical is A, focus in chemical B
     if (ingredient.position === 'A') {
@@ -694,6 +720,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     data.editable = !data.editable;
   }
   dispatchGlue(args, data) {
+    console.log('dispatchGlue', args, data);
     if (args.key === 'Enter') {
       const obj = {
         glueID: data.glueID,
@@ -711,5 +738,21 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         });
     }
 
+  }
+  frozen(field) {
+    if (field === 'Supplier') {
+      return 'my-sticky';
+    }
+    if (field === 'Chemical') {
+      return 'my-sticky-glue';
+    }
+  }
+  frozenBody(i) {
+    if (i === 0) {
+      return 'my-sticky';
+    }
+    if (i === 1) {
+      return 'my-sticky-glue';
+    }
   }
 }

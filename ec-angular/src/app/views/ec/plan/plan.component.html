@@ -12,6 +12,29 @@
             </div>
 
            <div class="card-body table-responsive p-0">
+                <div class="row my-3">
+                    <div class="col-md-12">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <div class="font-weight-bold">Filter:</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <ejs-datepicker [value]='startDate' [(ngModel)]='startDate'></ejs-datepicker>
+                                </div>
+                                <div class="col-md-4">
+                                    <ejs-datepicker [value]='endDate' [(ngModel)]='endDate'></ejs-datepicker>
+                                </div>
+                                <div class="col-md-1">
+                                    <button class="btn btn-sm btn-default" (click)='onClickFilter()'>
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                
+                    </div>
+                </div>
             <ejs-grid #grid 
                     [dataSource]='data' 
                     [searchSettings]="searchSettings" 
@@ -58,14 +81,8 @@
                                     </ng-template>
                         </e-column>
                         <e-column field='workingHour' headerText='Working Hours' width='150' textAlign='Center' >
-                            <ng-template #editTemplate let-data>
-                               <input class="e-input e-field" (ngModelChange)='onChangeWorkingHour($event)' type="text" [(ngModel)]="data.workingHour">
-                            </ng-template>
                         </e-column>
                         <e-column field='hourlyOutput' headerText='Hourly Output' width='150' textAlign='Center' >
-                            <ng-template #editTemplate let-data>
-                                <input class="e-input e-field" (ngModelChange)='onChangeHourlyOutput($event)' type="text" [(ngModel)]="data.hourlyOutput">
-                             </ng-template>
                         </e-column>
                         <e-column field='dueDate' type='date' format='dd MMM, yyyy' headerText='Due Date' width='200' textAlign='Center' >
                             <ng-template #editTemplate let-data>
@@ -74,6 +91,8 @@
                                 (change)='onChangeDueDateEdit($event)'
                                 format='dd MMM, yyyy'></ejs-datepicker>
                             </ng-template>
+                        </e-column>
+                        <e-column field='createdDate' type='date' format='dd MMM, yyyy hh:mm:ss aa' headerText='Created Date' width='200' textAlign='Center'>
                         </e-column>
                     </e-columns>
             </ejs-grid>

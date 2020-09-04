@@ -15,6 +15,11 @@ namespace EC_API.DTO
         public string ChemicalC { get; set; }
         public string ChemicalD { get; set; }
         public string ChemicalE { get; set; }
+        public string BatchA { get; set; }
+        public string BatchB { get; set; }
+        public string BatchC { get; set; }
+        public string BatchD { get; set; }
+        public string BatchE { get; set; }
         public string RealTotal { get; set; }
         public string Code { get; set; }
         public int MixBy { get; set; }

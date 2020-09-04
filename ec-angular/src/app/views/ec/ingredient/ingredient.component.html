@@ -34,23 +34,37 @@
       </div>
     </div>
     <div class="row" *ngIf="show">
-      <div class="col-xl-6">
-        <ejs-grid #printGrid id='overviewgrid' [dataSource]='dataPrint' rowHeight='38' [allowSelection]='true'
-          [allowSorting]='true' height='600'(rowDeselected)='rowDeselected($event)' (rowSelected)='rowSelected($event)' [enableHover]='false'
-          [allowSorting]='true' [enableVirtualization]='true'>
+      <div class="col-xl-8">
+        <ejs-grid #printGrid id='overviewgrid' 
+          (rowDeselected)=rowDeselected($event) 
+          [dataSource]='dataPrint' rowHeight='38' 
+          [allowSelection]='true'
+          [selectionSettings]="{ checkboxMode: 'ResetOnRowClick'}"
+          [allowSorting]='true' 
+          height='600'
+          (rowDeselected)='rowDeselected($event)' 
+          (rowSelected)='rowSelected($event)' 
+          [enableHover]='false'
+          [allowSorting]='true' 
+          [enableVirtualization]='true'>
           <e-columns>
             <e-column type='checkbox' width='60'></e-column>
             <e-column field='supplier' headerText='Supplier' width='100'></e-column>
             <e-column field='name' headerText='Ingredient Name' width='130'></e-column>
-            <e-column field='voc' headerText='VOC' width='80'></e-column>
-            <e-column field='expiredTime' headerText='Expired Time (by min)' width='150'></e-column>
-            <e-column field='materialNO' headerText='Material #' width='130'></e-column>
-            <e-column field='unit' headerText='Unit (kg)' width='100'></e-column>
-            <e-column field='createdDate' headerText='Created Date' width='150'></e-column>
+            <e-column field='batch' headerText='Batch' width='100'>
+              <ng-template #template let-data>
+                <input type="text" [(ngModel)]="data.batch" (change)='onChange($event, data)' class="e-input">
+              </ng-template>
+            </e-column>
+            <e-column field='productionDate' headerText='Production date' width='150'>
+              <ng-template #template let-data>
+              <ejs-datepicker [value]='data.productionDate' (change)='onChangeDate($event, data)'></ejs-datepicker>
+              </ng-template>
+            </e-column>
           </e-columns>
         </ejs-grid>
       </div>
-      <div class="col-xl-6">
+      <div class="col-xl-4">
         <table class="table table-hover" id="qrcode">
           <thead class="thead-dark">
             <tr>
@@ -62,9 +76,11 @@
               <tr>
                 <td class="text-center">
                   <ejs-qrcodegenerator [id]='item.code' style="display: block;" [displayText]='displayTextMethod' #barcode
-                    width="177px" height="177px" mode="SVG" [value]="item.code"></ejs-qrcodegenerator>
-                  <span>{{item.name}}</span> <br>
-                  <span><label>Expired Time: </label> {{item.expiredTime}} minute</span>
+                    width="177px" height="177px" mode="SVG" [value]="item.qrCode"></ejs-qrcodegenerator>
+                  <div>{{item.name}}</div>
+                  <div><label>Expired Time: </label> {{item.expiredTime}} minute</div>
+                  <div class="text-danger font-weight-bold">{{item.batch.length !== '' && item.productionDate !== '' ? '' : '(*)Please enter batch code and production date'}}</div>
+
                 </td>
               </tr>
             </ng-container>
@@ -72,9 +88,48 @@
         </table>
       </div>
     </div>
+  
+    <div *ngIf="!show">
+      <ejs-grid #ingredientGrid  [dataSource]='data' rowHeight='38'
+        [allowSelection]='true' [allowSorting]='true' height='600'
+        [enableHover]='false'
+        [allowSorting]='true' [enableVirtualization]='true'>
+        <e-columns>
+          <e-column field='#' headerText='#' width='50'>
+            <ng-template let-data #template>
+              {{ NO(data.index) }}
+            </ng-template>
+          </e-column>
+          <e-column field='supplier' headerText='Supplier' width='100'></e-column>
+          <e-column field='name' headerText='Ingredient Name' width='130'></e-column>
+          <e-column field='voc' headerText='VOC' width='80'></e-column>
+          <e-column field='expiredTime' headerText='ExpiredTime' width='130'></e-column>
+          <e-column field='materialNO' headerText='Material #' width='130'></e-column>
+          <e-column field='unit' headerText='Unit(kg)' width='100'></e-column>
+          <e-column field='createdDate' headerText='Created Date' width='130'></e-column>
 
-
-    <table class="table table-hover" *ngIf="!show">
+          <e-column field='productionDate' headerText='Production date' width='150'>
+            <ng-template let-data #template >
+                <div class="btn-group" data-toggle="tooltip" data-placement="top" title="Print QRCode">
+                  <a routerLink="/ec/setting/ingredient/print-qrcode/{{data.id}}/{{data.code}}/{{data.name}}"
+                    class="btn btn-xs btn-success mr-2"><i class="fa fa-qrcode" aria-hidden="true"></i></a>
+                </div>
+                <div class="btn-group">
+                  <button type="button" (click)='openIngredientEditModalComponent(data)' class="btn btn-xs btn-primary"><i
+                      class="fa fa-edit"></i></button>
+                </div>
+                <div class="btn-group">
+                  <span style="color: transparent">|</span>
+                </div>
+                <div class="btn-group">
+                  <button type="button" (click)='delete(data)' class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                </div>
+            </ng-template>
+          </e-column>
+        </e-columns>
+      </ejs-grid>
+    </div>
+    <!-- <table class="table table-hover" *ngIf="!show">
       <thead class="thead-dark">
         <tr>
           <th>#</th>
@@ -118,11 +173,11 @@
           </td>
         </tr>
       </tbody>
-    </table>
+    </table> -->
   </div>
   <div class="card-footer" *ngIf="!show">
     <ngb-pagination (pageChange)="onPageChange($event)" [collectionSize]="totalItems" [directionLinks]='true'
-      [(page)]="currentPage" [pageSize]='itemsPerPage' [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+      [(page)]="currentPage" [pageSize]='itemsPerPage' [maxSize]="20" [rotate]="true" [boundaryLinks]="true">
     </ngb-pagination>
   </div>
 </div>
