@@ -91,7 +91,7 @@ input.summary:focus {
 .my-sticky-glue
 {
   position:sticky;
-  left:80px;
+  left: 74px;
   z-index: 999;
   background-color: #ffffff;
 }

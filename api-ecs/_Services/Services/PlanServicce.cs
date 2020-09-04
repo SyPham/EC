@@ -323,7 +323,7 @@ namespace EC_API._Services.Services
                 {
                     var sdtCon = model.FirstOrDefault(x => x.GlueName == glue.Name && x.BuildingID == line.ID);
 
-                    var listBuildingGlue =  _repoBuildingGlue.FindAll().Where(x=>x.GlueID == glue.ID && x.BuildingID== line.ID && x.CreatedDate == currentDate).ToList();
+                    var listBuildingGlue =  _repoBuildingGlue.FindAll().Where(x=>x.GlueID == glue.ID && x.BuildingID== line.ID && x.CreatedDate.Date == currentDate).ToList();
                     rowCountInfo.Add(new SummaryInfo {
                         glueName = glue.Name,
                         line = line.Name,
@@ -357,7 +357,7 @@ namespace EC_API._Services.Services
                     }
                    
                 }
-                var delivered = await _repoBuildingGlue.FindAll().Where(x=>x.GlueID == glue.ID && lineList.Select(a=>a.ID).Contains(x.BuildingID) && x.CreatedDate == currentDate).Select(x=>x.Qty).ToListAsync();
+                var delivered = await _repoBuildingGlue.FindAll().Where(x=>x.GlueID == glue.ID && lineList.Select(a=>a.ID).Contains(x.BuildingID) && x.CreatedDate.Date == currentDate).Select(x=>x.Qty).ToListAsync();
                 // itemData.Add("Delivered", delivered.ConvertAll<double>(Convert.ToDouble).Sum() + "kg");
                 itemData.Add("Standard", Math.Round(listStandardTotal.Sum(), 3) + "kg");
                 var mixingInfos = _repoMixingInfo.FindAll().Where(x => x.GlueID == glue.ID && x.CreatedTime == currentDate).ToList();

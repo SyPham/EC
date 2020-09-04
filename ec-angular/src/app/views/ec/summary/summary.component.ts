@@ -720,6 +720,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     data.editable = !data.editable;
   }
   dispatchGlue(args, data) {
+    console.log('dispatchGlue', args, data);
     if (args.key === 'Enter') {
       const obj = {
         glueID: data.glueID,
