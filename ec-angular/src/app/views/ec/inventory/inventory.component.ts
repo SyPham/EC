@@ -32,9 +32,7 @@ export class InventoryComponent implements OnInit {
   }
   getIngredientInfoReport() {
     this.ingredientService.getAllIngredientInfoReport().subscribe((res: any) => {
-      // console.log('getIngredientInfoReport', res);
       this.data = res ;
-      // this.ConvertClass(res);
     });
   }
 

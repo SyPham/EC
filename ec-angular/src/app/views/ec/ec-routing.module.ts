@@ -85,7 +85,7 @@ const routes: Routes = [
         }
       },
       {
-        path: 'setting/ingredient/inventory',
+        path: 'report/inventory',
         // resolve: { ingredients: IngredientResolver },
         component: InventoryComponent,
         data: {

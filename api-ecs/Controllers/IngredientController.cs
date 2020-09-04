@@ -140,7 +140,7 @@ namespace EC_API.Controllers
         }
 
         [HttpPost("{qrCode}/{batch}/{consump}")]
-        public async Task<IActionResult> UpdateConsumptionIngredientReport(string qrCode , string batch , int consump)
+        public async Task<IActionResult> UpdateConsumptionIngredientReport(string qrCode, string batch , int consump)
         {
             return Ok(await _ingredientService.UpdateConsumptionIngredientReport(qrCode,batch,consump));
         }

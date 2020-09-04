@@ -561,9 +561,14 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     if (args.keyCode === 13) {
       this.checkValidPosition(item, args);
       console.log('on Key Up Real ', this.ingredients);
+      this.UpdateConsumption(item.code, item.batch , item.real );
     }
   }
+  UpdateConsumption(code, batch, consump) {
+    this.ingredientService.UpdateConsumption(code, batch, consump).subscribe(() => {
 
+    });
+  }
   lockClass(item) {
     return item.scanCode === true ? '' : 'lock';
   }

@@ -38,6 +38,8 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   public ngAfterViewInit(): void {
 
   }
+
+  // sau khi scan input thay doi
   onNgModelChangeScanQRCode(args) {
     let barcode = args.split('-')[2];
     console.log(barcode);
@@ -52,12 +54,15 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
         this.alertify.error('Wrong Chemical!');
     }
   }
+  // load danh sach IngredientInfo
   getIngredientInfo() {
     this.ingredientService.getAllIngredientInfo().subscribe((res: any) => {
       this.data = res ;
       // this.ConvertClass(res);
     });
   }
+
+  // tim Qrcode dang scan co ton tai khong
   findIngredientCode(code) {
     for (let item of this.ingredients) {
       if (item.code === code) {
@@ -69,11 +74,15 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
       }
     }
   }
+
+  // lay toan bo Ingredient
   getAllIngredient() {
     this.ingredientService.getAllIngredient().subscribe((res: any) => {
       this.ingredients = res ;
     });
   }
+
+  // dung de convert color input khi scan nhung chua can dung
   ConvertClass(res) {
     if (res.length !== 0) {
       this.test = 'form-control success-scan';
@@ -82,12 +91,16 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
       this.alertify.error('Wrong Chemical!');
     }
   }
+
+  // xoa Ingredient Receiving
   delete(item){
     this.ingredientService.deleteIngredientInfo(item.id, item.code, item.qty, item.batch).subscribe(() => {
       this.alertify.success('Delete Success!');
       this.getIngredientInfo();
     });
   }
+
+  // luu du lieu sau khi scan Qrcode vao IngredientReport
   confirm() {
     this.alertify.confirm('Do you want confirm this', 'Do you want confirm this', () => {
       this.alertify.success('Confirm Success');
