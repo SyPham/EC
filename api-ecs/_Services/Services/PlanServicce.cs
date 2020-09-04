@@ -360,7 +360,7 @@ namespace EC_API._Services.Services
                 var delivered = await _repoBuildingGlue.FindAll().Where(x=>x.GlueID == glue.ID && lineList.Select(a=>a.ID).Contains(x.BuildingID) && x.CreatedDate.Date == currentDate).Select(x=>x.Qty).ToListAsync();
                 // itemData.Add("Delivered", delivered.ConvertAll<double>(Convert.ToDouble).Sum() + "kg");
                 itemData.Add("Standard", Math.Round(listStandardTotal.Sum(), 3) + "kg");
-                var mixingInfos = _repoMixingInfo.FindAll().Where(x => x.GlueID == glue.ID && x.CreatedTime == currentDate).ToList();
+                var mixingInfos = _repoMixingInfo.FindAll().Where(x => x.GlueID == glue.ID && x.CreatedTime.Date == currentDate).ToList();
                 double realTotal = 0;
                 foreach (var real in mixingInfos)
                 {
@@ -368,7 +368,7 @@ namespace EC_API._Services.Services
                 }
                 var deliver = delivered.ConvertAll<double>(Convert.ToDouble).Sum() + "kg";
                 itemData.Add("Real", $"{deliver} / {Math.Round(realTotal, 3)}kg");
-                itemData.Add("Count", glue.MixingInfos.Where(x=>x.CreatedTime == currentDate).Count());
+                itemData.Add("Count", glue.MixingInfos.Where(x=>x.CreatedTime.Date == currentDate).Count());
                 itemData.Add("rowRealInfo", rowRealInfo);
                 itemData.Add("rowCountInfo", rowCountInfo);
                 data.Add(itemData);

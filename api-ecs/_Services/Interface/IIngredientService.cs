@@ -20,7 +20,7 @@ namespace EC_API._Services.Interface
         Task<object> ScanQRCodeFromChemialWareHouse(string qrCode);
         Task<object> ScanQRCodeFromChemialWareHouseDate(string qrCode, string start , string end);
         Task<bool> UpdateConsumptionChemialWareHouse(string qrCode , int consump);
-
+        Task<bool> CheckExistsName(string name);
         Task<bool> UpdateConsumptionIngredientReport(string qrCode, string batch , int consump);
     }
 }
