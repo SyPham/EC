@@ -185,7 +185,7 @@ namespace EC_API._Services.Services
 
             if (await _repoIngredientInfoReport.CheckBarCodeExists(Barcode))
             {
-                var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == Barcode && x.CreatedDate <= resultEnd.Date && x.CreatedDate >= resultStart.Date);
+                var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == Barcode && x.Batch == Batch && x.CreatedDate <= resultEnd.Date && x.CreatedDate >= resultStart.Date);
                 if (result != null)
                 {
                     result.Qty = model.Unit.ToInt() + result.Qty;
@@ -360,7 +360,7 @@ namespace EC_API._Services.Services
             {
                 if (await _repoIngredientInfoReport.CheckBarCodeExists(qrCode))
                 {
-                    var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == qrCode);
+                    var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == qrCode && x.Batch == batch);
                     result.Consumption = consump;
                     if (result.Qty != 0)
                     {
@@ -377,11 +377,11 @@ namespace EC_API._Services.Services
             }
 
         }
-        public async Task<bool> DeleteIngredientInfo(int id , string code , int qty)
+        public async Task<bool> DeleteIngredientInfo(int id , string code , int qty, string batch)
         {
             var item = _repoIngredientInfo.FindById(id);
             _repoIngredientInfo.Remove(item);
-            await Update(code ,qty);
+            await Update(code ,qty ,batch);
             return await _repoIngredientInfo.SaveAll();
         }
 
@@ -394,13 +394,13 @@ namespace EC_API._Services.Services
             return await _repoIngredientInfoReport.SaveAll();
         }
 
-        public async Task<bool> Update(string code , int qty)
+        public async Task<bool> Update(string code , int qty , string batch)
         {
             try
             {
                 if (await _repoIngredientInfoReport.CheckBarCodeExists(code))
                 {
-                    var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == code);
+                    var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == code && x.Batch == batch);
                     result.Qty = result.Qty - qty;
                     
                     var data = await UpdateIngredientInfoReport(result);

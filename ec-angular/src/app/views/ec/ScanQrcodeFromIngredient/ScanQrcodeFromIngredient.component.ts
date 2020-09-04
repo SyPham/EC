@@ -83,7 +83,7 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
     }
   }
   delete(item){
-    this.ingredientService.deleteIngredientInfo(item.id, item.code, item.qty).subscribe(() => {
+    this.ingredientService.deleteIngredientInfo(item.id, item.code, item.qty, item.batch).subscribe(() => {
       this.alertify.success('Delete Success!');
       this.getIngredientInfo();
     });
