@@ -45,7 +45,7 @@ export class IngredientModalComponent implements OnInit {
     this.getSupllier();
   }
   create() {
-    this.ingredientService.create(this.ingredient).subscribe( () => {
+    this.ingredientService.create(this.ingredient).subscribe( (res) => {
       this.alertify.success('Created successed!');
       this.activeModal.dismiss();
       this.ingredientService.changeIngredient(300);

@@ -37,6 +37,10 @@ namespace EC_API._Services.Services
         {
             return await _repoIngredient.CheckExists(id);
         }
+        public async Task<bool> CheckExistsName(string name)
+        {
+            return await _repoIngredient.FindAll().AnyAsync(x=>x.Name.ToLower().Equals(name.ToLower()));
+        }
         //Thêm Ingredient mới vào bảng Ingredient
         public async Task<bool> Add(IngredientDto model)
         {
