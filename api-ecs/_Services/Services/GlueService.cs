@@ -12,6 +12,7 @@ using EC_API.Models;
 using Microsoft.EntityFrameworkCore;
 using EC_API.SignalrHub;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Http;
 
 namespace EC_API._Services.Services
 {
@@ -28,9 +29,11 @@ namespace EC_API._Services.Services
         private readonly IHubContext<ECHub> _hubContext;
         private readonly IModelNameRepository _repoModelName;
         private readonly IBPFCEstablishRepository _repoBPFC;
+        private readonly IHttpContextAccessor _accessor;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configMapper;
         public GlueService(
+            IHttpContextAccessor accessor,
             IGlueRepository repoBrand,
             IModelNameRepository repoModelName,
             IGlueIngredientRepository repoGlueIngredient,
@@ -47,6 +50,7 @@ namespace EC_API._Services.Services
         {
             _configMapper = configMapper;
             _mapper = mapper;
+            _accessor = accessor;
             _repoGlue = repoBrand;
             _repoPartName = repoPartName;
             _repoPartName2 = repoPartName2;
@@ -88,6 +92,7 @@ namespace EC_API._Services.Services
             }
             var name = nameList.OrderByDescending(x => x).FirstOrDefault();
             glue.Name = (name + 1).ToString();
+            glue.isShow = true;
             _repoGlue.Add(glue);
 
             return await _repoGlue.SaveAll();
@@ -148,7 +153,7 @@ namespace EC_API._Services.Services
         //Lấy danh sách Brand và phân trang
         public async Task<PagedList<GlueCreateDto>> GetWithPaginations(PaginationParams param)
         {
-            var lists = _repoGlue.FindAll().ProjectTo<GlueCreateDto>(_configMapper).OrderByDescending(x => x.ID);
+            var lists = _repoGlue.FindAll().Where(x => x.isShow == true).ProjectTo<GlueCreateDto>(_configMapper).OrderByDescending(x => x.ID);
             return await PagedList<GlueCreateDto>.CreateAsync(lists, param.PageNumber, param.PageSize);
         }
 
@@ -177,7 +182,12 @@ namespace EC_API._Services.Services
         public async Task<bool> Delete(object id)
         {
             var glue = _repoGlue.FindById(id);
-            _repoGlue.Remove(glue);
+            string token = _accessor.HttpContext.Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            // _repoGlue.Remove(glue);
+            glue.isShow = false;
+            glue.ModifiedBy = userID;
+            glue.ModifiedDate = DateTime.Now;
             return await _repoGlue.SaveAll();
         }
 
@@ -185,12 +195,13 @@ namespace EC_API._Services.Services
         public async Task<bool> Update(GlueCreateDto model)
         {
             var glue = _mapper.Map<Glue>(model);
+            glue.isShow = true ;
             _repoGlue.Update(glue);
             var result = await _repoGlue.SaveAll();
             await _hubContext.Clients.All.SendAsync("summaryRecieve", "ok");
-
             return result;
         }
+
         //Cập nhật Brand
         public async Task<bool> UpdateChemical(GlueCreateDto model)
         {
@@ -205,6 +216,7 @@ namespace EC_API._Services.Services
             else
                 return false;
         }
+        
         //Lấy toàn bộ danh sách Brand 
         public async Task<List<GlueCreateDto>> GetAllAsync()
         {
@@ -279,7 +291,7 @@ namespace EC_API._Services.Services
 
         public async Task<List<GlueCreateDto1>> GetAllGluesByBPFCID(int BPFCID)
         {
-            var lists = await _repoGlue.FindAll().Where(x => x.BPFCEstablishID == BPFCID)
+            var lists = await _repoGlue.FindAll().Where(x => x.BPFCEstablishID == BPFCID && x.isShow == true)
                 .ProjectTo<GlueCreateDto1>(_configMapper)
                 .OrderByDescending(x => x.ID).Select(x => new GlueCreateDto1
                 {

@@ -62,6 +62,8 @@ import { GlueHistoryComponent } from './summary/glue-history/glue-history.compon
 import { SelectTextDirective } from './select.text.directive';
 import { ScanQrcodeFromIngredientComponent } from './ScanQrcodeFromIngredient/ScanQrcodeFromIngredient.component';
 import { InventoryComponent } from './inventory/inventory.component';
+import { SearchComponent } from './search/search.component';
+import { AbnormalListComponent } from './abnormal-list/abnormal-list.component';
 
 setCulture('de-DE');
 
@@ -139,7 +141,9 @@ if (lang) {
     AutoSelectDirective,
     GlueHistoryComponent,
     ScanQrcodeFromIngredientComponent,
-    InventoryComponent
+    InventoryComponent,
+    SearchComponent,
+    AbnormalListComponent
   ]
 })
 export class ECModule { }

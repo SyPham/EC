@@ -1,6 +1,7 @@
+import { LineService } from './line.service';
 import { TestBed } from '@angular/core/testing';
 
-import { LineService } from './modal-name.service';
+// import { LineService } from './modal-name.service';
 
 describe('LineService', () => {
   let service: LineService;

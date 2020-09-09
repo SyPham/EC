@@ -22,7 +22,9 @@ namespace EC_API.DTO
         public string Unit { get; set; }
         public int ExpiredTime { get; set; }
         public DateTime ManufacturingDate { get; set; }
-
+        public bool isShow { get; set; }
+        public int ModifiedBy { get; set; }
+        public DateTime ModifiedDate { get; set; }
 
         public int Allow { get; set; }
 

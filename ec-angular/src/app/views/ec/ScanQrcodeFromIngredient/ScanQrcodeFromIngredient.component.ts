@@ -42,7 +42,6 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   // sau khi scan input thay doi
   onNgModelChangeScanQRCode(args) {
     let barcode = args.split('-')[2];
-    console.log(barcode);
     this.findIngredientCode(barcode);
     if (this.checkCode === true) {
         this.ingredientService.scanQRCodeFromChemicalWareHouse(args).subscribe((res: any) => {
@@ -54,6 +53,7 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
         this.alertify.error('Wrong Chemical!');
     }
   }
+
   // load danh sach IngredientInfo
   getIngredientInfo() {
     this.ingredientService.getAllIngredientInfo().subscribe((res: any) => {
@@ -93,7 +93,7 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   }
 
   // xoa Ingredient Receiving
-  delete(item){
+  delete(item) {
     this.ingredientService.deleteIngredientInfo(item.id, item.code, item.qty, item.batch).subscribe(() => {
       this.alertify.success('Delete Success!');
       this.getIngredientInfo();

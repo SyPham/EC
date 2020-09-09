@@ -17,7 +17,8 @@ namespace EC_API.DTO
         public string Name { get; set; }
         public string Consumption { get; set; }
         public string CreatedDate { get; set; }
-
+        public bool isShow { get; set; }
+        
         public int? MaterialID { get; set; }
         public int ExpiredTime { get; set; }
         public int? KindID { get; set; }

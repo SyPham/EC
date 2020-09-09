@@ -112,28 +112,34 @@ export class PlanComponent implements OnInit {
   count(index) {
     return Number(index) + 1;
   }
+
   getAllLine(buildingID) {
     this.planService.getLines(buildingID).subscribe((res: any) => {
       this.buildingName = res;
     });
   }
+
   onChangeBuildingNameEdit(args) {
     this.buildingNameEdit = args.itemData.id;
   }
+
   onChangeModelNameEdit(args) {
     this.modelNameEdit = args.itemData.id;
     this.getModelNoByModelNameID(this.modelNameEdit);
   }
+
   onChangeModelNoEdit(args) {
     this.modelNoEdit = args.itemData.id;
     this.getArticleNoByModelNoID(this.modelNoEdit);
 
   }
+
   onChangeArticleNoEdit(args) {
     this.articleNoEdit = args.itemData.id;
     this.getArtProcessByArticleNoID(this.articleNoEdit);
 
   }
+
   onChangeArtProcessEdit(args) {
     this.artProcessEdit = args.itemData.id;
   }
@@ -141,19 +147,19 @@ export class PlanComponent implements OnInit {
   onChangeDueDateEdit(args) {
     this.dueDate = (args.value as Date).toDateString();
   }
+
   onChangeDueDateClone(args) {
-    console.log('onChangeDueDateClone', (args.value as Date));
     this.date = (args.value as Date);
     this.plansSelected.map(item => {
       item.dueDate = (args.value as Date);
     });
   }
+
   onChangeBPFCEdit(args) {
     this.bpfcEdit = args.itemData.id;
   }
 
   actionComplete(args) {
-    console.log('actionComplete', args);
 
     if (args.requestType === 'edit') {
       (args.form.elements.namedItem('createdDate') as HTMLInputElement).disabled = true;
@@ -164,7 +170,6 @@ export class PlanComponent implements OnInit {
   }
 
   actionBegin(args) {
-    console.log('actionBegin', args);
     if (args.requestType === 'cancel') {
       this.ClearForm();
     }
@@ -177,7 +182,6 @@ export class PlanComponent implements OnInit {
         this.modalPlan.workingHour = args.data.workingHour;
         this.modalPlan.BPFCEstablishID = args.data.bpfcEstablishID;
         this.modalPlan.hourlyOutput = args.data.hourlyOutput;
-        console.log(this.modalPlan);
         this.planService.update(this.modalPlan).subscribe(res => {
           this.alertify.success('Updated succeeded!');
           this.ClearForm();
@@ -201,28 +205,31 @@ export class PlanComponent implements OnInit {
       this.delete(args.data[0].id);
     }
   }
+
   private ClearForm() {
     this.bpfcEdit = 0;
     this.hourlyOutput = 0;
     this.workHour = 0;
     this.dueDate = new Date();
   }
+
   private validForm(): boolean {
     const array = [this.bpfcEdit];
     return array.every(item => item > 0);
   }
+
   onChangeWorkingHour(args) {
-    console.log('onChangeWorkingHour', args);
     this.workHour = args;
   }
+
   onChangeHourlyOutput(args) {
-    console.log('onChangeWorkingHour', args);
 
     this.hourlyOutput = args;
   }
+
   rowSelected(args) {
-    console.log(args)
   }
+
   openaddModalPlan(addModalPlan) {
     this.modalReference = this.modalService.open(addModalPlan);
   }
@@ -266,22 +273,26 @@ export class PlanComponent implements OnInit {
       });
     });
   }
+
   /// Begin API
   getAllModelName() {
     this.modelNameService.getAllModalName().subscribe((res: any) => {
       this.modelName = res;
     });
   }
+
   getModelNoByModelNameID(modelNameID) {
     this.modelNoService.getModelNoByModelNameID(modelNameID).subscribe((res: any) => {
       this.modelNos = res;
     });
   }
+
   getArticleNoByModelNoID(modelNoID) {
     this.articleNoService.getArticleNoByModelNoID(modelNoID).subscribe((res: any) => {
       this.articleNos = res;
     });
   }
+
   getArtProcessByArticleNoID(articleNoID) {
     this.artProcessService.getArtProcessByArticleNoID(articleNoID).subscribe((res: any) => {
       this.artProcesses = res.map(item => {
@@ -292,21 +303,25 @@ export class PlanComponent implements OnInit {
       });
     });
   }
+
   getModelNames() {
     this.modelNameService.getAllModalName().subscribe((res: any) => {
       this.modelName = res;
     });
   }
+
   getModelNos() {
     this.modelNoService.getAll().subscribe((res: any) => {
       this.modelNos = res;
     });
   }
+
   getArticles() {
     this.articleNoService.getAll().subscribe((res: any) => {
       this.articleNos = res;
     });
   }
+
   getArtProcesses() {
     this.artProcessService.getAll().subscribe((res: any) => {
       this.artProcesses = res.map(item => {
@@ -317,6 +332,7 @@ export class PlanComponent implements OnInit {
       });
     });
   }
+
   openModal(ref) {
     const selectedRecords = this.grid.getSelectedRecords();
     if (selectedRecords.length !== 0) {
@@ -335,20 +351,21 @@ export class PlanComponent implements OnInit {
       this.alertify.warning('Please select the plan');
     }
   }
+
   toolbarClick(args: any): void {
-    // console.log(args.item.text);
     switch (args.item.text) {
       case 'Clone':
         this.openModal(this.cloneModal);
         break;
     }
   }
+
   onClickClone() {
-    console.log('Clone Plan', this.plansSelected);
     this.planService.clonePlan(this.plansSelected).subscribe((res: any) => {
       this.alertify.success('Successfully!');
     });
   }
+
   search(startDate, endDate) {
     this.planService.search(startDate.toDateString(), endDate.toDateString()).subscribe((res: any) => {
       this.data = res.map(item => {
@@ -366,8 +383,10 @@ export class PlanComponent implements OnInit {
       });
     });
   }
+
   onClickFilter() {
     this.search(this.startDate, this.endDate);
   }
+
   // End API
 }

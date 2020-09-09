@@ -43,7 +43,6 @@ export class MaterialComponent implements OnInit {
   create() {
     this.materialService.create(this.material).subscribe(() => {
       this.alertify.success('Add Material Successfully');
-      // this.modalReference.close() ;
       this.getAllMaterial();
       this.material.name = '';
     });

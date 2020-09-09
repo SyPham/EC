@@ -95,7 +95,6 @@ export class AccountComponent implements OnInit {
   }
   getBuildings() {
     this.accountService.getBuildings().subscribe((res: any) => {
-      console.log('getBuildings ', res,);
       this.buildings = res || [];
     });
   }
@@ -112,13 +111,11 @@ export class AccountComponent implements OnInit {
         };
       });
       this.userData = users;
-      console.log('getAllUsers ', users);
 
     });
   }
   getBuildingUsers() {
     this.accountService.getBuildingUsers().subscribe(res => {
-      console.log('getBuildingUsers ', res);
       this.buildingUsers = res as any;
     });
   }

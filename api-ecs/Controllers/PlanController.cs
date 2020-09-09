@@ -19,7 +19,12 @@ namespace EC_API.Controllers
         {
             _planService = planService;
         }
-
+        [HttpGet("{ingredientName}/{batch}")]
+        public async Task<IActionResult> TroubleShootingSearch(string ingredientName, string batch)
+        {
+            var lists = await _planService.TroubleShootingSearch(ingredientName, batch);
+            return Ok(lists);
+        }
         [HttpGet]
         public async Task<IActionResult> GetPlans([FromQuery]PaginationParams param)
         {
@@ -110,7 +115,7 @@ namespace EC_API.Controllers
         public async Task<IActionResult> Summary(int buildingID)
         {
             var model = await _planService.Summary(buildingID);
-                return Ok(model);
+            return Ok(model);
         }
         [HttpPost]
         public async Task<IActionResult> ClonePlan(List<PlanForCloneDto> create)

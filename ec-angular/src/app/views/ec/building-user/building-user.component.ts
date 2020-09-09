@@ -35,7 +35,6 @@ export class BuildingUserComponent implements OnInit {
   rowSelected(args) {
     const data = args.data.entity || args.data;
     this.buildingID = Number(data.id);
-    console.log('rowSelected', this.buildingID, data.name);
     if (args.isInteracted) {
       this.getBuildingUserByBuildingID(this.buildingID);
     }
@@ -74,14 +73,11 @@ export class BuildingUserComponent implements OnInit {
         };
       });
       this.userData = data.filter(item => item.Status === true);
-      console.log('getBuildingUserByBuildingID ', this.buildingUserData);
-      console.log('getAllUsers ', data);
     });
   }
 
   getBuildingUserByBuildingID(buildingID) {
     this.buildingUserService.getBuildingUserByBuildingID(buildingID).subscribe(res => {
-      console.log('getBuildingUserByBuildingID ', res, buildingID);
       this.buildingUserData = res || [];
       this.getAllUsers();
     });
@@ -99,7 +95,6 @@ export class BuildingUserComponent implements OnInit {
   }
   onChangeMap(args, data) {
     if (this.buildingID > 0) {
-      console.log('on change map ', args, data);
       if (args.checked) {
         const obj = {
           userID: data.ID,

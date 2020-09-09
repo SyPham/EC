@@ -17,6 +17,7 @@ namespace EC_API._Services.Interface
         Task<IngredientDto> ScanQRCode(string qrCode);
         Task<List<IngredientInfoDto>> GetAllIngredientInfoAsync();
         Task<List<IngredientInfoReportDto>> GetAllIngredientInfoReportAsync();
+        
         Task<object> ScanQRCodeFromChemialWareHouse(string qrCode);
         Task<object> ScanQRCodeFromChemialWareHouseDate(string qrCode, string start , string end);
         Task<bool> UpdateConsumptionChemialWareHouse(string qrCode , int consump);

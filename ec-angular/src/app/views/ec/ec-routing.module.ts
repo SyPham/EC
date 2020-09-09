@@ -1,3 +1,5 @@
+import { AbnormalListComponent } from './abnormal-list/abnormal-list.component';
+import { SearchComponent } from './search/search.component';
 import { InventoryComponent } from './inventory/inventory.component';
 import { MaterialNameComponent } from './material-name/material-name.component';
 import { PartName2Component } from './part-name2/part-name2.component';
@@ -88,6 +90,22 @@ const routes: Routes = [
         path: 'report/inventory',
         // resolve: { ingredients: IngredientResolver },
         component: InventoryComponent,
+        data: {
+          title: 'Inventory'
+        }
+      },
+      {
+        path: 'troubleshooting/search',
+        // resolve: { ingredients: IngredientResolver },
+        component: SearchComponent,
+        data: {
+          title: 'Inventory'
+        }
+      },
+      {
+        path: 'troubleshooting/Abnormal-List',
+        // resolve: { ingredients: IngredientResolver },
+        component: AbnormalListComponent,
         data: {
           title: 'Inventory'
         }

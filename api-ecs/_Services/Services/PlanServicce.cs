@@ -57,7 +57,16 @@ namespace EC_API._Services.Services
             _repoMixingInfo = repoMixingInfo;
             _repoBuildingGlue= repoBuildingGlue;
         }
+        public async Task<object> TroubleShootingSearch(string ingredientName, string batch)
+        {
+            var presentDate = DateTime.Now.Date ;
+            var theDayBefore = DateTime.Now.Date.AddDays(-3);
+            // var resultPlan = _repoPlan.FindAll().Where(x => x.DueDate >= theDayBefore && x.DueDate <= presentDate).Select(x => new Test {
+            //     GlueName = _repoGlue.FindAll().FirstOrDefault(x.BPFCEstablishID == resultPlan.BPFCEstablishID)
+            // });
+            return true;
 
+        }
         //Thêm Brand mới vào bảng Plan
         public async Task<bool> Add(PlanDto model)
         {
@@ -327,7 +336,7 @@ namespace EC_API._Services.Services
                     rowCountInfo.Add(new SummaryInfo {
                         glueName = glue.Name,
                         line = line.Name,
-                        lineID=line.ID,
+                        lineID = line.ID,
                         glueID = glue.ID,
                         value = 0,
                         count = listBuildingGlue.Count
@@ -360,7 +369,7 @@ namespace EC_API._Services.Services
                 var delivered = await _repoBuildingGlue.FindAll().Where(x=>x.GlueID == glue.ID && lineList.Select(a=>a.ID).Contains(x.BuildingID) && x.CreatedDate.Date == currentDate).Select(x=>x.Qty).ToListAsync();
                 // itemData.Add("Delivered", delivered.ConvertAll<double>(Convert.ToDouble).Sum() + "kg");
                 itemData.Add("Standard", Math.Round(listStandardTotal.Sum(), 3) + "kg");
-                var mixingInfos = _repoMixingInfo.FindAll().Where(x => x.GlueID == glue.ID && x.CreatedTime == currentDate).ToList();
+                var mixingInfos = _repoMixingInfo.FindAll().Where(x => x.GlueID == glue.ID && x.CreatedTime.Date == currentDate).ToList();
                 double realTotal = 0;
                 foreach (var real in mixingInfos)
                 {
@@ -368,7 +377,7 @@ namespace EC_API._Services.Services
                 }
                 var deliver = delivered.ConvertAll<double>(Convert.ToDouble).Sum() + "kg";
                 itemData.Add("Real", $"{deliver} / {Math.Round(realTotal, 3)}kg");
-                itemData.Add("Count", glue.MixingInfos.Where(x=>x.CreatedTime == currentDate).Count());
+                itemData.Add("Count", glue.MixingInfos.Where(x=>x.CreatedTime.Date == currentDate).Count());
                 itemData.Add("rowRealInfo", rowRealInfo);
                 itemData.Add("rowCountInfo", rowCountInfo);
                 data.Add(itemData);
@@ -403,7 +412,6 @@ namespace EC_API._Services.Services
             return new { header, data };
 
         }
-
         public async Task<object> GetAllPlansByDate(string from, string to)
         {
             //var model = await _repoPlan.FindAll().Where(x => x.DueDate.Date == DateTime.Now.Date).ProjectTo<PlanDto>(_configMapper).OrderByDescending(x => x.ID).Select(x => new PlanDto

@@ -55,6 +55,9 @@ namespace EC_API.Controllers
             var ingredientsInfoReport = await _ingredientService.GetAllIngredientInfoReportAsync();
             return Ok(ingredientsInfoReport);
         }
+
+        
+
         [HttpGet("{text}")]
         public async Task<IActionResult> Search([FromQuery] PaginationParams param, string text)
         {

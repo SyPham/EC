@@ -50,8 +50,6 @@ export class GlueComponent implements OnInit {
     this.route.data.subscribe(data => {
       this.data = data.glues.result;
       this.pagination = data.glues.pagination;
-      // console.log(this.pagination)
-      // console.log(this.pagination.totalItems)
       this.glueService.currentGlue.subscribe(res => {
         if (res === 200) {
            this.getGlues();
@@ -77,7 +75,6 @@ export class GlueComponent implements OnInit {
   getAll() {
     this.glueService.getAllGlue().subscribe(res => {
       this.data = res;
-      // console.log('Get All: ', res);
     });
   }
 
@@ -100,7 +97,6 @@ export class GlueComponent implements OnInit {
     modalRef.componentInstance.glue = this.glue;
     modalRef.componentInstance.title = 'Add Glue';
     modalRef.result.then((result) => {
-      // console.log('OpenGlueModalComponent', result );
     }, (reason) => {
     });
   }
@@ -109,7 +105,6 @@ export class GlueComponent implements OnInit {
     modalRef.componentInstance.glue = item;
     modalRef.componentInstance.title = 'Edit Glue';
     modalRef.result.then((result) => {
-      // console.log('openGlueEditModalComponent', result );
     }, (reason) => {
     });
   }

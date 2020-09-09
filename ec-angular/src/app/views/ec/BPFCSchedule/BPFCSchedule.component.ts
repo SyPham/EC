@@ -38,7 +38,6 @@ export class BPFCScheduleComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // 'Add', 'Edit', 'Delete', 'Update', 'Cancel',
     this.excelDownloadUrl = `${environment.apiUrlEC}ModelName/ExcelExport`;
     this.toolbar = ['Import Excel', 'Export Excel', 'Search'];
     this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, newRowPosition: 'Normal' };

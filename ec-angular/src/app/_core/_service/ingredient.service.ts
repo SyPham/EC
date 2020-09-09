@@ -102,12 +102,15 @@ export class IngredientService {
   deleteSub(id: number) {
     return this.http.delete(this.baseUrl + 'suppier/delete/' + id);
   }
+
   sortBySup(glueid: number, id: number) {
     return this.http.get<ISupplier[]>(this.baseUrl + `GlueIngredient/GetIngredientsByGlueID/${glueid}/${id}` );
   }
+
   getIngredientsByGlueID(glueid: number) {
     return this.http.get<ISupplier[]>(this.baseUrl + `GlueIngredient/GetIngredientsByGlueID/${glueid}` );
   }
+
   create(ingredient: IIngredient) {
     return this.http.post(this.baseUrl + 'ingredient/create1', ingredient);
   }
@@ -123,18 +126,22 @@ export class IngredientService {
   changeIngredient(ingredient) {
     this.ingredientSource.next(ingredient);
   }
+
   import(file, createdBy) {
     const formData = new FormData();
     formData.append('UploadedFile', file);
     formData.append('CreatedBy', createdBy);
     return this.http.post(this.baseUrl + 'ingredient/Import', formData);
   }
+
   downloadFile() {
     return this.http.post(this.baseUrl + 'ingredient/ExcelExport', {});
   }
+
   GetQrcodeByid(id) {
     return this.http.get(this.baseUrl + `ingredient/GetbyID/${id}`);
   }
+
   UpdatePrint(ingredient) {
     return this.http.put(this.baseUrl + 'ingredient/UpdatePrint', ingredient);
   }

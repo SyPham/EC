@@ -95,7 +95,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     plugins: {
       datalabels: {
         formatter: (value, ctx) => {
-          // console.log('formatter: ', ctx, value);
           // const label = ctx.chart.data.labels[ctx.dataIndex];
           return value + 'g';
         },
@@ -121,7 +120,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   // check: boolean = true;
   cancel = false;
   // @HostListener('window:keyup.w', ['$event']) w(e: KeyboardEvent) {
-  //   console.log('w captured', e);
   // }
   @HostListener('window:keyup.alt.enter', ['$event']) enter(e: KeyboardEvent) {
     if (!this.disabled) {
@@ -282,7 +280,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       createdTime: new Date(),
       mixBy: JSON.parse(localStorage.getItem('user')).User.ID
     };
-    console.log('Finish', this.guidances);
     if (this.guidances) {
       this.makeGlueService.Guidance(this.guidances).subscribe((glue: any) => {
         this.alertify.success('The Glue has been finished successfully');
@@ -326,7 +323,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
           batch: ''
         };
       });
-      console.log('Begin press mixing button -> focus chemical A', this.ingredients);
 
     });
   }
@@ -408,10 +404,12 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     this.scanStatus = true;
     this.getGlueWithIngredientByGlueID(this.glueID);
   }
+
   calculatorIngredient(weight, percentage) {
     const result = (weight * percentage) / 100;
     return result * 1000 ?? 0;
   }
+
   onKeyupExpected(item, args) {
     if (args.keyCode === 13) {
       if (item.position === 'A') {
@@ -456,7 +454,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       const expected = this.calculatorIngredient(weight, this.findIngredient(position)?.percentage);
       if (position === 'B') {
         this.B = expected;
-        console.log('changeExpectedRange', this.B, expected)
       }
       if (position === 'C') {
         this.C = expected;
@@ -478,6 +475,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       }
     }
   }
+
   checkValidPosition(ingredient, args) {
     let min;
     let max;
@@ -557,21 +555,22 @@ export class SummaryComponent implements OnInit, AfterViewInit {
 
     this.changeReal(ingredient.code, args.target.value);
   }
+
   onKeyupReal(item, args) {
     if (args.keyCode === 13) {
       this.checkValidPosition(item, args);
-      console.log('on Key Up Real ', this.ingredients);
       this.UpdateConsumption(item.code, item.batch , item.real );
     }
   }
-  UpdateConsumption(code, batch, consump) {
-    this.ingredientService.UpdateConsumption(code, batch, consump).subscribe(() => {
 
-    });
+  UpdateConsumption(code, batch, consump) {
+    this.ingredientService.UpdateConsumption(code, batch, consump).subscribe(() => {});
   }
+
   lockClass(item) {
     return item.scanCode === true ? '' : 'lock';
   }
+
   realClass(item) {
     const validClass = item.valid === true ? ' warning-focus' : '';
     const className = item.info + validClass;
@@ -594,6 +593,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       }
     }
   }
+
   findIngredient(position) {
     for (const item of this.ingredients) {
       if (item.position === position) {
@@ -601,6 +601,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       }
     }
   }
+
   findIngredientCode(code) {
     for (const item of this.ingredients) {
       if (item.code === code) {
@@ -671,6 +672,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
 
   chartHovered($event) { }
   chartClicked($event) { }
+
   back() {
     this.existGlue = true;
     this.show = false;
@@ -681,6 +683,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     this.expiredTime = null;
     this.code = '';
   }
+
   printGlue() {
     const qrcode = document.getElementById('qrcode');
     const glueName = document.getElementById('glueName');
@@ -725,7 +728,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     data.editable = !data.editable;
   }
   dispatchGlue(args, data) {
-    console.log('dispatchGlue', args, data);
     if (args.key === 'Enter') {
       const obj = {
         glueID: data.glueID,

@@ -19,11 +19,12 @@ namespace EC_API._Services.Services
         private readonly IIngredientRepository _repoIngredient;
         private readonly IIngredientInfoRepository _repoIngredientInfo;
         private readonly IIngredientInfoReportRepository _repoIngredientInfoReport;
+        private readonly IGlueIngredientRepository _repoGlueIngredient;
         private readonly ISupplierRepository _repoSupplier;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configMapper;
         private readonly IHttpContextAccessor _accessor;
-        public IngredientService(IIngredientInfoReportRepository repoIngredientInfoReport, IIngredientRepository repoIngredient, IHttpContextAccessor accessor, IIngredientInfoRepository repoIngredientInfo, ISupplierRepository repoSupplier, IMapper mapper, MapperConfiguration configMapper)
+        public IngredientService(IGlueIngredientRepository repoGlueIngredient,IIngredientInfoReportRepository repoIngredientInfoReport, IIngredientRepository repoIngredient, IHttpContextAccessor accessor, IIngredientInfoRepository repoIngredientInfo, ISupplierRepository repoSupplier, IMapper mapper, MapperConfiguration configMapper)
         {
             _configMapper = configMapper;
             _mapper = mapper;
@@ -32,6 +33,7 @@ namespace EC_API._Services.Services
             _repoSupplier = repoSupplier;
             _accessor = accessor;
             _repoIngredientInfoReport = repoIngredientInfoReport;
+            _repoGlueIngredient = repoGlueIngredient;
         }
         public async Task<bool> CheckExists(int id)
         {
@@ -165,15 +167,15 @@ namespace EC_API._Services.Services
             
             // load tat ca supplier
             var supModel = _repoSupplier.GetAll();
-            // lay gia tri barcode trong chuỗi qrcode được chuyền lên
+            // lay gia tri "barcode" trong chuỗi qrcode được chuyền lên
             var Barcode = qrCode.Split('-', '-')[2];
             // tim ID của ingredient
             var ingredientID = _repoIngredient.FindAll().FirstOrDefault(x => x.Code.Equals(Barcode)).ID;
-            // load ingredient theo id vừa tìm được ở trên
+            // load ingredient theo ingredientID vừa tìm được ở trên
             var model = _repoIngredient.FindById(ingredientID);
-            // lấy giá trị ProductionDate trong chuỗi qrcode được chuyền lên
+            // lấy giá trị "ProductionDate" trong chuỗi qrcode được chuyền lên
             var ProductionDate = qrCode.Split('-')[0];
-            // lấy giá trị Batch trong chuỗi qrcode được chuyền lên
+            // lấy giá trị "Batch" trong chuỗi qrcode được chuyền lên
             var Batch = qrCode.Split('-', '-')[1];
             // sau đó convert sang kiểu date time
             var ProductionDates = Convert.ToDateTime(ProductionDate.Substring(0, 4) + "/" + ProductionDate.Substring(4, 2) + "/" + ProductionDate.Substring(6, 2));
@@ -193,23 +195,25 @@ namespace EC_API._Services.Services
                 Consumption = 0,
                 Code = model.Code
             });
+
             // check trong bang ingredientReport xem đã tồn tại code hay chưa , nếu có tồn tại 
             if (await _repoIngredientInfoReport.CheckBarCodeExists(Barcode))
             {
                 // check tiep trong bang ingredientReport xem co du lieu chua 
                 var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == Barcode && x.Batch == Batch && x.CreatedDate <= resultEnd.Date && x.CreatedDate >= resultStart.Date);
+
                 // nếu khác Null thi update lai
                 if (result != null)
                 {
                     result.Qty = model.Unit.ToInt() + result.Qty;
                     await UpdateIngredientInfoReport(result);
                 }
+
                 // nếu bằng null thì tạo mới IngredientReport
                 else
                 {
                     await CreateIngredientInfoReport(new IngredientInfoReport
                     {
-
                         Name = model.Name,
                         ExpiredTime = model.ExpiredTime,
                         ManufacturingDate = ProductionDates.Date,
@@ -222,6 +226,7 @@ namespace EC_API._Services.Services
                     });
                 }
             }
+
             // nếu chưa tồn tại thì thêm mới
             else
                 await CreateIngredientInfoReport(new IngredientInfoReport
@@ -241,7 +246,6 @@ namespace EC_API._Services.Services
 
         public async Task<object> ScanQRCodeFromChemialWareHouseDate(string qrCode, string start, string end)
         {
-
             var supModel = _repoSupplier.GetAll();
             var modelID = _repoIngredient.FindAll().FirstOrDefault(x => x.Code.Equals(qrCode) && x.isShow == true).ID;
             var model = _repoIngredient.FindById(modelID);
@@ -250,6 +254,7 @@ namespace EC_API._Services.Services
             if (await _repoIngredientInfo.CheckBarCodeExists(qrCode))
             {
                 var result = _repoIngredientInfo.FindAll().FirstOrDefault(x => x.Code == qrCode && x.CreatedDate <= resultEnd.Date && x.CreatedDate >= resultStart.Date);
+
                 if (result != null)
                 {
                     result.Qty = model.Unit.ToInt() + result.Qty;
@@ -301,6 +306,7 @@ namespace EC_API._Services.Services
                 return data;
             }
         }
+
         public async Task<IngredientInfoReport> CreateIngredientInfoReport(IngredientInfoReport data)
         {
             try
@@ -315,6 +321,7 @@ namespace EC_API._Services.Services
                 return data;
             }
         }
+
         public async Task<IngredientInfo> UpdateIngredientInfo(IngredientInfo data)
         {
             try
@@ -428,5 +435,7 @@ namespace EC_API._Services.Services
                 throw;
             }
         }
+
+        
     }
 }

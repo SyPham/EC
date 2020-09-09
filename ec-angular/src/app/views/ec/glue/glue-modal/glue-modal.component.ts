@@ -52,14 +52,11 @@ export class GlueModalComponent implements OnInit {
     this.getAllMaterialName();
     this.getAllPartName();
     this.glueService.currentGlue.subscribe((res: any) => {
-      // this.glue.modelNameID = res ;
-      // console.log(this.glue.modelNameID)
     });
   }
 
   onChangepartName(args) {
     this.glue.partID = args.value ;
-    // console.log(this.glue)
   }
   onChangeMaterialName(args) {
     this.glue.materialID = args.value ;
@@ -68,17 +65,15 @@ export class GlueModalComponent implements OnInit {
   getAllPartName() {
     this.glueService.getAllPartName().subscribe((res => {
       this.partName = res ;
-    }))
+    }));
   }
   getAllMaterialName(){
     this.glueService.getAllMaterialName().subscribe((res =>{
-      this.MaterialName = res
+      this.MaterialName = res;
     }))
   }
   getAllModelName() {
     this.modalNameService.getAllModalName().subscribe((res => {
-      // console.log(res);
-      // this.modalName = res ;
     }));
   }
 
@@ -86,7 +81,6 @@ export class GlueModalComponent implements OnInit {
     this.glueService.create1(this.glue).subscribe( () => {
         this.alertify.success('Created successed!');
         this.activeModal.dismiss();
-        // this.glueService.changeGlue(this.glue.modelNameID);
         this.glue.gluename = '';
         this.showBarCode = false;
     },

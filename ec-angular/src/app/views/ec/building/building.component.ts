@@ -75,7 +75,6 @@ export class BuildingComponent implements OnInit {
       });
   }
   toolbarClick(args) {
-    console.log(args);
     switch (args.item.text) {
       case 'Add':
         args.cancel = true;
@@ -119,14 +118,12 @@ export class BuildingComponent implements OnInit {
     );
    }
   actionComplete(args) {
-    console.log('actionComplete', args)
     if (args.requestType === 'save') {
       this.edit.name = args.data.entity.name;
       this.rename();
     }
    }
   rowSelected(args) {
-    console.log(args)
     this.edit = {
       id: args.data.entity.id,
       name: args.data.entity.name,
@@ -165,7 +162,6 @@ export class BuildingComponent implements OnInit {
     modalRef.componentInstance.title = 'Add Main Building';
     modalRef.componentInstance.building = this.building;
     modalRef.result.then((result) => {
-      console.log('openCommentModal', result);
     }, (reason) => {
     });
   }
@@ -174,7 +170,6 @@ export class BuildingComponent implements OnInit {
     modalRef.componentInstance.title = 'Add Sub Building';
     modalRef.componentInstance.building = this.building;
     modalRef.result.then((result) => {
-      console.log('openSubOCModal', result);
     }, (reason) => {
     });
   }
