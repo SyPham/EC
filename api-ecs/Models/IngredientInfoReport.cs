@@ -12,7 +12,6 @@ namespace EC_API.Models
             this.CreatedDate = DateTime.Now;
             //this.CreatedTime = DateTime.Now.ToString("MMMM dd, yyyy HH:mm:ss tt");
             this.CreatedTime = DateTime.Now;
-
         }
         public int ID { get; set; }
         public string Code { get; set; }

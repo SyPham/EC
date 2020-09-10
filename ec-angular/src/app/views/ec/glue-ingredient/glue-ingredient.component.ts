@@ -316,7 +316,6 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
 
   // step 1 select modelname
   onChangeModelName(args) {
-    console.log(args)
     this.resetLifeCycleBPFC();
     this.approvalStatus = args.itemData.approvalStatus;
     this.createdStatus = args.itemData.finishedStatus;
@@ -335,14 +334,12 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
   }
 
   onChangeProcess(args) {
-    console.log(args);
     if (args.itemData) {
       this.valueProcess = args.itemData.id;
       this.existGlue = true;
     }
   }
   onChangeProcessCloneModal(args) {
-    console.log(args);
     if (args.itemData) {
       this.processID = args.itemData.id;
     }
@@ -378,15 +375,12 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     $('[data-toggle="tooltip"]').tooltip();
     if (this.selectedRow.length) {
       this.gridglue.selectRows(this.selectedRow);
-      console.log('dataBoud glue selectedRow', this.selectedRow);
       this.selectedRow = [];
     } else {
       this.gridglue.selectRows(this.selIndex);
-      console.log('dataBoud glue selIndex', this.selIndex);
     }
   }
   onChangeposition(args, data, index) {
-    // console.log('onchangeProsition', args);
     this.modified = false;
     let details = this.getLocalStore('details');
     if (args.value === '') {
@@ -415,7 +409,6 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
           this.makeFormula();
           this.updateChemicalList();
           this.grid.refresh();
-          // console.log('edit position', this.ingredients1);
 
         } else {
           details = this.getLocalStore('details');
@@ -451,12 +444,10 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     }
   }
   recordDoubleClick(args) {
-    // console.log('recordDoubleClick: ', args);
     this.modifiedGlue = true;
   }
   // Update or edit
   actionBegin(args) {
-    // console.log('actionBegin: ', args);
 
     if (args.requestType === 'beginEdit') {
       this.chemicalNameEdit = args.rowData.name; // chemicalNameEdit or ingredient
@@ -605,7 +596,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     this.ingredientID = args.itemData.id;
     this.onChangeChemical = true;
   }
- 
+
   onChangeKindEdit(args) {
     this.kindEdit = args.value;
   }
@@ -639,7 +630,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
       // this.modelNoClone = `${res.modelNo} clone at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`;
     });
   }
- 
+
   getAllBPFC() {
     this.bPFCEstablishService.getAll().subscribe((res: any) => {
       this.BPFCs = res;
@@ -958,7 +949,6 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     }
   }
   actionComplete(args) {
-    // // console.log('actionComplete', args);
     this.glueid = args.data.id;
     if (args.requestType === 'save') {
       this.glue.id = args.data.id;
@@ -985,7 +975,6 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     this.detailGlue = true;
   }
   rowDeselected(args) {
-    // console.log('rowDeselected', args);
     // neu khong fai dang edit thi moi hoi
     const localstoreDetails = this.getLocalStore('details').sort(this.dynamicSort('position'));
     const check = this.compareArray(this.oldDetail, localstoreDetails);
@@ -995,7 +984,6 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
           'Warning',
           'Are you sure you want to discard the changes this?',
         ).then((result) => {
-          // console.log('Are you sure you want to discard the changes this', result);
           this.modified = true;
           const index = this.gridglue.getSelectedRowIndexes()[0];
           this.gridglue.selectRow(index);
@@ -1006,8 +994,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     }
   }
   rowSelected(args: any) {
-    console.log('row Selected: ', args);
-    // console.log('modified: ', this.modified);
+
     const data = args.data[0] || args.data;
     this.selIndex = [args.rowIndex];
     if (!args.isInteracted && args.previousRowIndex) {
@@ -1123,7 +1110,6 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
   }
   mapGlueIngredient(glueIngredient) {
     this.glueIngredientService.mappGlueIngredient(glueIngredient).subscribe(res => {
-      // this.gridglue.selectRow(0);
       if (this.subID === undefined) {
         this.ingredientID = undefined;
         this.getAllGluesByBPFCID(this.BPFCID);
@@ -1198,7 +1184,6 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     if (e.requestType === 'beginEdit') {
       e.form.elements.namedItem(this.setFocus.field).focus();  // Set focus to the Target element
       e.form.elements.namedItem(this.setFocus.field).value = '';  // Set focus to the Target element
-      // // console.log(e.form.elements.namedItem(this.setFocus.field));
     }
   }
 
@@ -1217,7 +1202,6 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     $('[data-toggle="tooltip"]').tooltip();
   }
   toolbarClick(args: any): void {
-    // console.log(args.item.text);
     switch (args.item.text) {
       case 'Add New':
         const localstoreDetails = this.getLocalStore('details').sort(this.dynamicSort('position'));
@@ -1347,7 +1331,6 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
   }
 
   onBeforeOpenArticle(args) {
-    console.log(args);
     if (this.artQuantity === 0) {
       args.cancel = true;
       this.alertify.warning('Please create a Article #', true);
@@ -1365,11 +1348,13 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
       });
     });
   }
+
   getArticleNoByModelNameID(modelNoID) {
     this.articleNoService.getArticleNoByModelNoID(modelNoID).subscribe(res => {
       this.articleNoData = res;
     });
   }
+
   getModelNoByModelNameID(modelNameID) {
     this.modelNoService.getModelNoByModelNameID(modelNameID).subscribe(res => {
       this.modelNoData = res;

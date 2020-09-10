@@ -75,7 +75,6 @@ export class ModalNoComponent implements OnInit {
     });
   }
   actionBegin(args) {
-    console.log(args) ;
     if (args.requestType === 'save') {
       this.modalno.id = args.data.id ;
       this.modalno.name = args.data.name ;
@@ -95,7 +94,6 @@ export class ModalNoComponent implements OnInit {
   }
   getAllModalNo() {
     this.modalNoService.getAllModalNo().subscribe((res: any) => {
-      // console.log(res)
       this.data = res ;
     });
   }
@@ -118,12 +116,10 @@ export class ModalNoComponent implements OnInit {
   }
   getAllModelName() {
     this.makeGlueService.getAllModalName().subscribe((res: any) => {
-      // console.log(res) ;
       this.dataModalName = res ;
     });
   }
   changeModalName($event){
     this.modalno.modelNameID = Number($event.value) ;
-    // console.log(this.modalno.modelNameID)
   }
 }

@@ -55,6 +55,9 @@ namespace EC_API.Controllers
             var ingredientsInfoReport = await _ingredientService.GetAllIngredientInfoReportAsync();
             return Ok(ingredientsInfoReport);
         }
+
+        
+
         [HttpGet("{text}")]
         public async Task<IActionResult> Search([FromQuery] PaginationParams param, string text)
         {
@@ -93,8 +96,8 @@ namespace EC_API.Controllers
                 return BadRequest("Ingredient ID already exists!");
             if (await _ingredientService.CheckBarCodeExists(ingredientIngredientDto.Code))
                 return BadRequest("Ingredient Barcode already exists!");
-            if (await _ingredientService.CheckExistsName(ingredientIngredientDto.Name))
-                return BadRequest("Ingredient Name already exists!");
+            ////var username = User.FindFirst(ClaimTypes.Name).Value;
+            // //ingredientIngredientDto.Updated_By = username;
             ingredientIngredientDto.CreatedDate = DateTime.Now.ToString("MMMM dd, yyyy HH:mm:ss tt");
             if (await _ingredientService.Add1(ingredientIngredientDto))
             {

@@ -515,7 +515,6 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     }
   }
   actionBeginGlue(args) {
-    console.log(args);
     if (args.requestType === 'beginEdit') {
       this.chemicalNameEdit = args.rowData.name; // chemicalNameEdit or ingredient
       this.pathNameEdit = args.rowData.pathName; // partname
@@ -551,7 +550,6 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       this.history.After = `Consumption ${args.data.consumption}`;
       this.glue.createdBy = JSON.parse(localStorage.getItem('user')).User.ID;
       this.history.UserID = JSON.parse(localStorage.getItem('user')).User.ID;
-      console.log(this.history);
       this.bPFCEstablishService.AddHistoryBPFC(this.history).subscribe(() => {
         const bpfcInfo = {
           modelNameID: this.modelNameID,
@@ -583,7 +581,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     }
   }
   rowDeselected(args) {
-    // console.log('rowDeselected', args);
+
     // neu khong fai dang edit thi moi hoi
     const localstoreDetails = this.getLocalStore('details').sort(
       this.dynamicSort('position')
@@ -597,25 +595,15 @@ export class BpfcComponent implements OnInit, AfterViewInit {
             'Are you sure you want to discard the changes this?'
           )
           .then((result) => {
-            // console.log('Are you sure you want to discard the changes this', result);
             this.modified = true;
-            // const index = this.gridglue.getSelectedRowIndexes()[0];
-            // this.gridglue.selectRow(index);
-            console.log('rowDeselected user dong y bo qua thay doi', args);
           })
           .catch((err) => {
-            console.log(
-              'rowDeselected user KHONG dong y bo qua thay doi',
-              args
-            );
-
             this.gridglue.selectRows(args.rowIndex);
           });
       }
     }
   }
   rowSelected(args: any) {
-    // console.log('modified: ', this.modified);
     if (args.data[0]) {
       this.GlueNameDefault = args.data[0].name;
     }
@@ -711,7 +699,6 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     }
   }
   recordDoubleClick(args) {
-    // console.log('recordDoubleClick: ', args);
     this.modifiedGlue = true;
   }
 
@@ -1233,7 +1220,6 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     if (e.requestType === 'beginEdit') {
       e.form.elements.namedItem(this.setFocus.field).focus(); // Set focus to the Target element
       e.form.elements.namedItem(this.setFocus.field).value = ''; // Set focus to the Target element
-      // // console.log(e.form.elements.namedItem(this.setFocus.field));
     }
   }
 
@@ -1241,7 +1227,6 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     $('[data-toggle="tooltip"]').tooltip();
   }
   toolbarClick(args: any): void {
-    // console.log(args.item.text);
     switch (args.item.text) {
       case 'Add New':
         const localstoreDetails = this.getLocalStore('details').sort(
@@ -1314,7 +1299,6 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     this.bPFCEstablishService
       .LoadHistoryBPFC(this.BPFCID)
       .subscribe((res: any) => {
-        // this.historyData = res ;
         this.historyData = res.map((item) => {
           return {
             id: item.id,
@@ -1503,9 +1487,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
           }
         }
         this.glueIngredientDetail = details;
-        // this.history.BeforeAllow = '';
         this.makeFormula();
-        // this.makeFormula2();
       });
   }
 
@@ -1641,7 +1623,6 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       this.history.After = this.GlueNameDefault;
       this.history.AfterAllow = this.glueNewName;
       this.history.UserID = userid;
-      console.log(this.history);
       this.bPFCEstablishService
         .AddHistoryBPFC(this.history)
         .subscribe(() => {});
@@ -1783,11 +1764,10 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       });
   }
   getModelNoByModelNameID(modelNameID) {
-    this.modelNoService
-      .getModelNoByModelNameID(modelNameID)
-      .subscribe((res) => {
-        this.modelNoData = res;
-      });
+    this.modelNoService.getModelNoByModelNameID(modelNameID)
+    .subscribe((res) => {
+      this.modelNoData = res;
+    });
   }
   getArtProcessByArticleNoID(articleNoID) {
     this.artProcessService
@@ -1803,7 +1783,6 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   }
   getAllProcess() {
     this.artProcessService.GetAllProcess().subscribe((res: any) => {
-      console.log('getAllProcess', res);
       this.artProcessDataClone2 = res;
     });
   }
@@ -1912,8 +1891,6 @@ export class BpfcComponent implements OnInit, AfterViewInit {
         this.clearFormClone();
       } else {
         this.alertify.error('The BPFC exists!');
-        // this.modalService.dismissAll();
-        // this.clearFormClone();
       }
     });
   }
@@ -1980,7 +1957,6 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     this.modelNOIDClone = this.valuemodelNo;
     this.articleNOIDClone = 0;
     this.artProcessIDClone = 0;
-    // this.modelNOsDataClone = [];
     this.articleNosDataClone = [];
     this.artProcessDataClone = [];
     this.artProcessDataClone2 = [];
@@ -1994,22 +1970,17 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       bpfcID: this.BPFCID,
       cloneBy: JSON.parse(localStorage.getItem('user')).User.ID,
     };
-    // console.log(clone);
     this.clone(clone);
   }
   onChangeModelNameClone(args) {
     const valueChange = args.value;
     if (this.value !== valueChange) {
       this.modelNOsDataClone = [];
-      // this.artProcessDataClone2 = [];
       this.modelNameIDClone = args.value;
       this.getModelNoByModelNameIDClone(this.modelNameIDClone);
     }
     this.modelNameIDClone = args.value;
     this.getModelNoByModelNameIDClone(this.modelNameIDClone);
-    // this.articleNosDataClone = [];
-    // this.artProcessDataClone = [];
-    // this.artProcessDataClone2 = [];
   }
   onChangeModelNoClone(args) {
     this.modelNOIDClone = args.value;

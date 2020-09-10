@@ -4,14 +4,16 @@ using EC_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EC_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200905075651_version1.0.6-AddDeleteGlueModified-leo")]
+    partial class version106AddDeleteGlueModifiedleo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,12 +199,6 @@ namespace EC_API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("GlueID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("GlueName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MixingInfoID")
                         .HasColumnType("int");
 
                     b.Property<string>("Qty")
@@ -434,9 +430,6 @@ namespace EC_API.Migrations
                     b.Property<int>("ExpiredTime")
                         .HasColumnType("int");
 
-                    b.Property<int>("IngredientID")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("ManufacturingDate")
                         .HasColumnType("datetime2");
 
@@ -605,9 +598,6 @@ namespace EC_API.Migrations
                     b.Property<string>("BatchE")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("BuildingID")
-                        .HasColumnType("int");
-
                     b.Property<string>("ChemicalA")
                         .HasColumnType("nvarchar(max)");
 
@@ -634,9 +624,6 @@ namespace EC_API.Migrations
 
                     b.Property<int>("GlueID")
                         .HasColumnType("int");
-
-                    b.Property<string>("GlueName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MixBy")
                         .HasColumnType("int");
@@ -738,9 +725,6 @@ namespace EC_API.Migrations
                     b.Property<int>("BPFCEstablishID")
                         .HasColumnType("int");
 
-                    b.Property<string>("BPFCName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("BuildingID")
                         .HasColumnType("int");
 
@@ -763,38 +747,6 @@ namespace EC_API.Migrations
                     b.HasIndex("BuildingID");
 
                     b.ToTable("Plans");
-                });
-
-            modelBuilder.Entity("EC_API.Models.PlanDetail", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("BPFCName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Consumption")
-                        .HasColumnType("float");
-
-                    b.Property<int>("GlueID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("GlueName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PlanID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Supplier")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("PlanID");
-
-                    b.ToTable("PlanDetails");
                 });
 
             modelBuilder.Entity("EC_API.Models.Process", b =>
@@ -1013,15 +965,6 @@ namespace EC_API.Migrations
                     b.HasOne("EC_API.Models.Building", "Building")
                         .WithMany("Plans")
                         .HasForeignKey("BuildingID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("EC_API.Models.PlanDetail", b =>
-                {
-                    b.HasOne("EC_API.Models.Plan", "Plan")
-                        .WithMany("PlanDetails")
-                        .HasForeignKey("PlanID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

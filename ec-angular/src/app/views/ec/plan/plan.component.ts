@@ -109,26 +109,58 @@ export class PlanComponent implements OnInit {
   count(index) {
     return Number(index) + 1;
   }
+
   getAllLine(buildingID) {
     this.planService.getLines(buildingID).subscribe((res: any) => {
       this.buildingName = res;
     });
   }
+
   onChangeBuildingNameEdit(args) {
     this.buildingNameEdit = args.itemData.id;
   }
+<<<<<<< HEAD
+=======
+
+  onChangeModelNameEdit(args) {
+    this.modelNameEdit = args.itemData.id;
+    this.getModelNoByModelNameID(this.modelNameEdit);
+  }
+
+  onChangeModelNoEdit(args) {
+    this.modelNoEdit = args.itemData.id;
+    this.getArticleNoByModelNoID(this.modelNoEdit);
+
+  }
+
+  onChangeArticleNoEdit(args) {
+    this.articleNoEdit = args.itemData.id;
+    this.getArtProcessByArticleNoID(this.articleNoEdit);
+
+  }
+
+  onChangeArtProcessEdit(args) {
+    this.artProcessEdit = args.itemData.id;
+  }
+
+>>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
   onChangeDueDateEdit(args) {
     this.dueDate = (args.value as Date).toDateString();
   }
+
   onChangeDueDateClone(args) {
-    console.log('onChangeDueDateClone', (args.value as Date));
     this.date = (args.value as Date);
   }
+
   onChangeBPFCEdit(args) {
     this.bpfcEdit = args.itemData.id;
   }
 
   actionComplete(args) {
+<<<<<<< HEAD
+=======
+
+>>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
     if (args.requestType === 'edit') {
       (args.form.elements.namedItem('createdDate') as HTMLInputElement).disabled = true;
     }
@@ -137,7 +169,10 @@ export class PlanComponent implements OnInit {
     }
   }
   actionBegin(args) {
+<<<<<<< HEAD
     console.log(args)
+=======
+>>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
     if (args.requestType === 'cancel') {
       this.ClearForm();
     }
@@ -151,7 +186,6 @@ export class PlanComponent implements OnInit {
         this.modalPlan.BPFCEstablishID = args.data.bpfcEstablishID;
         this.modalPlan.BPFCName = args.data.bpfcName;
         this.modalPlan.hourlyOutput = args.data.hourlyOutput;
-        console.log(this.modalPlan);
         this.planService.update(this.modalPlan).subscribe(res => {
           this.alertify.success('Updated succeeded!');
           this.ClearForm();
@@ -179,27 +213,31 @@ export class PlanComponent implements OnInit {
       }
     }
   }
+
   private ClearForm() {
     this.bpfcEdit = 0;
     this.hourlyOutput = 0;
     this.workHour = 0;
     this.dueDate = new Date();
   }
+
   private validForm(): boolean {
     const array = [this.bpfcEdit];
     return array.every(item => item > 0);
   }
+
   onChangeWorkingHour(args) {
-    console.log('onChangeWorkingHour', args);
     this.workHour = args;
   }
+
   onChangeHourlyOutput(args) {
-    console.log('onChangeWorkingHour', args);
 
     this.hourlyOutput = args;
   }
+
   rowSelected(args) {
   }
+
   openaddModalPlan(addModalPlan) {
     this.modalReference = this.modalService.open(addModalPlan);
   }
@@ -243,7 +281,68 @@ export class PlanComponent implements OnInit {
       });
     });
   }
+
   /// Begin API
+<<<<<<< HEAD
+=======
+  getAllModelName() {
+    this.modelNameService.getAllModalName().subscribe((res: any) => {
+      this.modelName = res;
+    });
+  }
+
+  getModelNoByModelNameID(modelNameID) {
+    this.modelNoService.getModelNoByModelNameID(modelNameID).subscribe((res: any) => {
+      this.modelNos = res;
+    });
+  }
+
+  getArticleNoByModelNoID(modelNoID) {
+    this.articleNoService.getArticleNoByModelNoID(modelNoID).subscribe((res: any) => {
+      this.articleNos = res;
+    });
+  }
+
+  getArtProcessByArticleNoID(articleNoID) {
+    this.artProcessService.getArtProcessByArticleNoID(articleNoID).subscribe((res: any) => {
+      this.artProcesses = res.map(item => {
+        return {
+          id: item.id,
+          name: item.processID === 1 ? 'ASY' : 'STF'
+        };
+      });
+    });
+  }
+
+  getModelNames() {
+    this.modelNameService.getAllModalName().subscribe((res: any) => {
+      this.modelName = res;
+    });
+  }
+
+  getModelNos() {
+    this.modelNoService.getAll().subscribe((res: any) => {
+      this.modelNos = res;
+    });
+  }
+
+  getArticles() {
+    this.articleNoService.getAll().subscribe((res: any) => {
+      this.articleNos = res;
+    });
+  }
+
+  getArtProcesses() {
+    this.artProcessService.getAll().subscribe((res: any) => {
+      this.artProcesses = res.map(item => {
+        return {
+          id: item.id,
+          name: item.processID === 1 ? 'ASY' : 'STF'
+        };
+      });
+    });
+  }
+>>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
 
   openModal(ref) {
     const selectedRecords = this.grid.getSelectedRecords();
@@ -263,8 +362,8 @@ export class PlanComponent implements OnInit {
       this.alertify.warning('Please select the plan');
     }
   }
+
   toolbarClick(args: any): void {
-    // console.log(args.item.text);
     switch (args.item.text) {
       case 'Clone':
         this.openModal(this.cloneModal);
@@ -282,10 +381,14 @@ export class PlanComponent implements OnInit {
         break;
     }
   }
+
   onClickClone() {
+<<<<<<< HEAD
     this.plansSelected.map(item => {
       item.dueDate = this.date;
     });
+=======
+>>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
     this.planService.clonePlan(this.plansSelected).subscribe((res: any) => {
       if (res) {
         this.alertify.success('Successfully!');
@@ -299,6 +402,7 @@ export class PlanComponent implements OnInit {
       }
     });
   }
+
   search(startDate, endDate) {
     this.planService.search(startDate.toDateString(), endDate.toDateString()).subscribe((res: any) => {
       this.data = res.map(item => {
@@ -318,6 +422,7 @@ export class PlanComponent implements OnInit {
     });
   }
 
+<<<<<<< HEAD
   onClickDefault() {
     this.startDate = new Date();
     this.endDate = new Date(new Date().setDate(15));
@@ -338,5 +443,11 @@ export class PlanComponent implements OnInit {
       return '';
     }
   }
+=======
+  onClickFilter() {
+    this.search(this.startDate, this.endDate);
+  }
+
+>>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
   // End API
 }

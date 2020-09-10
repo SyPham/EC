@@ -42,7 +42,6 @@ export class LineComponent implements OnInit {
     this.getAllLine();
   }
   actionBegin(args) {
-    // console.log(args) ;
     if (args.requestType === 'save') {
       this.line.id = args.data.id ;
       this.line.name = args.data.name ;
@@ -59,7 +58,6 @@ export class LineComponent implements OnInit {
   }
   getAllLine() {
     this.lineService.getAllLine().subscribe((res: any) => {
-      // console.log('getAllLine: ', res);
       this.data = res ;
     });
   }

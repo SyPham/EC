@@ -67,21 +67,46 @@
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" [routerLink]="[ '/ec/execution/todolist']">{{ 'TODOLIST' | translate }}</a>
             <a class="dropdown-item" [routerLink]="[ '/ec/setting/ingredient/scanQrcode']">Receiving</a>
+<<<<<<< HEAD
+=======
+
+            <!-- <a class="dropdown-item" [routerLink]="[ '/ec/setting/ingredient/inventory']">Inventory</a> -->
+
+>>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
             <a class="dropdown-item" [routerLink]="[ '/ec/execution/addition']">{{ 'ADDITION' | translate }}</a>
             <!-- <a class="dropdown-item" [routerLink]="[ '/ec/line']">Addition</a> -->
           </div>
         </li>
+
         <li class="nav-item dropdown" *ngIf="level === ADMIN || level === SUPERVISOR || level === STAFF">
           <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {{ 'REPORT' | translate }}
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" [routerLink]="[ '/ec/report/established-record']" >{{ 'ESTABLISHED_RECORD' | translate }}</a>
+<<<<<<< HEAD
           <a class="dropdown-item" onclick="alert('This function will be coming soon')" >{{ 'CONSUMPTION_LABEL' | translate }}</a>
           <a class="dropdown-item" [routerLink]="[ '/ec/report/inventory']">{{'INVENTORY_LABEL' | translate}}</a>
             <a class="dropdown-item" [routerLink]="[ '/ec/report/delivered-history']">Delivered History</a>
         </div>
       </li>
+=======
+            <a class="dropdown-item" onclick="alert('This function will be coming soon')" >{{ 'CONSUMPTION_LABEL' | translate }}</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/report/inventory']">Inventory</a>
+          </div>
+        </li>
+
+        <li class="nav-item dropdown" *ngIf="level === ADMIN || level === SUPERVISOR || level === STAFF">
+          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Troubleshooting
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" [routerLink]="[ '/ec/troubleshooting/search']">Search</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/troubleshooting/Abnormal-List']">Abnormal List</a>
+          </div>
+        </li>
+
+>>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
       </ul>
 
     </div>

@@ -217,7 +217,6 @@ export class IngredientComponent implements OnInit, AfterViewInit {
         qrCode: `${item.productionDate}-${item.batch}-${item.code}`
       };
     });
-    console.log('rowSelected', this.dataPicked)
   }
   rowDeselected(args) {
     this.dataPicked = this.printGrid.getSelectedRecords().map((item: any) => {
@@ -317,11 +316,10 @@ export class IngredientComponent implements OnInit, AfterViewInit {
       this.getIngredients();
     }
   }
-  
+
   getAll() {
     this.ingredientService.getAllIngredient().subscribe(res => {
       this.data = res;
-      // console.log('Get All: ', res);
     });
   }
 
@@ -358,7 +356,6 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     modalRef.componentInstance.ingredient = this.ingredient;
     modalRef.componentInstance.title = 'Add Ingredient';
     modalRef.result.then((result) => {
-      // console.log('OpenIngredientModalComponent', result );
     }, (reason) => {
     });
   }
@@ -367,7 +364,6 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     modalRef.componentInstance.ingredient = item;
     modalRef.componentInstance.title = 'Edit Ingredient';
     modalRef.result.then((result) => {
-      // console.log('openIngredientEditModalComponent', result );
     }, (reason) => {
     });
   }

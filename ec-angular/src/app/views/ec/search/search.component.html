@@ -1,0 +1,100 @@
+<div class="card">
+  <div class="card-header">
+    <h3>Troubleshooting-Search</h3>
+
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-sm-12 text-center">
+            <label style="color: transparent;" class="font-weight-bold" for="">Scan QRCode</label>
+          </div>
+        </div>
+        <ng-container>
+          <div class="row">
+            <div class="col-md-5">
+              <div class="card">
+                <div class="col-md-12 card-body table-responsive">
+                  <div class="row">
+                    <div class="col-md-3 mt-2">
+                      <label>Search Ingredient: </label>
+                    </div>
+                    <div class="col-md-8 mt-2">
+                      <ejs-dropdownlist #ingredientDropdownlist  class="w-100 float-left"
+                        [dataSource]='IngredientData' [fields]='fieldsIngredient' [allowFiltering]='true' [(ngModel)]="ingredientID"
+                        (filtering)='onFilteringIngredientName($event)' (change)='onChangeIngredientName($event)'
+                        placeholder="Select a Ingredient Name">
+                      </ejs-dropdownlist>
+                    </div>
+                  </div>
+                  <!-- End Model Name -->
+                </div>
+              </div>
+
+            </div>
+
+            <div class="col-md-7">
+              <div class="card">
+                <div class="col-md-12 card-body table-responsive">
+                  <div class="row">
+                    <div class="col-md-3 mt-2">
+                      <label>Ingredient Batch: </label>
+                    </div>
+                    <div *ngIf="showBatch" class="col-md-8 mt-2">
+                      <button style="margin: 3px;" type="button" (click)="searchBatch()" class="btn btn-info btn-sm">BatchA</button>
+                      <button style="margin: 3px;" type="button" class="btn btn-info btn-sm">BatchB</button>
+                      <button style="margin: 3px;" type="button" class="btn btn-info btn-sm">BatchC</button>
+                      <button style="margin: 3px;" type="button" class="btn btn-info btn-sm">BatchD</button>
+                    </div>
+                  </div>
+                  <!-- End Model Name -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isShow" class="card-body">
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table table-bordered">
+          <thead class="thead-dark">
+            <tr>
+              <th style="text-align: center;" scope="col">Ingredient</th>
+              <th style="text-align: center;" scope="col">Batch</th>
+              <th style="text-align: center;" scope="col">Model Name</th>
+              <th style="text-align: center;" scope="col">Model No.</th>
+              <th style="text-align: center;" scope="col">Article No.</th>
+              <th style="text-align: center;" scope="col">Process</th>
+              <th style="text-align: center;" scope="col">Line</th>
+              <th style="text-align: center;" scope="col">Mix Date</th>
+              <!-- <th style="text-align: center;" scope="col">Comsumption</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data; let i=index">
+              <th scope="row" style="text-align: center;">{{item.createdTime | date:'yyyy-MM-dd , hh:mm:ss a'}}</th>
+              <td style="text-align: center;">{{item.supplierName}}</td>
+              <td style="text-align: center;">{{item.name }}</td>
+              <td style="text-align: center;">{{item.manufacturingDate | date:'yyyy-MM-dd'}}</td>
+              <td style="text-align: center;">{{item.batch}}</td>
+              <td style="text-align: center;">{{item.expiredTime}}</td>
+              <td style="text-align: center;">{{item.qty}} KG</td>
+              <td style="text-align: center;">{{item.consumption}} KG</td>
+              <!-- <td style="text-align: center;">
+                <button  (click)="delete(item.id)" type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+              </td> -->
+              <!-- <td style="text-align: center;">{{item.consumption}}</td> -->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div>

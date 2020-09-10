@@ -25,7 +25,7 @@ export class PartComponent implements OnInit {
 
   ngOnInit() {
     this.pageSettings = { pageSize: 6 };
-    this.part ={ 
+    this.part ={
       id: 0,
       name: ''
     };
@@ -43,7 +43,6 @@ export class PartComponent implements OnInit {
   create() {
     this.partService.create(this.part).subscribe(() => {
       this.alertify.success('Add Part Successfully');
-      // this.modalReference.close() ;
       this.getAllPart();
       this.part.name = '';
     });
@@ -52,7 +51,6 @@ export class PartComponent implements OnInit {
   update() {
     this.partService.create(this.part).subscribe(() => {
       this.alertify.success('Add Part Successfully');
-      // this.modalReference.close() ;
       this.getAllPart();
       this.part.name = '';
     });

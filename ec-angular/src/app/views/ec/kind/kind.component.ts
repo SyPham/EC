@@ -43,7 +43,6 @@ export class KindComponent implements OnInit {
   create() {
     this.kindService.create(this.kind).subscribe(() => {
       this.alertify.success('Add Kind Successfully');
-      // this.modalReference.close() ;
       this.getAllKind();
       this.kind.name = '';
     });

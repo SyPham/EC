@@ -86,7 +86,6 @@ export class ModalNameComponent implements OnInit, AfterViewInit {
     });
   }
   dataBound() {
-    console.log('dataBound', this.gridModel.pageSettings)
   }
   no(item: any): number {
     return (this.pageSettings.currentPage - 1) * this.pageSettings.pageSize + Number(item.index) + 1;
@@ -103,7 +102,6 @@ export class ModalNameComponent implements OnInit, AfterViewInit {
       }
     }
     if (args.requestType === 'delete') {
-      console.log('actionBegin', args.data[0].id)
       this.delete(args.data[0].id);
     }
   }
@@ -115,7 +113,6 @@ export class ModalNameComponent implements OnInit, AfterViewInit {
     }
   }
   onDoubleClick(args: any): void {
-    console.log('onDoubleClick', args);
 
     this.setFocus = args.column;  // Get the column from Double click event
   }
@@ -139,7 +136,6 @@ export class ModalNameComponent implements OnInit, AfterViewInit {
           name: item.name
         };
       });
-      console.log('getAllModelName', this.data);
     });
   }
   filterByApprovedStatus() {
@@ -159,7 +155,6 @@ export class ModalNameComponent implements OnInit, AfterViewInit {
           name: item.name
         };
       });
-      console.log('filterByApprovedStatus', this.data);
     });
   }
   filterByFinishedStatus() {
@@ -179,7 +174,6 @@ export class ModalNameComponent implements OnInit, AfterViewInit {
           name: item.name
         };
       });
-      console.log('filterByFinishedStatus', this.data);
     });
   }
   filterByNotApprovedStatus() {
@@ -199,7 +193,6 @@ export class ModalNameComponent implements OnInit, AfterViewInit {
           name: item.name
         };
       });
-      console.log('filterByNotApprovedStatus', this.data);
     });
   }
   update(modelname) {
@@ -299,12 +292,10 @@ export class ModalNameComponent implements OnInit, AfterViewInit {
     });
   }
   rowSelected(args: any) {
-    console.log('row Selected: ', args);
     const item = args.data[0] || args.data;
     this.sortBySup(item.id);
   }
   toolbarClick(args: any): void {
-    // console.log(args.item.text);
     switch (args.item.text) {
       case 'Approved':
         this.filterByApprovedStatus();

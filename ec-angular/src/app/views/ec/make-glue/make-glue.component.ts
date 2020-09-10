@@ -138,7 +138,6 @@ export class MakeGlueComponent implements OnInit {
     this.getBuilding();
     this.getAllGlue();
     this.existGlue = true;
-    // this.line = this.level.name;
 
   }
   getBuilding() {
@@ -210,7 +209,6 @@ export class MakeGlueComponent implements OnInit {
   }
 
   async onChangeInput(args) {
-    // console.log('onChangeInput: ', args);
     const { value: weight } = await this.alertify.$swal.fire({
       title: 'How many amount do you want to mix?',
       input: 'number',
@@ -224,7 +222,6 @@ export class MakeGlueComponent implements OnInit {
   }
   getAllGlue() {
     this.makeGlueService.getAllGlues().subscribe((res) => {
-      // console.log('getAllGlue', res);
       this.glues = res;
     });
   }
@@ -240,7 +237,6 @@ export class MakeGlueComponent implements OnInit {
   }
   public onFiltering = (e: FilteringEventArgs) => {
     const query = new Query();
-    // console.log('fillter: ', query);
     this.queryString = e.text;
     e.updateData(this.fillterGlues(this.glues, e.text));
   }
@@ -255,7 +251,6 @@ export class MakeGlueComponent implements OnInit {
   }
   public onFilteringBuilding = (e: FilteringEventArgs) => {
     const query = new Query();
-    // console.log('fillter: ', query);
     this.queryString = e.text;
     e.updateData(this.fillterBuildings(this.lines, e.text));
   }
@@ -270,7 +265,6 @@ export class MakeGlueComponent implements OnInit {
   }
   public onFilteringModel = (e: FilteringEventArgs) => {
     const query = new Query();
-    // console.log('fillter: ', query);
     this.queryString = e.text;
     e.updateData(this.fillterModel(this.dataModalName, e.text));
   }
@@ -349,7 +343,6 @@ export class MakeGlueComponent implements OnInit {
   }
 
   onChange($event, item) {
-    console.log('onChange: ', $event);
     const weightNew = parseFloat($event.target.value);
     const weightOld = (Number(this.weight) * item.percentage) / 100;
     if (weightNew > weightOld) {
@@ -364,7 +357,6 @@ export class MakeGlueComponent implements OnInit {
       glueID: this.makeGlue.id
     };
     this.guidances.push(items);
-    // console.log(this.guidances);
   }
 
   Finish() {
@@ -500,7 +492,6 @@ export class MakeGlueComponent implements OnInit {
       this.changeExpected('E', expectedE);
       this.loadDataChart();
     }
-    console.log('real', this.ingredients);
   }
   findIngredient(position) {
     for (const item of this.ingredients) {
@@ -539,7 +530,6 @@ export class MakeGlueComponent implements OnInit {
       this.changeExpected('E', expectedE);
       this.loadDataChart();
     }
-    console.log('expected', this.ingredients);
   }
   back() {
     this.existGlue = true;

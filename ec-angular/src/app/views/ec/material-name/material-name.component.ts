@@ -88,7 +88,6 @@ export class MaterialNameComponent implements OnInit {
     }
   }
   onDoubleClick(args: any): void {
-    console.log('onDoubleClick', args);
     this.setFocus = args.column;  // Get the column from Double click event
   }
   delete(id) {

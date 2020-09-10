@@ -29,7 +29,6 @@ export class GlueHistoryComponent implements OnInit {
   }
   getMixingInfoByGlueID(glueID) {
     this.makeGlueService.getMixingInfoByGlueID(glueID).subscribe((data: any) => {
-      console.log(data);
       this.data = data;
     });
   }

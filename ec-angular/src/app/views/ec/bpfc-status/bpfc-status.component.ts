@@ -106,7 +106,6 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       }
     }
     if (args.requestType === 'delete') {
-      console.log('actionBegin', args.data[0].id)
       this.delete(args.data[0].id);
     }
   }
@@ -118,7 +117,6 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
     }
   }
   onDoubleClick(args: any): void {
-    console.log('onDoubleClick', args);
 
     this.setFocus = args.column;  // Get the column from Double click event
   }
@@ -150,7 +148,6 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
           bpfcName: `${item.modelName } - ${item.modelNo } - ${item.articleNo } - ${item.artProcess }`,
         };
       });
-      console.log('getAllBPFCStatus', this.data);
     });
   }
   filterByApprovedStatus() {
@@ -177,7 +174,6 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
           bpfcName: `${item.modelName } - ${item.modelNo } - ${item.articleNo } - ${item.artProcess }`,
         };
       });
-      console.log('filterByApprovedStatus', this.data);
     });
   }
   filterByFinishedStatus() {
@@ -204,7 +200,6 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
           bpfcName: `${item.modelName } - ${item.modelNo } - ${item.articleNo } - ${item.artProcess }`,
         };
       });
-      console.log('filterByFinishedStatus', this.data);
     });
   }
   filterByNotApprovedStatus() {
@@ -231,7 +226,6 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
           bpfcName: `${item.modelName } - ${item.modelNo } - ${item.articleNo } - ${item.artProcess }`,
         };
       });
-      console.log('filterByNotApprovedStatus', this.data);
     });
   }
   update(modelname) {
@@ -344,7 +338,6 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
     this.sortBySup(newGlueID);
   }
   toolbarClick(args: any): void {
-    // console.log(args.item.text);
     switch (args.item.text) {
       case 'Approved':
         this.filterByApprovedStatus();
