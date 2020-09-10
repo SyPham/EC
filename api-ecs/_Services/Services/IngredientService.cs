@@ -20,7 +20,6 @@ namespace EC_API._Services.Services
         private readonly IIngredientRepository _repoIngredient;
         private readonly IIngredientInfoRepository _repoIngredientInfo;
         private readonly IIngredientInfoReportRepository _repoIngredientInfoReport;
-        private readonly IGlueIngredientRepository _repoGlueIngredient;
         private readonly ISupplierRepository _repoSupplier;
         private readonly IPlanRepository _repoPlan;
         private readonly IMixingInfoRepository _repoMixingInfo;
@@ -42,11 +41,9 @@ namespace EC_API._Services.Services
             ISupplierRepository repoSupplier,
             IBuildingGlueRepository repoBuildingGlue,
             IMapper mapper, 
-            MapperConfiguration configMapper)
-
-        public IngredientService(IGlueIngredientRepository repoGlueIngredient,IIngredientInfoReportRepository repoIngredientInfoReport, IIngredientRepository repoIngredient, IHttpContextAccessor accessor, IIngredientInfoRepository repoIngredientInfo, ISupplierRepository repoSupplier, IMapper mapper, MapperConfiguration configMapper)
-
-        {
+            MapperConfiguration configMapper
+            )
+        { 
             _configMapper = configMapper;
             _mapper = mapper;
             _repoIngredient = repoIngredient;

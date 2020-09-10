@@ -62,14 +62,11 @@ import { GlueHistoryComponent } from './summary/glue-history/glue-history.compon
 import { SelectTextDirective } from './select.text.directive';
 import { ScanQrcodeFromIngredientComponent } from './ScanQrcodeFromIngredient/ScanQrcodeFromIngredient.component';
 import { InventoryComponent } from './inventory/inventory.component';
-<<<<<<< HEAD
 import { TooltipModule } from '@syncfusion/ej2-angular-popups';
 import { DeliveredHistoryComponent } from './delivered-history/delivered-history.component';
-=======
 import { SearchComponent } from './search/search.component';
 import { AbnormalListComponent } from './abnormal-list/abnormal-list.component';
 
->>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
 setCulture('de-DE');
 
 const lang = localStorage.getItem('lang');
@@ -148,12 +145,9 @@ if (lang) {
     GlueHistoryComponent,
     ScanQrcodeFromIngredientComponent,
     InventoryComponent,
-<<<<<<< HEAD
-    DeliveredHistoryComponent
-=======
+    DeliveredHistoryComponent,
     SearchComponent,
     AbnormalListComponent
->>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
   ]
 })
 export class ECModule { }

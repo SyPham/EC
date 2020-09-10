@@ -119,31 +119,6 @@ export class PlanComponent implements OnInit {
   onChangeBuildingNameEdit(args) {
     this.buildingNameEdit = args.itemData.id;
   }
-<<<<<<< HEAD
-=======
-
-  onChangeModelNameEdit(args) {
-    this.modelNameEdit = args.itemData.id;
-    this.getModelNoByModelNameID(this.modelNameEdit);
-  }
-
-  onChangeModelNoEdit(args) {
-    this.modelNoEdit = args.itemData.id;
-    this.getArticleNoByModelNoID(this.modelNoEdit);
-
-  }
-
-  onChangeArticleNoEdit(args) {
-    this.articleNoEdit = args.itemData.id;
-    this.getArtProcessByArticleNoID(this.articleNoEdit);
-
-  }
-
-  onChangeArtProcessEdit(args) {
-    this.artProcessEdit = args.itemData.id;
-  }
-
->>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
   onChangeDueDateEdit(args) {
     this.dueDate = (args.value as Date).toDateString();
   }
@@ -157,10 +132,6 @@ export class PlanComponent implements OnInit {
   }
 
   actionComplete(args) {
-<<<<<<< HEAD
-=======
-
->>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
     if (args.requestType === 'edit') {
       (args.form.elements.namedItem('createdDate') as HTMLInputElement).disabled = true;
     }
@@ -169,10 +140,6 @@ export class PlanComponent implements OnInit {
     }
   }
   actionBegin(args) {
-<<<<<<< HEAD
-    console.log(args)
-=======
->>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
     if (args.requestType === 'cancel') {
       this.ClearForm();
     }
@@ -283,67 +250,6 @@ export class PlanComponent implements OnInit {
   }
 
   /// Begin API
-<<<<<<< HEAD
-=======
-  getAllModelName() {
-    this.modelNameService.getAllModalName().subscribe((res: any) => {
-      this.modelName = res;
-    });
-  }
-
-  getModelNoByModelNameID(modelNameID) {
-    this.modelNoService.getModelNoByModelNameID(modelNameID).subscribe((res: any) => {
-      this.modelNos = res;
-    });
-  }
-
-  getArticleNoByModelNoID(modelNoID) {
-    this.articleNoService.getArticleNoByModelNoID(modelNoID).subscribe((res: any) => {
-      this.articleNos = res;
-    });
-  }
-
-  getArtProcessByArticleNoID(articleNoID) {
-    this.artProcessService.getArtProcessByArticleNoID(articleNoID).subscribe((res: any) => {
-      this.artProcesses = res.map(item => {
-        return {
-          id: item.id,
-          name: item.processID === 1 ? 'ASY' : 'STF'
-        };
-      });
-    });
-  }
-
-  getModelNames() {
-    this.modelNameService.getAllModalName().subscribe((res: any) => {
-      this.modelName = res;
-    });
-  }
-
-  getModelNos() {
-    this.modelNoService.getAll().subscribe((res: any) => {
-      this.modelNos = res;
-    });
-  }
-
-  getArticles() {
-    this.articleNoService.getAll().subscribe((res: any) => {
-      this.articleNos = res;
-    });
-  }
-
-  getArtProcesses() {
-    this.artProcessService.getAll().subscribe((res: any) => {
-      this.artProcesses = res.map(item => {
-        return {
-          id: item.id,
-          name: item.processID === 1 ? 'ASY' : 'STF'
-        };
-      });
-    });
-  }
->>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
-
   openModal(ref) {
     const selectedRecords = this.grid.getSelectedRecords();
     if (selectedRecords.length !== 0) {
@@ -383,12 +289,10 @@ export class PlanComponent implements OnInit {
   }
 
   onClickClone() {
-<<<<<<< HEAD
     this.plansSelected.map(item => {
       item.dueDate = this.date;
     });
-=======
->>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
+
     this.planService.clonePlan(this.plansSelected).subscribe((res: any) => {
       if (res) {
         this.alertify.success('Successfully!');
@@ -422,7 +326,7 @@ export class PlanComponent implements OnInit {
     });
   }
 
-<<<<<<< HEAD
+
   onClickDefault() {
     this.startDate = new Date();
     this.endDate = new Date(new Date().setDate(15));
@@ -443,11 +347,10 @@ export class PlanComponent implements OnInit {
       return '';
     }
   }
-=======
+
   onClickFilter() {
     this.search(this.startDate, this.endDate);
   }
 
->>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
   // End API
 }

@@ -85,7 +85,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit() {
     this.getBuilding();
-    let img = localStorage.getItem('avatar');
+    const img = localStorage.getItem('avatar');
     if (img === 'null') {
       this.avatar = this.defaultImage();
     } else {
@@ -187,7 +187,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   pushToMainPage() {
-    let role = JSON.parse(localStorage.getItem('user')).User.Role;
+    const role = JSON.parse(localStorage.getItem('user')).User.Role;
     if (role === 1) {
       this.router.navigate(['/admin/dash']);
     } else if (role === 2) {
@@ -195,14 +195,14 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     }
   }
   checkServer() {
-    let user = JSON.parse(localStorage.getItem('user')).User.Username;
+    const user = JSON.parse(localStorage.getItem('user')).User.Username;
     setInterval(() => {
       // console.log(user + 'yeu cau server check alert');
       this.checkAlert();
     }, 30000);
   }
   checkAlert() {
-    let userId = JSON.parse(localStorage.getItem('user')).User.ID;
+    const userId = JSON.parse(localStorage.getItem('user')).User.ID;
     this.signalrService.checkAlert(userId);
   }
   getNotifications() {
@@ -225,7 +225,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       2qoTM1zi0/uf4hvBWf5c77e69Gf798y08L7j0RERERERERERH9P99ZpSVRivB/rgAAAABJRU5ErkJggg==`);
   }
   getAvatar() {
-    let img = localStorage.getItem('avatar');
+    const img = localStorage.getItem('avatar');
     if (img === 'null') {
       this.avatar = this.defaultImage();
     } else {
@@ -253,7 +253,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       this.data = [];
       this.getNotifications();
     });
-    let obj: IHeader = {
+    const obj: IHeader = {
       router: item.URL.split('/')[1],
       message: item.URL.split('/')[2],
     };
@@ -261,7 +261,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       this.router.navigate([item.URL.replace('project-detail', 'project/detail')]);
     } else {
       // this.headerService.changeMessage(obj);
-      let url = `/${obj.router}`;
+      const url = `/${obj.router}`;
       this.router.navigate([item.URL]);
     }
   }

@@ -49,36 +49,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   @ViewChild('ddlelement')
   public dropDownListObject1: DropDownListComponent;
   public guidances: any;
-<<<<<<< HEAD
   public guidance: any;
-=======
-  public guidance =
-    {
-      modelName: 0,
-      modelNo: 0,
-      input: 0,
-      lineID: 0,
-      ingredientID: 0,
-      glueID: 0
-    };
-  public pieChartLabels: string[];
-  public pieChartPlugins = [pluginDataLabels];
-  public pieChartType = 'pie';
-  public pieChartOptions: ChartOptions = {
-    responsive: true,
-    legend: {
-      position: 'top',
-    },
-    plugins: {
-      datalabels: {
-        formatter: (value, ctx) => {
-          // const label = ctx.chart.data.labels[ctx.dataIndex];
-          return value + 'g';
-        },
-      },
-    }
-  };
->>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
   // end make glue
   public data: object[] = [];
   public lineColumns: ColumnModel[];
@@ -96,11 +67,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   disabled = true;
   hasWarning: boolean;
   cancel = false;
-<<<<<<< HEAD
-=======
-  // @HostListener('window:keyup.w', ['$event']) w(e: KeyboardEvent) {
-  // }
->>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
   @HostListener('window:keyup.alt.enter', ['$event']) enter(e: KeyboardEvent) {
     if (!this.disabled) {
       this.Finish();
@@ -553,12 +519,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   onKeyupReal(item, args) {
     if (args.keyCode === 13) {
       this.checkValidPosition(item, args);
-<<<<<<< HEAD
-      console.log('on Key Up Real ', this.ingredients);
-      this.UpdateConsumption(item.code, item.batch, item.real);
-=======
       this.UpdateConsumption(item.code, item.batch , item.real );
->>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
     }
   }
 
@@ -742,11 +703,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     }
   }
   dispatchGlue(args, data) {
-<<<<<<< HEAD
-    console.log('dispatchGlue', args, data);
-
-=======
->>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
     if (args.key === 'Enter') {
       if (args.target.value === '') {
         return;
