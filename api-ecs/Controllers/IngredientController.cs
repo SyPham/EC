@@ -329,10 +329,6 @@ namespace EC_API.Controllers
         {
             return Ok(await _ingredientService.DeleteIngredientInfo(id , code , qty , batch));
         }
-        [HttpGet("{value}")]
-        public async Task<IActionResult> Troubleshooting(string value)
-        {
-            return Ok(await _ingredientService.Troubleshooting(value));
-        }
+
     }
 }

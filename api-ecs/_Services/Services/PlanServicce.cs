@@ -59,8 +59,21 @@ namespace EC_API._Services.Services
             _repoMixingInfo = repoMixingInfo;
             _repoBuildingGlue = repoBuildingGlue;
         }
+        public async Task<object> TroubleShootingSearch(string ingredientName, string batch)
+        {
+            var presentDate = DateTime.Now.Date ;
+            var theDayBefore = DateTime.Now.Date.AddDays(-3);
+            // var resultPlan = _repoPlan.FindAll().Where(x => x.DueDate >= theDayBefore && x.DueDate <= presentDate).Select(x => new Test {
+            //     GlueName = _repoGlue.FindAll().FirstOrDefault(x.BPFCEstablishID == resultPlan.BPFCEstablishID)
+            // });
+            return true;
 
+<<<<<<< HEAD
         //Thêm Plan mới vào bảng Plan
+=======
+        }
+        //Thêm Brand mới vào bảng Plan
+>>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
         public async Task<bool> Add(PlanDto model)
         {
             var checkExist = await _repoPlan.FindAll().AnyAsync(x => x.BuildingID == model.BuildingID && x.BPFCEstablishID == model.BPFCEstablishID && x.DueDate.Date == model.DueDate.Date);
@@ -584,12 +597,18 @@ namespace EC_API._Services.Services
                         GlueName = detail.GlueName,
                         line = line.Name,
                         lineID = line.ID,
+<<<<<<< HEAD
                         glueID = detail.GlueID,
                         value = Math.Round(real.Sum(), 3),
                         count = listBuildingGlue.Count,
                         maxReal = realTotal,
                         delivered = deliver,
                         consumption = comsumption / 1000
+=======
+                        glueID = glue.ID,
+                        value = 0,
+                        count = listBuildingGlue.Count
+>>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
                     });
                     rowRealInfo.Add(new SummaryInfo
                     {
@@ -633,9 +652,14 @@ namespace EC_API._Services.Services
             // End Data
             return new { header, data };
 
+<<<<<<< HEAD
 
         }
         public Task<object> GetAllPlansByDate(string from, string to)
+=======
+        }
+        public async Task<object> GetAllPlansByDate(string from, string to)
+>>>>>>> bd20d9438dad3454361cd2f3652c90dc405eda89
         {
             throw new System.NotImplementedException();
         }
