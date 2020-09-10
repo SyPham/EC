@@ -21,10 +21,10 @@ namespace EC_API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPlans([FromQuery]PaginationParams param)
+        public async Task<IActionResult> GetPlans([FromQuery] PaginationParams param)
         {
             var plans = await _planService.GetWithPaginations(param);
-            Response.AddPagination(plans.CurrentPage,plans.PageSize,plans.TotalCount,plans.TotalPages);
+            Response.AddPagination(plans.CurrentPage, plans.PageSize, plans.TotalCount, plans.TotalPages);
             return Ok(plans);
         }
         [HttpGet("{buildingID}")]
@@ -58,7 +58,7 @@ namespace EC_API.Controllers
         //    return Ok(lists);
         //}
         [HttpGet("{text}")]
-        public async Task<IActionResult> Search([FromQuery]PaginationParams param, string text)
+        public async Task<IActionResult> Search([FromQuery] PaginationParams param, string text)
         {
             var lists = await _planService.Search(param, text);
             Response.AddPagination(lists.CurrentPage, lists.PageSize, lists.TotalCount, lists.TotalPages);
@@ -83,12 +83,7 @@ namespace EC_API.Controllers
             if (_planService.GetById(create.ID) != null)
                 return BadRequest("Plan ID already exists!");
             create.CreatedDate = DateTime.Now;
-            if (await _planService.Add(create))
-            {
-                return NoContent();
-            }
-
-            throw new Exception("Creating the model no failed on save");
+            return Ok(await _planService.Add(create));
         }
 
         [HttpPut]
@@ -110,12 +105,17 @@ namespace EC_API.Controllers
         public async Task<IActionResult> Summary(int buildingID)
         {
             var model = await _planService.Summary(buildingID);
-                return Ok(model);
+            return Ok(model);
         }
         [HttpPost]
         public async Task<IActionResult> ClonePlan(List<PlanForCloneDto> create)
         {
             return Ok(await _planService.ClonePlan(create));
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteRange(List<int> delete)
+        {
+            return Ok(await _planService.DeleteRange(delete));
         }
         [HttpPost]
         public async Task<IActionResult> DispatchGlue(BuildingGlueForCreateDto create)

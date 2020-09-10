@@ -72,5 +72,14 @@
     "CHEMICAL": "Chemical",
     "STANDARD": "Std.Con.",
     "STIR": "Stir",
-    "NOTE": "*** Press Alt + Enter or click \"Finish\" button to complete the process! ***"
+    "NOTE": "*** Press Alt + Enter or click \"Finish\" button to complete the process! ***",
+    "LINE_LABEL": "Line",
+    "BPFC_NAME_LABEL": "BPFC Name",
+    "WORKING_HOUR_LABEL": "Working Hour",
+    "HOURLY_OUTPUT_LABEL": "Hourly Output",
+    "DUE_DATE_LABEL": "Due Date",
+    "CREATED_DATE_LABEL": "Created Date",
+    "WORK_PLAN_LABEL": "Work Plan",
+    "FILTER_LABEL": "Filter",
+    "INVENTORY_LABEL": "Inventory"
 }

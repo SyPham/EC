@@ -18,6 +18,8 @@ namespace EC_API.Helpers.AutoMapper
                 .ForMember(d => d.CreatedDate, o => o.MapFrom(s => s.CreatedDate.ToParseStringDateTime()));
             CreateMap<Ingredient, IngredientDto>()
                 .ForMember(d => d.Supplier, o => o.MapFrom(x => x.Supplier.Name))
+                .ForMember(d => d.VOC, o => o.MapFrom(x => x.VOC.ToDouble()))
+                .ForMember(d => d.Unit, o => o.MapFrom(x => x.Unit.ToDouble()))
                 .ForMember(d => d.CreatedDate, o => o.MapFrom(s => s.CreatedDate.ToParseStringDateTime()));
 
             CreateMap<Ingredient, IngredientDto1>()
@@ -27,10 +29,12 @@ namespace EC_API.Helpers.AutoMapper
 
             CreateMap<Line, LineDto>();
             CreateMap<Plan, PlanDto>()
+                 .ForMember(d => d.Glues, o => o.MapFrom(x => x.BPFCEstablish.Glues.Select(x=>x.Name)))
                  .ForMember(d => d.ModelName, o => o.MapFrom(x => x.BPFCEstablish.ModelName.Name))
                 .ForMember(d => d.ModelNoName, o => o.MapFrom(x => x.BPFCEstablish.ModelNo.Name))
                 .ForMember(d => d.ArticleName, o => o.MapFrom(x => x.BPFCEstablish.ArticleNo.Name))
                 .ForMember(d => d.BuildingName, o => o.MapFrom(x => x.Building.Name))
+                .ForMember(d => d.BPFCName, o => o.MapFrom(x => $"{x.BPFCEstablish.ModelName.Name} - {x.BPFCEstablish.ModelNo.Name} - {x.BPFCEstablish.ArticleNo.Name} - {x.BPFCEstablish.ArtProcess.Process.Name}"))
                 .ForMember(d => d.ProcessName, o => o.MapFrom(x => x.BPFCEstablish.ArtProcess.Process.Name))
                 .ForMember(d => d.ModelNameID, o => o.MapFrom(x => x.BPFCEstablish.ModelNameID))
                 .ForMember(d => d.ModelNoID, o => o.MapFrom(x => x.BPFCEstablish.ModelNoID))

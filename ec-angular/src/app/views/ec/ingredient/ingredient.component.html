@@ -77,6 +77,7 @@
                 <td class="text-center">
                   <ejs-qrcodegenerator [id]='item.code' style="display: block;" [displayText]='displayTextMethod' #barcode
                     width="177px" height="177px" mode="SVG" [value]="item.qrCode"></ejs-qrcodegenerator>
+                  <div>{{item.code}}</div>
                   <div>{{item.name}}</div>
                   <div><label>Expired Time: </label> {{item.expiredTime}} minute</div>
                   <div class="text-danger font-weight-bold">{{item.batch.length !== '' && item.productionDate !== '' ? '' : '(*)Please enter batch code and production date'}}</div>

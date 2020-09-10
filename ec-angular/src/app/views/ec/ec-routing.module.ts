@@ -31,6 +31,7 @@ import { BpfcComponent } from './bpfc/bpfc.component';
 import { BpfcStatusComponent } from './bpfc-status/bpfc-status.component';
 import { GlueHistoryComponent } from './summary/glue-history/glue-history.component';
 import { ScanQrcodeFromIngredientComponent } from './ScanQrcodeFromIngredient/ScanQrcodeFromIngredient.component';
+import { DeliveredHistoryComponent } from './delivered-history/delivered-history.component';
 
 const routes: Routes = [
   {
@@ -202,6 +203,13 @@ const routes: Routes = [
         component: SummaryComponent,
         data: {
           title: 'Comsumption'
+        }
+      },
+      {
+        path: 'report/delivered-history',
+        component: DeliveredHistoryComponent,
+        data: {
+          title: 'Delivered History'
         }
       }
       // end report

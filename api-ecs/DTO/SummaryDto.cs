@@ -16,4 +16,5 @@ namespace EC_API.DTO
         public string BuildingName { get; set; }
         public string Comsumption { get; set; }
     }
+
 }

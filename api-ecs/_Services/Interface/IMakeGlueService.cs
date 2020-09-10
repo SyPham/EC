@@ -15,5 +15,6 @@ namespace EC_API._Services.Interface
         Task<object> GetGlueWithIngredientByGlueCode(string code);
         Task<object> GetGlueWithIngredientByGlueID(int glueid);
         Task<object> GetGlueWithIngredientByGlueName(string glueName);
+        object DeliveredHistory();
     }
 }

@@ -129,6 +129,7 @@ namespace EC_API
             services.AddScoped<IModelNameRepository, ModelNameRepository>();
             services.AddScoped<IUserDetailRepository, UserDetailRepository>();
             services.AddScoped<IPlanRepository, PlanRepository>();
+            services.AddScoped<IPlanDetailRepository, PlanDetailRepository>();
             services.AddScoped<IMapModelRepository, MapModelRepository>();
             services.AddScoped<ILineRepository, LineRepository>();
             services.AddScoped<ISupplierRepository, SupplierRepository>();

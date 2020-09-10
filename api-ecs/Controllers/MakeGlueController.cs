@@ -80,5 +80,11 @@ namespace EC_API.Controllers
         {
             return Ok(await _mixingInfoService.GetMixingInfoByGlueID(glueID));
         }
+        [HttpGet("DeliveredHistory")]
+        public IActionResult DeliveredHistory()
+        {
+            return Ok(_makeGlueService.DeliveredHistory());
+        }
+        
     }
 }

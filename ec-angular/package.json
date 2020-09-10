@@ -39,6 +39,7 @@
     "@syncfusion/ej2-angular-grids": "^18.1.44",
     "@syncfusion/ej2-angular-inputs": "^17.4.55",
     "@syncfusion/ej2-angular-navigations": "^17.4.55",
+    "@syncfusion/ej2-angular-popups": "^18.2.54",
     "@syncfusion/ej2-angular-schedule": "^18.2.47",
     "@syncfusion/ej2-angular-treegrid": "^17.4.51",
     "admin-lte": "^3.0.2",

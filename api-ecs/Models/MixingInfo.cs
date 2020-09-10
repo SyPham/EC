@@ -9,6 +9,8 @@ namespace EC_API.Models
     {
         public int ID { get; set; }
         public int GlueID { get; set; }
+        public string GlueName { get; set; }
+        public int BuildingID { get; set; }
         public string Code { get; set; }
         public string ChemicalA { get; set; }
         public string ChemicalB { get; set; }

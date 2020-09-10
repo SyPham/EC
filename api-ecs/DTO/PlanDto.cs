@@ -12,8 +12,11 @@ namespace EC_API.DTO
         public string BuildingName { get; set; }
         public string ModelName { get; set; }
         public string ModelNoName { get; set; }
+        public string BPFCName { get; set; }
+
         public string ArticleName { get; set; }
         public string ProcessName { get; set; }
+        public List<string> Glues { get; set; }
         public int BPFCEstablishID { get; set; }
         public int HourlyOutput { get; set; }
         public int WorkingHour { get; set; }

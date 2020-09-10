@@ -16,14 +16,31 @@ namespace EC_API._Services.Services
 {
     public class IngredientService : IIngredientService
     {
+        private readonly IGlueIngredientRepository _repoGlueIngredient;
         private readonly IIngredientRepository _repoIngredient;
         private readonly IIngredientInfoRepository _repoIngredientInfo;
         private readonly IIngredientInfoReportRepository _repoIngredientInfoReport;
         private readonly ISupplierRepository _repoSupplier;
+        private readonly IPlanRepository _repoPlan;
+        private readonly IMixingInfoRepository _repoMixingInfo;
+        private readonly IGlueRepository _repoGlue;
+        private readonly IBuildingGlueRepository _repoBuildingGlue;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configMapper;
         private readonly IHttpContextAccessor _accessor;
-        public IngredientService(IIngredientInfoReportRepository repoIngredientInfoReport, IIngredientRepository repoIngredient, IHttpContextAccessor accessor, IIngredientInfoRepository repoIngredientInfo, ISupplierRepository repoSupplier, IMapper mapper, MapperConfiguration configMapper)
+        public IngredientService(
+            IMixingInfoRepository repoMixingInfo, 
+            IGlueRepository repoGlue, 
+            IGlueIngredientRepository repoGlueIngredient, 
+            IIngredientInfoReportRepository repoIngredientInfoReport, 
+            IPlanRepository repoPlan, 
+            IIngredientRepository repoIngredient, 
+            IHttpContextAccessor accessor, 
+            IIngredientInfoRepository repoIngredientInfo, 
+            ISupplierRepository repoSupplier,
+            IBuildingGlueRepository repoBuildingGlue,
+            IMapper mapper, 
+            MapperConfiguration configMapper)
         {
             _configMapper = configMapper;
             _mapper = mapper;
@@ -31,7 +48,12 @@ namespace EC_API._Services.Services
             _repoIngredientInfo = repoIngredientInfo;
             _repoSupplier = repoSupplier;
             _accessor = accessor;
+            _repoPlan = repoPlan;
             _repoIngredientInfoReport = repoIngredientInfoReport;
+            _repoGlueIngredient = repoGlueIngredient;
+            _repoGlue = repoGlue;
+            _repoMixingInfo = repoMixingInfo;
+            _repoBuildingGlue = repoBuildingGlue;
         }
         public async Task<bool> CheckExists(int id)
         {
@@ -39,7 +61,7 @@ namespace EC_API._Services.Services
         }
         public async Task<bool> CheckExistsName(string name)
         {
-            return await _repoIngredient.FindAll().AnyAsync(x=>x.Name.ToLower().Equals(name.ToLower()));
+            return await _repoIngredient.FindAll().AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()));
         }
         //Thêm Ingredient mới vào bảng Ingredient
         public async Task<bool> Add(IngredientDto model)
@@ -116,14 +138,14 @@ namespace EC_API._Services.Services
         {
             return await _repoIngredient.FindAll().Where(x => x.isShow == true).Include(x => x.Supplier).ProjectTo<IngredientDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
-         //Lấy toàn bộ danh sách IngredientInfo
+        //Lấy toàn bộ danh sách IngredientInfo
         public async Task<List<IngredientInfoDto>> GetAllIngredientInfoAsync()
         {
             var resultStart = DateTime.Now;
             var resultEnd = DateTime.Now;
             return await _repoIngredientInfo.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date).ProjectTo<IngredientInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
-         //Lấy toàn bộ danh sách IngredientReport
+        //Lấy toàn bộ danh sách IngredientReport
         public async Task<List<IngredientInfoReportDto>> GetAllIngredientInfoReportAsync()
         {
             var resultStart = DateTime.Now;
@@ -163,10 +185,10 @@ namespace EC_API._Services.Services
             var result = _mapper.Map<IngredientDto>(ingredient);
             return result;
         }
-        
+
         public async Task<object> ScanQRCodeFromChemialWareHouse(string qrCode)
         {
-            
+
             // load tat ca supplier
             var supModel = _repoSupplier.GetAll();
             // lay gia tri barcode trong chuỗi qrcode được chuyền lên
@@ -195,7 +217,9 @@ namespace EC_API._Services.Services
                 Qty = model.Unit.ToInt(),
                 Batch = Batch,
                 Consumption = 0,
-                Code = model.Code
+                Code = model.Code,
+                IngredientID = model.ID
+
             });
             // check trong bang ingredientReport xem đã tồn tại code hay chưa , nếu có tồn tại 
             if (await _repoIngredientInfoReport.CheckBarCodeExists(Barcode))
@@ -373,7 +397,7 @@ namespace EC_API._Services.Services
 
         }
 
-        public async Task<bool> UpdateConsumptionIngredientReport(string qrCode,string batch, int consump)
+        public async Task<bool> UpdateConsumptionIngredientReport(string qrCode, string batch, int consump)
         {
             try
             {
@@ -396,11 +420,11 @@ namespace EC_API._Services.Services
             }
 
         }
-        public async Task<bool> DeleteIngredientInfo(int id , string code , int qty, string batch)
+        public async Task<bool> DeleteIngredientInfo(int id, string code, int qty, string batch)
         {
             var item = _repoIngredientInfo.FindById(id);
             _repoIngredientInfo.Remove(item);
-            await Update(code ,qty ,batch);
+            await Update(code, qty, batch);
             return await _repoIngredientInfo.SaveAll();
         }
 
@@ -413,7 +437,7 @@ namespace EC_API._Services.Services
             return await _repoIngredientInfoReport.SaveAll();
         }
 
-        public async Task<bool> Update(string code , int qty , string batch)
+        public async Task<bool> Update(string code, int qty, string batch)
         {
             try
             {
@@ -421,7 +445,7 @@ namespace EC_API._Services.Services
                 {
                     var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == code && x.Batch == batch);
                     result.Qty = result.Qty - qty;
-                    
+
                     var data = await UpdateIngredientInfoReport(result);
                 }
                 return true;
@@ -431,6 +455,98 @@ namespace EC_API._Services.Services
 
                 throw;
             }
+        }
+
+        public async Task<object> Troubleshooting(string value)
+        {
+            var from = DateTime.Now.Date.AddDays(-3).Date;
+            var to = DateTime.Now.Date.Date;
+            var infos = await _repoIngredient
+                        .FindAll()
+                        .Where(x => x.Name.Trim().ToLower().Contains(value.Trim().ToLower()))
+                        .FirstOrDefaultAsync();
+            var plans = _repoPlan.FindAll()
+                .Include(x => x.Building)
+                .Include(x => x.BPFCEstablish)
+                    .ThenInclude(x => x.Glues)
+                    .ThenInclude(x => x.GlueIngredients)
+                    .ThenInclude(x => x.Ingredient)
+                .Include(x => x.BPFCEstablish)
+                    .ThenInclude(x => x.ModelName)
+                    .ThenInclude(x => x.ModelNos)
+                    .ThenInclude(x => x.ArticleNos)
+                    .ThenInclude(x => x.ArtProcesses)
+                    .ThenInclude(x => x.Process)
+
+                .Where(x => x.DueDate.Date >= from && x.DueDate.Date <= to);
+            var troubleshootings = new List<TroubleshootingDto>();
+            var model =await (from a in _repoBuildingGlue.FindAll().Where(x=>x.GlueName.Contains(value))
+                        join b in _repoMixingInfo.FindAll().Where(x => x.GlueName.Contains(value)) on a.MixingInfoID equals b.ID
+                        select new
+                        {
+                            Line = a.BuildingID,
+                            GlueName = a.GlueName,
+                            BatchA = b.BatchA,
+                            BatchB = b.BatchB,
+                            BatchC = b.BatchC,
+                            BatchD = b.BatchD,
+                            BatchE = b.BatchE,
+                            DueDate = b.CreatedTime.Date
+                        }).ToListAsync();
+            foreach (var plan in plans)
+            {
+                // lap nhung bpfc chua ingredient search
+                foreach (var glue in plan.BPFCEstablish.Glues)
+                {
+                    foreach (var item in glue.GlueIngredients.Where(x => x.Ingredient.Name.Contains(infos.Name)))
+                    {
+                        var mixingInfo = model.Where(x => x.GlueName.Equals(item.Glue.Name)).FirstOrDefault();
+                        var batch = "";
+                        var mixDate = new DateTime();
+                        if (mixingInfo != null)
+                        {
+                            switch (item.Position)
+                            {
+                                case "A":
+                                    batch = mixingInfo.BatchA;
+                                    break;
+                                case "B":
+                                    batch = mixingInfo.BatchB;
+                                    break;
+                                case "C":
+                                    batch = mixingInfo.BatchC;
+                                    break;
+                                case "D":
+                                    batch = mixingInfo.BatchD;
+                                    break;
+                                case "E":
+                                    batch = mixingInfo.BatchE;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            mixDate = mixingInfo.DueDate;
+                        }
+                        var detail = new TroubleshootingDto
+                        {
+                            Ingredient = item.Ingredient.Name,
+                            GlueName = item.Glue.Name,
+                            ModelName = glue.BPFCEstablish.ModelName.Name,
+                            ModelNo = glue.BPFCEstablish.ModelNo.Name,
+                            ArticleNo = glue.BPFCEstablish.ArticleNo.Name,
+                            Process = glue.BPFCEstablish.ArtProcess.Process.Name,
+                            Line = plan.Building.Name,
+                            DueDate = plan.DueDate.Date,
+                            Batch = batch,
+                            MixDate = mixDate
+                        };
+                        troubleshootings.Add(detail);
+                    }
+                }
+            }
+           
+
+            return troubleshootings;
         }
     }
 }

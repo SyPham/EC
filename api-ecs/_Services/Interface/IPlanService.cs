@@ -19,6 +19,7 @@ namespace EC_API._Services.Interface
         Task<List<PlanDto>> GetGlueByBuildingBPFCID(int buildingID, int bpfcID);
         Task<object> DispatchGlue(BuildingGlueForCreateDto obj);
         Task<object> ClonePlan(List<PlanForCloneDto> plans);
+        Task<object> DeleteRange(List<int> plansDto);
 
     }
 }

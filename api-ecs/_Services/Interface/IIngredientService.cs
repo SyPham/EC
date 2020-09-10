@@ -22,5 +22,6 @@ namespace EC_API._Services.Interface
         Task<bool> UpdateConsumptionChemialWareHouse(string qrCode , int consump);
         Task<bool> UpdateConsumptionIngredientReport(string qrCode, string batch, int consump );
         Task<bool> CheckExistsName(string name);
+        Task<object> Troubleshooting(string value);
     }
 }

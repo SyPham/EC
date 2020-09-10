@@ -52,4 +52,8 @@ export class MakeGlueService {
     return this.http.get(this.baseUrl + 'MakeGlue/GetMixingInfoByGlueID/' + id, {});
 
   }
+  deliveredHistory() {
+    return this.http.get(this.baseUrl + 'MakeGlue/DeliveredHistory', {});
+
+  }
 }

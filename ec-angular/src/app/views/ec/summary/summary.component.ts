@@ -1,6 +1,5 @@
-import { Component, OnInit, AfterViewInit, ViewChild, Renderer2, ElementRef, QueryList, Query, HostListener } from '@angular/core';
-import { ColumnModel, ResizeService, GridComponent } from '@syncfusion/ej2-angular-grids';
-import { orderDetails } from './data';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { ColumnModel, GridComponent } from '@syncfusion/ej2-angular-grids';
 import { PlanService } from 'src/app/_core/_service/plan.service';
 import * as signalr from '../../../../assets/js/ec-client.js';
 import { AuthService } from 'src/app/_core/_service/auth.service';
@@ -10,13 +9,10 @@ import { MakeGlueService } from 'src/app/_core/_service/make-glue.service';
 import { AlertifyService } from 'src/app/_core/_service/alertify.service';
 import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
 
-import * as pluginDataLabels from 'chartjs-plugin-datalabels';
-import { ChartOptions } from 'chart.js';
 import { DisplayTextModel } from '@syncfusion/ej2-angular-barcode-generator';
 import { IngredientService } from 'src/app/_core/_service/ingredient.service';
-import { ThemeService } from 'ng2-charts';
 import { Router } from '@angular/router';
-import { ItemsList } from '@ng-select/ng-select/lib/items-list';
+import { NgxSpinnerService } from 'ngx-spinner';
 declare var $: any;
 declare var Swal: any;
 @Component({
@@ -39,21 +35,8 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     code: '',
     ingredients: []
   };
-  public aStatus: boolean;
-  public bStatus: boolean;
-  public cStatus: boolean;
-  public dStatus: boolean;
-  public eStatus: boolean;
-  public pieChartData: any[] = [];
-  public pairOfShoeInput: number;
-  public kilogramInput: number;
-  public gramInput: number;
-  public pairOfShoeInputStatus: boolean;
-  public kilogramInputStatus: boolean;
-  public gramInputStatus: boolean;
   public weight: any;
   public glue: any;
-  public consumption: any;
   public glueID: number;
   public glueName: number;
   public quantity: string;
@@ -62,53 +45,17 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   public C: any;
   public D: any;
   public E: any;
-  public B1: any;
-  public C1: any;
-  public D1: any;
-  public E1: any;
-  public batchA: any;
-  public batchB: any;
-  public batchC: any;
-  public batchD: any;
-  public batchE: any;
   public existGlue: any = false;
   @ViewChild('ddlelement')
   public dropDownListObject1: DropDownListComponent;
   public guidances: any;
-  public guidance =
-    {
-      modelName: 0,
-      modelNo: 0,
-      input: 0,
-      lineID: 0,
-      ingredientID: 0,
-      glueID: 0
-    };
-  public pieChartLabels: string[];
-  public pieChartPlugins = [pluginDataLabels];
-  public pieChartType = 'pie';
-  public pieChartOptions: ChartOptions = {
-    responsive: true,
-    legend: {
-      position: 'top',
-    },
-    plugins: {
-      datalabels: {
-        formatter: (value, ctx) => {
-          // console.log('formatter: ', ctx, value);
-          // const label = ctx.chart.data.labels[ctx.dataIndex];
-          return value + 'g';
-        },
-      },
-    }
-  };
+  public guidance: any;
   // end make glue
   public data: object[] = [];
   public lineColumns: ColumnModel[];
   linevalue: any;
   public buildingID: any;
   connection: any;
-  feilds: any;
   @ViewChild('grid')
   grid: GridComponent;
   screenHeight: number;
@@ -118,11 +65,8 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   dateTimeNow: Date;
   code: any;
   disabled = true;
-  // check: boolean = true;
+  hasWarning: boolean;
   cancel = false;
-  // @HostListener('window:keyup.w', ['$event']) w(e: KeyboardEvent) {
-  //   console.log('w captured', e);
-  // }
   @HostListener('window:keyup.alt.enter', ['$event']) enter(e: KeyboardEvent) {
     if (!this.disabled) {
       this.Finish();
@@ -135,9 +79,8 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     public ingredientService: IngredientService,
     private makeGlueService: MakeGlueService,
     private alertify: AlertifyService,
-    private el: ElementRef,
     private router: Router,
-    private renderer: Renderer2
+    private spinner: NgxSpinnerService
   ) { }
   public ngOnInit(): void {
     this.showQRCode = false;
@@ -145,6 +88,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     this.qrCode = '';
     this.getBuilding();
     this.existGlue = true;
+    this.hasWarning = false;
     this.connection = signalr.CONNECTION_HUB;
     if (signalr.CONNECTION_HUB.state === 'Connected') {
       signalr.CONNECTION_HUB.on('summaryRecieve', (status) => {
@@ -185,13 +129,15 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     if (ROLES.includes(level)) {
       this.buildingID = E_BUILDING;
     }
+    this.spinner.show();
     this.planService.summary(this.buildingID).subscribe((res: any) => {
       this.lineColumns = res.header;
       this.data = res.data;
       this.linevalue = res.data;
-      // this.linevalue = res.data.map(item => {
-      //   return Object.values(item);
-      // });
+      if (this.linevalue.length === 0 ) {
+        this.hasWarning = true;
+      }
+      this.spinner.hide();
     });
   }
   hasLineValue(value) {
@@ -212,6 +158,13 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     }
     return false;
   }
+  hasObject(value) {
+    if (value instanceof Object) {
+      return true;
+    }
+    return false;
+  }
+
   hasArray(value) {
     if (value instanceof Array) {
       return true;
@@ -226,10 +179,13 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     delete values.rowRealInfo;
     return values;
   }
+
   getCellValue(values): any {
     const res = Object.values(values).filter(item => {
       return !this.hasArray(item);
     });
+    // console.log('getCellValue', res.slice(1, res.length));
+
     return res.slice(1, res.length);
   }
 
@@ -269,6 +225,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     this.guidances = {
       id: 0,
       glueID: this.glueID,
+      glueName: this.makeGlue.name,
       chemicalA: this.findIngredientRealByPosition('A'),
       chemicalB: this.findIngredientRealByPosition('B'),
       chemicalC: this.findIngredientRealByPosition('C'),
@@ -280,9 +237,9 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       batchD: this.findIngredientBatchByPosition('D'),
       batchE: this.findIngredientBatchByPosition('E'),
       createdTime: new Date(),
-      mixBy: JSON.parse(localStorage.getItem('user')).User.ID
+      mixBy: JSON.parse(localStorage.getItem('user')).User.ID,
+      buildingID: JSON.parse(localStorage.getItem('level')).id,
     };
-    console.log('Finish', this.guidances);
     if (this.guidances) {
       this.makeGlueService.Guidance(this.guidances).subscribe((glue: any) => {
         this.alertify.success('The Glue has been finished successfully');
@@ -561,7 +518,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     if (args.keyCode === 13) {
       this.checkValidPosition(item, args);
       console.log('on Key Up Real ', this.ingredients);
-      this.UpdateConsumption(item.code, item.batch , item.real );
+      this.UpdateConsumption(item.code, item.batch, item.real);
     }
   }
   UpdateConsumption(code, batch, consump) {
@@ -722,15 +679,52 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     this.summary();
   }
   editDomain(data: any) {
-    data.editable = !data.editable;
+    console.log('Edit Domain', data);
+    if (data.consumption === 0) {
+      // this.alertify.warning(`This glue ${data.glueName} has not been mixed!!!`);
+      this.alertify.warning(`Chuyền ${data.line} không sử dụng keo này!<br>
+        The line ${data.line} doesn't use this glue.
+      `, true);
+      return;
+    }
+    if (data.maxReal === 0) {
+      // this.alertify.warning(`This glue ${data.glueName} has not been mixed!!!`);
+      this.alertify.warning(`Keo ${data.glueName} chưa trộn mà!<br>
+       This glue ${data.glueName} hasn't mixed yet.
+      `, true);
+    } else {
+      data.editable = !data.editable;
+    }
   }
   dispatchGlue(args, data) {
     console.log('dispatchGlue', args, data);
+
     if (args.key === 'Enter') {
+      if (args.target.value === '') {
+        return;
+      }
+      const value = args.target.value || 0;
+      const qty = parseFloat(value) || 0;
+      if (qty === 0) {
+        // this.alertify.warning(`Please enter numeric values ​​only or the value must be greater than 0 !!!`);
+        this.alertify.warning(`Chỉ nhập số và phải lớn hơn 0.<br>
+        Please enter numeric values ​​only or the value must be greater than 0.
+        `, true);
+        return;
+      }
+      const remainingGlue = this.toFixedIfNecessary(data.maxReal - data.delivered, 3);
+      if (qty > remainingGlue) {
+        this.alertify.warning(`
+        Keo ${data.glueName} đã giao ${data.delivered}kg còn lại ${remainingGlue}kg. <br>
+        Nhập giá trị nhỏ hơn hoặc bằng ${remainingGlue}kg!!!
+        `, true);
+        return;
+      }
       const obj = {
         glueID: data.glueID,
+        glueName: data.glueName,
         buildingID: data.lineID,
-        qty: args.target.value,
+        qty: qty + '',
         createdBy: Number(JSON.parse(localStorage.getItem('user')).User.ID)
       };
       // call api here

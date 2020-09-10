@@ -18,6 +18,8 @@ namespace EC_API._Services.Services
         private readonly IGlueIngredientRepository _repoGlueIngredient;
         private readonly IMakeGlueRepository _repoMakeGlue;
         private readonly IGlueRepository _repoGlue;
+        private readonly IBuildingGlueRepository _repoBuildingGlue;
+        private readonly IBuildingRepository _repoBuilding;
         private readonly IBPFCEstablishRepository _repoBPFC;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configMapper;
@@ -26,7 +28,9 @@ namespace EC_API._Services.Services
             IGlueRepository repoGlue, 
             IBPFCEstablishRepository repoBPFC,
             IMakeGlueRepository repoMakeGlue,
-            IMapper mapper, 
+            IMapper mapper,
+            IBuildingRepository repoBuilding,
+            IBuildingGlueRepository repoBuildingGlue,
             MapperConfiguration configMapper)
         {
             _configMapper = configMapper;
@@ -35,6 +39,8 @@ namespace EC_API._Services.Services
             _repoBPFC = repoBPFC;
             _repoMakeGlue = repoMakeGlue;
             _repoGlueIngredient = repoGlueIngredient;
+            _repoBuilding = repoBuilding;
+            _repoBuildingGlue = repoBuildingGlue;
 
         }
 
@@ -71,6 +77,24 @@ namespace EC_API._Services.Services
         {
             return await _repoMakeGlue.MakeGlue(code);
             throw new System.NotImplementedException();
+        }
+
+        public object DeliveredHistory()
+        {
+            var result = new List<BuildingGlueDto>();
+            foreach (var item in _repoBuildingGlue.FindAll())
+            {
+                result.Add(new BuildingGlueDto
+                {
+                    ID = item.ID,
+                    GlueName = item.GlueName,
+                    Qty = item.Qty,
+                    BuildingName = _repoBuilding.FindById(item.BuildingID).Name,
+                    CreatedBy = item.CreatedBy,
+                    CreatedDate = item.CreatedDate
+                });
+            }
+            return result;
         }
     }
 }

@@ -54,7 +54,7 @@
               {{ 'MANAGE' | translate }}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" [routerLink]="[ '/ec/manage/bpfc-status']">{{ 'BPFC_STATUS' | translate }}</a>
+              <a class="dropdown-item" *ngIf="level !== WORKER" [routerLink]="[ '/ec/manage/bpfc-status']">{{ 'BPFC_STATUS' | translate }}</a>
             <a class="dropdown-item" [routerLink]="[ '/ec/manage/workplan']">{{ 'WORK_PLAN' | translate }}</a>
 
           </div>
@@ -78,7 +78,8 @@
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" [routerLink]="[ '/ec/report/established-record']" >{{ 'ESTABLISHED_RECORD' | translate }}</a>
           <a class="dropdown-item" onclick="alert('This function will be coming soon')" >{{ 'CONSUMPTION_LABEL' | translate }}</a>
-          <a class="dropdown-item" [routerLink]="[ '/ec/report/inventory']">Inventory</a>
+          <a class="dropdown-item" [routerLink]="[ '/ec/report/inventory']">{{'INVENTORY_LABEL' | translate}}</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/report/delivered-history']">Delivered History</a>
         </div>
       </li>
       </ul>

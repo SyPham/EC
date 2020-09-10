@@ -62,7 +62,8 @@ import { GlueHistoryComponent } from './summary/glue-history/glue-history.compon
 import { SelectTextDirective } from './select.text.directive';
 import { ScanQrcodeFromIngredientComponent } from './ScanQrcodeFromIngredient/ScanQrcodeFromIngredient.component';
 import { InventoryComponent } from './inventory/inventory.component';
-
+import { TooltipModule } from '@syncfusion/ej2-angular-popups';
+import { DeliveredHistoryComponent } from './delivered-history/delivered-history.component';
 setCulture('de-DE');
 
 const lang = localStorage.getItem('lang');
@@ -96,6 +97,7 @@ if (lang) {
     TreeGridAllModule,
     GridAllModule,
     RadioButtonModule,
+    TooltipModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,
@@ -139,7 +141,8 @@ if (lang) {
     AutoSelectDirective,
     GlueHistoryComponent,
     ScanQrcodeFromIngredientComponent,
-    InventoryComponent
+    InventoryComponent,
+    DeliveredHistoryComponent
   ]
 })
 export class ECModule { }

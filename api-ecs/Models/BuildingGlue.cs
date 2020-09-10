@@ -18,7 +18,9 @@ namespace EC_API.Models
         public string Qty { get; set; }
         public int BuildingID { get; set; }
         public int GlueID { get; set; }
+        public string GlueName { get; set; }
         public int CreatedBy { get; set; }
+        public int MixingInfoID { get; set; }
         public DateTime CreatedDate { get; set; }
     }
 }

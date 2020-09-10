@@ -1,6 +1,6 @@
 {
     "SETTING": "Cài Đặt",
-    "ESTABLISH": "Thành Lập",
+    "ESTABLISH": "Thiết Lập",
     "MANAGE": "Quản Lý",
     "EXECUTION": "Thực Hiện",
     "REPORT": "Báo Cáo",
@@ -19,7 +19,7 @@
     "WORK_PLAN": "Kế Hoạch Làm Việc",
     "TODOLIST": "Danh Sách Việc Làm",
     "ADDITION": "Pha Trộn",
-    "ESTABLISHED_RECORD": "Thành Lập Hồ Sơ",
+    "ESTABLISHED_RECORD": "Lịch Trình Tạo Hồ Sơ",
     "CONSUMPTION": "Tiêu Thụ (g)",
     "CONSUMPTION_LABEL": "Tiêu Thụ",
     "PREVIEW": "Xem Trước",
@@ -71,5 +71,14 @@
     "CHEMICAL": "Hóa Chất",
     "STANDARD": "Tiêu Thụ",
     "STIR": "Khuấy",
-    "NOTE": "*** Nhấn Alt + Enter hoặc nhấp chuột vào nút \"Hoàn Thành\" để hoàn thành quy trình! ***"
+    "NOTE": "*** Nhấn Alt + Enter hoặc nhấp chuột vào nút \"Hoàn Thành\" để hoàn thành quy trình! ***",
+    "LINE_LABEL": "Chuyền",
+    "BPFC_NAME_LABEL": "BPFC",
+    "WORKING_HOUR_LABEL": "Giờ Làm Việc",
+    "HOURLY_OUTPUT_LABEL": "Sản Lượng Hàng Giờ",
+    "DUE_DATE_LABEL": "Ngày Thực Thi",
+    "CREATED_DATE_LABEL": "Ngày Giờ Tạo",
+    "WORK_PLAN_LABEL": "Kế Hoạch Làm Việc",
+    "FILTER_LABEL": "Lọc",
+    "INVENTORY_LABEL": "Kiểm Kê Hàng Tồn Kho"
 }

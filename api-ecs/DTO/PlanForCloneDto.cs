@@ -13,5 +13,7 @@ namespace EC_API.DTO
         public int BPFCEstablishID { get; set; }
         public int BuildingID { get; set; }
         public DateTime DueDate { get; set; }
+        public string BPFCName { get; set; }
+
     }
 }

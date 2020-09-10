@@ -20,8 +20,8 @@ namespace EC_API._Services.Services
 {
     public class PlanService : IPlanService
     {
-        private readonly int LINE = 4;
         private readonly IPlanRepository _repoPlan;
+        private readonly IPlanDetailRepository _repoPlanDetail;
         private readonly IGlueRepository _repoGlue;
         private readonly IGlueIngredientRepository _repoGlueIngredient;
         private readonly IBuildingRepository _repoBuilding;
@@ -34,6 +34,7 @@ namespace EC_API._Services.Services
         private readonly MapperConfiguration _configMapper;
         public PlanService(
             IPlanRepository repoPlan,
+            IPlanDetailRepository repoPlanDetail,
             IGlueRepository repoGlue,
             IGlueIngredientRepository repoGlueIngredient,
             IBuildingRepository repoBuilding,
@@ -50,29 +51,62 @@ namespace EC_API._Services.Services
             _repoGlue = repoGlue;
             _repoGlueIngredient = repoGlueIngredient;
             _repoPlan = repoPlan;
+            _repoPlanDetail = repoPlanDetail;
             _repoBuilding = repoBuilding;
             _repoModelName = repoModelName;
             _hubContext = hubContext;
             _repoBPFC = repoBPFC;
             _repoMixingInfo = repoMixingInfo;
-            _repoBuildingGlue= repoBuildingGlue;
+            _repoBuildingGlue = repoBuildingGlue;
         }
 
-        //Thêm Brand mới vào bảng Plan
+        //Thêm Plan mới vào bảng Plan
         public async Task<bool> Add(PlanDto model)
         {
-            var plan = _mapper.Map<Plan>(model);
-            plan.CreatedDate = DateTime.Now;
-            plan.BPFCEstablishID = model.BPFCEstablishID;
-            _repoPlan.Add(plan);
-            var result = await _repoPlan.SaveAll();
-            await _hubContext.Clients.All.SendAsync("summaryRecieve", "ok");
-            return result;
+            var checkExist = await _repoPlan.FindAll().AnyAsync(x => x.BuildingID == model.BuildingID && x.BPFCEstablishID == model.BPFCEstablishID && x.DueDate.Date == model.DueDate.Date);
+            if (!checkExist)
+            {
+                var plan = _mapper.Map<Plan>(model);
+                plan.CreatedDate = DateTime.Now;
+                plan.BPFCEstablishID = model.BPFCEstablishID;
+                _repoPlan.Add(plan);
+                var result = await _repoPlan.SaveAll();
+                var newPlan = await _repoPlan.FindAll()
+                    .Include(x => x.BPFCEstablish)
+                        .ThenInclude(x => x.Glues)
+                        .ThenInclude(x => x.GlueIngredients)
+                        .ThenInclude(x => x.Ingredient)
+                        .ThenInclude(x => x.Supplier).FirstOrDefaultAsync(x => x.ID == plan.ID);
+                var glue = newPlan.BPFCEstablish.Glues;
+                var details = new List<PlanDetail>();
+                foreach (var item in glue)
+                {
+                    var supplierName = "#N/A";
+                    var ingredient = item.GlueIngredients.FirstOrDefault(x => x.Position.Equals('A'));
+                    if (ingredient != null)
+                        supplierName = ingredient.Ingredient.Supplier.Name;
+                    var detail = new PlanDetail()
+                    {
+                        GlueName = item.Name,
+                        Consumption = item.Consumption.ToDouble(),
+                        Supplier = supplierName,
+                        PlanID = plan.ID,
+                        GlueID = item.ID,
+                        BPFCName = plan.BPFCName
+                    };
+                    details.Add(detail);
+                }
+                _repoPlanDetail.AddRange(details);
+                await _repoPlanDetail.SaveAll();
+                await _hubContext.Clients.All.SendAsync("summaryRecieve", "ok");
+                return result;
+            }
+            else
+            {
+                return false;
+            }
         }
-
-
-
-        //Lấy danh sách Brand và phân trang
+        //Lấy danh sách Plan và phân trang
         public async Task<PagedList<PlanDto>> GetWithPaginations(PaginationParams param)
         {
             var lists = _repoPlan.FindAll().ProjectTo<PlanDto>(_configMapper).OrderByDescending(x => x.ID);
@@ -82,14 +116,10 @@ namespace EC_API._Services.Services
         //Tìm kiếm Plan
         public Task<PagedList<PlanDto>> Search(PaginationParams param, object text)
         {
-            //var lists = _repoPlan.FindAll().ProjectTo<PlanDto>(_configMapper)
-            //.Where(x => x.BuildingName.Contains(text.ToString()) || x.WorkHour.Contains(text.ToString()))
-            //.OrderByDescending(x => x.ID);
-            //return await PagedList<PlanDto>.CreateAsync(lists, param.PageNumber, param.PageSize);
             throw new System.NotImplementedException();
 
         }
-        //Xóa Brand
+        //Xóa Plan
         public async Task<bool> Delete(object id)
         {
             var Plan = _repoPlan.FindById(id);
@@ -98,25 +128,66 @@ namespace EC_API._Services.Services
             return await _repoPlan.SaveAll();
         }
 
-        //Cập nhật Brand
+        //Cập nhật Plan
         public async Task<bool> Update(PlanDto model)
         {
             var plan = _mapper.Map<Plan>(model);
+            var planItem = _repoPlan.FindAll().FirstOrDefault(x => x.ID == plan.ID);
+            if (planItem.BPFCEstablishID != model.BPFCEstablishID)
+            {
+                var details = _repoPlanDetail.FindAll().Where(x => x.PlanID == plan.ID);
+                _repoPlanDetail.Remove(details);
+                await _repoPlanDetail.SaveAll();
+
+                var glues = (await _repoPlan.FindAll()
+                    .Include(x => x.BPFCEstablish)
+                    .ThenInclude(x => x.Glues)
+                    .ThenInclude(x => x.GlueIngredients)
+                    .ThenInclude(x => x.Ingredient)
+                    .ThenInclude(x => x.Supplier)
+                    .FirstOrDefaultAsync(x => x.ID == plan.ID)).BPFCEstablish.Glues;
+
+                foreach (var item in glues)
+                {
+                    var detailsAdd = new List<PlanDetail>();
+                    foreach (var glue in item.GlueIngredients)
+                    {
+                        var supplierName = "#N/A";
+                        var ingredient = item.GlueIngredients.FirstOrDefault(x => x.Position.Equals("A"));
+                        if (ingredient != null)
+                            supplierName = ingredient.Ingredient.Supplier.Name;
+                        var detail = new PlanDetail()
+                        {
+                            GlueName = item.Name,
+                            GlueID = glue.ID,
+                            Consumption = item.Consumption.ToDouble(),
+                            Supplier = supplierName,
+                            PlanID = item.ID,
+                            BPFCName = plan.BPFCName
+
+                        };
+                        detailsAdd.Add(detail);
+                    }
+                    _repoPlanDetail.AddRange(detailsAdd);
+                    await _repoPlanDetail.SaveAll();
+                }
+            }
             plan.CreatedDate = DateTime.Now;
             _repoPlan.Update(plan);
             var result = await _repoPlan.SaveAll();
             await _hubContext.Clients.All.SendAsync("summaryRecieve", "ok");
-
             return result;
         }
 
-        //Lấy toàn bộ danh sách Brand 
+        //Lấy toàn bộ danh sách Plan 
         public async Task<List<PlanDto>> GetAllAsync()
         {
             var min = DateTime.Now.Date;
             var max = DateTime.Now.AddDays(15).Date;
-            return await _repoPlan.FindAll()
+            var r = await _repoPlan.FindAll()
                 .Include(x => x.Building)
+                .Include(x => x.BPFCEstablish)
+                .ThenInclude(x => x.Glues)
                 .Include(x => x.BPFCEstablish)
                 .ThenInclude(x => x.ModelName)
                 .Include(x => x.BPFCEstablish)
@@ -129,6 +200,38 @@ namespace EC_API._Services.Services
                 .ProjectTo<PlanDto>(_configMapper)
                 .OrderByDescending(x => x.ID)
                 .ToListAsync();
+            // foreach (var item in r)
+            // {
+            //     var newPlan = await _repoPlan.FindAll()
+            //         .Include(x => x.BPFCEstablish)
+            //             .ThenInclude(x => x.Glues)
+            //             .ThenInclude(x => x.GlueIngredients)
+            //             .ThenInclude(x => x.Ingredient)
+            //             .ThenInclude(x => x.Supplier).FirstOrDefaultAsync(x => x.ID == item.ID);
+            //     var details = new List<PlanDetail>();
+            //     var glue = newPlan.BPFCEstablish.Glues;
+            //     foreach (var item2 in glue)
+            //     {
+            //         var supplierName = "#N/A";
+            //         var ingredient = item2.GlueIngredients.FirstOrDefault(x => x.Position.Equals("A"));
+            //         if (ingredient != null)
+            //             supplierName = ingredient.Ingredient.Supplier.Name;
+            //         var detail = new PlanDetail()
+            //         {
+            //             GlueName = item2.Name,
+            //             GlueID = item2.ID,
+            //             Consumption = item2.Consumption.ToDouble(),
+            //             Supplier = supplierName,
+            //             PlanID = item.ID,
+            //             BPFCName = item.BPFCName
+
+            //         };
+            //         details.Add(detail);
+            //     }
+            //     _repoPlanDetail.AddRange(details);
+            //     await _repoPlanDetail.SaveAll();
+            // }
+            return r;
         }
         public async Task<List<GlueCreateDto1>> GetGlueByBuilding(int buildingID)
         {
@@ -180,22 +283,14 @@ namespace EC_API._Services.Services
 
             //return await _repoGlue.FindAll().ProjectTo<GlueCreateDto1>(_configMapper).Where(x=>x.ModalNameID == modelNameID).OrderByDescending(x => x.ID).ToListAsync();
         }
-        //Lấy Brand theo Brand_Id
+        //Lấy Plan theo Plan_Id
         public PlanDto GetById(object id)
         {
             return _mapper.Map<Plan, PlanDto>(_repoPlan.FindById(id));
         }
 
-        public async Task<object> GetModelNames()
+        public Task<object> GetModelNames()
         {
-            //return await _repoModelName.FindAll()
-            //     .Where(x => x.ApprovedStatus == true && x.CreatedStatus == true)
-            //     .ProjectTo<ModelNameDto>(_configMapper).Select(x => new ModelNameDto
-            //     {
-            //         ID = x.ID,
-            //         Name = $"{x.Name}-{x.ModelNo}"
-
-            //     }).ToListAsync();
             throw new System.NotImplementedException();
         }
 
@@ -216,64 +311,218 @@ namespace EC_API._Services.Services
 
         }
 
+        //public async Task<object> Summary(int building)
+        //{
+        //    try
+        //     {
+        //        var currentDate = DateTime.Now.Date;
+        //        var item = _repoBuilding.FindById(building);
+        //        var lineList = await _repoBuilding.FindAll().Where(x => x.ParentID == item.ID).ToListAsync();
+
+        //        // Header
+        //        var header = new List<HeaderForSummary> {
+        //             new HeaderForSummary
+        //        {
+        //            field = "GlueID",
+        //        },
+        //          new HeaderForSummary
+        //        {
+        //            field = "Supplier",
+        //        },
+        //        new HeaderForSummary
+        //        {
+        //            field = "Chemical"
+        //        }
+        //    };
+
+        //        foreach (var line in lineList)
+        //        {
+        //            var itemHeader = new HeaderForSummary
+        //            {
+        //                field = line.Name
+        //            };
+        //            header.Add(itemHeader);
+        //        }
+        //        header.Add(new HeaderForSummary
+        //        {
+        //            field = "TotalConsumption"
+        //        });
+        //        // end header
+
+        //        // Data
+        //        var data = new List<object>();
+        //        var data2 = new List<object>();
+        //        var listBuildingGlueInfo = new List<object>();
+        //        var plannings = _repoPlan.FindAll().Where(x => x.DueDate.Date == currentDate && lineList.Select(x => x.ID).Contains(x.BuildingID));
+        //        var model = from glue in _repoGlue.FindAll()
+        //                     join bpfc in _repoBPFC.FindAll() on glue.BPFCEstablishID equals bpfc.ID
+        //                     join plan in plannings on bpfc.ID equals plan.BPFCEstablishID
+        //                     select new SummaryDto
+        //                     {
+        //                         GlueID = glue.ID,
+        //                         GlueName = glue.Name,
+        //                         BuildingID = plan.BuildingID,
+        //                         Comsumption = glue.Consumption,
+        //                         ModelNameID = bpfc.ModelNameID,
+        //                         WorkingHour = plan.WorkingHour,
+        //                         HourlyOutput = plan.HourlyOutput
+        //                     };
+
+
+        //        var glueList = _repoGlue.FindAll()
+        //            .Include(x => x.GlueIngredients)
+        //                .ThenInclude(x => x.Ingredient)
+        //                .ThenInclude(x => x.Supplier)
+        //            .Include(x => x.BPFCEstablish)
+        //                .ThenInclude(x => x.ModelName)
+        //                .ThenInclude(x => x.ModelNos)
+        //                .ThenInclude(x => x.ArticleNos)
+        //                .ThenInclude(x => x.ArtProcesses)
+        //                .ThenInclude(x => x.Process)
+        //            .Include(x => x.BPFCEstablish)
+        //                .ThenInclude(x => x.Plans)
+        //                .ThenInclude(x => x.Building)
+        //            .Include(x => x.MixingInfos)
+        //            .Where(x => plannings.Select(p => p.BPFCEstablishID).Contains(x.BPFCEstablishID));
+        //        var glueDistinct = glueList.DistinctBy(x => x.Name);
+
+        //        foreach (var glue in glueDistinct)
+        //        {
+        //            var bpfcNameList = glue.BPFCEstablish.Plans.Select(x => x.BPFCName);
+        //            var itemData = new Dictionary<string, object>();
+        //            var supplier = glue.GlueIngredients.FirstOrDefault(x => x.Position.Equals("A")) == null ? "#N/A" : glue.GlueIngredients.FirstOrDefault(x => x.Position.Equals("A")).Ingredient.Supplier.Name;
+        //            var bpfcName = string.Join(" <br> ", bpfcNameList);
+        //            var glueInfo = new GlueInfo { GlueName = glue.Name, BPFC = bpfcName };
+        //            itemData.Add("GlueID", glue.ID);
+        //            itemData.Add("Supplier", supplier);
+        //            itemData.Add("Chemical", glueInfo);
+        //            var listTotal = new List<double>();
+        //            var listStandardTotal = new List<double>();
+        //            var listWorkingHour = new List<double>();
+        //            var listHourlyOuput = new List<double>();
+        //            var rowRealInfo = new List<object>();
+        //            var rowCountInfo = new List<object>();
+        //            var delivered = await _repoBuildingGlue.FindAll().Where(x => x.GlueID == glue.ID && lineList.Select(a => a.ID).Contains(x.BuildingID) && x.CreatedDate.Date == currentDate).Select(x => x.Qty).ToListAsync();
+        //            var deliver = delivered.ConvertAll<double>(Convert.ToDouble).Sum();
+        //            var mixingInfos = _repoMixingInfo.FindAll().Where(x => x.GlueID == glue.ID && x.CreatedTime.Date == currentDate).ToList();
+        //            double realTotal = 0;
+        //            foreach (var real in mixingInfos)
+        //            {
+        //                realTotal += real.ChemicalA.ToDouble() + real.ChemicalB.ToDouble() + real.ChemicalC.ToDouble() + real.ChemicalD.ToDouble() + real.ChemicalE.ToDouble();
+        //            }
+        //            foreach (var line in lineList.OrderBy(x => x.Name))
+        //            {
+        //                var sdtCon = model.FirstOrDefault(x => x.GlueName == glue.Name && x.BuildingID == line.ID);
+        //                var listBuildingGlue = _repoBuildingGlue.FindAll().Where(x => x.GlueID == glue.ID && x.BuildingID == line.ID && x.CreatedDate.Date == currentDate).ToList();
+        //                List<double> real = listBuildingGlue.Select(x => x.Qty).ToList().ConvertAll<double>(Convert.ToDouble);
+        //                double comsumption = 0;
+        //                if (sdtCon != null)
+        //                {
+        //                    comsumption = sdtCon.Comsumption.ToDouble() * sdtCon.WorkingHour.ToDouble() * sdtCon.HourlyOutput.ToDouble();
+        //                    itemData.Add(line.Name, Math.Round(comsumption / 1000, 3) + "kg");
+        //                    listTotal.Add(sdtCon.Comsumption.ToDouble());
+        //                    listWorkingHour.Add(sdtCon.WorkingHour.ToDouble());
+        //                    listHourlyOuput.Add(sdtCon.HourlyOutput.ToDouble());
+        //                    listStandardTotal.Add(comsumption / 1000);
+        //                }
+        //                else
+        //                {
+        //                    itemData.Add(line.Name, 0);
+        //                }
+
+        //                rowCountInfo.Add(new SummaryInfo
+        //                {
+        //                    GlueName = glue.Name,
+        //                    line = line.Name,
+        //                    lineID = line.ID,
+        //                    glueID = glue.ID,
+        //                    value = Math.Round(real.Sum(), 3),
+        //                    count = listBuildingGlue.Count,
+        //                    maxReal = realTotal,
+        //                    delivered = deliver,
+        //                    consumption = comsumption / 1000
+        //                });
+        //                rowRealInfo.Add(new SummaryInfo
+        //                {
+        //                    GlueName = glue.Name,
+        //                    line = line.Name,
+        //                    lineID = line.ID,
+        //                    glueID = glue.ID,
+        //                    value = Math.Round(real.Sum(), 3),
+        //                    count = listBuildingGlue.Count,
+        //                    maxReal = realTotal,
+        //                    delivered = deliver,
+        //                    consumption = comsumption / 1000
+        //                });
+
+        //            }
+        //            itemData.Add("Standard", Math.Round(listStandardTotal.Sum(), 3) + "kg");
+        //            itemData.Add("Real", $"{Math.Round(deliver, 3)}kg / {Math.Round(realTotal, 3)}kg");
+        //            itemData.Add("Count", glue.MixingInfos.Where(x => x.CreatedTime.Date == currentDate).Count());
+        //            itemData.Add("rowRealInfo", rowRealInfo);
+        //            itemData.Add("rowCountInfo", rowCountInfo);
+        //            data.Add(itemData);
+
+        //        }
+        //        var infoList = new List<HeaderForSummary>() {
+        //             new HeaderForSummary
+        //        {
+        //            field = "Standard"
+        //        },
+        //          new HeaderForSummary
+        //        {
+        //            field = "Real"
+        //        },
+        //        new HeaderForSummary
+        //        {
+        //            field = "Count"
+        //        }};
+
+        //        header.AddRange(infoList);
+
+        //        // End Data
+        //        return new { header, data };
+
+        //    }
+        //    catch 
+        //    {
+        //        return new { header = new HeaderForSummary(), data = new object[]{}, status= false, message="Error!!!" };
+        //    }
+        //}
         public async Task<object> Summary(int building)
         {
+
             var currentDate = DateTime.Now.Date;
             var item = _repoBuilding.FindById(building);
             var lineList = await _repoBuilding.FindAll().Where(x => x.ParentID == item.ID).ToListAsync();
-            var plannings = await _repoPlan.FindAll().Where(x => x.DueDate.Date == currentDate && lineList.Select(x => x.ID).Contains(x.BuildingID)).ToListAsync();
 
             // Header
             var header = new List<HeaderForSummary> {
                      new HeaderForSummary
                 {
                     field = "GlueID",
-                    summaryInfo = new List<SummaryInfo>(),
-                    real = 0,
-                    count = 0
                 },
                   new HeaderForSummary
                 {
                     field = "Supplier",
-                    summaryInfo = new List<SummaryInfo>(),
-                    real = 0,
-                    count = 0
                 },
                 new HeaderForSummary
                 {
-                    field = "Chemical",
-                    summaryInfo = new List<SummaryInfo>(),
-                    real = 0,
-                    count = 0
+                    field = "Chemical"
                 }
-
-
             };
 
             foreach (var line in lineList)
             {
                 var itemHeader = new HeaderForSummary
                 {
-                    field = line.Name,
-                    summaryInfo = new List<SummaryInfo>(),
-                    real = 0,
-                    count = 0
+                    field = line.Name
                 };
                 header.Add(itemHeader);
             }
-            // header.Add(new HeaderForSummary
-            // {
-            //     field = "Delivered",
-            //     summaryInfo = new List<SummaryInfo>(),
-            //     real = 0,
-            //     count = 0
-            // });
             header.Add(new HeaderForSummary
             {
-                field = "TotalConsumption",
-                summaryInfo = new List<SummaryInfo>(),
-                real = 0,
-                count = 0
+                field = "TotalConsumption"
             });
             // end header
 
@@ -281,120 +530,102 @@ namespace EC_API._Services.Services
             var data = new List<object>();
             var data2 = new List<object>();
             var listBuildingGlueInfo = new List<object>();
+            var plannings = _repoPlanDetail.FindAll()
+                .Include(x => x.Plan)
+                .Where(x => x.Plan.DueDate.Date == currentDate && lineList.Select(x => x.ID).Contains(x.Plan.BuildingID));
+         
+            var planDetailsDistinct = plannings.DistinctBy(x => x.GlueName);
 
-            var model = (from glue in _repoGlue.FindAll().ToList()
-                         join bpfc in _repoBPFC.FindAll().ToList() on glue.BPFCEstablishID equals bpfc.ID
-                         join plan in _repoPlan.FindAll().Where(x=> x.DueDate.Date == currentDate).ToList() on bpfc.ID equals plan.BPFCEstablishID
-                         join bui in lineList on plan.BuildingID equals bui.ID
-                         select new SummaryDto
-                         {
-                             GlueID = glue.ID,
-                             BuildingID = bui.ID,
-                             GlueName = glue.Name,
-                             BuildingName = bui.Name,
-                             Comsumption = glue.Consumption,
-                             ModelNameID = bpfc.ModelNameID,
-                             WorkingHour = plan.WorkingHour,
-                             HourlyOutput = plan.HourlyOutput
-                         }).ToList();
-
-            var glueList = await _repoGlue.FindAll()
-                .Include(x => x.GlueIngredients)
-                .ThenInclude(x => x.Ingredient)
-                .ThenInclude(x => x.Supplier)
-                .Include(x => x.MixingInfos)
-                .Where(x => plannings.Select(p => p.BPFCEstablishID).Contains(x.BPFCEstablishID))
-                .ToListAsync();
-            var glueDistinct = glueList.DistinctBy(x => x.Name);
-            foreach (var glue in glueDistinct)
+            foreach (var detail in planDetailsDistinct)
             {
                 var itemData = new Dictionary<string, object>();
-                var supplier = glue.GlueIngredients.FirstOrDefault(x => x.Position.Equals("A")) == null ? "#N/A" : glue.GlueIngredients.FirstOrDefault(x => x.Position.Equals("A")).Ingredient.Supplier.Name;
-                itemData.Add("GlueID", glue.ID);
-                itemData.Add("Supplier", supplier);
-                itemData.Add("Chemical", glue.Name);
+                var glueInfo = new GlueInfo { GlueName = detail.GlueName, BPFC = string.Join("<br>", plannings.Where(x=>x.GlueName == detail.GlueName).Select(x => x.BPFCName)) };
+                itemData.Add("GlueID", detail.GlueID);
+                itemData.Add("Supplier", detail.Supplier);
+                itemData.Add("Chemical", glueInfo);
                 var listTotal = new List<double>();
                 var listStandardTotal = new List<double>();
                 var listWorkingHour = new List<double>();
                 var listHourlyOuput = new List<double>();
                 var rowRealInfo = new List<object>();
                 var rowCountInfo = new List<object>();
-                foreach (var line in lineList.OrderBy(x => x.Name))
-                {
-                    var sdtCon = model.FirstOrDefault(x => x.GlueName == glue.Name && x.BuildingID == line.ID);
-
-                    var listBuildingGlue =  _repoBuildingGlue.FindAll().Where(x=>x.GlueID == glue.ID && x.BuildingID== line.ID && x.CreatedDate.Date == currentDate).ToList();
-                    rowCountInfo.Add(new SummaryInfo {
-                        glueName = glue.Name,
-                        line = line.Name,
-                        lineID=line.ID,
-                        glueID = glue.ID,
-                        value = 0,
-                        count = listBuildingGlue.Count
-                    });
-                    List<double> real = listBuildingGlue.Select(x=>x.Qty).ToList().ConvertAll<double>(Convert.ToDouble);
-                    rowRealInfo.Add(new SummaryInfo
-                    {
-                        glueName = glue.Name,
-                        line = line.Name,
-                        lineID = line.ID,
-                        glueID = glue.ID,
-                        value = Math.Round(real.Sum(), 3),
-                    });
-                    if (sdtCon != null)
-                    {
-                        var comsumption = sdtCon.Comsumption.ToDouble() * sdtCon.WorkingHour.ToDouble() * sdtCon.HourlyOutput.ToDouble();
-                        itemData.Add(line.Name, Math.Round(comsumption / 1000, 3) + "kg");
-                        listTotal.Add(sdtCon.Comsumption.ToDouble());
-                        listWorkingHour.Add(sdtCon.WorkingHour.ToDouble());
-                        listHourlyOuput.Add(sdtCon.HourlyOutput.ToDouble());
-                        listStandardTotal.Add(comsumption / 1000);
-                    }
-                    else
-                    {
-                        itemData.Add(line.Name, 0);
-
-                    }
-                   
-                }
-                var delivered = await _repoBuildingGlue.FindAll().Where(x=>x.GlueID == glue.ID && lineList.Select(a=>a.ID).Contains(x.BuildingID) && x.CreatedDate.Date == currentDate).Select(x=>x.Qty).ToListAsync();
-                // itemData.Add("Delivered", delivered.ConvertAll<double>(Convert.ToDouble).Sum() + "kg");
-                itemData.Add("Standard", Math.Round(listStandardTotal.Sum(), 3) + "kg");
-                var mixingInfos = _repoMixingInfo.FindAll().Where(x => x.GlueID == glue.ID && x.CreatedTime.Date == currentDate).ToList();
+                var delivered = await _repoBuildingGlue.FindAll().Where(x => x.GlueID == detail.GlueID && lineList.Select(a => a.ID).Contains(x.BuildingID) && x.CreatedDate.Date == currentDate).Select(x => x.Qty).ToListAsync();
+                var deliver = delivered.ConvertAll<double>(Convert.ToDouble).Sum();
+                var mixingInfos = _repoMixingInfo.FindAll().Where(x => x.GlueID == detail.GlueID && x.CreatedTime.Date == currentDate).ToList();
                 double realTotal = 0;
                 foreach (var real in mixingInfos)
                 {
                     realTotal += real.ChemicalA.ToDouble() + real.ChemicalB.ToDouble() + real.ChemicalC.ToDouble() + real.ChemicalD.ToDouble() + real.ChemicalE.ToDouble();
                 }
-                var deliver = delivered.ConvertAll<double>(Convert.ToDouble).Sum() + "kg";
-                itemData.Add("Real", $"{deliver} / {Math.Round(realTotal, 3)}kg");
-                itemData.Add("Count", glue.MixingInfos.Where(x=>x.CreatedTime.Date == currentDate).Count());
+
+                foreach (var line in lineList.OrderBy(x => x.Name))
+                {
+                    var sdtCon = plannings.FirstOrDefault(x=>x.GlueName.Equals(detail.GlueName) && x.Plan.BuildingID == line.ID);
+                    var listBuildingGlue = await _repoBuildingGlue.FindAll().Where(x => x.GlueID == detail.GlueID && x.BuildingID == line.ID && x.CreatedDate.Date == currentDate).ToListAsync();
+                    List<double> real = listBuildingGlue.Select(x => x.Qty).ToList().ConvertAll<double>(Convert.ToDouble);
+                    double comsumption = 0;
+                    if (sdtCon != null)
+                    {
+
+                        comsumption = sdtCon.Consumption.ToDouble() * sdtCon.Plan.WorkingHour.ToDouble() * sdtCon.Plan.HourlyOutput.ToDouble();
+                        itemData.Add(line.Name, Math.Round(comsumption / 1000, 3) + "kg");
+                        listTotal.Add(sdtCon.Consumption.ToDouble());
+                        listWorkingHour.Add(sdtCon.Plan.WorkingHour.ToDouble());
+                        listHourlyOuput.Add(sdtCon.Plan.HourlyOutput.ToDouble());
+                        listStandardTotal.Add(comsumption / 1000);
+                    }
+                    else
+                    {
+                        itemData.Add(line.Name, 0);
+                    }
+
+                    rowCountInfo.Add(new SummaryInfo
+                    {
+                        GlueName = detail.GlueName,
+                        line = line.Name,
+                        lineID = line.ID,
+                        glueID = detail.GlueID,
+                        value = Math.Round(real.Sum(), 3),
+                        count = listBuildingGlue.Count,
+                        maxReal = realTotal,
+                        delivered = deliver,
+                        consumption = comsumption / 1000
+                    });
+                    rowRealInfo.Add(new SummaryInfo
+                    {
+                        GlueName = detail.GlueName,
+                        line = line.Name,
+                        lineID = line.ID,
+                        glueID = detail.GlueID,
+                        value = Math.Round(real.Sum(), 3),
+                        count = listBuildingGlue.Count,
+                        maxReal = realTotal,
+                        delivered = deliver,
+                        consumption = comsumption / 1000
+                    });
+
+                }
+                itemData.Add("Standard", Math.Round(listStandardTotal.Sum(), 3) + "kg");
+                itemData.Add("Real", $"{Math.Round(deliver, 3)}kg / {Math.Round(realTotal, 3)}kg");
+                itemData.Add("Count", mixingInfos.Count());
                 itemData.Add("rowRealInfo", rowRealInfo);
                 itemData.Add("rowCountInfo", rowCountInfo);
                 data.Add(itemData);
 
             }
+
             var infoList = new List<HeaderForSummary>() {
                      new HeaderForSummary
                 {
-                    field = "Standard",
-                    summaryInfo = new List<SummaryInfo>(),
-                    real = 0,
-                    count = 0
+                    field = "Standard"
                 },
                   new HeaderForSummary
                 {
-                    field = "Real",
-                    summaryInfo = new List<SummaryInfo>(),
-                    real = 0,
-                    count = 0
+                    field = "Real"
                 },
                 new HeaderForSummary
                 {
-                    field = "Count",
-                    summaryInfo = new List<SummaryInfo>(),
-                    real = 0,
-                    count = 0
+                    field = "Count"
                 }};
 
             header.AddRange(infoList);
@@ -402,28 +633,10 @@ namespace EC_API._Services.Services
             // End Data
             return new { header, data };
 
-        }
 
-        public async Task<object> GetAllPlansByDate(string from, string to)
+        }
+        public Task<object> GetAllPlansByDate(string from, string to)
         {
-            //var model = await _repoPlan.FindAll().Where(x => x.DueDate.Date == DateTime.Now.Date).ProjectTo<PlanDto>(_configMapper).OrderByDescending(x => x.ID).Select(x => new PlanDto
-            //{
-            //    ID = x.ID,
-            //    BuildingID = x.BuildingID,
-            //    ModelNameID = x.ModelNameID,
-            //    PairOfShoesPerHour = x.PairOfShoesPerHour,
-            //    CreatedDate = x.CreatedDate,
-            //    DueDate = x.DueDate,
-            //    BuildingName = _repoBuilding.FindAll().Any(a => a.ID == x.BuildingID) ? _repoBuilding.FindById(x.BuildingID).Name : "",
-            //    ModelName = _repoModelName.FindAll().Any(a => a.ID == x.ModelNameID) ? $"{ _repoModelName.FindById(x.ModelNameID).Name}-{_repoModelName.FindById(x.ModelNameID).ModelNo}" : ""
-            //}).ToListAsync();
-            //if (!from.IsNullOrEmpty() && !to.IsNullOrEmpty())
-            //{
-            //    var FROM = from.ToParseStringDateTime().Date;
-            //    var TO = to.ToParseStringDateTime().Date;
-            //    model = model.Where(x => x.DueDate.Date >= FROM && x.DueDate.Date <= TO).ToList();
-            //}
-            //return model;
             throw new System.NotImplementedException();
         }
 
@@ -432,18 +645,42 @@ namespace EC_API._Services.Services
             var lists = await _repoGlue.FindAll().ProjectTo<PlanDto>(_configMapper).Where(x => x.BPFCEstablishID == bpfcID).OrderByDescending(x => x.ID).ToListAsync();
             return lists.ToList();
         }
-        public async Task<object> DispatchGlue(BuildingGlueForCreateDto obj )
+        public async Task<object> DispatchGlue(BuildingGlueForCreateDto obj)
         {
             var buildingGlue = _mapper.Map<BuildingGlue>(obj);
             _repoBuildingGlue.Add(buildingGlue);
             return await _repoBuildingGlue.SaveAll();
         }
-        public async Task<object> ClonePlan(List<PlanForCloneDto> plansDto) {
+        public async Task<object> ClonePlan(List<PlanForCloneDto> plansDto)
+        {
             var plans = _mapper.Map<List<Plan>>(plansDto);
-            _repoPlan.AddRange(plans);
-            return await _repoBuildingGlue.SaveAll();
-        }
+            var flag = false;
+            try
+            {
+                foreach (var item in plans)
+                {
+                    var checkExist = await _repoPlan.FindAll().AnyAsync(x => x.BuildingID == item.BuildingID && x.BPFCEstablishID == item.BPFCEstablishID && x.DueDate.Date == item.DueDate.Date);
+                    if (!checkExist)
+                    {
+                        _repoPlan.Add(item);
+                        flag = await _repoBuildingGlue.SaveAll();
+                    }
+                }
+                return flag;
+            }
+            catch
+            {
+                return flag;
+            }
 
+        }
+        public async Task<object> DeleteRange(List<int> plansDto)
+        {
+            var plans = await _repoPlan.FindAll().Where(x => plansDto.Contains(x.ID)).ToListAsync();
+            _repoPlan.RemoveMultiple(plans);
+            return await _repoBuildingGlue.SaveAll();
+
+        }
         public async Task<object> GetAllPlanByDefaultRange()
         {
             var min = DateTime.Now.Date;
@@ -451,6 +688,8 @@ namespace EC_API._Services.Services
             return await _repoPlan.FindAll()
                 .Where(x => x.DueDate.Date >= min && x.DueDate <= max)
                 .Include(x => x.Building)
+                .Include(x => x.BPFCEstablish)
+                .ThenInclude(x => x.Glues)
                 .Include(x => x.BPFCEstablish)
                 .ThenInclude(x => x.ModelName)
                 .Include(x => x.BPFCEstablish)
@@ -467,9 +706,9 @@ namespace EC_API._Services.Services
 
         public async Task<object> GetAllPlanByRange(DateTime min, DateTime max)
         {
-           
+
             return await _repoPlan.FindAll()
-                .Where(x=>x.DueDate.Date >= min.Date && x.DueDate.Date <= max.Date)
+                .Where(x => x.DueDate.Date >= min.Date && x.DueDate.Date <= max.Date)
                 .Include(x => x.Building)
                 .Include(x => x.BPFCEstablish)
                 .ThenInclude(x => x.ModelName)

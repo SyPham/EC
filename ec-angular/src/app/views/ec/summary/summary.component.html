@@ -1,17 +1,26 @@
+<ngx-spinner [fullScreen]="false" type="square-jelly-box" size="medium">
+  <p class="loading">Loading data...</p>
+</ngx-spinner>
 <div class="card">
   <div class="card-header d-flex p-0">
     <h3>{{ 'TODOLIST' | translate }}</h3>
     <ul class="nav nav-pills ml-auto p-2" *ngIf="existGlue">
-      <li class="nav-item"><a class="nav-link table-success" >Consumption</a></li>
-      <li class="nav-item"><a class="nav-link table-warning">Count</a></li>
-      <li class="nav-item"><a class="nav-link table-primary">Actual</a></li>
+      <li class="nav-item"><a class="nav-link table-success" >{{ 'CONSUMPTION_LABEL' | translate }}(kg)</a></li>
+      <li class="nav-item"><a class="nav-link table-warning">{{ 'COUNT' | translate }}</a></li>
+      <li class="nav-item"><a class="nav-link table-primary">{{ 'ACTUAL' | translate }}</a></li>
     
     </ul>
   </div>
   <div class="row" *ngIf="existGlue">
     <div class="col-md-12">
       <div class="card-body" style="padding: 0">
-        <table class="table table-bordered table-sm table-responsive" id='todolist' height='800'>
+        <div class="alert alert-danger alert-dismissible" *ngIf="hasWarning">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+          <h5><i class="icon fas fa-ban"></i> Cảnh báo! - Warning!</h5>
+          Dữ liệu kế hoạch làm việc chưa được sắp xếp cho ngày hôm nay! <br>
+          The work plan is empty!
+        </div>
+        <table *ngIf="data.length > 0" class="table table-bordered table-sm table-responsive" id='todolist' height='800'>
           <thead class="thead-dark">
             <tr>
               <ng-container *ngFor="let item of lineColumns; let i = index">
@@ -35,14 +44,19 @@
               <!-- value -->
               <tr>
                 <ng-container *ngFor="let value of getCellValue(values); let i = index">
-                  <td rowspan=3 class="my-align my-sticky"  [ngClass]="frozenBody(i)" *ngIf="hasRowspan(i); else elseBlock">
-                    {{value == 0 || value === '0kg' ? 0 : value}}
+                  <td [attr.rowspan]="hasRowspan(i) ? 3 : ''" [class.table-success]="!hasRowspan(i)" class="my-align"  [ngClass]="frozenBody(i)">
+                      <ejs-tooltip class="fix-css" *ngIf="hasObject(value); else elseBlockValue" [content]="value.bpfc">
+                        {{value.glueName}}
+                      </ejs-tooltip>
+                      <ng-template #elseBlockValue>
+                        {{value == 0 || value === '0kg' ? 0 : value}}
+                      </ng-template>
                   </td>
-                  <ng-template #elseBlock>
+                  <!-- <ng-template #elseBlock>
                     <td class="my-align table-success" [ngClass]="frozenBody(i)">
                       {{value == 0 || value === '0kg' ? 0 : value}}
                     </td>
-                  </ng-template>
+                  </ng-template> -->
                 </ng-container>
                 <td rowspan=3 class="my-align">
                   <div class="btn-group">
@@ -110,7 +124,7 @@
             <label class="font-weight-bold" for="">{{ 'EXPECTED' | translate }}</label>
           </div>
           <div class="col-md-2 col-xl-2 text-center">
-            <label class="font-weight-bold" for="">{{ 'ACTUAL_TODOLIST' | translate }}</label>
+            <label class="font-weight-bold" for="">{{ 'ACTUAL' | translate }}</label>
           </div>
         </div>
 
@@ -182,7 +196,6 @@
       </div>
     </div>
   </div>
-
   <div class="card-body" *ngIf="showQRCode">
     <div class="row">
       <div class="col-md-4"></div>
