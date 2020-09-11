@@ -21,6 +21,7 @@ import {
   PageService,
 } from '@syncfusion/ej2-angular-grids';
 import { AbnormalService } from 'src/app/_core/_service/abnormal.service';
+import { BuildingUserService } from 'src/app/_core/_service/building.user.service';
 declare const $: any;
 
 @Component({
@@ -56,16 +57,20 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
   abnormal = {
     userID: JSON.parse(localStorage.getItem('user')).User.ID,
     ingredient: '',
-    building: ''
+    building: '',
+    batch: ''
   };
+  users: any;
   constructor(
     public modalService: NgbModal,
     private alertify: AlertifyService,
     private abnormalService: AbnormalService,
     private datePipe: DatePipe,
+    private buildingUserService: BuildingUserService,
     public ingredientService: IngredientService,
   ) { }
   public ngOnInit(): void {
+    this.getUsers();
     this.getIngredient();
     this.getAll();
   }
@@ -121,26 +126,47 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
   }
   onChangeBatch(args) {
     console.log(args);
+    this.abnormal.batch = args.itemData.batchName;
     this.abnormalService.getBuildingByIngredientAndBatch(this.ingredient, args.itemData.batchName).subscribe((res: any) => {
       console.log('getBuildingByIngredientAndBatch', res);
-      this.abnormal.ingredient = args.itemData.batchName;
       this.buildings = res;
     });
   }
   search() {
   }
+  getUsers() {
+    this.buildingUserService.getAllUsers(1, 1000).subscribe(res => {
+      const data = res.result.map((i: any) => {
+        return {
+          ID: i.ID,
+          Username: i.Username,
+          Email: i.Email
+        };
+      });
+      this.users = data;
+    });
+  }
+  username(id) {
+    return (this.users.find(item => item.ID === id) as any).Username;
+  }
   rowSelected(args) {
     this.buildingSelected = this.buildingGrid.getSelectedRecords();
-    console.log(this.buildingSelected)
   }
   rowDeselected(args) {
     this.buildingSelected = this.buildingGrid.getSelectedRecords();
-    console.log(this.buildingSelected)
   }
 
   getAll() {
-    this.abnormalService.getAll().subscribe(res => {
-      this.abnormals = res;
+    this.abnormalService.getAll().subscribe((res: any) => {
+      this.abnormals = res.map( (item: any) => {
+        return {
+          ingredient: item.ingredient,
+          batch: item.batch,
+          building: item.building,
+          lockBy: this.username(item.userID),
+          createdDate: item.createdDate
+        }
+      });
     });
   }
   create() {
@@ -150,15 +176,20 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
     });
   }
   createRange() {
-   const obj = this.buildingSelected.map( (item) => {
+    if (this.buildingSelected.length === 0) {
+      this.alertify.warning('Please chose buildings first!');
+      return;
+    }
+    const obj = this.buildingSelected.map( (item) => {
       return {
         building: item.name,
         ingredient: this.abnormal.ingredient,
-        userID: this.abnormal.userID
+        userID: this.abnormal.userID,
+        batch: this.abnormal.batch
       };
     });
-   console.log(obj);
-   this.abnormalService.createRange(obj).subscribe(() => {
+    console.log(obj);
+    this.abnormalService.createRange(obj).subscribe(() => {
       this.alertify.success('Successfully!!!');
       this.getAll();
     });

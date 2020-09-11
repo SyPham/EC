@@ -799,6 +799,28 @@ namespace EC_API._Services.Services
                 .ToListAsync();
         }
 
-       
+        public async Task<object> GetBPFCByGlue(TooltipParams tooltip)
+        {
+            var name = tooltip.Glue.Trim().ToSafetyString();
+            var results = new List<string>();
+           var plans =await _repoPlan.FindAll()
+                .Include(x => x.BPFCEstablish)
+                    .ThenInclude(x => x.ModelName)
+                    .ThenInclude(x => x.ModelNos)
+                    .ThenInclude(x => x.ArticleNos)
+                    .ThenInclude(x => x.ArtProcesses)
+                    .ThenInclude(x => x.Process)
+                .Include(x => x.BPFCEstablish)
+                    .ThenInclude(x => x.Glues)
+                .Where(x => x.DueDate.Date == DateTime.Now.Date).ToListAsync();
+                foreach(var plan in plans) {
+                    foreach (var glue in plan.BPFCEstablish.Glues.Where(x=>x.Name.Trim().Equals(name)))
+                    {
+                        var bpfc = $"{plan.BPFCEstablish.ModelName.Name} -> {plan.BPFCEstablish.ModelNo.Name} -> {plan.BPFCEstablish.ArticleNo.Name} -> {plan.BPFCEstablish.ArtProcess.Process.Name}";
+                        results.Add(bpfc);
+                    }
+                }
+                return results.Distinct();
+        }
     }
 }

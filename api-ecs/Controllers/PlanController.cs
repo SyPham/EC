@@ -19,6 +19,12 @@ namespace EC_API.Controllers
         {
             _planService = planService;
         }
+        [HttpPost]
+        public async Task<IActionResult> GetBPFCByGlue([FromBody]TooltipParams tooltip)
+        {
+            var plans = await _planService.GetBPFCByGlue(tooltip);
+            return Ok(plans);
+        }
         [HttpGet("{ingredientName}/{batch}")]
         public async Task<IActionResult> TroubleShootingSearch(string ingredientName, string batch)
         {

@@ -18,8 +18,8 @@ const httpOptions = {
 export class AbnormalService {
   baseUrl = environment.apiUrlEC;
   constructor(private http: HttpClient) {}
-  hasLock(ingredient, building) {
-    return this.http.get(`${this.baseUrl}Abnormal/Delete/${ingredient}${building}`);
+  hasLock(ingredient, building, batch) {
+    return this.http.get(`${this.baseUrl}Abnormal/HasLock/${ingredient}/${building}/${batch}`);
   }
   getBatchByIngredientID(ingredientID) {
     return this.http.get(`${this.baseUrl}Abnormal/GetBatchByIngredientID/${ingredientID}`);

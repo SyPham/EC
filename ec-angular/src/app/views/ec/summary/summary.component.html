@@ -39,23 +39,18 @@
           </thead>
           <tbody>
           <tbody>
-            <ng-container *ngFor="let values of linevalue">
+            <ng-container *ngFor="let values of linevalue; let j = index">
               <!-- value -->
               <tr>
                 <ng-container *ngFor="let value of getCellValue(values); let i = index">
                   <td [attr.rowspan]="hasRowspan(i) ? 3 : ''" [class.table-success]="!hasRowspan(i)" class="my-align"  [ngClass]="frozenBody(i)">
-                      <ejs-tooltip class="fix-css" *ngIf="hasObject(value); else elseBlockValue" [content]="value.bpfc">
+                      <ejs-tooltip #tooltip class="fix-css" tipPointerPosition='end' (beforeRender)="onBeforeRender($event, value, j)" *ngIf="hasObject(value); else elseBlockValue" content="loading...">
                         {{value.glueName}}
                       </ejs-tooltip>
                       <ng-template #elseBlockValue>
                         {{value == 0 || value === '0kg' ? 0 : value}}
                       </ng-template>
                   </td>
-                  <!-- <ng-template #elseBlock>
-                    <td class="my-align table-success" [ngClass]="frozenBody(i)">
-                      {{value == 0 || value === '0kg' ? 0 : value}}
-                    </td>
-                  </ng-template> -->
                 </ng-container>
                 <td rowspan=3 class="my-align">
                   <div class="btn-group">
@@ -86,48 +81,6 @@
                 </td>
               </tr>
             </ng-container>
-            <!-- 
-               <ng-container *ngFor="let values of linevalue">
-              <tr>
-                <ng-container *ngFor="let value of getCellValue(values); let i = index">
-                  <td rowspan=3 class="my-align" *ngIf="hasRowspan(i); else elseBlock">
-                    {{value == 0 || value === '0kg' ? 0 : value}}
-                  </td>
-                  <ng-template #elseBlock>
-                    <td class="my-align">
-                      {{value == 0 || value === '0kg' ? 0 : value}}
-                    </td>
-                  </ng-template>
-                </ng-container>
-                <td rowspan=3 class="my-align">
-                  <div class="btn-group">
-                    <button type="button" (click)="mixingSection(values)"
-                      class="btn btn-success btn-sm mr-2">{{ 'MIXING' | translate }}</button>
-                    <button type="button" onclick="alert('This function will be coming soon')"
-                      class="btn btn-warning btn-sm mr-2">{{ 'STIR' | translate }}</button>
-                    <button type="button" (click)="pushHistory(values)"
-                      class="btn btn-sm btn-info">{{ 'HISTORY' | translate }}</button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td class="my-align" *ngFor="let value of getValueCell(values.rowCountInfo)">
-                  {{value.count}}
-                </td>
-              </tr>
-              <tr>
-                <td class="my-align" (click)='editDomain(value)'
-                  *ngFor="let value of getValueCell(values.rowRealInfo); let i = index">
-                  <input type="text" *ngIf="!value.editable"
-                    [value]="value.value == 0 || value.value === '0kg' ? 0 : value.value + 'kg'"
-                    class="form-control my-align summaryhide">
-                  <input type="text" (blur)='blurTd(value)' *ngIf="value.editable" autofocustext
-                    (keypress)='dispatchGlue($event, value)' [(ngModel)]="value.value" style="pointer-events: initial"
-                    [value]="value.value" class="form-control my-align summary">
-                </td>
-              </tr>
-            </ng-container>
-             -->
           </tbody>
         </table>
       </div>

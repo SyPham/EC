@@ -39,7 +39,7 @@
         </div>
         <div class="row mt-3">
           <div class="col-md-12 text-center">
-           <button class="btn btn-info" [disabled]='buildingSelected.length === 0'  (click)="lock()"><i class="fa fa-lock"></i> Lock</button>
+           <button class="btn btn-info" (click)="lock()"><i class="fa fa-lock"></i> Lock</button>
           </div>
         </div>
       </div>
@@ -61,8 +61,9 @@
               [allowSorting]='true'>
               <e-columns>
                 <e-column field='ingredient' isPrimaryKey='true' headerText='Ingredient' width='130'></e-column>
+                <e-column field='batch' isPrimaryKey='true' headerText='Batch' width='130'></e-column>
                 <e-column field='building' isPrimaryKey='true' headerText='Building' width='130'></e-column>
-                <e-column field='userID' isPrimaryKey='true' headerText='Lock By' width='130'></e-column>
+                <e-column field='lockBy' isPrimaryKey='true' headerText='Lock By' width='130'></e-column>
                 <e-column field='createdDate' isPrimaryKey='true' headerText='Created Date' width='130'></e-column>
               </e-columns>
             </ejs-grid>

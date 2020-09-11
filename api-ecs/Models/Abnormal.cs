@@ -13,6 +13,7 @@ namespace EC_API.Models
         }
         public int ID { get; set; }
         public string Ingredient { get; set; }
+        public string Batch { get; set; }
         public string Building { get; set; }
         public int UserID { get; set; }
         public DateTime CreatedDate { get; set; }

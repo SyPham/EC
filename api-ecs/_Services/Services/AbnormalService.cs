@@ -26,7 +26,7 @@ namespace EC_API._Services.Services
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configMapper;
         public AbnormalService(
-            IAbnormalRepository repoAbnormal, 
+            IAbnormalRepository repoAbnormal,
             IMapper mapper,
             IPlanRepository repoPlan,
              IIngredientRepository repoIngredient,
@@ -44,13 +44,13 @@ namespace EC_API._Services.Services
             _repoIngredient = repoIngredient;
             _repoBuilding = repoBuilding;
             _repoBuildingGlue = repoBuildingGlue;
-            _repoMixingInfo= repoMixingInfo;
+            _repoMixingInfo = repoMixingInfo;
         }
 
         public async Task<bool> Add(Abnormal model)
         {
             var Abnormal = _mapper.Map<Abnormal>(model);
-         
+
             _repoAbnormal.Add(Abnormal);
             return await _repoAbnormal.SaveAll();
         }
@@ -85,19 +85,41 @@ namespace EC_API._Services.Services
 
         public Abnormal GetById(object id) => _repoAbnormal.FindById(id);
 
-        public async Task<object> HasLock(string ingredient, string building)
+        public async Task<object> HasLock(string ingredient, string building, string batch)
         {
-           return await _repoAbnormal.FindAll().AllAsync(x=> 
-                x.Ingredient.ToLower().Equals(ingredient.ToSafetyString().ToLower())
-             && x.Building.ToLower().Equals(building.ToSafetyString().ToLower())
-            );
+            var buildingName = string.Empty;
+            var buildings = new List<string>();
+            var levels = new List<int> { 1, 2, 3 , 4};
+            var buildingModel = await _repoBuilding.FindAll().FirstOrDefaultAsync(x => x.Name.Equals(building.ToSafetyString()));
+            if (buildingModel != null)
+            {
+                // neu la level cao thi kiem tra het tat ca building
+                if (levels.Contains(buildingModel.Level))
+                {
+                    buildings = await _repoBuilding.FindAll().Where(x => x.Level == 4).Select(x => x.Name).ToListAsync();
+                    return await _repoAbnormal.FindAll().AllAsync(x =>
+                            x.Ingredient.ToLower().Equals(ingredient.ToSafetyString().ToLower())
+                        && x.Batch.ToLower().Equals(batch.ToSafetyString().ToLower())
+                        && buildings.Contains(x.Building)
+                        );
+                }
+                if (buildingModel.Level == 5)
+                {
+                    buildingName = _repoBuilding.FindById(buildingModel.ParentID).Name;
+                }
+            }
+            return await _repoAbnormal.FindAll().AllAsync(x =>
+                 x.Ingredient.ToLower().Equals(ingredient.ToSafetyString().ToLower())
+              && x.Batch.ToLower().Equals(batch.ToSafetyString().ToLower())
+              && x.Building.ToLower().Equals(building.ToSafetyString().ToLower())
+             );
         }
 
         public async Task<object> GetBatchByIngredientID(int ingredientID)
         {
             try
             {
-                var item =(await _repoIngredientInfo.FindAll().Where(x => x.IngredientID == ingredientID).ToListAsync()).Select(x => new BatchDto
+                var item = (await _repoIngredientInfo.FindAll().Where(x => x.IngredientID == ingredientID).ToListAsync()).Select(x => new BatchDto
                 {
                     ID = x.ID,
                     BatchName = x.Batch
@@ -194,14 +216,15 @@ namespace EC_API._Services.Services
                     }
                 }
             }
-          var listBuilding =  troubleshootings.Where(x => x.Batch.Equals(batchValue)).DistinctBy(x=>x.LineID).Select(x=>x.LineID).ToList();
-          var buildings =await _repoBuilding.FindAll().Where(x=> listBuilding.Contains(x.ID)).ToListAsync();
-          return buildings;
+            var listBuilding = troubleshootings.Where(x => x.Batch.Equals(batchValue)).DistinctBy(x => x.LineID).Select(x => x.LineID).ToList();
+            var buildings = await _repoBuilding.FindAll().Where(x => listBuilding.Contains(x.ID)).ToListAsync();
+            return buildings;
         }
 
         public async Task<object> AddRange(List<Abnormal> abnormals)
         {
-            _repoAbnormal.AddRange(abnormals);
+
+            _repoAbnormal.AddRange(abnormals.Where(x => !_repoAbnormal.FindAll().Any(a => a.Building == x.Building && a.Ingredient == x.Ingredient && a.Batch == x.Batch)).ToList());
             return await _repoAbnormal.SaveAll();
         }
     }

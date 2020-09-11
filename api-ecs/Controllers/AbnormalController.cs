@@ -75,10 +75,10 @@ namespace EC_API.Controllers
                 return NoContent();
             throw new Exception("Error deleting the Abnormal");
         }
-        [HttpGet("{ingredient}/{building}")]
-        public async Task<IActionResult> HasLock(string ingredient, string building)
+        [HttpGet("{ingredient}/{building}/{batch}")]
+        public async Task<IActionResult> HasLock(string ingredient, string building, string batch)
         {
-            return Ok(await _abnormalService.HasLock(ingredient, building));
+            return Ok(await _abnormalService.HasLock(ingredient, building, batch));
         }
         [HttpGet("{IngredientID}")]
         public async Task<IActionResult> GetBatchByIngredientID(int IngredientID)

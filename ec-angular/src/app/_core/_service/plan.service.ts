@@ -18,7 +18,9 @@ export class PlanService {
   constructor(
     private http: HttpClient
   ) { }
-
+  getBPFCByGlue(glue) {
+    return this.http.post(`${this.baseUrl}Plan/GetBPFCByGlue/`, {glue});
+  }
   getAll() {
     return this.http.get<Plan[]>(this.baseUrl + 'Plan/GetAll', {});
   }
