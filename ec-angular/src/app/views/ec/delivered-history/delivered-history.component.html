@@ -13,6 +13,9 @@
                 <e-column field='qty' headerText='Batch' width='100'>
                 </e-column>
                 <e-column field='createdBy' headerText='Created By' width='150'>
+                    <ng-template #template let-data>
+                        {{username(data.createdBy)}}
+                    </ng-template>
                 </e-column>
                 <e-column field='createdDate' headerText='Created Date' width='150'>
                 </e-column>

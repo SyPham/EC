@@ -25,5 +25,7 @@ namespace EC_API.Models
         public int Qty { get; set; }
         public int IngredientInfoID { get; set; }
         public int Consumption { get; set; }
+        public int UserID { get; set; }
+        public string BuildingName { get; set; }
     }
 }

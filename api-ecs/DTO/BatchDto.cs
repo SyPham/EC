@@ -8,8 +8,6 @@ namespace EC_API.DTO
     public class BatchDto
     {
         public int ID { get; set; }
-        
         public string BatchName { get; set; }
-
     }
 }

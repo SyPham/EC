@@ -18,6 +18,7 @@ declare let $: any;
   styleUrls: ['./ingredient.component.scss']
 })
 export class IngredientComponent implements OnInit, AfterViewInit {
+  editSettings = { showDeleteConfirmDialog: false, allowEditing: true, mode: 'Normal' };
   data: IIngredient[];
   modalReference: NgbModalRef;
   excelDownloadUrl: string;
@@ -87,6 +88,31 @@ export class IngredientComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     $('[data-toggle="tooltip"]').tooltip();
   }
+  actionBegin(args) {
+    console.log(args)
+    if (args.requestType === 'beginEdit') {
+    }
+    if (args.requestType === 'save') {
+      if (args.action === 'edit') {
+        if (args.data) {
+          this.updateBatch(args.data.id, args.data.batch);
+          const pd = (args.data.productionDate as Date);
+          if (pd instanceof Date) {
+            const month = this.pad(pd.getMonth() + 1);
+            const date = this.pad(pd.getDate());
+            const productionDate = `${pd.getFullYear()}${month}${date}`;
+            this.updateProductionDate(args.data.id, productionDate);
+            const time = pd.setMonth(pd.getMonth() + 4);
+            const exp = new Date(time);
+            const monthExp = this.pad(exp.getMonth() + 1);
+            const dateExp = this.pad(exp.getDate());
+            const expDate = `${exp.getFullYear()}${monthExp}${dateExp}`;
+            this.updateExp(args.data.id, expDate);
+          }
+        }
+      }
+    }
+  }
   configurePrint(html) {
     const WindowPrt = window.open('', '_blank', 'left=0,top=0,width=1000,height=900,toolbar=0,scrollbars=0,status=0');
     // WindowPrt.document.write(printContent.innerHTML);
@@ -149,7 +175,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
       margin-top: 25px;
     }
     .content .info ul li.subInfo {
-      padding: .75rem 1.25rem;
+      padding: .30rem .75rem;
     }
     @page {
         size: A4;
@@ -191,8 +217,9 @@ export class IngredientComponent implements OnInit, AfterViewInit {
           <div class='info'>
           <ul>
             <li class='subInfo'>${ item.name}</li>
+              <li class='subInfo'>${ item.qrCode}</li>
               <li class='subInfo'>MFG: ${ item.productionDate}</li>
-              <li class='subInfo'>EXP: </li>
+              <li class='subInfo'>EXP: ${ item.exp}</li>
           </ul>
          </div>
       </div>
@@ -214,6 +241,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
         supplier: item.supplier,
         batch: item.batch,
         productionDate: item.productionDate,
+        exp: item.exp,
         qrCode: `${item.productionDate}-${item.batch}-${item.code}`
       };
     });
@@ -227,6 +255,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
         supplier: item.supplier,
         batch: item.batch,
         productionDate: item.productionDate,
+        exp: item.exp,
         qrCode: `${item.productionDate}-${item.batch}-${item.code}`
       };
     });
@@ -248,6 +277,14 @@ export class IngredientComponent implements OnInit, AfterViewInit {
       }
     }
   }
+  updateExp(id, batch) {
+    for (const key in this.dataPrint) {
+      if (this.dataPrint[key].id === id) {
+        this.dataPrint[key].exp = batch;
+        break;
+      }
+    }
+  }
   onChange(args, data) {
     this.updateBatch(data.id, args.target.value);
   }
@@ -255,11 +292,20 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     return (d < 10) ? '0' + d.toString() : d.toString();
   }
   onChangeDate(args, data) {
-    const pd = (args.value as Date);
-    const month = this.pad(pd.getMonth() + 1);
-    const date = this.pad(pd.getDate());
-    const productionDate = `${pd.getFullYear()}${month}${date}`;
-    this.updateProductionDate(data.id, productionDate);
+    console.log('onChangeDate', args, data);
+    if (data) {
+      const pd = (args.value as Date);
+      const month = this.pad(pd.getMonth() + 1);
+      const date = this.pad(pd.getDate());
+      const productionDate = `${pd.getFullYear()}${month}${date}`;
+      this.updateProductionDate(data.id, productionDate);
+      const time = pd.setMonth(pd.getMonth() + 4);
+      const exp = new Date(time);
+      const monthExp = this.pad(exp.getMonth() + 1);
+      const dateExp = this.pad(exp.getDate());
+      const expDate = `${exp.getFullYear()}${monthExp}${dateExp}`;
+      this.updateExp(data.id, expDate);
+    }
   }
   backList() {
     this.show = false;

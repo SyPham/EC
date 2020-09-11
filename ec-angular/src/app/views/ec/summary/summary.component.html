@@ -19,7 +19,7 @@
           Dữ liệu kế hoạch làm việc chưa được sắp xếp cho ngày hôm nay! <br>
           The work plan is empty!
         </div>
-        <table *ngIf="data.length > 0" class="table table-bordered table-sm table-responsive" id='todolist' height='800'>
+        <table *ngIf="data.length > 0" class="table table-bordered table-sm table-responsive" id='todolist' height='600'>
           <thead class="thead-dark">
             <tr>
               <ng-container *ngFor="let item of lineColumns; let i = index">
@@ -39,23 +39,18 @@
           </thead>
           <tbody>
           <tbody>
-            <ng-container *ngFor="let values of linevalue">
+            <ng-container *ngFor="let values of linevalue; let j = index">
               <!-- value -->
               <tr>
                 <ng-container *ngFor="let value of getCellValue(values); let i = index">
                   <td [attr.rowspan]="hasRowspan(i) ? 3 : ''" [class.table-success]="!hasRowspan(i)" class="my-align"  [ngClass]="frozenBody(i)">
-                    <ejs-tooltip class="fix-css" *ngIf="hasObject(value); else elseBlockValue" [content]="value.bpfc">
-                      {{value.glueName}}
-                    </ejs-tooltip>
-                    <ng-template #elseBlockValue>
-                      {{value == 0 || value === '0kg' ? 0 : value}}
-                    </ng-template>
+                      <ejs-tooltip #tooltip class="fix-css" position='RightCenter' (beforeRender)="onBeforeRender($event, value, j)" *ngIf="hasObject(value); else elseBlockValue" content="loading...">
+                        {{value.glueName}}
+                      </ejs-tooltip>
+                      <ng-template #elseBlockValue>
+                        {{value == 0 || value === '0kg' ? 0 : value}}
+                      </ng-template>
                   </td>
-                  <!-- <ng-template #elseBlock>
-                    <td class="my-align table-success" [ngClass]="frozenBody(i)">
-                      {{value == 0 || value === '0kg' ? 0 : value}}
-                    </td>
-                  </ng-template> -->
                 </ng-container>
                 <td rowspan=3 class="my-align">
                   <div class="btn-group">

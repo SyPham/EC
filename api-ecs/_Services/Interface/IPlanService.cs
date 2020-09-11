@@ -23,6 +23,7 @@ namespace EC_API._Services.Interface
         Task <object> TroubleShootingSearch(string ingredientName , string batch);
         Task<object> ClonePlan(List<PlanForCloneDto> plans);
         Task<object> DeleteRange(List<int> plansDto);
+        Task<object> GetBPFCByGlue(TooltipParams tooltip);
 
     }
 }

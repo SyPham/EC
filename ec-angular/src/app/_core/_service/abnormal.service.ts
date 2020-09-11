@@ -16,48 +16,30 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class AbnormalService {
-  baseUrl = environment.apiUrl;
+  baseUrl = environment.apiUrlEC;
   constructor(private http: HttpClient) {}
-  getOCs(): Observable<Array<Oc>> {
-    return this.http.get<Oc[]>(this.baseUrl + 'Ocs/GetListTree').pipe(
-      map(response => {
-        console.log("getOcs: ", response);
-        return response;
-      })
-    );
+  hasLock(ingredient, building, batch) {
+    return this.http.get(`${this.baseUrl}Abnormal/HasLock/${ingredient}/${building}/${batch}`);
   }
-  follow(ID) {
-    return this.http.get(`${this.baseUrl}Tasks/Follow/${ID}`).pipe(
-      map(response => {
-        console.log("Follow: ", response);
-        return response;
-      })
-    );
+  getBatchByIngredientID(ingredientID) {
+    return this.http.get(`${this.baseUrl}Abnormal/GetBatchByIngredientID/${ingredientID}`);
   }
-  getTasks(ocid) {
-    return this.http.get(`${this.baseUrl}Tasks/GetListTreeAbnormal/${ocid}`).pipe(
-      map(response => {
-        console.log("GetListTreeAbnormal: ", response);
-        return response;
-      })
-    );
+  getAll() {
+    return this.http.get(this.baseUrl + 'Abnormal/GetAll', {});
   }
-
-  getBeAssigned() {
-    return this.http.get(`${this.baseUrl}Tasks/GetListUser/0`).pipe(
-      map(response => {
-        console.log("getBeAssigned: ", response);
-        return response;
-      })
-    );
+  create(model) {
+    return this.http.post(this.baseUrl + 'Abnormal/Create', model);
   }
-
-  getWho() {
-    return this.http.get(`${this.baseUrl}Tasks/GetListUser/0`).pipe(
-      map(response => {
-        console.log("getWho: ", response);
-        return response;
-      })
-    );
+  createRange(model) {
+    return this.http.post(this.baseUrl + 'Abnormal/CreateRange', model);
+  }
+  update(model) {
+    return this.http.put(this.baseUrl + 'Abnormal/Update', model);
+  }
+  delete(id: number) {
+    return this.http.delete(this.baseUrl + 'Abnormal/Delete/' + id);
+  }
+  getBuildingByIngredientAndBatch(ingredient, batch) {
+    return this.http.get(`${this.baseUrl}Abnormal/GetBuildingByIngredientAndBatch/${ingredient}/${batch}`);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, HostListener, ViewChildren, QueryList } from '@angular/core';
 import { ColumnModel, GridComponent } from '@syncfusion/ej2-angular-grids';
 import { PlanService } from 'src/app/_core/_service/plan.service';
 import * as signalr from '../../../../assets/js/ec-client.js';
@@ -14,6 +14,9 @@ import { IngredientService } from 'src/app/_core/_service/ingredient.service';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DataService } from 'src/app/_core/_service/data.service.js';
+import { AbnormalService } from 'src/app/_core/_service/abnormal.service.js';
+import { TooltipComponent, Position } from '@syncfusion/ej2-angular-popups';
+
 declare var $: any;
 declare var Swal: any;
 @Component({
@@ -22,6 +25,9 @@ declare var Swal: any;
   styleUrls: ['./summary.component.css']
 })
 export class SummaryComponent implements OnInit, AfterViewInit {
+
+  @ViewChildren('tooltip') tooltip: QueryList<any>;
+  @ViewChild('tooltip') public control: TooltipComponent;
   @ViewChild('scanQRCode') scanQRCodeElement: ElementRef;
   public displayTextMethod: DisplayTextModel = {
     visibility: false
@@ -41,6 +47,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   public glueID: number;
   public glueName: number;
   public quantity: string;
+  public level = JSON.parse(localStorage.getItem('level'));
   public A: any;
   public B: any;
   public C: any;
@@ -79,6 +86,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     public modalService: NgbModal,
     public ingredientService: IngredientService,
     private makeGlueService: MakeGlueService,
+    private abnormalService: AbnormalService,
     private alertify: AlertifyService,
     private dataService: DataService,
     private router: Router,
@@ -141,7 +149,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       this.lineColumns = res.header;
       this.data = res.data;
       this.linevalue = res.data;
-      if (this.linevalue.length === 0 ) {
+      if (this.linevalue.length === 0) {
         this.hasWarning = true;
       }
       this.spinner.hide();
@@ -178,6 +186,19 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     }
     return false;
   }
+  // api
+  hasLock(ingredient, building, batch): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.abnormalService.hasLock(ingredient, building, batch).subscribe((res) => {
+        if (res) {
+          reject(false);
+        } else {
+          resolve(true);
+        }
+      });
+    });
+  }
+  //
   getValueCell(cellObject) {
     return Object.values(cellObject);
   }
@@ -229,6 +250,12 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   }
   Finish() {
     const date = new Date();
+    const levels = [1, 2, 3, 4];
+    const building = JSON.parse(localStorage.getItem('level'));
+    let buildingID = building.id;
+    if (levels.includes(building.level)) {
+      buildingID = 8;
+    }
     this.guidances = {
       id: 0,
       glueID: this.glueID,
@@ -243,9 +270,9 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       batchC: this.findIngredientBatchByPosition('C'),
       batchD: this.findIngredientBatchByPosition('D'),
       batchE: this.findIngredientBatchByPosition('E'),
-      createdTime: new Date(),
+      createdTime: date,
       mixBy: JSON.parse(localStorage.getItem('user')).User.ID,
-      buildingID: JSON.parse(localStorage.getItem('level')).id,
+      buildingID,
     };
     if (this.guidances) {
       this.makeGlueService.Guidance(this.guidances).subscribe((glue: any) => {
@@ -312,20 +339,20 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  onNgModelChangeScanQRCode(args, item) {
-    const position = item.position;
+  async onNgModelChangeScanQRCode(args, item) {
     const input = args.split('-');
     if (input.length === 3) {
       if (input[2].length === 8) {
         this.qrCode = input[2];
-        // alert warning
-        this.scanQRCode().then(res => {
+        try {
+          const checkLock = await this.hasLock(item.name, this.level.name, input[1]);
+          const result = await this.scanQRCode();
           if (this.qrCode !== item.code) {
             this.alertify.warning(`Please you should look for the chemical name "${item.name}"`);
             this.qrCode = '';
             this.errorScan();
           } else {
-            const code = res.code;
+            const code = result.code;
             const ingredient = this.findIngredientCode(code);
             this.setBatch(ingredient, input[1]);
             if (ingredient) {
@@ -339,11 +366,18 @@ export class SummaryComponent implements OnInit, AfterViewInit {
               }
             }
           }
-        }).catch(err => {
-          this.errorScan();
-          this.alertify.error('Wrong Chemical!');
-          this.qrCode = '';
-        });
+
+        } catch (error) {
+          if (error === false) {
+            this.alertify.error('This chemical has been locked!');
+            this.qrCode = '';
+          }
+          if (error === null) {
+            this.errorScan();
+            this.alertify.error('Wrong Chemical!');
+            this.qrCode = '';
+          }
+        }
       }
     }
 
@@ -526,12 +560,12 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   onKeyupReal(item, args) {
     if (args.keyCode === 13) {
       this.checkValidPosition(item, args);
-      this.UpdateConsumption(item.code, item.batch , item.real );
+      this.UpdateConsumption(item.code, item.batch, item.real);
     }
   }
 
   UpdateConsumption(code, batch, consump) {
-    this.ingredientService.UpdateConsumption(code, batch, consump).subscribe(() => {});
+    this.ingredientService.UpdateConsumption(code, batch, consump).subscribe(() => { });
   }
 
   lockClass(item) {
@@ -764,5 +798,16 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     if (i === 1) {
       return 'my-sticky-glue';
     }
+  }
+
+  onBeforeRender(args, data, i) {
+    const t = this.tooltip.filter((item, index) => index === i)[0];
+    t.content = 'Loading...';
+    t.dataBind();
+    this.planService.getBPFCByGlue(data.glueName)
+      .subscribe((res: any) => {
+        t.content = res.join('<br>');
+        t.dataBind();
+      });
   }
 }

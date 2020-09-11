@@ -40,12 +40,10 @@ namespace EC_API.Data
         public DbSet<IngredientInfo> IngredientsInfos { get; set; }
         public DbSet<IngredientInfoReport> IngredientInfoReports { get; set; }
         public DbSet<BPFCHistory> BPFCHistories { get; set; }
+        public DbSet<Abnormal> Abnormals { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BPFCEstablish>().HasKey(x => x.ID);
-
-           
-
         }
 
     }

@@ -26,6 +26,7 @@ namespace EC_API._Services.Services
         private readonly IGlueIngredientRepository _repoGlueIngredient;
         private readonly IIngredientRepository _repoIngredient;
         private readonly IIngredientInfoRepository _repoIngredientInfo;
+
         private readonly IBuildingRepository _repoBuilding;
         private readonly IBPFCEstablishRepository _repoBPFC;
         private readonly IMixingInfoRepository _repoMixingInfo;
@@ -66,20 +67,20 @@ namespace EC_API._Services.Services
             _repoBuildingGlue = repoBuildingGlue;
         }
 
+
         public async Task<object> GetBatchByIngredientID(int ingredientID)
         {
             try
             {
-                var item = _repoIngredientInfo.FindAll().Where(x => x.IngredientID == ingredientID).Select(x => new BatchDto {
+                var item = (await _repoIngredientInfo.FindAll().Where(x => x.IngredientID == ingredientID).ToListAsync()).Select(x => new BatchDto {
                     ID = x.ID,
                     BatchName = x.Batch
                 }).DistinctBy(x => x.BatchName);
                 
                 return item ;
             }
-            catch (System.Exception ex)
+            catch 
             {
-                
                 throw;
             }
 
@@ -167,7 +168,7 @@ namespace EC_API._Services.Services
             }
             return troubleshootings.Where(x=> x.Batch.Equals(batchValue)).OrderByDescending(x => x.MixDate);
         }
-
+     
         public async Task<bool> Add(PlanDto model)
         {
             var checkExist = await _repoPlan.FindAll().AnyAsync(x => x.BuildingID == model.BuildingID && x.BPFCEstablishID == model.BPFCEstablishID && x.DueDate.Date == model.DueDate.Date);
@@ -480,12 +481,6 @@ namespace EC_API._Services.Services
                     .ThenInclude(x => x.Ingredient)
                     .ThenInclude(x => x.Supplier)
                 .Include(x => x.BPFCEstablish)
-                    .ThenInclude(x => x.ModelName)
-                    .ThenInclude(x => x.ModelNos)
-                    .ThenInclude(x => x.ArticleNos)
-                    .ThenInclude(x => x.ArtProcesses)
-                    .ThenInclude(x => x.Process)
-                .Include(x => x.BPFCEstablish)
                     .ThenInclude(x => x.Plans)
                     .ThenInclude(x => x.Building)
                 .Include(x => x.MixingInfos)
@@ -494,11 +489,10 @@ namespace EC_API._Services.Services
 
             foreach (var glue in glueDistinct)
             {
-                var bpfcNameList = glue.BPFCEstablish.Plans.Select(x => x.BPFCName);
+
                 var itemData = new Dictionary<string, object>();
                 var supplier = glue.GlueIngredients.FirstOrDefault(x => x.Position.Equals("A")) == null ? "#N/A" : glue.GlueIngredients.FirstOrDefault(x => x.Position.Equals("A")).Ingredient.Supplier.Name;
-                var bpfcName = string.Join(" <br> ", bpfcNameList);
-                var glueInfo = new GlueInfo { GlueName = glue.Name, BPFC = bpfcName };
+                var glueInfo = new GlueInfo { GlueName = glue.Name, BPFC = "" };
                 itemData.Add("GlueID", glue.ID);
                 itemData.Add("Supplier", supplier);
                 itemData.Add("Chemical", glueInfo);
@@ -518,8 +512,8 @@ namespace EC_API._Services.Services
                 }
                 foreach (var line in lineList.OrderBy(x => x.Name))
                 {
-                    var sdtCon = model.FirstOrDefault(x => x.GlueName == glue.Name && x.BuildingID == line.ID);
-                    var listBuildingGlue = _repoBuildingGlue.FindAll().Where(x => x.GlueID == glue.ID && x.BuildingID == line.ID && x.CreatedDate.Date == currentDate).ToList();
+                    var sdtCon = await model.FirstOrDefaultAsync(x => x.GlueName == glue.Name && x.BuildingID == line.ID);
+                    var listBuildingGlue = await _repoBuildingGlue.FindAll().Where(x => x.GlueID == glue.ID && x.BuildingID == line.ID && x.CreatedDate.Date == currentDate).ToListAsync();
                     List<double> real = listBuildingGlue.Select(x => x.Qty).ToList().ConvertAll<double>(Convert.ToDouble);
                     double comsumption = 0;
                     if (sdtCon != null)
@@ -751,6 +745,9 @@ namespace EC_API._Services.Services
         public async Task<object> DispatchGlue(BuildingGlueForCreateDto obj)
         {
             var buildingGlue = _mapper.Map<BuildingGlue>(obj);
+           var building = _repoBuilding.FindById(obj.BuildingID);
+           var lastMixingInfo=await _repoMixingInfo.FindAll().Where(x=>x.GlueName.Contains(obj.GlueName) && x.BuildingID == building.ParentID).OrderByDescending(x=>x.CreatedTime).FirstOrDefaultAsync();
+            buildingGlue.MixingInfoID = lastMixingInfo == null ? 0 : lastMixingInfo.ID;
             _repoBuildingGlue.Add(buildingGlue);
             return await _repoBuildingGlue.SaveAll();
         }
@@ -767,16 +764,6 @@ namespace EC_API._Services.Services
                     {
                         _repoPlan.Add(item);
                         flag = await _repoBuildingGlue.SaveAll();
-                        var newDetail = new List<PlanDetail>();
-                        var oldDetail = await _repoPlanDetail.FindAll().Where(x => x.PlanID == item.ID).ToListAsync();
-                        newDetail = oldDetail;
-                        newDetail.ForEach(de =>
-                        {
-                            de.PlanID = item.ID;
-                        });
-                        _repoPlanDetail.AddRange(newDetail);
-                        flag = await _repoPlanDetail.SaveAll();
-
                     }
                 }
                 return flag;
@@ -835,6 +822,30 @@ namespace EC_API._Services.Services
                 .ProjectTo<PlanDto>(_configMapper)
                 .OrderByDescending(x => x.ID)
                 .ToListAsync();
+        }
+
+        public async Task<object> GetBPFCByGlue(TooltipParams tooltip)
+        {
+            var name = tooltip.Glue.Trim().ToSafetyString();
+            var results = new List<string>();
+           var plans =await _repoPlan.FindAll()
+                .Include(x => x.BPFCEstablish)
+                    .ThenInclude(x => x.ModelName)
+                    .ThenInclude(x => x.ModelNos)
+                    .ThenInclude(x => x.ArticleNos)
+                    .ThenInclude(x => x.ArtProcesses)
+                    .ThenInclude(x => x.Process)
+                .Include(x => x.BPFCEstablish)
+                    .ThenInclude(x => x.Glues)
+                .Where(x => x.DueDate.Date == DateTime.Now.Date).ToListAsync();
+                foreach(var plan in plans) {
+                    foreach (var glue in plan.BPFCEstablish.Glues.Where(x=>x.Name.Trim().Equals(name)))
+                    {
+                        var bpfc = $"{plan.BPFCEstablish.ModelName.Name} -> {plan.BPFCEstablish.ModelNo.Name} -> {plan.BPFCEstablish.ArticleNo.Name} -> {plan.BPFCEstablish.ArtProcess.Process.Name}";
+                        results.Add(bpfc);
+                    }
+                }
+                return results.Distinct();
         }
     }
 }

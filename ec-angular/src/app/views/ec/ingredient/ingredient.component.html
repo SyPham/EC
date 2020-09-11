@@ -42,22 +42,23 @@
           [selectionSettings]="{ checkboxMode: 'ResetOnRowClick'}"
           [allowSorting]='true' 
           height='600'
+          [editSettings]='editSettings'
+           (actionBegin)="actionBegin($event)" 
           (rowDeselected)='rowDeselected($event)' 
           (rowSelected)='rowSelected($event)' 
           [enableHover]='false'
-          [allowSorting]='true' 
-          [enableVirtualization]='true'>
+          [allowSorting]='true'>
           <e-columns>
-            <e-column type='checkbox' width='60'></e-column>
-            <e-column field='supplier' headerText='Supplier' width='100'></e-column>
-            <e-column field='name' headerText='Ingredient Name' width='130'></e-column>
+            <e-column type='checkbox' isPrimaryKey='true' width='60'></e-column>
+            <e-column field='supplier' isPrimaryKey='true' headerText='Supplier' width='100'></e-column>
+            <e-column field='name' isPrimaryKey='true' headerText='Ingredient Name' width='130'></e-column>
             <e-column field='batch' headerText='Batch' width='100'>
-              <ng-template #template let-data>
+              <!-- <ng-template #editTemplate let-data>
                 <input type="text" [(ngModel)]="data.batch" (change)='onChange($event, data)' class="e-input">
-              </ng-template>
+              </ng-template> -->
             </e-column>
-            <e-column field='productionDate' headerText='Production date' width='150'>
-              <ng-template #template let-data>
+            <e-column field='productionDate'  headerText='Production date' width='150'>
+              <ng-template #editTemplate let-data>
               <ejs-datepicker [value]='data.productionDate' (change)='onChangeDate($event, data)'></ejs-datepicker>
               </ng-template>
             </e-column>
@@ -73,12 +74,12 @@
           </thead>
           <tbody>
             <ng-container *ngFor="let item of dataPicked">
-              <tr>
+              <tr *ngIf="dataPicked.length > 0">
                 <td class="text-center">
                   <ejs-qrcodegenerator [id]='item.code' style="display: block;" [displayText]='displayTextMethod' #barcode
                     width="177px" height="177px" mode="SVG" [value]="item.qrCode"></ejs-qrcodegenerator>
-                  <div>{{item.code}}</div>
-                  <div>{{item.name}}</div>
+                    <div>{{item.name}}</div>
+                    <div>{{item.productionDate}}-{{item.batch}}-{{item.code}}</div>
                   <div><label>Expired Time: </label> {{item.expiredTime}} minute</div>
                   <div class="text-danger font-weight-bold">{{item.batch.length !== '' && item.productionDate !== '' ? '' : '(*)Please enter batch code and production date'}}</div>
 

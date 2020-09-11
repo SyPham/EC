@@ -14,6 +14,9 @@ import { TextBoxComponent } from '@syncfusion/ej2-angular-inputs';
 export class PrintQRCodeComponent implements OnInit, AfterViewInit {
   public qrcode: any;
   public name: any;
+  public batch: any;
+  public mfg: any;
+  public exp: any;
   public id: any;
   public dateValue: any;
   public dateprint: Date = new Date();
@@ -120,7 +123,7 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
       margin-top: 25px;
     }
     .content .info ul li.subInfo {
-      padding: .75rem 1.25rem;
+       padding: .30rem .75rem;
     }
     @page {
         size: A4;
@@ -151,8 +154,9 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
           <div class='info'>
           <ul>
             <li class='subInfo'>${ this.text}</li>
-              <li class='subInfo'>NSX: </li>
-              <li class='subInfo'>NHH: </li>
+              <li class='subInfo'>${this.mfg}-${this.batch}-${this.qrcode}</li>
+              <li class='subInfo'>MFG: ${this.mfg}</li>
+              <li class='subInfo'>EXP: ${this.exp}</li>
           </ul>
          </div>
       </div>
@@ -186,12 +190,12 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
     };
     if (printtime !== this.datePipe.transform(this.dateValueDefault, 'MM-dd-yyyy')) {
       this.ingredientService.UpdatePrint(Ingredient).subscribe(() => {
-        if (printtime === this.datePipe.transform(this.dateValueDefault, 'MM-dd-yyyy')) {
+        if (printtime === this.datePipe.transform(this.dateValueDefault, 'yyyyMMdd')) {
           this.text = this.name;
         } else {
-          this.text = this.name +
-            ' ' + this.datePipe.transform(this.dateValue, 'MM/dd/yyyy')
-            + ' ' + this.datePipe.transform(this.dateprints, 'MM/dd/yyyy');
+          this.mfg = this.datePipe.transform(this.dateValue, 'yyyyMMdd');
+          this.exp = this.datePipe.transform(this.dateprints, 'yyyyMMdd');
+          this.text = this.name;
         }
       });
     }
