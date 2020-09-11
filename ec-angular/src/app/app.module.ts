@@ -21,7 +21,6 @@ import { AlertifyService } from './_core/_service/alertify.service';
 import { AuthService } from './_core/_service/auth.service';
 import { AuthGuard } from './_core/_guards/auth.guard';
 import { NgxSpinnerService } from 'ngx-spinner';
-
 // handle err
 import { ErrorInterceptorProvider } from './_core/_service/error.interceptor';
 

@@ -19,6 +19,12 @@ export class PlanService {
     private http: HttpClient
   ) { }
 
+  TroubleShootingSearch(value: string , batchValue: string) {
+    return this.http.get(this.baseUrl + `Plan/TroubleShootingSearch/${value}/${batchValue}` );
+  }
+  GetBatchByIngredientID(id: number) {
+    return this.http.get<Plan[]>(this.baseUrl + 'Plan/GetBatchByIngredientID/' + id, {});
+  }
   getAll() {
     return this.http.get<Plan[]>(this.baseUrl + 'Plan/GetAll', {});
   }

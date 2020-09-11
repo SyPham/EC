@@ -16,6 +16,8 @@ namespace EC_API.Data
         public DbSet<PartName2> PartName2 { get; set; }// Part
         public DbSet<MaterialName> MaterialName { get; set; }
         public DbSet<Line> Line { get; set; }
+        public DbSet<Setting> Settings { get; set; }
+        public DbSet<Stir> Stirs { get; set; }
         public DbSet<ModelName> ModelNames { get; set; }
         public DbSet<Plan> Plans { get; set; }
         public DbSet<PlanDetail> PlanDetails { get; set; }

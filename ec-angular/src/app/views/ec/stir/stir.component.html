@@ -1,0 +1,136 @@
+<div class="card">
+  <div class="card-header">
+    <h3>Execution - Stir</h3>
+
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-sm-12 text-center">
+            <label style="color: transparent;" class="font-weight-bold" for="">Scan QRCode</label>
+          </div>
+        </div>
+        <ng-container>
+          <div class="row">
+
+            <div class="col-md-5">
+              <div class="card">
+                <div class="col-md-12 card-body table-responsive">
+
+                  <div class="row">
+                    <div class="col-md-3 mt-2">
+                      <label style="color: transparent;">: </label>
+                    </div>
+                    <div class="col-md-9 mt-3">
+                      <ng-container *ngFor="let item of settingData">
+                        <ejs-radiobutton [label]="item.name" name="stir" cssClass="e-success" [value]="item.id" (change)='onChange($event)'></ejs-radiobutton>
+                      </ng-container>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-3 mt-2">
+                      <label>Date: </label>
+                    </div>
+                    <div class="col-md-8 mt-2">
+                      <ejs-datepicker format='EEEE,d MMMM, y' readonly=true [value]='dateValue'  ></ejs-datepicker>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-3 mt-2">
+                      <label>Start Time: </label>
+                    </div>
+                    <div class="col-md-8 mt-2">
+                      <ejs-timepicker id='timepicker' readonly=true [value]='value' [step]='interval' [format]='customFormat' ></ejs-timepicker>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-3 mt-2">
+                      <label>End Time: </label>
+                    </div>
+                    <div class="col-md-8 mt-2">
+                      <ejs-timepicker readonly=true [value]='Envalue' [format]='customFormat' id='timepicker'></ejs-timepicker>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-3 mt-2">
+                      <label style="color: transparent;">S: </label>
+                    </div>
+                    <div class="col-md-8 mt-2">
+                      <button style="margin: 3px;" type="button" (click)="saveStir()" class="btn btn-info ">Save</button>
+                      <button style="margin: 3px;" (click)="searchStir()" type="button" class="btn btn-info ">Search</button>
+                    </div>
+                  </div>
+                  <!-- End Model Name -->
+                </div>
+              </div>
+
+            </div>
+
+            <div  class="col-md-7">
+              <div  class="card">
+                <div *ngIf="isShow" class="col-md-12 card-body table-responsive">
+
+                  <div style="visibility: hidden;" class="row">
+                    <div class="col-md-3 mt-2">
+                      <label>Process: </label>
+                    </div>
+                    <div class="col-md-9 mt-2">
+                      <ng-container >
+                        <ejs-radiobutton label="A" >
+                        </ejs-radiobutton>
+                        <ejs-radiobutton label="B" >
+                        </ejs-radiobutton>
+                      </ng-container>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-3 mt-2">
+                      <label>AVG RPM: </label>
+                    </div>
+                    <div class="col-md-8 mt-2">
+                      <input type="text" class="form-control form-control-sm" value="345" name="" disabled id="">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-3 mt-2">
+                      <label>Minutes: </label>
+                    </div>
+                    <div class="col-md-8 mt-2">
+                      <input type="text" class="form-control form-control-sm" value="3.53" disabled>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-3 mt-2">
+                      <label>Valid: </label>
+                    </div>
+                    <div class="col-md-8 mt-2">
+                      <button style="margin: 3px;" type="button" class="btn btn-info btn-sm">Ok</button>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12 mt-4 text-center">
+                      <button style="margin: 3px;" type="button" class="btn btn-success">Confirm</button>
+                    </div>
+                  </div>
+
+                  <!-- End Model Name -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+
+</div>

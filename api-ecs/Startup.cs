@@ -156,6 +156,8 @@ namespace EC_API
             services.AddScoped<IIngredientInfoRepository, IngredientInfoRepository>();
             services.AddScoped<IIngredientInfoReportRepository, IngredientInfoReportRepository>();
             services.AddScoped<IBPFCHistoryRepository, BPFCHistoryRepository>();
+            services.AddScoped<ISettingRepository, SettingRepository>();
+            services.AddScoped<IStirRepository, StirRepository>();
 
             //Services
             services.AddScoped<IMixingService, MixingService>();
@@ -184,6 +186,7 @@ namespace EC_API
             services.AddScoped<IPartService, PartService>();
             services.AddScoped<IMaterialService, MaterialService>();
             services.AddScoped<IMixingInfoService, MixingInfoService>();
+            services.AddScoped<ISettingService, SettingService>();
 
             //extension
             services.AddScoped<IMailExtension, MailExtension>();

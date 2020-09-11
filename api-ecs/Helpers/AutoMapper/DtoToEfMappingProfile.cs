@@ -50,6 +50,8 @@ namespace EC_API.Helpers.AutoMapper
             CreateMap<BuildingGlue, BuildingGlueForCreateDto>().ForMember(d => d.Qty, o => o.MapFrom(a => a.Qty.ToDouble().ToSafetyString()));
             CreateMap<IngredientInfo, IngredientInfoDto>();
             CreateMap<IngredientInfoReport, IngredientInfoReportDto>();
+            CreateMap<Setting, SettingDTO>();
+            CreateMap<Stir, StirDTO>();
             CreateMap<Plan, PlanForCloneDto>();
             //CreateMap<AuditTypeDto, MES_Audit_Type_M>();
         }

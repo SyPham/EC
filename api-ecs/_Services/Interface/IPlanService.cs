@@ -16,6 +16,8 @@ namespace EC_API._Services.Interface
         Task<object> GetLines(int buildingID);
         Task<List<GlueCreateDto1>> GetGlueByBuilding(int buildingID);
         Task<List<GlueCreateDto1>> GetGlueByBuildingModelName(int buildingID, int modelName);
+
+        Task<object> GetBatchByIngredientID(int ingredientID);
         Task<List<PlanDto>> GetGlueByBuildingBPFCID(int buildingID, int bpfcID);
         Task<object> DispatchGlue(BuildingGlueForCreateDto obj);
         Task <object> TroubleShootingSearch(string ingredientName , string batch);

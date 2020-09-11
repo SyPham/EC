@@ -1,25 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertifyService } from 'src/app/_core/_service/alertify.service';
-import { DisplayTextModel } from '@syncfusion/ej2-angular-barcode-generator';
 import { IngredientService } from 'src/app/_core/_service/ingredient.service';
 import { DatePipe } from '@angular/common';
 import { FilteringEventArgs } from '@syncfusion/ej2-angular-dropdowns';
 import { EmitType } from '@syncfusion/ej2-base';
 import { Query } from '@syncfusion/ej2-data';
-import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
-import { Tooltip, TooltipEventArgs } from '@syncfusion/ej2-popups';
-import {
-  PageSettingsModel,
-  GridComponent,
-  IEditCell,
-  ToolbarItems,
-} from '@syncfusion/ej2-angular-grids';
-import {
-  EditService,
-  ToolbarService,
-  PageService,
-} from '@syncfusion/ej2-angular-grids';
+
+import { PlanService } from 'src/app/_core/_service/plan.service';
 declare const $: any;
 @Component({
   selector: 'app-search',
@@ -37,12 +25,16 @@ export class SearchComponent implements OnInit {
   isShow: boolean = false;
   showBatch: boolean = false;
   IngredientData: [] ;
+  dataBatch: [];
+  dataSearch: [];
+  ingredientName: string ;
   public ingredients: any = [];
   constructor(
     public modalService: NgbModal,
     private alertify: AlertifyService,
     private datePipe: DatePipe,
     public ingredientService: IngredientService,
+    private planService: PlanService,
   ) { }
   public ngOnInit(): void {
     this.getIngredient();
@@ -74,9 +66,20 @@ export class SearchComponent implements OnInit {
   onChangeIngredientName(args) {
     this.isShow = false ;
     this.showBatch = true;
+    let id = args.value ;
+    this.ingredientName = args.itemData.name ;
+    this.GetBatchByIngredientID(id);
   }
-
-  searchBatch() {
+  GetBatchByIngredientID(id) {
+    this.planService.GetBatchByIngredientID(id).subscribe((res: any) => {
+      this.dataBatch = res;
+    });
+  }
+  searchBatch(item) {
     this.isShow = true ;
+    this.planService.TroubleShootingSearch(this.ingredientName, item.batchName)
+    .subscribe((res: any) => {
+      this.dataSearch = res ;
+    });
   }
 }

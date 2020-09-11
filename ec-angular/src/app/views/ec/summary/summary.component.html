@@ -44,12 +44,12 @@
               <tr>
                 <ng-container *ngFor="let value of getCellValue(values); let i = index">
                   <td [attr.rowspan]="hasRowspan(i) ? 3 : ''" [class.table-success]="!hasRowspan(i)" class="my-align"  [ngClass]="frozenBody(i)">
-                      <ejs-tooltip class="fix-css" *ngIf="hasObject(value); else elseBlockValue" [content]="value.bpfc">
-                        {{value.glueName}}
-                      </ejs-tooltip>
-                      <ng-template #elseBlockValue>
-                        {{value == 0 || value === '0kg' ? 0 : value}}
-                      </ng-template>
+                    <ejs-tooltip class="fix-css" *ngIf="hasObject(value); else elseBlockValue" [content]="value.bpfc">
+                      {{value.glueName}}
+                    </ejs-tooltip>
+                    <ng-template #elseBlockValue>
+                      {{value == 0 || value === '0kg' ? 0 : value}}
+                    </ng-template>
                   </td>
                   <!-- <ng-template #elseBlock>
                     <td class="my-align table-success" [ngClass]="frozenBody(i)">
@@ -59,10 +59,8 @@
                 </ng-container>
                 <td rowspan=3 class="my-align">
                   <div class="btn-group">
-                    <button type="button" (click)="mixingSection(values)"
-                      class="btn btn-success btn-sm mr-2">{{ 'MIXING' | translate }}</button>
-                    <button type="button" onclick="alert('This function will be coming soon')"
-                      class="btn btn-warning btn-sm mr-2">{{ 'STIR' | translate }}</button>
+                    <button type="button" (click)="mixingSection(values)" class="btn btn-success btn-sm mr-2">{{ 'MIXING' | translate }}</button>
+                    <button (click)="stirGlue(values)"   type="button" class="btn btn-warning btn-sm mr-2">{{ 'STIR' | translate }}</button>
                     <button type="button" (click)="pushHistory(values)" class="btn btn-sm btn-info">{{ 'HISTORY' | translate }}</button>
                   </div>
                 </td>

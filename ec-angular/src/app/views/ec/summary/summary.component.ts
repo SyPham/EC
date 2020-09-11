@@ -13,6 +13,7 @@ import { DisplayTextModel } from '@syncfusion/ej2-angular-barcode-generator';
 import { IngredientService } from 'src/app/_core/_service/ingredient.service';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { DataService } from 'src/app/_core/_service/data.service.js';
 declare var $: any;
 declare var Swal: any;
 @Component({
@@ -79,6 +80,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     public ingredientService: IngredientService,
     private makeGlueService: MakeGlueService,
     private alertify: AlertifyService,
+    private dataService: DataService,
     private router: Router,
     private spinner: NgxSpinnerService
   ) { }
@@ -121,6 +123,11 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       return 'TOTAL_COMSUMPTION';
     }
     return text;
+  }
+  stirGlue(values) {
+    // this.dataService.changeMessage(2);
+    this.ingredientService.changeIngredient(values);
+    return this.router.navigate(['/ec/execution/stir']);
   }
   summary() {
     const E_BUILDING = 8;

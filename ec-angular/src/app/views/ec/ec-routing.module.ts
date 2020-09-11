@@ -1,3 +1,4 @@
+import { StirComponent } from './stir/stir.component';
 import { AbnormalListComponent } from './abnormal-list/abnormal-list.component';
 import { SearchComponent } from './search/search.component';
 import { InventoryComponent } from './inventory/inventory.component';
@@ -200,7 +201,14 @@ const routes: Routes = [
           title: 'todolist'
         }
       },
-        {
+      {
+        path: 'execution/stir',
+        component: StirComponent,
+        data: {
+          title: 'Stir'
+        }
+      },
+      {
         path: 'execution/todolist/history/:glueID',
         component: GlueHistoryComponent,
         data: {

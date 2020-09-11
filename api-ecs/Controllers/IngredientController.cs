@@ -56,6 +56,21 @@ namespace EC_API.Controllers
             return Ok(ingredientsInfoReport);
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllIngredientInfoReportByDate()
+        {
+            var ingredientsInfoReport = await _ingredientService.GetAllIngredientInfoReportAsync();
+            return Ok(ingredientsInfoReport);
+        }
+
+        [HttpGet("{min}/{max}")]
+        public async Task<IActionResult> Search(DateTime min, DateTime max)
+        {
+            var lists = await _ingredientService.GetAllIngredientReportByRange(min, max);
+            return Ok(lists);
+        }
+
         
 
         [HttpGet("{text}")]
@@ -65,6 +80,7 @@ namespace EC_API.Controllers
             Response.AddPagination(lists.CurrentPage, lists.PageSize, lists.TotalCount, lists.TotalPages);
             return Ok(lists);
         }
+        
         //[HttpGet("{ingredientid}", Name = "GetIngredientOfIngredient")]
         //public async Task<IActionResult> Ingredient(int ingredientid)
         //{

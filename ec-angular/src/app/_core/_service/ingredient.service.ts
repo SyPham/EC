@@ -86,6 +86,10 @@ export class IngredientService {
   getAllIngredientInfoReport() {
     return this.http.get(this.baseUrl + `ingredient/GetAllIngredientInfoReport`, {});
   }
+
+  searchInventory(min, max) {
+    return this.http.get(`${this.baseUrl}ingredient/Search/${min}/${max}`, {});
+  }
   deleteIngredientInfo(id: number , code: string, qty: number, batch: string) {
     return this.http.delete(this.baseUrl + `ingredient/DeleteIngredientInfo/${id}/${code}/${qty}/${batch}`);
   }

@@ -66,7 +66,9 @@ import { TooltipModule } from '@syncfusion/ej2-angular-popups';
 import { DeliveredHistoryComponent } from './delivered-history/delivered-history.component';
 import { SearchComponent } from './search/search.component';
 import { AbnormalListComponent } from './abnormal-list/abnormal-list.component';
-
+import { StirComponent } from './stir/stir.component';
+import { TimePickerModule } from '@syncfusion/ej2-angular-calendars';
+import { DateTimePickerModule } from '@syncfusion/ej2-angular-calendars';
 setCulture('de-DE');
 
 const lang = localStorage.getItem('lang');
@@ -101,6 +103,8 @@ if (lang) {
     GridAllModule,
     RadioButtonModule,
     TooltipModule,
+    TimePickerModule ,
+    DateTimePickerModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,
@@ -147,7 +151,8 @@ if (lang) {
     InventoryComponent,
     DeliveredHistoryComponent,
     SearchComponent,
-    AbnormalListComponent
+    AbnormalListComponent,
+    StirComponent
   ]
 })
 export class ECModule { }

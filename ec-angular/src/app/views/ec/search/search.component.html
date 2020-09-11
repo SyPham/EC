@@ -42,10 +42,7 @@
                       <label>Ingredient Batch: </label>
                     </div>
                     <div *ngIf="showBatch" class="col-md-8 mt-2">
-                      <button style="margin: 3px;" type="button" (click)="searchBatch()" class="btn btn-info btn-sm">BatchA</button>
-                      <button style="margin: 3px;" type="button" class="btn btn-info btn-sm">BatchB</button>
-                      <button style="margin: 3px;" type="button" class="btn btn-info btn-sm">BatchC</button>
-                      <button style="margin: 3px;" type="button" class="btn btn-info btn-sm">BatchD</button>
+                      <button *ngFor="let item of dataBatch; let i=index" style="margin: 3px;" type="button" (click)="searchBatch(item)" class="btn btn-info btn-sm">{{item.batchName}}</button>
                     </div>
                   </div>
                   <!-- End Model Name -->
@@ -72,23 +69,18 @@
               <th style="text-align: center;" scope="col">Process</th>
               <th style="text-align: center;" scope="col">Line</th>
               <th style="text-align: center;" scope="col">Mix Date</th>
-              <!-- <th style="text-align: center;" scope="col">Comsumption</th> -->
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of data; let i=index">
-              <th scope="row" style="text-align: center;">{{item.createdTime | date:'yyyy-MM-dd , hh:mm:ss a'}}</th>
-              <td style="text-align: center;">{{item.supplierName}}</td>
-              <td style="text-align: center;">{{item.name }}</td>
-              <td style="text-align: center;">{{item.manufacturingDate | date:'yyyy-MM-dd'}}</td>
+            <tr *ngFor="let item of dataSearch; let i=index">
+              <th scope="row" style="text-align: center;">{{item.ingredient}}</th>
               <td style="text-align: center;">{{item.batch}}</td>
-              <td style="text-align: center;">{{item.expiredTime}}</td>
-              <td style="text-align: center;">{{item.qty}} KG</td>
-              <td style="text-align: center;">{{item.consumption}} KG</td>
-              <!-- <td style="text-align: center;">
-                <button  (click)="delete(item.id)" type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-              </td> -->
-              <!-- <td style="text-align: center;">{{item.consumption}}</td> -->
+              <td style="text-align: center;">{{item.modelName }}</td>
+              <td style="text-align: center;">{{item.modelNo }}</td>
+              <td style="text-align: center;">{{item.articleNo}}</td>
+              <td style="text-align: center;">{{item.process}}</td>
+              <td style="text-align: center;">{{item.line}} </td>
+              <td style="text-align: center;">{{item.mixDate | date:'yyyy-MM-dd , hh:mm:ss a'}} </td>
             </tr>
           </tbody>
         </table>

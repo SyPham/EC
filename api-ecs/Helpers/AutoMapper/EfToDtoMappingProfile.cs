@@ -84,6 +84,8 @@ namespace EC_API.Helpers.AutoMapper
             CreateMap<BuildingGlueForCreateDto, BuildingGlue>();
             CreateMap<IngredientInfoDto, IngredientInfo>();
             CreateMap<IngredientInfoReportDto, IngredientInfoReport>();
+            CreateMap<StirDTO, Stir>();
+            CreateMap<SettingDTO, Setting>();
             CreateMap<PlanForCloneDto, Plan>();
 
         }

@@ -44,6 +44,13 @@ namespace EC_API.Controllers
             var plans = await _planService.GetGlueByBuildingModelName(buildingID, modelName);
             return Ok(plans);
         }
+
+        [HttpGet("{IngredientID}")]
+        public async Task<IActionResult> GetBatchByIngredientID(int IngredientID)
+        {
+            var batchs = await _planService.GetBatchByIngredientID(IngredientID);
+            return Ok(batchs);
+        }
         [HttpGet(Name = "GetPlans")]
         public async Task<IActionResult> GetAll()
         {

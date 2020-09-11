@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace EC_API.DTO
 {
-    public class Test2
+    public class SettingDTO
     {
         public int ID { get; set; }
         public string Name { get; set; }
