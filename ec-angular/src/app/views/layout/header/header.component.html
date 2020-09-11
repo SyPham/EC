@@ -7,7 +7,7 @@
         class="brand-image img-circle"
         style="opacity: .8"
       />
-      <span class="brand-text font-weight-light">DMR System</span>
+      <span class="brand-text font-weight-light">DMR</span>
     </a>
 
     <button
@@ -98,7 +98,7 @@
 
     <!-- Right navbar links -->
     <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
-      <li class="nav-item" style="width: 120px;">
+      <li class="nav-item" style="width: 60px;">
         <ejs-dropdownlist id='langs' #langs [dataSource]='langsData' (change)='onChange($event)' [value]='value' [fields]='fields'></ejs-dropdownlist>
       </li>
       <li class="nav-item user-menu" (click)='openAvatarModal()'>
@@ -116,7 +116,8 @@
         </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:;" (click)="logout()"
-          ><i class="fas fa-sign-out-alt"></i> {{ 'SIGN_OUT' | translate }}
+          ><i class="fas fa-sign-out-alt"></i> 
+          <!-- {{ 'SIGN_OUT' | translate }} -->
         </a>
       </li>
     </ul>

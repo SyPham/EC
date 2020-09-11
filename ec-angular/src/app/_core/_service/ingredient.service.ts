@@ -72,8 +72,8 @@ export class IngredientService {
   scanQRCode(qrCode) {
     return this.http.get(this.baseUrl + 'ingredient/ScanQRCode/' + qrCode, {});
   }
-  scanQRCodeFromChemicalWareHouse(qrCode) {
-    return this.http.get(this.baseUrl + 'ingredient/ScanQRCodeFromChemialWareHouse/' + qrCode, {});
+  scanQRCodeFromChemicalWareHouse(qrCode, building, userid) {
+    return this.http.get(`${this.baseUrl}ingredient/ScanQRCodeFromChemialWareHouse/${qrCode}${building}${userid}`, {});
   }
   getAllSupplier() {
     return this.http.get<ISupplier[]>(this.baseUrl + 'Suppier/GetAll', {});

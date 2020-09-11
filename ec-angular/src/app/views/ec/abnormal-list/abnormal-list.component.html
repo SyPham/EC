@@ -1,76 +1,73 @@
-<div class="card">
-  <div class="card-header">
-    <h3>Troubleshooting-Search</h3>
-
-  </div>
-  <div class="card-body">
-    <div class="row">
-      <div class="col-md-12">
+<div class="row">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <h3>Setting</h3>
+      </div>
+      <div class="card-body">
         <div class="row">
-          <div class="col-sm-12 text-center">
-            <label style="color: transparent;" class="font-weight-bold" for="">Scan QRCode</label>
+          <div class="col-md-6">
+            <ejs-dropdownlist #ingredientDropdownlist class="w-100 float-left" [dataSource]='IngredientData'
+              [fields]='fieldsIngredient' [allowFiltering]='true' [(ngModel)]="ingredientID"
+              (filtering)='onFilteringIngredientName($event)' (change)='onChangeIngredientName($event)'
+              placeholder="Select a Ingredient Name">
+            </ejs-dropdownlist>
+          </div>
+          <div class="col-md-6">
+              <ejs-dropdownlist #batchDropdownlist class="w-100 float-left" [dataSource]='batches' [fields]='fieldsBatch'
+                [allowFiltering]='true' [(ngModel)]="ingredientID" (filtering)='onFilteringBatch($event)'
+                (change)='onChangeBatch($event)' placeholder="Select a batch">
+              </ejs-dropdownlist>
           </div>
         </div>
-        <ng-container>
-          <div class="row">
-            <div class="col-md-5">
-              <div class="card">
-                <div class="col-md-12 card-body table-responsive">
-                  <div class="row">
-                    <div class="col-md-3 mt-2">
-                      <label>Search Ingredient: </label>
-                    </div>
-                    <div class="col-md-8 mt-2">
-                      <ejs-dropdownlist #ingredientDropdownlist class="w-100 float-left" [dataSource]='IngredientData'
-                        [fields]='fieldsIngredient' [allowFiltering]='true' [(ngModel)]="ingredientID"
-                        (filtering)='onFilteringIngredientName($event)' (change)='onChangeIngredientName($event)'
-                        placeholder="Select a Ingredient Name">
-                      </ejs-dropdownlist>
-                    </div>
-                  </div>
-                  <!-- End Model Name -->
-                </div>
-              </div>
-
-            </div>
-
-            <div class="col-md-6">
-              <div class="card">
-                <div class="col-md-12 card-body table-responsive">
-                  <div class="row">
-                    <div class="col-md-3 mt-2">
-                      <label>Ingredient Batch: </label>
-                    </div>
-                    <div class="col-md-8 mt-2">
-                      <input [(ngModel)]="batch" class="form-control form-control-sm" type="text" value="">
-                    </div>
-                    <div class="col-md-1 mt-2">
-                      <button (click)="search()" class="btn btn-sm btn-default">
-                        <i class="fa fa-search"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <!-- End Model Name -->
-                </div>
-              </div>
-            </div>
-
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <ejs-grid #buildingGrid 
+             (rowDeselected)=rowDeselected($event) 
+             [dataSource]='buildings' rowHeight='38'
+              [allowSelection]='true' 
+              [allowSorting]='true' height='300'
+              (rowDeselected)='rowDeselected($event)'
+              (rowSelected)='rowSelected($event)' 
+              [allowSorting]='true'>
+              <e-columns>
+                <e-column type='checkbox' isPrimaryKey='true' width='60'></e-column>
+                <e-column field='name' isPrimaryKey='true' headerText='Building' width='130'></e-column>
+              </e-columns>
+            </ejs-grid>
           </div>
-        </ng-container>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-12 text-center">
+           <button class="btn btn-info" [disabled]='buildingSelected.length === 0'  (click)="lock()"><i class="fa fa-lock"></i> Lock</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
-  <div *ngIf="isShow" class="card-body">
-    <ejs-grid #grid [dataSource]='data' [searchSettings]="searchSettings" showColumnMenu='true' allowPaging='true'
-      allowSorting='true' allowResizing='true' gridLines='Both' (actionBegin)="actionBegin($event)"
-      (actionComplete)="actionComplete($event)" (rowSelected)="rowSelected($event)" [toolbar]='toolbarOptions'
-      (toolbarClick)='toolbarClick($event)' [pageSettings]='pageSettings' >
-      <e-columns>
-        <e-column type='checkbox'  width='40'></e-column>
-        <e-column field='bpfcName' headerText='Building Name' width='300' textAlign='Center'></e-column>
-      </e-columns>
-    </ejs-grid>
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h3>Abnormal List</h3>
+      </div>
+      <div class="card-body">
+          <ejs-grid #abnormalGrid 
+             (rowDeselected)=rowDeselected($event) 
+             [dataSource]='abnormals' rowHeight='38'
+              [allowSelection]='true' 
+              [allowSorting]='true' height='300'
+              (rowDeselected)='rowDeselected($event)'
+              (rowSelected)='rowSelected($event)' 
+              [allowSorting]='true'>
+              <e-columns>
+                <e-column field='ingredient' isPrimaryKey='true' headerText='Ingredient' width='130'></e-column>
+                <e-column field='building' isPrimaryKey='true' headerText='Building' width='130'></e-column>
+                <e-column field='userID' isPrimaryKey='true' headerText='Lock By' width='130'></e-column>
+                <e-column field='createdDate' isPrimaryKey='true' headerText='Created Date' width='130'></e-column>
+              </e-columns>
+            </ejs-grid>
+      </div>
+    </div>
   </div>
-
 </div>
+

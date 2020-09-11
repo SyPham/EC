@@ -132,14 +132,14 @@ namespace EC_API._Services.Services
             return _mapper.Map<ModelName, ModelNameDto>(_repoModelName.FindById(id));
         }
 
-        public async Task<int> GetArticleNameQuantityByModelName(int modelName)
+        public Task<int> GetArticleNameQuantityByModelName(int modelName)
         {
             //var item = await _repoModelName.FindAll().FirstOrDefaultAsync(x => x.ID == modelName);
             //return item.ArticleNos.Count();
             throw new NotImplementedException();
         }
 
-        public async Task<bool> CloneModelName(int modelNameID, string modelName, string modelNo, int processID)
+        public Task<bool> CloneModelName(int modelNameID, string modelName, string modelNo, int processID)
         {
             //try
             //{
@@ -221,7 +221,7 @@ namespace EC_API._Services.Services
             throw new System.NotImplementedException();
         }
 
-        public async Task<bool> CloneArticleModelname(int modelNameID, string modelName, string modelNo, string article, int processID)
+        public Task<bool> CloneArticleModelname(int modelNameID, string modelName, string modelNo, string article, int processID)
         {
             //try
             //{
@@ -302,7 +302,7 @@ namespace EC_API._Services.Services
             //}
             throw new System.NotImplementedException();
         }
-        public async Task<object> Approval(int modelNameID, int userid)
+        public Task<object> Approval(int modelNameID, int userid)
         {
             //var item = _repoModelName.FindById(modelNameID);
             //item.ApprovedBy = userid;
@@ -324,7 +324,7 @@ namespace EC_API._Services.Services
             throw new System.NotImplementedException();
         }
 
-        public async Task<object> Done(int modelNameID, int userid)
+        public Task<object> Done(int modelNameID, int userid)
         {
 
             //var item = _repoModelName.FindById(modelNameID);
@@ -371,7 +371,7 @@ namespace EC_API._Services.Services
             throw new System.NotImplementedException();
         }
 
-        public async Task<object> Release(int modelNameID, int userid)
+        public Task<object> Release(int modelNameID, int userid)
         {
             //var item = _repoModelName.FindById(modelNameID);
             //try
@@ -388,7 +388,7 @@ namespace EC_API._Services.Services
             throw new System.NotImplementedException();
         }
 
-        public async Task<object> Reject(int modelNameID, int userid)
+        public Task<object> Reject(int modelNameID, int userid)
         {
             //var item = _repoModelName.FindById(modelNameID);
             //try
@@ -414,21 +414,21 @@ namespace EC_API._Services.Services
             throw new System.NotImplementedException();
         }
 
-        public async Task<List<ModelNameDto>> FilterByApprovedStatus()
+        public Task<List<ModelNameDto>> FilterByApprovedStatus()
         {
             //var lists = await _repoModelName.FindAll().Where(x => x.ApprovedStatus == true && x.CreatedStatus == true).ProjectTo<ModelNameDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
             //return lists;
             throw new System.NotImplementedException();
         }
 
-        public async Task<List<ModelNameDto>> FilterByNotApprovedStatus()
+        public Task<List<ModelNameDto>> FilterByNotApprovedStatus()
         {
             //var lists = await _repoModelName.FindAll().Where(x => x.ApprovedStatus == false).ProjectTo<ModelNameDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
             //return lists;
             throw new System.NotImplementedException();
         }
 
-        public async Task<List<ModelNameDto>> FilterByFinishedStatus()
+        public Task<List<ModelNameDto>> FilterByFinishedStatus()
         {
             //var lists = await _repoModelName.FindAll().Where(x => x.CreatedStatus == true).ProjectTo<ModelNameDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
             //return lists;
@@ -449,7 +449,7 @@ namespace EC_API._Services.Services
             await _mailExtension.SendEmailRangeAsync(emails, subject, message);
         }
 
-        public async Task<bool> ImportExcel(List<ModelNameForImportExcelDto> modelNameForImportExcelDtos)
+        public Task<bool> ImportExcel(List<ModelNameForImportExcelDto> modelNameForImportExcelDtos)
         {
             //var modelNameList = modelNameForImportExcelDtos.DistinctBy(x => new { x.ModelNo, x.ModelName, x.ArticleNo, x.Process })
             //    .GroupBy(x => new { x.ModelName, x.ModelNo })
@@ -516,7 +516,7 @@ namespace EC_API._Services.Services
             throw new System.NotImplementedException();
         }
 
-        public async Task<List<ModelNameDto>> GetModelNameForBPFCRecord(Status status, string startBuildingDate, string endBuildingDate)
+        public Task<List<ModelNameDto>> GetModelNameForBPFCRecord(Status status, string startBuildingDate, string endBuildingDate)
         {
             //var lists = _repoModelName.FindAll().ProjectTo<ModelNameDto>(_configMapper).OrderByDescending(x => x.ID);
             //var result = new List<ModelNameDto>();
@@ -586,7 +586,7 @@ namespace EC_API._Services.Services
 
         }
         //Lấy toàn bộ danh sách Brand 
-        public async Task<List<ModelNameDtoForBPFCSchedule>> GetAllModelNameForBPFCSchedule()
+        public Task<List<ModelNameDtoForBPFCSchedule>> GetAllModelNameForBPFCSchedule()
         {
             //var lists = await _repoModelName.FindAll().Join(_repoArticleNo.FindAll(),
             //    m => m.ID,
@@ -606,7 +606,8 @@ namespace EC_API._Services.Services
             //                 CreatedBy = x.ma.m.CreatedBy,
             //                 Process = x.p.Name
             //             }).ToListAsync();
-            return new List<ModelNameDtoForBPFCSchedule>();
+            // return new List<ModelNameDtoForBPFCSchedule>();
+            throw new System.NotImplementedException();
 
         }
 

@@ -16,6 +16,7 @@ namespace EC_API.DTO
         public string ArticleNo { get; set; }
         public string Process { get; set; }
         public string Line { get; set; }
+        public int LineID { get; set; }
         public DateTime MixDate { get; set; }
         public DateTime DueDate { get; set; }
     }

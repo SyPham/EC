@@ -190,7 +190,7 @@ namespace EC_API._Services.Services
             return result;
         }
 
-        public async Task<object> ScanQRCodeFromChemialWareHouse(string qrCode)
+        public async Task<object> ScanQRCodeFromChemialWareHouse(string qrCode,string building, int userid)
         {
 
             // load tat ca supplier
@@ -222,7 +222,9 @@ namespace EC_API._Services.Services
                 Batch = Batch,
                 Consumption = 0,
                 Code = model.Code,
-                IngredientID = model.ID
+                IngredientID = model.ID,
+                UserID = userid,
+                BuildingName = building
 
             });
 
@@ -252,7 +254,9 @@ namespace EC_API._Services.Services
                         Consumption = 0,
                         Code = model.Code,
                         Batch = Batch,
-                        IngredientInfoID = data.ID
+                        IngredientInfoID = data.ID,
+                        UserID = userid,
+                        BuildingName = building
                     });
                 }
             }
@@ -269,7 +273,9 @@ namespace EC_API._Services.Services
                     Batch = Batch,
                     Consumption = 0,
                     Code = model.Code,
-                    IngredientInfoID = data.ID
+                    IngredientInfoID = data.ID,
+                    UserID = userid,
+                    BuildingName = building
                 });
             return true;
         }
@@ -466,97 +472,6 @@ namespace EC_API._Services.Services
             }
         }
 
-        public async Task<object> Troubleshooting(string value)
-        {
-            var from = DateTime.Now.Date.AddDays(-3).Date;
-            var to = DateTime.Now.Date.Date;
-            var infos = await _repoIngredient
-                        .FindAll()
-                        .Where(x => x.Name.Trim().ToLower().Contains(value.Trim().ToLower()))
-                        .FirstOrDefaultAsync();
-            var plans = _repoPlan.FindAll()
-                .Include(x => x.Building)
-                .Include(x => x.BPFCEstablish)
-                    .ThenInclude(x => x.Glues)
-                    .ThenInclude(x => x.GlueIngredients)
-                    .ThenInclude(x => x.Ingredient)
-                .Include(x => x.BPFCEstablish)
-                    .ThenInclude(x => x.ModelName)
-                    .ThenInclude(x => x.ModelNos)
-                    .ThenInclude(x => x.ArticleNos)
-                    .ThenInclude(x => x.ArtProcesses)
-                    .ThenInclude(x => x.Process)
-
-                .Where(x => x.DueDate.Date >= from && x.DueDate.Date <= to);
-            var troubleshootings = new List<TroubleshootingDto>();
-            var model =await (from a in _repoBuildingGlue.FindAll().Where(x=>x.GlueName.Contains(value))
-                        join b in _repoMixingInfo.FindAll().Where(x => x.GlueName.Contains(value)) on a.MixingInfoID equals b.ID
-                        select new
-                        {
-                            Line = a.BuildingID,
-                            GlueName = a.GlueName,
-                            BatchA = b.BatchA,
-                            BatchB = b.BatchB,
-                            BatchC = b.BatchC,
-                            BatchD = b.BatchD,
-                            BatchE = b.BatchE,
-                            DueDate = b.CreatedTime.Date
-                        }).ToListAsync();
-            foreach (var plan in plans)
-            {
-                // lap nhung bpfc chua ingredient search
-                foreach (var glue in plan.BPFCEstablish.Glues)
-                {
-                    foreach (var item in glue.GlueIngredients.Where(x => x.Ingredient.Name.Contains(infos.Name)))
-                    {
-                        var mixingInfo = model.Where(x => x.GlueName.Equals(item.Glue.Name)).FirstOrDefault();
-                        var batch = "";
-                        var mixDate = new DateTime();
-                        if (mixingInfo != null)
-                        {
-                            switch (item.Position)
-                            {
-                                case "A":
-                                    batch = mixingInfo.BatchA;
-                                    break;
-                                case "B":
-                                    batch = mixingInfo.BatchB;
-                                    break;
-                                case "C":
-                                    batch = mixingInfo.BatchC;
-                                    break;
-                                case "D":
-                                    batch = mixingInfo.BatchD;
-                                    break;
-                                case "E":
-                                    batch = mixingInfo.BatchE;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            mixDate = mixingInfo.DueDate;
-                        }
-                        var detail = new TroubleshootingDto
-                        {
-                            Ingredient = item.Ingredient.Name,
-                            GlueName = item.Glue.Name,
-                            ModelName = glue.BPFCEstablish.ModelName.Name,
-                            ModelNo = glue.BPFCEstablish.ModelNo.Name,
-                            ArticleNo = glue.BPFCEstablish.ArticleNo.Name,
-                            Process = glue.BPFCEstablish.ArtProcess.Process.Name,
-                            Line = plan.Building.Name,
-                            DueDate = plan.DueDate.Date,
-                            Batch = batch,
-                            MixDate = mixDate
-                        };
-                        troubleshootings.Add(detail);
-                    }
-                }
-            }
-           
-
-            return troubleshootings;
-        }
-
+       
     }
 }

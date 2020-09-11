@@ -65,7 +65,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.langsData = [{ id: 'vi', name: 'Vietnamese' }, { id: 'en', name: 'English' }];
+    this.langsData = [{ id: 'vi', name: 'VI' }, { id: 'en', name: 'EN' }];
     this.navAdmin = new Nav().getNavAdmin();
     this.navClient = new Nav().getNavClient();
     this.navEc = new Nav().getNavEc();

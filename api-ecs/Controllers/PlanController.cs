@@ -22,8 +22,7 @@ namespace EC_API.Controllers
         [HttpGet("{ingredientName}/{batch}")]
         public async Task<IActionResult> TroubleShootingSearch(string ingredientName, string batch)
         {
-            var lists = await _planService.TroubleShootingSearch(ingredientName, batch);
-            return Ok(lists);
+            return Ok(await _planService.TroubleShootingSearch(ingredientName, batch));
         }
         [HttpGet]
         public async Task<IActionResult> GetPlans([FromQuery] PaginationParams param)

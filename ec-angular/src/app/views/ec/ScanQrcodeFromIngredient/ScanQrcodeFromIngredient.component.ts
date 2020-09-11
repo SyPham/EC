@@ -41,10 +41,12 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
 
   // sau khi scan input thay doi
   onNgModelChangeScanQRCode(args) {
-    let barcode = args.split('-')[2];
+    const barcode = args.split('-')[2];
     this.findIngredientCode(barcode);
     if (this.checkCode === true) {
-        this.ingredientService.scanQRCodeFromChemicalWareHouse(args).subscribe((res: any) => {
+      const building = JSON.parse(localStorage.getItem('level')).name;
+      const userID = JSON.parse(localStorage.getItem('user')).User.ID;
+      this.ingredientService.scanQRCodeFromChemicalWareHouse(args, building, userID).subscribe((res: any) => {
         if (res === true) {
           this.getIngredientInfo();
         }
@@ -64,7 +66,7 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
 
   // tim Qrcode dang scan co ton tai khong
   findIngredientCode(code) {
-    for (let item of this.ingredients) {
+    for (const item of this.ingredients) {
       if (item.code === code) {
         // return true;
         this.checkCode = true ;

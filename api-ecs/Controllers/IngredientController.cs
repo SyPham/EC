@@ -124,16 +124,16 @@ namespace EC_API.Controllers
             return Ok(await _ingredientService.ScanQRCode(qrCode));
         }
 
-        [HttpGet("{qrCode}")]
-        public async Task<IActionResult> ScanQRCodeFromChemialWareHouse(string qrCode)
+        [HttpGet("{qrCode}/{building}/{userid}")]
+        public async Task<IActionResult> ScanQRCodeFromChemialWareHouse(string qrCode, string building, int userid)
         {
-            return Ok(await _ingredientService.ScanQRCodeFromChemialWareHouse(qrCode));
+            return Ok(await _ingredientService.ScanQRCodeFromChemialWareHouse(qrCode, building, userid));
         }
 
         [HttpGet("{qrCode}/{start}/{end}")]
         public async Task<IActionResult> ScanQRCodeFromChemialWareHouseDate(string qrCode , string start , string end)
         {
-            return Ok(await _ingredientService.ScanQRCodeFromChemialWareHouseDate(qrCode,start,end));
+            return Ok(await _ingredientService.ScanQRCodeFromChemialWareHouseDate(qrCode,start, end));
         }
 
         [HttpPost("{qrCode}/{consump}")]
@@ -329,6 +329,6 @@ namespace EC_API.Controllers
         {
             return Ok(await _ingredientService.DeleteIngredientInfo(id , code , qty , batch));
         }
-
+       
     }
 }

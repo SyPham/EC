@@ -19,7 +19,7 @@
           Dữ liệu kế hoạch làm việc chưa được sắp xếp cho ngày hôm nay! <br>
           The work plan is empty!
         </div>
-        <table *ngIf="data.length > 0" class="table table-bordered table-sm table-responsive" id='todolist' height='800'>
+        <table *ngIf="data.length > 0" class="table table-bordered table-sm table-responsive" id='todolist' height='600'>
           <thead class="thead-dark">
             <tr>
               <ng-container *ngFor="let item of lineColumns; let i = index">
@@ -86,6 +86,48 @@
                 </td>
               </tr>
             </ng-container>
+            <!-- 
+               <ng-container *ngFor="let values of linevalue">
+              <tr>
+                <ng-container *ngFor="let value of getCellValue(values); let i = index">
+                  <td rowspan=3 class="my-align" *ngIf="hasRowspan(i); else elseBlock">
+                    {{value == 0 || value === '0kg' ? 0 : value}}
+                  </td>
+                  <ng-template #elseBlock>
+                    <td class="my-align">
+                      {{value == 0 || value === '0kg' ? 0 : value}}
+                    </td>
+                  </ng-template>
+                </ng-container>
+                <td rowspan=3 class="my-align">
+                  <div class="btn-group">
+                    <button type="button" (click)="mixingSection(values)"
+                      class="btn btn-success btn-sm mr-2">{{ 'MIXING' | translate }}</button>
+                    <button type="button" onclick="alert('This function will be coming soon')"
+                      class="btn btn-warning btn-sm mr-2">{{ 'STIR' | translate }}</button>
+                    <button type="button" (click)="pushHistory(values)"
+                      class="btn btn-sm btn-info">{{ 'HISTORY' | translate }}</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="my-align" *ngFor="let value of getValueCell(values.rowCountInfo)">
+                  {{value.count}}
+                </td>
+              </tr>
+              <tr>
+                <td class="my-align" (click)='editDomain(value)'
+                  *ngFor="let value of getValueCell(values.rowRealInfo); let i = index">
+                  <input type="text" *ngIf="!value.editable"
+                    [value]="value.value == 0 || value.value === '0kg' ? 0 : value.value + 'kg'"
+                    class="form-control my-align summaryhide">
+                  <input type="text" (blur)='blurTd(value)' *ngIf="value.editable" autofocustext
+                    (keypress)='dispatchGlue($event, value)' [(ngModel)]="value.value" style="pointer-events: initial"
+                    [value]="value.value" class="form-control my-align summary">
+                </td>
+              </tr>
+            </ng-container>
+             -->
           </tbody>
         </table>
       </div>

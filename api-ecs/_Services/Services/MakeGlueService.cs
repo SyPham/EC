@@ -82,12 +82,13 @@ namespace EC_API._Services.Services
         public object DeliveredHistory()
         {
             var result = new List<BuildingGlueDto>();
+           
             foreach (var item in _repoBuildingGlue.FindAll())
             {
                 result.Add(new BuildingGlueDto
                 {
                     ID = item.ID,
-                    GlueName = item.GlueName,
+                    GlueName = _repoGlue.FindById(item.GlueID).Name,
                     Qty = item.Qty,
                     BuildingName = _repoBuilding.FindById(item.BuildingID).Name,
                     CreatedBy = item.CreatedBy,

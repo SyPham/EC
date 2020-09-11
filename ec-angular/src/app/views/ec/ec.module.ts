@@ -147,7 +147,7 @@ if (lang) {
     InventoryComponent,
     DeliveredHistoryComponent,
     SearchComponent,
-    AbnormalListComponent
+    AbnormalListComponent,
   ]
 })
 export class ECModule { }
