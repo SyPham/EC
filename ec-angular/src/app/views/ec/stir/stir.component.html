@@ -62,7 +62,7 @@
                     </div>
                     <div class="col-md-8 mt-2">
                       <button style="margin: 3px;" type="button" (click)="saveStir()" class="btn btn-info ">Save</button>
-                      <button style="margin: 3px;" (click)="searchStir()" type="button" class="btn btn-info ">Search</button>
+                      <button style="margin: 3px;" [disabled]="disabled" (click)="searchStir()" type="button" class="btn btn-info ">Search</button>
                     </div>
                   </div>
                   <!-- End Model Name -->

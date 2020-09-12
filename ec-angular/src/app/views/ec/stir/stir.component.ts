@@ -30,6 +30,7 @@ export class StirComponent implements OnInit {
   data: [];
   isShow: boolean = false;
   showBatch: boolean = false;
+  disabled: boolean = true;
   IngredientData: [] ;
   public ingredients: any = [];
   timeStir: number = 0 ;
@@ -58,6 +59,7 @@ export class StirComponent implements OnInit {
 
   onChange(args) {
     this.isShow = false ;
+    this.disabled = false ;
     this.settingID = args.value ;
     const dateCreate = this.datePipe.transform(args.value, 'yyyy-MM-dd HH:mm:ss');
     this.value = new Date();
