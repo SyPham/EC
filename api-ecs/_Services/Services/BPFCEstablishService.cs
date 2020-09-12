@@ -528,6 +528,7 @@ namespace EC_API._Services.Services
                 var timePresent = DateTime.Now;
                 var timeLast = Convert.ToDateTime(remark.CreatedDate);
                 var compare = DateTime.Compare(timePresent.Date, timeLast.Date);
+                
                 if (compare > 0)
                 {
                     return new

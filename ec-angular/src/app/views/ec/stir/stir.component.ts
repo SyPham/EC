@@ -32,6 +32,7 @@ export class StirComponent implements OnInit {
   showBatch: boolean = false;
   IngredientData: [] ;
   public ingredients: any = [];
+  timeStir: number = 0 ;
   glueID: number;
   settingID: number ;
   settingData: object = [];
@@ -64,8 +65,10 @@ export class StirComponent implements OnInit {
     const endValue = new Date (this.value);
     if (this.settingID === 1) {
       endValue.setMinutes (this.value.getMinutes() + 4);
+      this.timeStir = 3.53 ;
     } else {
       endValue.setMinutes (this.value.getMinutes() + 6);
+      this.timeStir = 2.58 ;
     }
     this.Envalue = endValue ;
   }

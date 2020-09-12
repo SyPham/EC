@@ -103,7 +103,7 @@
                       <label>Minutes: </label>
                     </div>
                     <div class="col-md-8 mt-2">
-                      <input type="text" class="form-control form-control-sm" value="3.53" disabled>
+                      <input type="text" [(value)] ="timeStir" class="form-control form-control-sm"  disabled>
                     </div>
                   </div>
 
@@ -112,7 +112,13 @@
                       <label>Valid: </label>
                     </div>
                     <div class="col-md-8 mt-2">
-                      <button style="margin: 3px;" type="button" class="btn btn-info btn-sm">Ok</button>
+                      <ng-container *ngIf="timeStir > 3; else elseTemplate">
+                        <button  style="margin: 3px;" type="button" class="btn btn-info btn-sm">Ok</button>
+                      </ng-container>
+                      <ng-template #elseTemplate>
+                        <button  style="margin: 3px;" type="button" class="btn btn-danger btn-sm">Invalid</button>
+                      </ng-template>
+
                     </div>
                   </div>
 

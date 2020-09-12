@@ -469,8 +469,12 @@ namespace EC_API._Services.Services
                 {
                     var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == code && x.Batch == batch);
                     result.Qty = result.Qty - qty;
-
-                    var data = await UpdateIngredientInfoReport(result);
+                    if(result.Qty == 0) {
+                        _repoIngredientInfoReport.Remove(result);
+                       await _repoIngredientInfoReport.SaveAll();
+                    } else {
+                        await UpdateIngredientInfoReport(result);
+                    }
                 }
                 return true;
             }
