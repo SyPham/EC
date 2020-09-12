@@ -103,8 +103,7 @@ export class StirComponent implements OnInit {
   ) => {
     let query: Query = new Query();
     // frame the query based on search string with filter type.
-    query =
-      e.text !== '' ? query.where('name', 'contains', e.text, true) : query;
+    query = e.text !== '' ? query.where('name', 'contains', e.text, true) : query;
     // pass the filter data source, filter query to updateData method.
     e.updateData(this.IngredientData, query);
   }
