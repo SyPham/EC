@@ -115,13 +115,10 @@ namespace EC_API._Services.Services
 
         public async Task<object> GetBuildingByIngredientAndBatch(string ingredient, string batchValue)
         {
-            var ingredientName = ingredient.ToSafetyString().ToLower();
+            var ingredientName = ingredient.ToSafetyString();
             var from = DateTime.Now.Date.AddDays(-3).Date;
             var to = DateTime.Now.Date.Date;
-            var infos = await _repoIngredient
-                        .FindAll()
-                        .Where(x => x.Name.Trim().ToLower().Contains(ingredientName.Trim().ToLower()))
-                        .FirstOrDefaultAsync();
+        
             var plans = _repoPlan.FindAll()
                 .Include(x => x.Building)
                 .Include(x => x.BPFCEstablish)
@@ -142,7 +139,7 @@ namespace EC_API._Services.Services
                 // lap nhung bpfc chua ingredient search
                 foreach (var glue in plan.BPFCEstablish.Glues)
                 {
-                    foreach (var item in glue.GlueIngredients.Where(x => x.Ingredient.Name.Trim().ToLower().Contains(infos.Name.Trim().ToLower())))
+                    foreach (var item in glue.GlueIngredients.Where(x => x.Ingredient.Name.Trim().Contains(ingredientName.Trim())))
                     {
                         var detail = new TroubleshootingDto
                         {

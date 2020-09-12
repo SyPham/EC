@@ -108,7 +108,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     private makeGlueService: MakeGlueService,
     private abnormalService: AbnormalService,
     private alertify: AlertifyService,
-    private dataService: DataService,
     private router: Router,
     private spinner: NgxSpinnerService
   ) { }

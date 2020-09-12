@@ -8,6 +8,7 @@ import { EmitType } from '@syncfusion/ej2-base';
 import { Query } from '@syncfusion/ej2-data';
 
 import { PlanService } from 'src/app/_core/_service/plan.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 declare const $: any;
 @Component({
   selector: 'app-search',
@@ -22,8 +23,8 @@ export class SearchComponent implements OnInit {
   ingredientID: number;
   qrcodeChange: any;
   data: [];
-  isShow: boolean = false;
-  showBatch: boolean = false;
+  isShow = false;
+  showBatch = false;
   IngredientData: [] ;
   dataBatch: [];
   dataSearch: [];
@@ -35,13 +36,13 @@ export class SearchComponent implements OnInit {
     private datePipe: DatePipe,
     public ingredientService: IngredientService,
     private planService: PlanService,
+    private spinner: NgxSpinnerService
+
   ) { }
   public ngOnInit(): void {
     this.getIngredient();
   }
-  public ngAfterViewInit(): void {
 
-  }
   getIngredient() {
     this.ingredientService.getAllIngredient().subscribe((res: any) => {
       this.IngredientData = res ;
@@ -66,7 +67,7 @@ export class SearchComponent implements OnInit {
   onChangeIngredientName(args) {
     this.isShow = false ;
     this.showBatch = true;
-    let id = args.value ;
+    const id = args.value ;
     this.ingredientName = args.itemData.name ;
     this.GetBatchByIngredientID(id);
   }
@@ -77,9 +78,11 @@ export class SearchComponent implements OnInit {
   }
   searchBatch(item) {
     this.isShow = true ;
+    this.spinner.show();
     this.planService.TroubleShootingSearch(this.ingredientName, item.batchName)
     .subscribe((res: any) => {
       this.dataSearch = res ;
+      this.spinner.hide();
     });
   }
 }

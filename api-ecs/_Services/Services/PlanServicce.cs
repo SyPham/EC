@@ -92,12 +92,9 @@ namespace EC_API._Services.Services
         {
             try
             {
+            var ingredientName = value.ToSafetyString();
                 var from = DateTime.Now.Date.AddDays(-3).Date;
                 var to = DateTime.Now.Date.Date;
-                var infos = await _repoIngredient
-                            .FindAll()
-                            .Where(x => x.Name.Trim().ToLower().Contains(value.Trim().ToLower()))
-                            .FirstOrDefaultAsync();
                 var plans = _repoPlan.FindAll()
                     .Include(x => x.Building)
                     .Include(x => x.BPFCEstablish)
@@ -118,7 +115,7 @@ namespace EC_API._Services.Services
                     // lap nhung bpfc chua ingredient search
                     foreach (var glue in plan.BPFCEstablish.Glues.Where(x => x.isShow == true))
                     {
-                        foreach (var item in glue.GlueIngredients.Where(x => x.Ingredient.Name.Trim().Contains(infos.Name.Trim())))
+                        foreach (var item in glue.GlueIngredients.Where(x => x.Ingredient.Name.Trim().Contains(ingredientName)))
                         {
                             var buildingGlue = await _repoBuildingGlue.FindAll().Where(x => x.CreatedDate.Date == plan.DueDate.Date).OrderByDescending(x => x.CreatedDate).FirstOrDefaultAsync();
                             var mixingID = 0;
