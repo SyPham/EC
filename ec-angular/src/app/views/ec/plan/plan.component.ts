@@ -342,7 +342,7 @@ export class PlanComponent implements OnInit {
   }
   tooltip(data) {
     if (data) {
-      return data.join(' , ');
+      return data.join('<br>');
     } else {
       return '';
     }

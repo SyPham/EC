@@ -115,9 +115,9 @@ namespace EC_API._Services.Services
                 // lap nhung bpfc chua ingredient search
                 foreach (var glue in plan.BPFCEstablish.Glues)
                 {
-                    foreach (var item in glue.GlueIngredients.Where(x => x.Ingredient.Name.Contains(infos.Name)))
+                    foreach (var item in glue.GlueIngredients.Where(x => x.Ingredient.Name.Trim().Contains(infos.Name.Trim())))
                     {
-                      var buildingGlue = await _repoBuildingGlue.FindAll().Where(x=>x.CreatedDate.Date == plan.DueDate.Date).FirstOrDefaultAsync();
+                      var buildingGlue = await _repoBuildingGlue.FindAll().Where(x=>x.CreatedDate.Date == plan.DueDate.Date).OrderByDescending(x=>x.CreatedDate).FirstOrDefaultAsync();
                       var mixingID = 0;
                        if (buildingGlue != null){
                            mixingID = buildingGlue.MixingInfoID;

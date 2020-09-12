@@ -14,8 +14,8 @@ namespace EC_API.DTO
         public int Percentage { get; set; }
         public bool Status { get; set; }
         public string MaterialNO { get; set; }
-        public string Unit { get; set; }
-        public string VOC { get; set; } = "0";
+        public double Unit { get; set; }
+        public double VOC { get; set; }
         public string Supplier { get; set; }
         public int SupplierID { get; set; }
         public int ExpiredTime { get; set; }

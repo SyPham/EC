@@ -61,10 +61,15 @@
               [allowSorting]='true'>
               <e-columns>
                 <e-column field='ingredient' isPrimaryKey='true' headerText='Ingredient' width='130'></e-column>
-                <e-column field='batch' isPrimaryKey='true' headerText='Batch' width='130'></e-column>
-                <e-column field='building' isPrimaryKey='true' headerText='Building' width='130'></e-column>
+                <e-column field='batch' isPrimaryKey='true' headerText='Batch' width='90'></e-column>
+                <e-column field='building' isPrimaryKey='true' headerText='Building' width='90'></e-column>
                 <e-column field='lockBy' isPrimaryKey='true' headerText='Lock By' width='130'></e-column>
-                <e-column field='createdDate' isPrimaryKey='true' headerText='Created Date' width='130'></e-column>
+                <e-column field='createdDate' isPrimaryKey='true' type='dateTime' format='d MMM, yyyy hh:mm:ss a' headerText='Created Date' width='180'></e-column>
+                <e-column field='' headerText='Option' textAlign='Center' width='90'>
+                  <ng-template let-data #template>
+                      <button type="button" (click)='unlock(data)' class="btn btn-xs btn-danger"><i class="fa fa-unlock"></i></button>
+                  </ng-template>
+                </e-column>
               </e-columns>
             </ejs-grid>
       </div>

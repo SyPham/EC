@@ -188,13 +188,16 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   }
   // api
   hasLock(ingredient, building, batch): Promise<any> {
+    const levels = [1, 2, 3, 4];
+    let buildingName = building;
+    if (levels.includes(this.level.level)) {
+      buildingName = 'E';
+    }
     return new Promise((resolve, reject) => {
-      this.abnormalService.hasLock(ingredient, building, batch).subscribe((res) => {
-        if (res) {
-          reject(false);
-        } else {
-          resolve(true);
-        }
+      this.abnormalService.hasLock(ingredient, buildingName, batch).subscribe((res) => {
+        resolve(res);
+      }, err => {
+        reject(false);
       });
     });
   }
@@ -341,46 +344,46 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   }
   async onNgModelChangeScanQRCode(args, item) {
     const input = args.split('-');
-    if (input.length === 3) {
-      if (input[2].length === 8) {
-        this.qrCode = input[2];
-        try {
-          const checkLock = await this.hasLock(item.name, this.level.name, input[1]);
-          const result = await this.scanQRCode();
-          if (this.qrCode !== item.code) {
-            this.alertify.warning(`Please you should look for the chemical name "${item.name}"`);
-            this.qrCode = '';
-            this.errorScan();
-          } else {
-            const code = result.code;
-            const ingredient = this.findIngredientCode(code);
-            this.setBatch(ingredient, input[1]);
-            if (ingredient) {
-              this.changeInfo('success-scan', ingredient.code);
-              if (ingredient.expected === 0 && ingredient.position === 'A') {
-                this.changeFocusStatus(ingredient.code, false, true);
-                this.changeScanStatus(ingredient.code, false);
-              } else {
-                this.changeScanStatus(ingredient.code, false);
-                this.changeFocusStatus(code, true, false);
-              }
-            }
-          }
-
-        } catch (error) {
-          if (error === false) {
-            this.alertify.error('This chemical has been locked!');
-            this.qrCode = '';
-          }
-          if (error === null) {
-            this.errorScan();
-            this.alertify.error('Wrong Chemical!');
-            this.qrCode = '';
-          }
+    if (input.length !== 3) {
+      return;
+    }
+    if (input[2].length !== 8) {
+      return;
+    }
+    try {
+      this.qrCode = input[2];
+      const result = await this.scanQRCode();
+      if (this.qrCode !== item.code) {
+        this.alertify.warning(`Please you should look for the chemical name "${item.name}"`);
+        this.qrCode = '';
+        this.errorScan();
+        return;
+      }
+      const checkLock = await this.hasLock(item.name, this.level.name, input[1]);
+      if (checkLock === true) {
+        this.alertify.error('This chemical has been locked!');
+        this.qrCode = '';
+        this.errorScan();
+        return;
+      }
+      const code = result.code;
+      const ingredient = this.findIngredientCode(code);
+      this.setBatch(ingredient, input[1]);
+      if (ingredient) {
+        this.changeInfo('success-scan', ingredient.code);
+        if (ingredient.expected === 0 && ingredient.position === 'A') {
+          this.changeFocusStatus(ingredient.code, false, true);
+          this.changeScanStatus(ingredient.code, false);
+        } else {
+          this.changeScanStatus(ingredient.code, false);
+          this.changeFocusStatus(code, true, false);
         }
       }
+    } catch (error) {
+        this.errorScan();
+        this.alertify.error('Wrong Chemical!');
+        this.qrCode = '';
     }
-
   }
   private errorScan() {
     for (const key in this.ingredients) {

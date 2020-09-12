@@ -36,9 +36,9 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     position: 0,
     allow: 0,
     expiredTime: 0,
-    voc: '0',
+    voc: 0,
     materialNO: '',
-    unit: ''
+    unit: 0
   };
   pagination: Pagination;
   page = 1;
@@ -49,6 +49,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
   public displayTextMethod: DisplayTextModel = {
     visibility: false
   };
+  toolbar = ['Search'];
   text: any;
   dataPrint: any;
   dataPicked: Array<any> = [];
@@ -74,10 +75,10 @@ export class IngredientComponent implements OnInit, AfterViewInit {
           supplierID: 0,
           position: 0,
           allow: 0,
-          voc: '0',
+          voc: 0,
           expiredTime: 0,
           materialNO: '',
-          unit: ''
+          unit: 0
         };
       }
     });
