@@ -623,7 +623,7 @@ namespace EC_API._Services.Services
                                         .Include(x => x.ModelNo)
                                         .Include(x => x.ArtProcess)
                                         .Include(x => x.ArticleNo)
-                                        .Include(x => x.Glues)
+                                        .Include(x => x.Glues.Where(x => x.isShow == true))
                                         .Include(x => x.Plans)
                                         .FirstOrDefaultAsync(x => x.ModelNameID == modelNameID
                                     && x.ModelNoID == modelNOID
@@ -700,7 +700,7 @@ namespace EC_API._Services.Services
         private async Task<string> GenatateGlueCode(string code)
         {
             int lenght = 8;
-            if (await _repoGlue.FindAll().AnyAsync(x => x.Code.Equals(code)) == true)
+            if (await _repoGlue.FindAll().AnyAsync(x => x.isShow == true && x.Code.Equals(code)) == true)
             {
                 var newCode = CodeUtility.RandomString(lenght);
                 return await GenatateGlueCode(newCode);
@@ -751,7 +751,7 @@ namespace EC_API._Services.Services
                 var list2 = bpfcClone.Glues.Select(x => x.Name);
                 var list1 = bpfc.Glues.Select(x => x.Name);
                 var check = list1.Except(list2);
-                gluesData = bpfc.Glues.Where(x => check.Contains(x.Name)).ToList();
+                gluesData = bpfc.Glues.Where(x =>x.isShow == true && check.Contains(x.Name)).ToList();
             }
             if (gluesData.Count == 0)
                 return;
@@ -806,7 +806,7 @@ namespace EC_API._Services.Services
                                               .Include(x => x.ModelNo)
                                               .Include(x => x.ArtProcess)
                                               .Include(x => x.ArticleNo)
-                                              .Include(x => x.Glues)
+                                              .Include(x => x.Glues.Where(x=>x.isShow == true))
                                               .ThenInclude(x => x.GlueIngredients)
                                               .Include(x => x.Plans)
                                               .FirstOrDefaultAsync(x => x.ModelNameID == clone.ModelNameID
@@ -828,7 +828,7 @@ namespace EC_API._Services.Services
                                         .Include(x => x.ModelNo)
                                         .Include(x => x.ArtProcess)
                                         .Include(x => x.ArticleNo)
-                                        .Include(x => x.Glues).ThenInclude(x => x.GlueIngredients)
+                                        .Include(x => x.Glues.Where(x => x.isShow == true)).ThenInclude(x => x.GlueIngredients)
                                         .Include(x => x.Plans)
                                         .FirstOrDefaultAsync(x => x.ID == clone.BPFCID);
                     if (bpfc == null)

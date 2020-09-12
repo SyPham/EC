@@ -115,6 +115,8 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
 
   onChangeIngredientName(args) {
     if (args.itemData) {
+      this.buildings = [];
+      this.batches = [];
       this.ingredient = args.itemData?.name;
       this.abnormal.ingredient = args.itemData?.name;
       this.abnormalService.getBatchByIngredientID(args.value).subscribe((res: any) => {
@@ -166,7 +168,7 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
           building: item.building,
           lockBy: this.username(item.userID),
           createdDate: item.createdDate
-        }
+        };
       });
     });
   }

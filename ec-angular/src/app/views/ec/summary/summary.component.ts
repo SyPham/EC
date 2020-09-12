@@ -25,7 +25,7 @@ declare var Swal: any;
   styleUrls: ['./summary.component.css']
 })
 export class SummaryComponent implements OnInit, AfterViewInit {
-
+  @ViewChild('fullScreen') divRef;
   @ViewChildren('tooltip') tooltip: QueryList<any>;
   @ViewChild('tooltip') public control: TooltipComponent;
   @ViewChild('scanQRCode') scanQRCodeElement: ElementRef;
@@ -75,11 +75,31 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   disabled = true;
   hasWarning: boolean;
   cancel = false;
+  hasFullScreen = false;
   @HostListener('window:keyup.alt.enter', ['$event']) enter(e: KeyboardEvent) {
     if (!this.disabled) {
       this.Finish();
     }
   }
+  @HostListener('window:keyup.f11', ['$event']) keyup(e: KeyboardEvent) {
+    console.log(`document.fullscreenElement`, document.fullscreenElement);
+    // if (document.fullscreenElement !== null) {
+    //   this.openFullscreen();
+    // } else {
+    //   this.closeFullscreen();
+    // }
+  }
+  @HostListener('document:fullscreenchange', ['$event']) fullScreen(e) {
+
+    if (document.fullscreenElement !== null) {
+      this.screenHeight = screen.height - 100;
+      this.hasFullScreen = true;
+    } else {
+      this.screenHeight = window.innerHeight - 200;
+      this.hasFullScreen = false;
+    }
+  }
+
   constructor(
     private planService: PlanService,
     private authService: AuthService,
@@ -107,11 +127,41 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     }
   }
   public ngAfterViewInit(): void {
-    this.screenHeight = screen.height - 200;
+    console.log(screen.height);
+    console.log(window.innerHeight);
+    this.screenHeight = window.innerHeight - 200;
     $('input.mixing').tooltip({
       placement: 'right',
       trigger: 'focus'
     });
+  }
+  openFullscreen() {
+    // Use this.divRef.nativeElement here to request fullscreen
+    this.screenHeight = screen.height - 100;
+    this.hasFullScreen = true;
+    const elem = this.divRef.nativeElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    } else if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    }
+  }
+  closeFullscreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if ((document as any).mozCancelFullScreen) {
+      (document as any).mozCancelFullScreen();
+    } else if ((document as any).webkitExitFullscreen) {
+      (document as any).webkitExitFullscreen();
+    } else if ((document as any).msExitFullscreen) {
+      (window.top.document as any).msExitFullscreen();
+    }
+    this.hasFullScreen = false;
+    this.screenHeight = window.innerHeight - 200;
   }
   created(args) {
   }
@@ -343,47 +393,44 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     }
   }
   async onNgModelChangeScanQRCode(args, item) {
-    const input = args.split('-');
-    if (input.length !== 3) {
-      return;
-    }
-    if (input[2].length !== 8) {
-      return;
-    }
-    try {
-      this.qrCode = input[2];
-      const result = await this.scanQRCode();
-      if (this.qrCode !== item.code) {
-        this.alertify.warning(`Please you should look for the chemical name "${item.name}"`);
-        this.qrCode = '';
-        this.errorScan();
-        return;
-      }
-      const checkLock = await this.hasLock(item.name, this.level.name, input[1]);
-      if (checkLock === true) {
-        this.alertify.error('This chemical has been locked!');
-        this.qrCode = '';
-        this.errorScan();
-        return;
-      }
-      const code = result.code;
-      const ingredient = this.findIngredientCode(code);
-      this.setBatch(ingredient, input[1]);
-      if (ingredient) {
-        this.changeInfo('success-scan', ingredient.code);
-        if (ingredient.expected === 0 && ingredient.position === 'A') {
-          this.changeFocusStatus(ingredient.code, false, true);
-          this.changeScanStatus(ingredient.code, false);
-        } else {
-          this.changeScanStatus(ingredient.code, false);
-          this.changeFocusStatus(code, true, false);
+    const input = args.split('-') || [];
+    if (input[2]?.length === 8) {
+      try {
+        this.qrCode = input[2];
+        const result = await this.scanQRCode();
+        if (this.qrCode !== item.code) {
+          this.alertify.warning(`Please you should look for the chemical name "${item.name}"`);
+          this.qrCode = '';
+          this.errorScan();
+          return;
         }
-      }
-    } catch (error) {
+        const checkLock = await this.hasLock(item.name, this.level.name, input[1]);
+        if (checkLock === true) {
+          this.alertify.error('This chemical has been locked!');
+          this.qrCode = '';
+          this.errorScan();
+          return;
+        }
+        const code = result.code;
+        const ingredient = this.findIngredientCode(code);
+        this.setBatch(ingredient, input[1]);
+        if (ingredient) {
+          this.changeInfo('success-scan', ingredient.code);
+          if (ingredient.expected === 0 && ingredient.position === 'A') {
+            this.changeFocusStatus(ingredient.code, false, true);
+            this.changeScanStatus(ingredient.code, false);
+          } else {
+            this.changeScanStatus(ingredient.code, false);
+            this.changeFocusStatus(code, true, false);
+          }
+        }
+      } catch (error) {
         this.errorScan();
         this.alertify.error('Wrong Chemical!');
         this.qrCode = '';
+      }
     }
+
   }
   private errorScan() {
     for (const key in this.ingredients) {

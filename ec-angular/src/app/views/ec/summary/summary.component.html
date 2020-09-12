@@ -1,13 +1,15 @@
 <ngx-spinner [fullScreen]="false" type="square-jelly-box" size="medium">
   <p class="loading">Loading data...</p>
 </ngx-spinner>
-<div class="card">
-  <div class="card-header d-flex p-0">
-    <h3>{{ 'TODOLIST' | translate }}</h3>
+<div class="card" #fullScreen >
+  <div class="card-header d-flex p-1">
+    <h4>{{ 'TODOLIST' | translate }}</h4>
     <ul class="nav nav-pills ml-auto p-2" *ngIf="existGlue">
-      <li class="nav-item"><a class="nav-link table-success" >{{ 'CONSUMPTION_LABEL' | translate }}(kg)</a></li>
-      <li class="nav-item"><a class="nav-link table-warning">{{ 'COUNT' | translate }}</a></li>
-      <li class="nav-item"><a class="nav-link table-primary">{{ 'ACTUAL' | translate }}</a></li>
+      <li class="nav-item"><a class="my-cursor-pointer nav-link table-success mr-2" >{{ 'CONSUMPTION_LABEL' | translate }}(kg)</a></li>
+      <li class="nav-item"><a class="my-cursor-pointer nav-link table-warning mr-2">{{ 'COUNT' | translate }}</a></li>
+      <li class="nav-item"><a class="my-cursor-pointer nav-link table-primary mr-2">{{ 'ACTUAL' | translate }}</a></li>
+      <li class="nav-item" (click)="openFullscreen()" *ngIf="!hasFullScreen"><a class="my-cursor-pointer nav-link mr-2 table-secondary"><i class="fa fa-expand-arrows-alt"></i> Fullscreen</a></li>
+      <li class="nav-item" (click)='closeFullscreen()' *ngIf="hasFullScreen"><a class="my-cursor-pointer nav-link table-info"><i class="fa fa-times"></i> Close Fullscreen</a></li>
     </ul>
   </div>
   <div class="row" *ngIf="existGlue">
@@ -19,7 +21,7 @@
           Dữ liệu kế hoạch làm việc chưa được sắp xếp cho ngày hôm nay! <br>
           The work plan is empty!
         </div>
-        <table *ngIf="data.length > 0" class="table table-bordered table-sm table-responsive" id='todolist' height='600'>
+        <table *ngIf="data.length > 0" [attr.height]='screenHeight' class="table table-bordered table-sm table-responsive" id='todolist'>
           <thead class="thead-dark">
             <tr>
               <ng-container *ngFor="let item of lineColumns; let i = index">

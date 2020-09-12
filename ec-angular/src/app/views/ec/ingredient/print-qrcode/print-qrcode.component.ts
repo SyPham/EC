@@ -14,9 +14,9 @@ import { TextBoxComponent } from '@syncfusion/ej2-angular-inputs';
 export class PrintQRCodeComponent implements OnInit, AfterViewInit {
   public qrcode: any;
   public name: any;
-  public batch: any;
-  public mfg: any;
-  public exp: any;
+  public batch = 'DEFAULT';
+  public mfg = this.datePipe.transform(new Date(), 'yyyyMMdd');
+  public exp = this.datePipe.transform(new Date(), 'yyyyMMdd');
   public id: any;
   public dateValue: any;
   public dateprint: Date = new Date();
@@ -154,7 +154,7 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
           <div class='info'>
           <ul>
             <li class='subInfo'>${ this.text}</li>
-              <li class='subInfo'>${this.mfg}-${this.batch}-${this.qrcode}</li>
+              <li class='subInfo'>${this.qrcode}</li>
               <li class='subInfo'>MFG: ${this.mfg}</li>
               <li class='subInfo'>EXP: ${this.exp}</li>
           </ul>
@@ -170,11 +170,14 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
   }
   onRouteChange() {
     this.route.data.subscribe(data => {
-      this.qrcode = this.route.snapshot.paramMap.get('code');
+      this.qrcode = `${this.mfg}-${this.batch}-${this.route.snapshot.paramMap.get('code')}`;
       this.name = this.route.snapshot.paramMap.get('name');
       this.text = this.route.snapshot.paramMap.get('name');
       this.id = this.route.snapshot.params.id;
     });
+  }
+  onChangeBatch(args) {
+    this.qrcode = `${this.mfg}-${args}-${this.route.snapshot.paramMap.get('code')}`;
   }
   PrintChanges(args) {
     const printtime = this.datePipe.transform(args.value, 'MM-dd-yyyy');
@@ -192,10 +195,12 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
       this.ingredientService.UpdatePrint(Ingredient).subscribe(() => {
         if (printtime === this.datePipe.transform(this.dateValueDefault, 'yyyyMMdd')) {
           this.text = this.name;
+          this.qrcode = `${this.mfg}-${this.batch}-${this.route.snapshot.paramMap.get('code')}`;
         } else {
           this.mfg = this.datePipe.transform(this.dateValue, 'yyyyMMdd');
           this.exp = this.datePipe.transform(this.dateprints, 'yyyyMMdd');
           this.text = this.name;
+          this.qrcode = `${this.mfg}-${this.batch}-${this.route.snapshot.paramMap.get('code')}`;
         }
       });
     }

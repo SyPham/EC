@@ -9,7 +9,7 @@
       </div>
       <div class="col-md-2">
         <div class="e-input-group">
-          <input class="e-input" type="text" [(ngModel)]="batch" placeholder="Enter batch..." />
+          <input class="e-input" type="text" (ngModelChange)="onChangeBatch($event)" [(ngModel)]="batch" placeholder="Enter batch..." />
         </div>
       </div>
       <div class="col-md-3">
@@ -33,23 +33,16 @@
 <hr>
 <div class="row">
 <div class="col-md-4"></div>
-<div class="col-md-2 text-center">
+<div class="col-md-4 text-left">
   <div class='center '>
     <ejs-qrcodegenerator #barcode style="display: block;" id='qrcode' #barcode
     width="177px" height="177px" [displayText]='displayTextMethod' mode="SVG" [value]="qrcode"></ejs-qrcodegenerator>
   </div>
-  <div>Name: {{text}}</div>
-  <div>Batch: {{batch}}</div>
-  <div>MFG: {{mfg}}</div>
-  <div>EXP: {{exp}}</div>
-</div>
-<div class="col-md-2 text-center">
-    <!-- <div>Name: {{text}}</div>
-    <div>Batch: {{batch}}</div>
-    <div>MFG: {{mfg}}</div>
-    <div>EXP: {{exp}}</div> -->
+  <div><label>QrCode:</label> {{qrcode}}</div>
+  <div><label>Name:</label> {{text}}</div>
+  <div><label>Batch:</label> {{batch}}</div>
+  <div><label>MFG:</label> {{mfg}}</div>
+  <div><label>EXP:</label> {{exp}}</div>
 </div>
 <div class="col-md-4"></div>
-
 </div>
-

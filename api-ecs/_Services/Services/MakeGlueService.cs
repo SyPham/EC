@@ -46,7 +46,7 @@ namespace EC_API._Services.Services
 
         public async Task<object> GetAllGlues()
         {
-            return await _repoGlue.FindAll().ProjectTo<GlueCreateDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
+            return await _repoGlue.FindAll().Where(x=>x.isShow == true).ProjectTo<GlueCreateDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
 
         public async Task<object> GetGlueWithIngredientByGlueCode(string code)
@@ -82,13 +82,18 @@ namespace EC_API._Services.Services
         public object DeliveredHistory()
         {
             var result = new List<BuildingGlueDto>();
-           
-            foreach (var item in _repoBuildingGlue.FindAll())
+            var glues = _repoGlue.FindAll().Where(x=> x.isShow == true).ToList();
+            foreach (var item in _repoBuildingGlue.FindAll().OrderByDescending(x => x.CreatedDate))
             {
+                var glueName = string.Empty;
+                var model = glues.FirstOrDefault(x => x.isShow == true && x.ID == item.GlueID);
+                if (model != null) {
+                    glueName = model.Name;
+                }
                 result.Add(new BuildingGlueDto
                 {
                     ID = item.ID,
-                    GlueName = _repoGlue.FindById(item.GlueID).Name,
+                    GlueName = glueName,
                     Qty = item.Qty,
                     BuildingName = _repoBuilding.FindById(item.BuildingID).Name,
                     CreatedBy = item.CreatedBy,

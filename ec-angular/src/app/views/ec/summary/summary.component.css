@@ -91,18 +91,21 @@ input.summary:focus {
 {
   position:sticky;
   left:0px;
-  z-index: 999;
+  z-index: 997;
   background-color: #ffffff;
 }
 .my-sticky-glue
 {
   position:sticky;
   left: 74px;
-  z-index: 999;
+  z-index: 997;
   background-color: #ffffff;
 }
 .my-sticky-top {
   position: sticky;
     top: 32px;
-    z-index: 1020;
+    z-index: 998;
+}
+.my-cursor-pointer {
+  cursor: pointer;
 }
