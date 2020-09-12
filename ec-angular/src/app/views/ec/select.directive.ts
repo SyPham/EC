@@ -12,8 +12,9 @@ export class AutoSelectDirective implements AfterViewInit {
   }
   @HostListener('ngModelChange', ['$event']) onChange(value) {
     console.log('ngModelChange', value);
-    if (value.length >= 8) {
-      setTimeout( () => {
+    const input = value.split('-') || [];
+    if (input[2]?.length === 8) {
+        setTimeout(() => {
           this.host.nativeElement.select();
         }, 0);
     }

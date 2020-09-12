@@ -142,6 +142,7 @@ namespace EC_API._Services.Services
         {
             return await _repoIngredient.FindAll().Where(x => x.isShow == true).Include(x => x.Supplier).ProjectTo<IngredientDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
+
         //Hàm Lấy toàn bộ danh sách IngredientInfo
         public async Task<List<IngredientInfoDto>> GetAllIngredientInfoAsync()
         {
@@ -149,6 +150,7 @@ namespace EC_API._Services.Services
             var resultEnd = DateTime.Now;
             return await _repoIngredientInfo.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date).ProjectTo<IngredientInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
+        
         //Hàm Lấy toàn bộ danh sách IngredientReport
         public async Task<List<IngredientInfoReportDto>> GetAllIngredientInfoReportAsync()
         {
@@ -160,8 +162,8 @@ namespace EC_API._Services.Services
         //Hàm Filter Ingredient Report theo ngay
         public async Task<object> GetAllIngredientReportByRange(DateTime min, DateTime max)
         {
-            return await _repoIngredientInfoReport.FindAll()
-                .Where(x => x.CreatedTime.Date >= min.Date && x.CreatedTime.Date <= max.Date && x.Qty > 0)
+            return await _repoIngredientInfo.FindAll()
+                .Where(x => x.CreatedTime.Date >= min.Date && x.CreatedTime.Date <= max.Date)
                 .ToListAsync();
         }
 

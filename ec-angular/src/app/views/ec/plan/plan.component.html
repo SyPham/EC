@@ -34,23 +34,23 @@
                                 </div>
                             </div>
                         </div>
-                
+
                     </div>
                 </div>
-            <ejs-grid #grid 
-                    [dataSource]='data' 
-                    [searchSettings]="searchSettings" 
-                    showColumnMenu='true' 
-                    allowPaging='true' 
-                    allowSorting='true' 
-                    allowResizing= 'true' 
+            <ejs-grid #grid
+                    [dataSource]='data'
+                    [searchSettings]="searchSettings"
+                    showColumnMenu='true'
+                    allowPaging='true'
+                    allowSorting='true'
+                    allowResizing= 'true'
                     gridLines='Both'
-                    (actionBegin)="actionBegin($event)" 
+                    (actionBegin)="actionBegin($event)"
                     (actionComplete)="actionComplete($event)"
-                    (rowSelected)="rowSelected($event)"  
-                    [toolbar]='toolbarOptions' 
-                     (toolbarClick)='toolbarClick($event)' 
-                    [pageSettings]='pageSettings' 
+                    (rowSelected)="rowSelected($event)"
+                    [toolbar]='toolbarOptions'
+                     (toolbarClick)='toolbarClick($event)'
+                    [pageSettings]='pageSettings'
                     [editSettings]='editSettings'>
                     <e-columns>
                         <e-column type='checkbox' width='40'></e-column>
@@ -59,12 +59,12 @@
                                 {{'LINE_LABEL' | translate}}
                             </ng-template>
                             <ng-template #editTemplate let-data>
-                                <ejs-dropdownlist 
-                                    #buildingNameDropdownlist 
-                                    [dataSource]='buildingName' 
+                                <ejs-dropdownlist
+                                    #buildingNameDropdownlist
+                                    [dataSource]='buildingName'
                                     [(ngModel)]="data.buildingName"
                                     popupHeight='200px' popupWidth='250px'
-                                    [fields]='fieldsLine' 
+                                    [fields]='fieldsLine'
                                     [allowFiltering]='true'
                                     (change)='onChangeBuildingNameEdit($event)'
                                     >
@@ -76,21 +76,22 @@
                             {{'BPFC_NAME_LABEL' | translate}}
                         </ng-template>
                             <ng-template #editTemplate let-data>
-                                        <ejs-dropdownlist 
-                                            [dataSource]='BPFCs' 
-                                            [(ngModel)]="data.bpfcName"
-                                            popupHeight='300px' popupWidth='450px'
-                                            [fields]='fieldsBPFC' 
-                                            [allowFiltering]='true'
-                                            (change)='onChangeBPFCEdit($event)'
-                                            >
-                                        </ejs-dropdownlist>
-                                    </ng-template>
-                                    <ng-template let-data #template>
-                                    <ejs-tooltip [content]="tooltip(data.glues)">
-                                        {{data.bpfcName || '#N/A'}}
-                                    </ejs-tooltip>
-                                    </ng-template>
+                              <ejs-dropdownlist
+                                [dataSource]='BPFCs'
+                                [(ngModel)]="data.bpfcName"
+                                popupHeight='300px'
+                                popupWidth='450px'
+                                [fields]='fieldsBPFC'
+                                [allowFiltering]='true'
+                                (change)='onChangeBPFCEdit($event)'
+                                >
+                              </ejs-dropdownlist>
+                            </ng-template>
+                            <ng-template let-data #template>
+                              <ejs-tooltip [content]="tooltip(data.glues)">
+                                {{data.bpfcName || '#N/A'}}
+                              </ejs-tooltip>
+                            </ng-template>
                         </e-column>
                         <e-column field='workingHour' headerText='Working Hours' width='150' textAlign='Center' >
                         <ng-template #headerTemplate let-data>
@@ -107,8 +108,8 @@
                                 {{'DUE_DATE_LABEL' | translate}}
                             </ng-template>
                             <ng-template #editTemplate let-data>
-                                <ejs-datepicker 
-                                [value]='data.dueDate' 
+                                <ejs-datepicker
+                                [value]='data.dueDate'
                                 (change)='onChangeDueDateEdit($event)'
                                 format='dd MMM, yyyy'></ejs-datepicker>
                             </ng-template>
@@ -121,7 +122,7 @@
                     </e-columns>
             </ejs-grid>
            </div>
-            
+
         </div>
     </div>
 </div>

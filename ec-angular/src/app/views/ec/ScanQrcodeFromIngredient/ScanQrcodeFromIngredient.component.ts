@@ -40,8 +40,15 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   }
 
   // sau khi scan input thay doi
-  onNgModelChangeScanQRCode(args) {
+  async onNgModelChangeScanQRCode(args) {
+    const input = args.split('-');
     const barcode = args.split('-')[2];
+    if (input.length !== 3) {
+      return;
+    }
+    if (input[2].length !== 8) {
+      return;
+    }
     const levels = [1, 2, 3, 4];
     const building = JSON.parse(localStorage.getItem('level'));
     let buildingName = building.name;
@@ -49,7 +56,7 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
       buildingName = 'E';
     }
     this.findIngredientCode(barcode);
-    if (this.checkCode === true) {
+    if (this.checkCode === true ) {
       const userID = JSON.parse(localStorage.getItem('user')).User.ID;
       this.ingredientService.scanQRCodeFromChemicalWareHouse(args, buildingName, userID).subscribe((res: any) => {
         if (res === true) {

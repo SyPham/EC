@@ -8,16 +8,21 @@
       <div class="col-md-1">
         <div class="font-weight-bold">{{'FILTER_LABEL' | translate}}:</div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <ejs-datepicker [value]='startDate' (change)='startDateOnchange($event)' [(ngModel)]='startDate'></ejs-datepicker>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <ejs-datepicker [value]='endDate' (change)='endDateOnchange($event)' [(ngModel)]='endDate'></ejs-datepicker>
       </div>
       <div class="col-md-2">
         <button class="btn btn-sm btn-default" (click)='onClickDefault()'>
           <i class="fa fa-times"></i>
         </button>
+      </div>
+      <div class="col-md-3">
+        <input class="form-control" placeholder='&#xf002; Search...'  type="text" name="search" [(ngModel)]="searchText" autocomplete="off" >
+        <!-- <div class="search-hero">
+        </div> -->
       </div>
     </div>
   </div>
@@ -39,7 +44,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of data; let i=index">
+            <tr *ngFor="let item of data | filter:searchText; let i=index">
               <th scope="row" style="text-align: center;">{{item.createdTime | date:'yyyy-MM-dd , hh:mm:ss a'}}</th>
               <td style="text-align: center;">{{item.supplierName}}</td>
               <td style="text-align: center;">{{item.name }}</td>
