@@ -40,13 +40,13 @@
           [dataSource]='dataPrint' rowHeight='38' 
           [allowSelection]='true'
           [selectionSettings]="{ checkboxMode: 'ResetOnRowClick'}"
-          [allowSorting]='true' 
           height='600'
           [editSettings]='editSettings'
            (actionBegin)="actionBegin($event)" 
           (rowDeselected)='rowDeselected($event)' 
           (rowSelected)='rowSelected($event)' 
           [enableHover]='false'
+          [toolbar]='toolbar'
           [allowSorting]='true'>
           <e-columns>
             <e-column type='checkbox' isPrimaryKey='true' width='60'></e-column>
@@ -108,9 +108,8 @@
           <e-column field='expiredTime' headerText='ExpiredTime' width='130'></e-column>
           <e-column field='materialNO' headerText='Material #' width='130'></e-column>
           <e-column field='unit' headerText='Unit(kg)' width='100'></e-column>
-          <e-column field='createdDate' headerText='Created Date' width='130'></e-column>
-
-          <e-column field='productionDate' headerText='Production date' width='150'>
+          <e-column field='createdDate' headerText='Created Date' type='dateTime' format='d MMM, yyyy hh:mm:ss a' width='180'></e-column>
+          <e-column field='Option' headerText='Option' width='150'>
             <ng-template let-data #template >
                 <div class="btn-group" data-toggle="tooltip" data-placement="top" title="Print QRCode">
                   <a routerLink="/ec/setting/ingredient/print-qrcode/{{data.id}}/{{data.code}}/{{data.name}}"
@@ -123,7 +122,7 @@
                 <div class="btn-group">
                   <span style="color: transparent">|</span>
                 </div>
-                <div class="btn-group">
+                <div class="btn-group" *ngIf="1!==1">
                   <button type="button" (click)='delete(data)' class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
                 </div>
             </ng-template>

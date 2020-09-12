@@ -4,11 +4,11 @@ export interface IIngredient  {
     code: string;
     percentage: number;
     createdDate: string;
-    voc: string;
+    voc: number;
     supplierID: number;
     position: number;
     allow: number;
     expiredTime: number;
     materialNO: string;
-    unit: string;
+    unit: number;
 }

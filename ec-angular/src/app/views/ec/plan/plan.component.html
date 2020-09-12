@@ -113,7 +113,7 @@
                                 format='dd MMM, yyyy'></ejs-datepicker>
                             </ng-template>
                         </e-column>
-                        <e-column field='createdDate' type='date' format='dd MMM, yyyy hh:mm:ss aa' headerText='Created Date' width='200' textAlign='Center'>
+                        <e-column field='createdDate' isPrimaryKey='true' type='date' format='dd MMM, yyyy hh:mm:ss aa' headerText='Created Date' width='200' textAlign='Center'>
                         <ng-template #headerTemplate let-data>
                             {{'CREATED_DATE_LABEL' | translate}}
                         </ng-template>

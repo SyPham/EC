@@ -58,6 +58,7 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
     batch: ''
   };
   users: any;
+  public filterSettings: object;
   constructor(
     public modalService: NgbModal,
     private alertify: AlertifyService,
@@ -67,9 +68,9 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
     public ingredientService: IngredientService,
   ) { }
   public ngOnInit(): void {
+    this.filterSettings = { type: 'Excel' };
     this.getUsers();
     this.getIngredient();
-    this.getAll();
   }
   public ngAfterViewInit(): void {
 
@@ -113,21 +114,22 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
   }
 
   onChangeIngredientName(args) {
-    console.log(args);
-    this.ingredient = args.itemData.name;
-    this.abnormal.ingredient = args.itemData.name;
-    this.abnormalService.getBatchByIngredientID(args.value).subscribe((res: any) => {
-      console.log(res);
-      this.batches = res;
-    });
+    if (args.itemData) {
+      this.ingredient = args.itemData?.name;
+      this.abnormal.ingredient = args.itemData?.name;
+      this.abnormalService.getBatchByIngredientID(args.value).subscribe((res: any) => {
+        console.log(res);
+        this.batches = res;
+      });
+    }
   }
   onChangeBatch(args) {
-    console.log(args);
-    this.abnormal.batch = args.itemData.batchName;
-    this.abnormalService.getBuildingByIngredientAndBatch(this.ingredient, args.itemData.batchName).subscribe((res: any) => {
-      console.log('getBuildingByIngredientAndBatch', res);
-      this.buildings = res;
-    });
+    if (args.itemData) {
+      this.abnormal.batch = args.itemData?.batchName;
+      this.abnormalService.getBuildingByIngredientAndBatch(this.ingredient, args.itemData?.batchName).subscribe((res: any) => {
+        this.buildings = res;
+      });
+    }
   }
   search() {
   }
@@ -141,6 +143,7 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
         };
       });
       this.users = data;
+      this.getAll();
     });
   }
   username(id) {
@@ -157,6 +160,7 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
     this.abnormalService.getAll().subscribe((res: any) => {
       this.abnormals = res.map( (item: any) => {
         return {
+          id: item.id,
           ingredient: item.ingredient,
           batch: item.batch,
           building: item.building,
@@ -173,7 +177,7 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
     });
   }
   createRange() {
-    if (this.buildingSelected.length === 0) {
+    if (!this.buildingSelected) {
       this.alertify.warning('Please chose buildings first!');
       return;
     }
@@ -191,7 +195,17 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
       this.getAll();
     });
   }
+  delete(id) {
+    this.abnormalService.delete(id).subscribe(() => {
+      this.alertify.success('Successfully!!!');
+      this.getAll();
+    });
+  }
   lock() {
     this.createRange();
+  }
+  unlock(data) {
+    console.log(data);
+    this.delete(data.id);
   }
 }

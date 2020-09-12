@@ -3,22 +3,21 @@
         <h2>History</h2>
     </div>
     <div class="card-body">
-        <ejs-grid  [dataSource]='data' rowHeight='38'
-            [allowSorting]='true' height='600'
+        <ejs-grid  [dataSource]='data' #grid
+            rowHeight='38'
+            height='600'
             [enableHover]='false'
-            [allowSorting]='true' [enableVirtualization]='true'>
+            allowFiltering='true'
+            [allowSorting]='true' 
+            [filterSettings]='filterSettings'
+            value='Excel'
+            [enableVirtualization]='true'>
             <e-columns>
-                <e-column field='glueName' headerText='Glue' width='100'></e-column>
-                <e-column field='buildingName' headerText='Building' width='130'></e-column>
-                <e-column field='qty' headerText='Batch' width='100'>
-                </e-column>
-                <e-column field='createdBy' headerText='Created By' width='150'>
-                    <ng-template #template let-data>
-                        {{username(data.createdBy)}}
-                    </ng-template>
-                </e-column>
-                <e-column field='createdDate' headerText='Created Date' width='150'>
-                </e-column>
+                <e-column field='glueName' textAlign='Center' headerText='Glue' width='100'></e-column>
+                <e-column field='buildingName' textAlign='Center' headerText='Building' width='130'></e-column>
+                <e-column field='qty' textAlign='Center' headerText='Batch' width='100'></e-column>
+                <e-column field='deliveredBy' textAlign='Center' headerText='Delivered By' width='150'></e-column>
+                <e-column field='createdDate' textAlign='Center' type='dateTime' format='d MMM, yyyy hh:mm:ss a' headerText='Created Date' width='150'></e-column>
             </e-columns>
         </ejs-grid>
     </div>

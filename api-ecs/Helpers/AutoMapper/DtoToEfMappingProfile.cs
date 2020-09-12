@@ -19,9 +19,14 @@ namespace EC_API.Helpers.AutoMapper
             CreateMap<GlueDto, Glue>();
             CreateMap<GlueCreateDto, Glue>();
             CreateMap<GlueCreateDto1, Glue>();
-            CreateMap<IngredientDto, Ingredient>().ForMember(d => d.Supplier, o => o.Ignore());
+            CreateMap<IngredientDto, Ingredient>()
+            .ForMember(d => d.VOC, o => o.MapFrom(x => x.VOC.ToDouble().ToSafetyString()))
+            .ForMember(d => d.Unit, o => o.MapFrom(x => x.Unit.ToDouble().ToSafetyString()))
+            .ForMember(d => d.Supplier, o => o.Ignore());
             CreateMap<IngredientForImportExcelDto, Ingredient>();
-            CreateMap<IngredientDto1, Ingredient>();
+            CreateMap<IngredientDto1, Ingredient>()
+            .ForMember(d => d.VOC, o => o.MapFrom(x => x.VOC.ToDouble().ToSafetyString()))
+            .ForMember(d => d.Unit, o => o.MapFrom(x => x.Unit.ToDouble().ToSafetyString()));
 
             CreateMap<LineDto, Line>();
             CreateMap<ModelNameDto, ModelName>();

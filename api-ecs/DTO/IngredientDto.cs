@@ -2,11 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EC_API.Helpers;
 
 namespace EC_API.DTO
 {
     public class IngredientDto
     {
+        public IngredientDto()
+        {
+            this.Name = this.Name.ToSafetyString().Trim();
+        }
+
         public int ID { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
@@ -14,12 +20,12 @@ namespace EC_API.DTO
         public int Percentage { get; set; }
         public bool Status { get; set; }
         public int SupplierID { get; set; }
-        public string VOC { get; set; } = "0";
+        public double VOC { get; set; }
         public string Supplier { get; set; }
         
         public string Position { get; set; }
         public string MaterialNO { get; set; }
-        public string Unit { get; set; }
+        public double Unit { get; set; }
         public int ExpiredTime { get; set; }
         public DateTime ManufacturingDate { get; set; }
         public bool isShow { get; set; }

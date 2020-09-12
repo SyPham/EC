@@ -42,11 +42,16 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   // sau khi scan input thay doi
   onNgModelChangeScanQRCode(args) {
     const barcode = args.split('-')[2];
+    const levels = [1, 2, 3, 4];
+    const building = JSON.parse(localStorage.getItem('level'));
+    let buildingName = building.name;
+    if (levels.includes(building.level)) {
+      buildingName = 'E';
+    }
     this.findIngredientCode(barcode);
     if (this.checkCode === true) {
-      const building = JSON.parse(localStorage.getItem('level')).name;
       const userID = JSON.parse(localStorage.getItem('user')).User.ID;
-      this.ingredientService.scanQRCodeFromChemicalWareHouse(args, building, userID).subscribe((res: any) => {
+      this.ingredientService.scanQRCodeFromChemicalWareHouse(args, buildingName, userID).subscribe((res: any) => {
         if (res === true) {
           this.getIngredientInfo();
         }
