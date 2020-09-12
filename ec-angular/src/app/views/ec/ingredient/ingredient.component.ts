@@ -336,8 +336,8 @@ export class IngredientComponent implements OnInit, AfterViewInit {
             code: item.code,
             name: item.name,
             supplier: item.supplier,
-            batch: '',
-            productionDate: ''
+            batch: 'DEFAULT',
+            productionDate: `${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDate()}`
           };
         });
 

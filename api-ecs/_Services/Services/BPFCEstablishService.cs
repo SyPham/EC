@@ -126,16 +126,8 @@ namespace EC_API._Services.Services
         public async Task<bool> Create(BPFCHistoryDto entity)
         {
             var entitys = new BPFCHistory();
-            var GlueNameDefault = string.Empty;
-            if (entity.GlueID != 0)
-            {
-                GlueNameDefault = _repoGlue.FindAll().FirstOrDefault(x => x.ID == entity.GlueID).Name;
-            }
-
             if (await _repoBPFCHistory.CheckGlueID(entity.GlueID))
             {
-
-                var result = _repoGlue.FindAll().FirstOrDefault(x => x.ID == entity.GlueID);
                 var checkBPFC = _repoBPFCEstablish.FindById(entity.BPFCEstablishID);
                 if (checkBPFC.FinishedStatus == true && checkBPFC.ApprovalStatus == true)
                 {
@@ -724,7 +716,7 @@ namespace EC_API._Services.Services
             {
                 result.ForEach(item =>
                 {
-                    var glue = _repoGlue.FindAll().FirstOrDefault(x => x.BPFCEstablishID == item.ID);
+                    var glue = _repoGlue.FindAll().FirstOrDefault(x => x.isShow == true && x.BPFCEstablishID == item.ID);
                     if (glue != null)
                     {
                         var ingredient = _repoGlueIngredient.FindAll().Include(x => x.Ingredient).ThenInclude(x => x.Supplier).FirstOrDefault(x => x.GlueID == glue.ID && x.Position == "A");

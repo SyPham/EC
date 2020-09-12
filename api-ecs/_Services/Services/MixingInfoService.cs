@@ -36,21 +36,27 @@ namespace EC_API._Services.Services
     
         public async Task<MixingInfo> Mixing(MixingInfoForCreateDto mixing)
         {
-            var item = _mapper.Map<MixingInfoForCreateDto, MixingInfo>(mixing);
-            item.Code = CodeUtility.RandomString(8);
-            item.CreatedTime = DateTime.Now;
-            var glue = _repoGlue.FindById(mixing.GlueID);
-            item.ExpiredTime = DateTime.Now.AddMinutes(glue.ExpiredTime);
-            _repoMixingInfor.Add(item);
-            await _repoMixingInfor.SaveAll();
-            await _repoMixing.AddOrUpdate(item.ID);
-            return item;
-
+            try
+            {
+                var item = _mapper.Map<MixingInfoForCreateDto, MixingInfo>(mixing);
+                item.Code = CodeUtility.RandomString(8);
+                item.CreatedTime = DateTime.Now;
+                var glue = await _repoGlue.FindAll().FirstOrDefaultAsync(x => x.isShow == true && x.ID == mixing.GlueID);
+                item.ExpiredTime = DateTime.Now.AddMinutes(glue.ExpiredTime);
+                _repoMixingInfor.Add(item);
+                await _repoMixingInfor.SaveAll();
+                await _repoMixing.AddOrUpdate(item.ID);
+                return item;
+            }
+            catch
+            {
+                return new MixingInfo();
+            }
         }
 
         public async Task<List<MixingInfoDto>> GetMixingInfoByGlueID(int glueID)
         {
-            return await _repoMixingInfor.FindAll().Include(x => x.Glue).Where(x => x.GlueID == glueID).ProjectTo<MixingInfoDto>(_configMapper).OrderBy(x => x.ID).ToListAsync();
+            return await _repoMixingInfor.FindAll().Include(x => x.Glue).Where(x => x.GlueID == glueID && x.Glue.isShow == true).ProjectTo<MixingInfoDto>(_configMapper).OrderBy(x => x.ID).ToListAsync();
         }
     }
 }
