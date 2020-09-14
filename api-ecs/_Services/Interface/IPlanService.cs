@@ -23,6 +23,8 @@ namespace EC_API._Services.Interface
         Task<object> ClonePlan(List<PlanForCloneDto> plans);
         Task<object> DeleteRange(List<int> plansDto);
         Task<object> GetBPFCByGlue(TooltipParams tooltip);
+        Task<bool> EditDelivered(int id, string qty );
+        Task<bool> DeleteDelivered(int id);
 
     }
 }

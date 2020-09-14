@@ -140,6 +140,20 @@ namespace EC_API.Controllers
             var lists = await _planService.GetAllPlanByRange(min, max);
             return Ok(lists);
         }
+        
+         [HttpGet("{id}/{qty}")]
+        public async Task<IActionResult> EditDelivered(int id, string qty)
+        {
+            var lists = await _planService.EditDelivered(id, qty);
+            return Ok(lists);
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteDelivered(int id)
+        {
+            var lists = await _planService.DeleteDelivered(id);
+            return Ok(lists);
+        }
+        
         [HttpGet]
         public async Task<IActionResult> GetAllPlanByDefaultRange()
         {

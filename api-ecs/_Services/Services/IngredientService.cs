@@ -431,20 +431,14 @@ namespace EC_API._Services.Services
                 {
                     var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == qrCode && x.Batch == batch);
                     result.Consumption = consump;
-                    // if (result.Qty != 0)
-                    // {
-                    //     result.Qty = result.Qty - consump;
-                    // }
                     var data = await UpdateIngredientInfoReport(result);
                 }
                 return true;
             }
-            catch (Exception)
+            catch 
             {
-
-                throw;
+                return false;
             }
-
         }
         public async Task<bool> DeleteIngredientInfo(int id, string code, int qty, string batch)
         {

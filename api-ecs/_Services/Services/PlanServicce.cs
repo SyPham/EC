@@ -367,7 +367,8 @@ namespace EC_API._Services.Services
             // Data
             var data = new List<object>();
             var plannings = _repoPlan.FindAll().Where(x => x.DueDate.Date == currentDate && lineList.Select(x => x.ID).Contains(x.BuildingID)).Select(p => p.BPFCEstablishID);
-            var glueList = _repoGlue.FindAll().Where(x => x.isShow == true)
+            var glueList = _repoGlue.FindAll()
+                .Where(x => x.isShow == true)
                 .Include(x => x.GlueIngredients)
                     .ThenInclude(x => x.Ingredient)
                     .ThenInclude(x => x.Supplier)
@@ -402,8 +403,18 @@ namespace EC_API._Services.Services
                 var listHourlyOuput = new List<double>();
                 var rowRealInfo = new List<object>();
                 var rowCountInfo = new List<object>();
-                var delivered = await _repoBuildingGlue.FindAll().Where(x => x.GlueName.Equals(glue.Name) && lineList.Select(a => a.ID).Contains(x.BuildingID) && x.CreatedDate.Date == currentDate).OrderBy(x=> x.CreatedDate).Select(x => x.Qty).ToListAsync();
-                var deliver = delivered.ConvertAll<double>(Convert.ToDouble).Sum();
+                var delivered = await _repoBuildingGlue.FindAll()
+                                        .Where(x => x.GlueName.Equals(glue.Name) && lineList.Select(a => a.ID).Contains(x.BuildingID) && x.CreatedDate.Date == currentDate)
+                                        .OrderBy(x=> x.CreatedDate)
+                                        .Select(x =>new DeliveredInfo {
+                                            ID = x.ID, 
+                                            Qty = x.Qty,
+                                            GlueName = x.GlueName,
+                                            CreatedDate = x.CreatedDate,
+                                            LineID = x.BuildingID
+                                         })
+                                        .ToListAsync();
+                var deliver = delivered.Select(x=>x.Qty).ToList().ConvertAll<double>(Convert.ToDouble).Sum();
                 var mixingInfos = glue.MixingInfos.Where(x => x.GlueName.Equals(glue.Name) && x.CreatedTime.Date == currentDate).ToList();
                 double realTotal = 0;
                 foreach (var real in mixingInfos)
@@ -413,7 +424,7 @@ namespace EC_API._Services.Services
                 foreach (var line in lineList.OrderBy(x => x.Name))
                 {
                     var sdtCon = glue.Plans.FirstOrDefault(x => x.BPFCEstablishID == glue.BPFCEstablishID && x.BuildingID == line.ID);
-                    var listBuildingGlue = await _repoBuildingGlue.FindAll().Where(x => x.GlueName.Equals(glue.Name) && x.BuildingID == line.ID && x.CreatedDate.Date == currentDate).OrderByDescending(x => x.CreatedDate).ToListAsync();
+                    var listBuildingGlue = delivered.Where(x => x.GlueName.Equals(glue.Name) && x.LineID == line.ID && x.CreatedDate.Date == currentDate).OrderByDescending(x => x.CreatedDate).ToList();
                     double real = 0;
                     if (listBuildingGlue.FirstOrDefault() != null) {
                         real = listBuildingGlue.FirstOrDefault().Qty.ToDouble();
@@ -443,6 +454,7 @@ namespace EC_API._Services.Services
                         count = listBuildingGlue.Count,
                         maxReal = realTotal,
                         delivered = deliver,
+                        deliveredInfos = listBuildingGlue,
                         consumption = comsumption / 1000
                     });
                     rowRealInfo.Add(new SummaryInfo
@@ -603,6 +615,34 @@ namespace EC_API._Services.Services
                 }
             }
             return results.Distinct();
+        }
+
+        public async Task<bool> EditDelivered(int id, string qty)
+        {
+            try
+            {
+                var item = _repoBuildingGlue.FindById(id);
+                item.Qty = qty.ToDouble().ToSafetyString();
+                return await _repoBuildingGlue.SaveAll();
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteDelivered(int id)
+        {
+            try
+            {
+                var item = _repoBuildingGlue.FindById(id);
+                _repoBuildingGlue.Remove(item);
+                return await _repoBuildingGlue.SaveAll();
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

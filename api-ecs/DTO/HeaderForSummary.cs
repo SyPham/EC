@@ -26,10 +26,18 @@ namespace EC_API.DTO
         public double maxReal { get; set; }
         public double delivered { get; set; }
         public double consumption { get; set; }
+        public List<DeliveredInfo> deliveredInfos { get; set; } = new List<DeliveredInfo>();
     }
     public class GlueInfo {
         public string GlueName { get; set; }
         public string BPFC { get; set; }
     }
-
+    public class DeliveredInfo
+    {
+        public int ID { get; set; }
+        public string Qty { get; set; }
+        public int LineID { get; set; }
+        public string GlueName { get; set; }
+        public DateTime CreatedDate { get; set; }
+    }
 }
