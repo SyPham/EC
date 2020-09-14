@@ -118,46 +118,28 @@ namespace EC_API._Services.Services
             var ingredientName = ingredient.ToSafetyString();
             var from = DateTime.Now.Date.AddDays(-3).Date;
             var to = DateTime.Now.Date.Date;
-        
             var plans = _repoPlan.FindAll()
                 .Include(x => x.Building)
                 .Include(x => x.BPFCEstablish)
                     .ThenInclude(x => x.Glues)
-                    .ThenInclude(x => x.GlueIngredients)
-                    .ThenInclude(x => x.Ingredient)
-                .Include(x => x.BPFCEstablish)
-                    .ThenInclude(x => x.ModelName)
-                    .ThenInclude(x => x.ModelNos)
-                    .ThenInclude(x => x.ArticleNos)
-                    .ThenInclude(x => x.ArtProcesses)
-                    .ThenInclude(x => x.Process)
-                .Where(x => x.DueDate.Date >= from && x.DueDate.Date <= to);
-            var troubleshootings = new List<TroubleshootingDto>();
+                .Where(x => x.DueDate.Date >= from && x.DueDate.Date <= to)
+                 .Select(x => new
+                 {
+                     x.BPFCEstablish.Glues,
+                     Line = x.Building.ParentID,
+                     x.DueDate
+                 });
+            var lines = new List<int?>();
 
             foreach (var plan in plans)
             {
                 // lap nhung bpfc chua ingredient search
-                foreach (var glue in plan.BPFCEstablish.Glues)
+                foreach (var glue in plan.Glues.Where(x=> x.isShow == true && x.Name.Contains(ingredientName.Trim())))
                 {
-                    foreach (var item in glue.GlueIngredients.Where(x => x.Ingredient.Name.Trim().Contains(ingredientName.Trim())))
-                    {
-                        var detail = new TroubleshootingDto
-                        {
-                            Ingredient = item.Ingredient.Name,
-                            GlueName = item.Glue.Name,
-                            ModelName = glue.BPFCEstablish.ModelName.Name,
-                            ModelNo = glue.BPFCEstablish.ModelNo.Name,
-                            ArticleNo = glue.BPFCEstablish.ArticleNo.Name,
-                            Process = glue.BPFCEstablish.ArtProcess.Process.Name,
-                            Line = plan.Building.Name,
-                            LineID = plan.Building.ParentID.Value,
-                            DueDate = plan.DueDate.Date
-                        };
-                        troubleshootings.Add(detail);
-                    }
+                    lines.Add(plan.Line);
                 }
             }
-            var listBuilding = troubleshootings.DistinctBy(x => x.LineID).Select(x => x.LineID).ToList();
+            var listBuilding = lines.Distinct();
             var buildings = await _repoBuilding.FindAll().Where(x => listBuilding.Contains(x.ID)).ToListAsync();
             return buildings;
         }

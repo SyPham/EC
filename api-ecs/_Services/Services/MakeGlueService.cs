@@ -68,15 +68,9 @@ namespace EC_API._Services.Services
             throw new NotImplementedException();
         }
 
-        public async Task<object> MakeGlue(int glueid)
-        {
-
-            throw new System.NotImplementedException();
-        }
         public async Task<object> MakeGlue(string code)
         {
             return await _repoMakeGlue.MakeGlue(code);
-            throw new System.NotImplementedException();
         }
 
         public object DeliveredHistory()

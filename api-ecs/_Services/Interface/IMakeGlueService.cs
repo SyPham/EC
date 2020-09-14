@@ -8,7 +8,6 @@ namespace EC_API._Services.Interface
     public interface IMakeGlueService
     {
         //Task<bool> CheckBrandExists(string brandId);
-        Task<object> MakeGlue(int glueid);
         Task<object> MakeGlue(string code);
         Task<object> GetAllGlues();
         Task<object> GetGlueWithIngredients(int glueid);

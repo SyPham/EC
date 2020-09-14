@@ -39,12 +39,6 @@ namespace EC_API.Controllers
             return Ok(glues);
         }
 
-        [HttpPost("{glueid}", Name = "MakeGlue")]
-        public async Task<IActionResult> MakeGlue(int glueid)
-        {
-            var lists = await _makeGlueService.MakeGlue(glueid);
-            return Ok(lists);
-        }
         [HttpPost("{code}", Name = "MakeGlueByCode")]
         public async Task<IActionResult> MakeGlue(string code)
         {

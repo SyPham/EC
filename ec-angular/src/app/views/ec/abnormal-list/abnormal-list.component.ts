@@ -30,8 +30,7 @@ declare const $: any;
   ]
 })
 export class AbnormalListComponent implements OnInit, AfterViewInit {
-  @ViewChild('buildingGrid')
-  public buildingGrid: GridComponent;
+  @ViewChild('buildingGrid') public buildingGrid: GridComponent;
   public fieldsIngredient: object = { text: 'name', value: 'id' };
   public fieldsBatch: object = { text: 'batchName', value: 'id' };
   ingredientID: number;
@@ -41,9 +40,8 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
   IngredientData: [];
   batch: string;
   searchSettings: any = { hierarchyMode: 'Parent' };
-  public toolbarOptions = ['Search',
-    { text: 'Lock', tooltipText: 'Lock', prefixIcon: 'fa fa-lock', id: 'Lock' }
-  ];
+  filterSettings = { type: 'Excel' };
+  public toolbarOptions = ['Search'];
   public ingredients: any = [];
   public pageSettings = { pageSize: 15 };
   batches: any;
@@ -167,7 +165,7 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
           batch: item.batch,
           building: item.building,
           lockBy: this.username(item.userID),
-          createdDate: item.createdDate
+          createdDate: new Date(item.createdDate)
         };
       });
     });

@@ -107,13 +107,22 @@ namespace EC_API._Services.Services
                         .ThenInclude(x => x.ArticleNos)
                         .ThenInclude(x => x.ArtProcesses)
                         .ThenInclude(x => x.Process)
-                    .Where(x => x.DueDate.Date >= from && x.DueDate.Date <= to);
+                    .Where(x => x.DueDate.Date >= from && x.DueDate.Date <= to)
+                    .Select( x=> new {
+                        x.BPFCEstablish.Glues,
+                        ModelName = x.BPFCEstablish.ModelName.Name,
+                        ModelNo = x.BPFCEstablish.ModelNo.Name,
+                        ArticleNo = x.BPFCEstablish.ArticleNo.Name,
+                        Process = x.BPFCEstablish.ArtProcess.Process.Name,
+                        Line = x.Building.Name,
+                        x.DueDate
+                    });
                 var troubleshootings = new List<TroubleshootingDto>();
 
                 foreach (var plan in plans)
                 {
                     // lap nhung bpfc chua ingredient search
-                    foreach (var glue in plan.BPFCEstablish.Glues.Where(x => x.isShow == true))
+                    foreach (var glue in plan.Glues.Where(x => x.isShow == true))
                     {
                         foreach (var item in glue.GlueIngredients.Where(x => x.Ingredient.Name.Trim().Contains(ingredientName)))
                         {
@@ -154,11 +163,11 @@ namespace EC_API._Services.Services
                             {
                                 Ingredient = item.Ingredient.Name,
                                 GlueName = item.Glue.Name,
-                                ModelName = glue.BPFCEstablish.ModelName.Name,
-                                ModelNo = glue.BPFCEstablish.ModelNo.Name,
-                                ArticleNo = glue.BPFCEstablish.ArticleNo.Name,
-                                Process = glue.BPFCEstablish.ArtProcess.Process.Name,
-                                Line = plan.Building.Name,
+                                ModelName = plan.ModelName,
+                                ModelNo = plan.ModelNo,
+                                ArticleNo = plan.ArticleNo,
+                                Process = plan.Process,
+                                Line = plan.Line,
                                 DueDate = plan.DueDate.Date,
                                 Batch = batch,
                                 MixDate = mixDate
@@ -271,8 +280,6 @@ namespace EC_API._Services.Services
                 Chemical = new GlueDto1 { ID = x.GlueID, Name = x.Name }
             }).ToListAsync();
             return lists.DistinctBy(x => x.Name).ToList();
-
-            //return await _repoGlue.FindAll().ProjectTo<GlueCreateDto1>(_configMapper).Where(x=>x.ModalNameID == modelNameID).OrderByDescending(x => x.ID).ToListAsync();
         }
         public async Task<List<GlueCreateDto1>> GetGlueByBuildingModelName(int buildingID, int bpfc)
         {
@@ -296,18 +303,11 @@ namespace EC_API._Services.Services
                 Chemical = new GlueDto1 { ID = x.GlueID, Name = x.Name }
             }).ToListAsync();
             return lists.DistinctBy(x => x.Name).ToList();
-
-            //return await _repoGlue.FindAll().ProjectTo<GlueCreateDto1>(_configMapper).Where(x=>x.ModalNameID == modelNameID).OrderByDescending(x => x.ID).ToListAsync();
         }
         //Lấy Plan theo Plan_Id
         public PlanDto GetById(object id)
         {
             return _mapper.Map<Plan, PlanDto>(_repoPlan.FindById(id));
-        }
-
-        public Task<object> GetModelNames()
-        {
-            throw new System.NotImplementedException();
         }
 
         public async Task<object> GetLines(int buildingID)
@@ -366,24 +366,7 @@ namespace EC_API._Services.Services
 
             // Data
             var data = new List<object>();
-            var data2 = new List<object>();
-            var listBuildingGlueInfo = new List<object>();
-            var plannings = _repoPlan.FindAll().Where(x => x.DueDate.Date == currentDate && lineList.Select(x => x.ID).Contains(x.BuildingID));
-            var model = from glue in _repoGlue.FindAll().Where(x => x.isShow == true)
-                        join bpfc in _repoBPFC.FindAll() on glue.BPFCEstablishID equals bpfc.ID
-                        join plan in plannings on bpfc.ID equals plan.BPFCEstablishID
-                        select new SummaryDto
-                        {
-                            GlueID = glue.ID,
-                            GlueName = glue.Name,
-                            BuildingID = plan.BuildingID,
-                            Comsumption = glue.Consumption,
-                            ModelNameID = bpfc.ModelNameID,
-                            WorkingHour = plan.WorkingHour,
-                            HourlyOutput = plan.HourlyOutput
-                        };
-
-
+            var plannings = _repoPlan.FindAll().Where(x => x.DueDate.Date == currentDate && lineList.Select(x => x.ID).Contains(x.BuildingID)).Select(p => p.BPFCEstablishID);
             var glueList = _repoGlue.FindAll().Where(x => x.isShow == true)
                 .Include(x => x.GlueIngredients)
                     .ThenInclude(x => x.Ingredient)
@@ -392,7 +375,16 @@ namespace EC_API._Services.Services
                     .ThenInclude(x => x.Plans)
                     .ThenInclude(x => x.Building)
                 .Include(x => x.MixingInfos)
-                .Where(x => plannings.Select(p => p.BPFCEstablishID).Contains(x.BPFCEstablishID));
+                .Where(x => plannings.Contains(x.BPFCEstablishID))
+                .Select(x=> new {
+                    GlueIngredients = x.GlueIngredients.Select(a=> new {a.GlueID, a.Ingredient, a.Position}),
+                    x.Name,
+                    x.ID,
+                    x.BPFCEstablishID,
+                    x.BPFCEstablish.Plans,
+                    x.Consumption,
+                    MixingInfos = x.MixingInfos.Select(a => new { a.GlueName, a.CreatedTime, a.ChemicalA, a.ChemicalB,  a.ChemicalC,  a.ChemicalD, a.ChemicalE, })
+                });
             var glueDistinct = glueList.DistinctBy(x => x.Name);
 
             foreach (var glue in glueDistinct)
@@ -410,9 +402,9 @@ namespace EC_API._Services.Services
                 var listHourlyOuput = new List<double>();
                 var rowRealInfo = new List<object>();
                 var rowCountInfo = new List<object>();
-                var delivered = await _repoBuildingGlue.FindAll().Where(x => x.GlueID == glue.ID && lineList.Select(a => a.ID).Contains(x.BuildingID) && x.CreatedDate.Date == currentDate).Select(x => x.Qty).ToListAsync();
+                var delivered = await _repoBuildingGlue.FindAll().Where(x => x.GlueName.Equals(glue.Name) && lineList.Select(a => a.ID).Contains(x.BuildingID) && x.CreatedDate.Date == currentDate).OrderBy(x=> x.CreatedDate).Select(x => x.Qty).ToListAsync();
                 var deliver = delivered.ConvertAll<double>(Convert.ToDouble).Sum();
-                var mixingInfos = _repoMixingInfo.FindAll().Where(x => x.GlueID == glue.ID && x.CreatedTime.Date == currentDate).ToList();
+                var mixingInfos = glue.MixingInfos.Where(x => x.GlueName.Equals(glue.Name) && x.CreatedTime.Date == currentDate).ToList();
                 double realTotal = 0;
                 foreach (var real in mixingInfos)
                 {
@@ -420,15 +412,18 @@ namespace EC_API._Services.Services
                 }
                 foreach (var line in lineList.OrderBy(x => x.Name))
                 {
-                    var sdtCon = await model.FirstOrDefaultAsync(x => x.GlueName == glue.Name && x.BuildingID == line.ID);
-                    var listBuildingGlue = await _repoBuildingGlue.FindAll().Where(x => x.GlueID == glue.ID && x.BuildingID == line.ID && x.CreatedDate.Date == currentDate).ToListAsync();
-                    List<double> real = listBuildingGlue.Select(x => x.Qty).ToList().ConvertAll<double>(Convert.ToDouble);
+                    var sdtCon = glue.Plans.FirstOrDefault(x => x.BPFCEstablishID == glue.BPFCEstablishID && x.BuildingID == line.ID);
+                    var listBuildingGlue = await _repoBuildingGlue.FindAll().Where(x => x.GlueName.Equals(glue.Name) && x.BuildingID == line.ID && x.CreatedDate.Date == currentDate).OrderByDescending(x => x.CreatedDate).ToListAsync();
+                    double real = 0;
+                    if (listBuildingGlue.FirstOrDefault() != null) {
+                        real = listBuildingGlue.FirstOrDefault().Qty.ToDouble();
+                    }
                     double comsumption = 0;
                     if (sdtCon != null)
                     {
-                        comsumption = sdtCon.Comsumption.ToDouble() * sdtCon.WorkingHour.ToDouble() * sdtCon.HourlyOutput.ToDouble();
+                        comsumption = glue.Consumption.ToDouble() * sdtCon.WorkingHour.ToDouble() * sdtCon.HourlyOutput.ToDouble();
                         itemData.Add(line.Name, Math.Round(comsumption / 1000, 3) + "kg");
-                        listTotal.Add(sdtCon.Comsumption.ToDouble());
+                        listTotal.Add(glue.Consumption.ToDouble());
                         listWorkingHour.Add(sdtCon.WorkingHour.ToDouble());
                         listHourlyOuput.Add(sdtCon.HourlyOutput.ToDouble());
                         listStandardTotal.Add(comsumption / 1000);
@@ -444,7 +439,7 @@ namespace EC_API._Services.Services
                         line = line.Name,
                         lineID = line.ID,
                         glueID = glue.ID,
-                        value = Math.Round(real.Sum(), 3),
+                        value = Math.Round(real, 3),
                         count = listBuildingGlue.Count,
                         maxReal = realTotal,
                         delivered = deliver,
@@ -456,7 +451,7 @@ namespace EC_API._Services.Services
                         line = line.Name,
                         lineID = line.ID,
                         glueID = glue.ID,
-                        value = Math.Round(real.Sum(), 3),
+                        value = Math.Round(real, 3),
                         count = listBuildingGlue.Count,
                         maxReal = realTotal,
                         delivered = deliver,

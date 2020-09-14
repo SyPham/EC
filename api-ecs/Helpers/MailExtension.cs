@@ -67,7 +67,7 @@ namespace EC_API.Helpers
                 sd.EndInvoke(ar);
 
             }
-            catch (Exception ex)
+            catch
             {
             }
         }
@@ -105,7 +105,7 @@ namespace EC_API.Helpers
                 client.Send(mailMessage);
 
             }
-            catch (Exception ex)
+            catch
             {
 
             }
@@ -138,7 +138,7 @@ namespace EC_API.Helpers
                 client.Send(mailMessage);
 
             }
-            catch (Exception ex)
+            catch 
             {
 
             }
@@ -173,7 +173,7 @@ namespace EC_API.Helpers
                 client.Send(mailMessage);
 
             }
-            catch (Exception ex)
+            catch
             {
 
             }

@@ -98,57 +98,7 @@ namespace EC_API._Services.Services
             return await _repoGlue.SaveAll();
         }
 
-        public async Task<bool> Add1(GlueCreateDto1 model)
-        {
-
-            //if (model.BPFCEstablishID == 0)
-            //{
-            //    model.ModelNo = "";
-            //}
-            //else
-            //{
-
-            //    model.ModelNo = _repoPartName.GetAll().FirstOrDefault(a => a.ID == model.ModelNoID).Name;
-            //}
-
-            //if (model.PartNameID == 0)
-            //{
-            //    model.PathName = "";
-            //}
-            //else
-            //{
-            //    model.PathName = _repoPartName2.GetAll().FirstOrDefault(a => a.ID == model.PartNameID).Name;
-            //}
-
-            //if (model.MaterialNameID == 0)
-            //{
-            //    model.MaterialName = "";
-            //}
-            //else
-            //{
-            //    model.MaterialName = _repoMaterialName.GetAll().FirstOrDefault(a => a.ID == model.MaterialNameID).Name;
-            //}
-
-            //model.Name = model.Name;
-            //var glue = _mapper.Map<Glue>(model);
-            //var glueList = await _repoGlue.FindAll().Where(x => x.BPFCEstablishID == model.BPFCEstablishID).ToListAsync();
-            //var nameList = new List<int>();
-            //foreach (var item in glueList)
-            //{
-            //    if (item.Name.Length == 1 || item.Name.Length == 2)
-            //    {
-            //        nameList.Add(item.Name.ToInt());
-            //    }
-            //}
-            //var name = nameList.OrderByDescending(x => x).FirstOrDefault();
-            //glue.Name = (name + 1).ToString();
-            //_repoGlue.Add(glue);
-
-            //return await _repoGlue.SaveAll();
-            throw new System.NotImplementedException();
-
-        }
-
+        
 
         //Lấy danh sách Brand và phân trang
         public async Task<PagedList<GlueCreateDto>> GetWithPaginations(PaginationParams param)
@@ -223,59 +173,8 @@ namespace EC_API._Services.Services
             return await _repoGlue.FindAll().ProjectTo<GlueCreateDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
 
-        public async Task<List<GlueCreateDto1>> GetAllAsyncByModalName(int modelNameID)
-        {
-            //var lists = await _repoGlue.FindAll().ProjectTo<GlueCreateDto1>(_configMapper).Where(x => x.ModelNameID == modelNameID).OrderByDescending(x => x.ID).Select(x => new GlueCreateDto1
-            //{
-            //    ID = x.ID,
-            //    Name = x.Name,
-            //    GlueID = x.GlueID,
-            //    Code = x.Code,
-            //    ModelNo = x.ModelNo,
-            //    CreatedDate = x.CreatedDate,
-            //    ModelNameID = x.ModelNameID,
-            //    PathName = x.PathName,
-            //    PartNameID = x.PartNameID,
-            //    MaterialNameID = x.MaterialNameID,
-            //    MaterialName = x.MaterialName,
-            //    Consumption = x.Consumption,
-            //    ExpiredTime = x.ExpiredTime,
-            //    CreatedBy = x.CreatedBy,
-            //    Chemical = new GlueDto1 { ID = x.GlueID, Name = x.Name }
-            //}).ToListAsync();
-            //return lists;
-            throw new System.NotImplementedException();
-
-            //return await _repoGlue.FindAll().ProjectTo<GlueCreateDto1>(_configMapper).Where(x=>x.ModalNameID == modelNameID).OrderByDescending(x => x.ID).ToListAsync();
-        }
-        public async Task<List<GlueCreateDto1>> GetAllGluesForBPFC(int modelNameID, int articleNo, int processID)
-        {
-            //var lists = await _repoGlue.FindAll().Where(x => x.ModalNameID == modelNameID && x.ArticleNoID == articleNo && x.ProcessID == processID)
-            //    .ProjectTo<GlueCreateDto1>(_configMapper)
-            //    .OrderByDescending(x => x.ID).Select(x => new GlueCreateDto1
-            //    {
-            //        ID = x.ID,
-            //        Name = x.Name,
-            //        GlueID = x.GlueID,
-            //        Code = x.Code,
-            //        ModelNo = x.ModelNo,
-            //        CreatedDate = x.CreatedDate,
-            //        ModelNameID = x.ModelNameID,
-            //        PathName = x.PathName,
-            //        PartNameID = x.PartNameID,
-            //        MaterialNameID = x.MaterialNameID,
-            //        MaterialName = x.MaterialName,
-            //        Consumption = x.Consumption,
-            //        ExpiredTime = x.ExpiredTime,
-            //        CreatedBy = x.CreatedBy,
-            //        Chemical = new GlueDto1 { ID = x.GlueID, Name = x.Name }
-            //    }).ToListAsync();
-            //return lists;
-            throw new System.NotImplementedException();
-
-            //return await _repoGlue.FindAll().ProjectTo<GlueCreateDto1>(_configMapper).Where(x=>x.ModalNameID == modelNameID).OrderByDescending(x => x.ID).ToListAsync();
-        }
-
+        
+       
 
         //Lấy Brand theo Brand_Id
         public GlueCreateDto GetById(object id)

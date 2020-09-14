@@ -90,7 +90,6 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     $('[data-toggle="tooltip"]').tooltip();
   }
   actionBegin(args) {
-    console.log(args)
     if (args.requestType === 'beginEdit') {
     }
     if (args.requestType === 'save') {

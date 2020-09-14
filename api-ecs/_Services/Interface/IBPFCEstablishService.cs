@@ -24,7 +24,6 @@ namespace EC_API._Services.Interface
         Task<List<BPFCStatusDto>> FilterByFinishedStatus();
         Task<List<BPFCStatusDto>> FilterByNotApprovedStatus();
         Task<List<BPFCRecordDto>> GetAllBPFCRecord(Status status, string startBuildingDate, string endBuildingDate);
-        Task<List<ModelNameDtoForBPFCSchedule>> GetAllBPFCSchedule();
         Task<List<BPFCStatusDto>> GetAllBPFCStatus();
         Task<object> GetAllBPFCByBuildingID(int buildingID);
         Task<BPFCEstablishDto> GetBPFCID(GetBPFCIDDto bpfcInfo);

@@ -35,24 +35,12 @@ namespace EC_API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetGluesByModelNameID(int id)
-        {
-            var brands = await _glueService.GetAllAsyncByModalName(id);
-            return Ok(brands);
-        }
-        [HttpGet("{id}")]
         public async Task<IActionResult> GetAllGluesByBPFCID(int id)
         {
             var brands = await _glueService.GetAllGluesByBPFCID(id);
             return Ok(brands);
         }
 
-        [HttpGet("{modelNameID}/{articleNoID}/{processID}")]
-        public async Task<IActionResult> GetAllGluesForBPFC(int modelNameID, int articleNoID, int processID)
-        {
-            var glues = await _glueService.GetAllGluesForBPFC(modelNameID, articleNoID, processID);
-            return Ok(glues);
-        }
         [HttpGet("{text}")]
         public async Task<IActionResult> Search([FromQuery]PaginationParams param, string text)
         {
@@ -72,24 +60,6 @@ namespace EC_API.Controllers
             //var username = User.FindFirst(ClaimTypes.Name).Value;
             glueIngredientDto.CreatedDate = DateTime.Now.ToString("MMMM dd, yyyy HH:mm:ss tt");
             if (await _glueService.Add(glueIngredientDto))
-            {
-                return NoContent();
-            }
-
-            throw new Exception("Creating the glue failed on save");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create1(GlueCreateDto1 glueIngredientDto)
-        {
-
-            if (await _glueService.CheckExists(glueIngredientDto.ID))
-                return BadRequest("Glue ID already exists!");
-            if (await _glueService.CheckBarCodeExists(glueIngredientDto.Code))
-                return BadRequest("Barcode already exists!");
-            //var username = User.FindFirst(ClaimTypes.Name).Value;
-            glueIngredientDto.CreatedDate = DateTime.Now.ToString("MMMM dd, yyyy HH:mm:ss tt");
-            if (await _glueService.Add1(glueIngredientDto))
             {
                 return NoContent();
             }

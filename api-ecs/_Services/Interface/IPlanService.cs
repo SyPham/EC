@@ -8,7 +8,6 @@ namespace EC_API._Services.Interface
 {
     public interface IPlanService : IECService<PlanDto>
     {
-        Task<object> GetModelNames();
         Task<object> GetAllPlanByDefaultRange();
         Task<object> GetAllPlanByRange(DateTime min, DateTime max);
         Task<object> GetAllPlansByDate(string from, string to);

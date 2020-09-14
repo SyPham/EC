@@ -87,12 +87,7 @@ namespace EC_API.Controllers
             var lists = await _planService.GetLines(buildingID);
             return Ok(lists);
         }
-        [HttpGet]
-        public async Task<IActionResult> GetModelNames()
-        {
-            var lists = await _planService.GetModelNames();
-            return Ok(lists);
-        }
+       
         [HttpPost]
         public async Task<IActionResult> Create(PlanDto create)
         {

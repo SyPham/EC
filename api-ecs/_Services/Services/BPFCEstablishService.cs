@@ -220,7 +220,7 @@ namespace EC_API._Services.Services
                 await _repoBPFCHistory.SaveAll();
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
 
@@ -388,7 +388,7 @@ namespace EC_API._Services.Services
                 var result1 = listAdd.Where(x => x.ID > 0).ToList();
                 var result2 = listAdd.Where(x => x.ID == 0).ToList();
             }
-            catch (Exception ex)
+            catch
             {
                 throw;
             }
@@ -576,29 +576,6 @@ namespace EC_API._Services.Services
             var lists = await _repoBPFCEstablish.FindAll().Where(x => x.ApprovalStatus == true).ProjectTo<BPFCStatusDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
             return lists;
         }
-        public async Task<List<ModelNameDtoForBPFCSchedule>> GetAllBPFCSchedule()
-        {
-            //var lists = await _repoModelName.FindAll().Join(_repoArticleNo.FindAll(),
-            //    m => m.ID,
-            //    a => a.ModelNameID,
-            //    (m, a) => new { m, a })
-            //     .Join(_repoProcess.FindAll(), ma => ma.m.ID, p => p.ModelNameID,
-            //             (ma, p) => new { ma, p }).Select(x => new ModelNameDtoForBPFCSchedule
-            //             {
-            //                 ID = x.ma.m.ID,
-            //                 Name = x.ma.m.Name,
-            //                 ModelNo = x.ma.m.ModelNo,
-            //                 CreatedDate = x.ma.m.CreatedDate,
-            //                 ArticleNo = x.ma.a.Name,
-            //                 ApprovedStatus = x.ma.m.ApprovedStatus,
-            //                 CreatedStatus = x.ma.m.CreatedStatus,
-            //                 ApprovedBy = x.ma.m.ApprovedBy,
-            //                 CreatedBy = x.ma.m.CreatedBy,
-            //                 Process = x.p.Name
-            //             }).ToListAsync();
-            return new List<ModelNameDtoForBPFCSchedule>();
-
-        }
         public async Task<List<BPFCStatusDto>> GetAllBPFCStatus()
         {
             return await _repoBPFCEstablish
@@ -608,75 +585,6 @@ namespace EC_API._Services.Services
                 .Include(x => x.ArticleNo)
                 .Include(x => x.ArtProcess).ThenInclude(x => x.Process)
                 .ProjectTo<BPFCStatusDto>(_configMapper).OrderBy(x => x.ID).ToListAsync();
-
-        }
-        public async Task<List<ModelNameDto>> GetModelNameForBPFCRecord(Status status, string startBuildingDate, string endBuildingDate)
-        {
-            //var lists = _repoModelName.FindAll().ProjectTo<ModelNameDto>(_configMapper).OrderByDescending(x => x.ID);
-            //var result = new List<ModelNameDto>();
-            //if (status == Status.All && !startBuildingDate.IsNullOrEmpty() && !endBuildingDate.IsNullOrEmpty())
-            //{
-            //    var start = Convert.ToDateTime(startBuildingDate).Date;
-            //    var end = Convert.ToDateTime(endBuildingDate).Date;
-            //    result = await lists.Where(x => x.BuildingDate.Value.Date >= start && x.BuildingDate.Value.Date <= end).ToListAsync();
-            //}
-            //if (status == Status.Done && !startBuildingDate.IsNullOrEmpty() && !endBuildingDate.IsNullOrEmpty())
-            //{
-            //    var start = Convert.ToDateTime(startBuildingDate).Date;
-            //    var end = Convert.ToDateTime(endBuildingDate).Date;
-            //    result = await lists.Where(x => x.BuildingDate.Value.Date >= start && x.BuildingDate.Value.Date <= end && x.CreatedStatus == true).ToListAsync();
-            //}
-            //if (status == Status.Done)
-            //{
-            //    result = await lists.Where(x => x.CreatedStatus == true).ToListAsync();
-
-            //}
-            //if (status == Status.All)
-            //{
-            //    result = await lists.ToListAsync();
-
-            //}
-            //if (!startBuildingDate.IsNullOrEmpty() && !endBuildingDate.IsNullOrEmpty())
-            //{
-            //    var start = Convert.ToDateTime(startBuildingDate).Date;
-            //    var end = Convert.ToDateTime(endBuildingDate).Date;
-            //    result = await lists.Where(x => x.BuildingDate.Value.Date >= start && x.BuildingDate.Value.Date <= end).ToListAsync();
-            //}
-            //if (result.Count > 0)
-            //{
-            //    result.ForEach(item =>
-            //    {
-            //        var glue = _repoGlue.FindAll().FirstOrDefault(x => x.ModalNameID == item.ID);
-            //        if (glue != null)
-            //        {
-            //            var ingredient = _repoGlueIngredient.FindAll().FirstOrDefault(x => x.GlueID == glue.ID && x.Position == "A");
-            //            if (ingredient != null)
-            //            {
-            //                var supplier = _repoIngredient.FindById(ingredient.IngredientID);
-            //                if (supplier != null)
-            //                {
-            //                    item.Supplier = _supplierRepository.FindById(supplier.SupplierID).Name;
-            //                }
-            //                else
-            //                {
-            //                    item.Supplier = "#N/A";
-            //                }
-            //            }
-            //            else
-            //            {
-            //                item.Supplier = "#N/A";
-            //            }
-            //        }
-            //        else
-            //        {
-            //            item.Supplier = "#N/A";
-            //        }
-
-            //    });
-            //}
-            //return result;
-            throw new System.NotImplementedException();
-
 
         }
 
