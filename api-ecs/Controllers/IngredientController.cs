@@ -94,14 +94,13 @@ namespace EC_API.Controllers
                 return BadRequest("Ingredient ID already exists!");
             if (await _ingredientService.CheckBarCodeExists(ingredientIngredientDto.Code))
                 return BadRequest("Ingredient Barcode already exists!");
-            ////var username = User.FindFirst(ClaimTypes.Name).Value;
-            // //ingredientIngredientDto.Updated_By = username;
+            if (await _ingredientService.CheckExistsName(ingredientIngredientDto.Name))
+                return BadRequest("Ingredient Name already exists!");
             ingredientIngredientDto.CreatedDate = DateTime.Now.ToString("MMMM dd, yyyy HH:mm:ss tt");
             if (await _ingredientService.Add(ingredientIngredientDto))
             {
                 return NoContent();
             }
-
             throw new Exception("Creating the brand failed on save");
         }
 
@@ -112,8 +111,8 @@ namespace EC_API.Controllers
                 return BadRequest("Ingredient ID already exists!");
             if (await _ingredientService.CheckBarCodeExists(ingredientIngredientDto.Code))
                 return BadRequest("Ingredient Barcode already exists!");
-            ////var username = User.FindFirst(ClaimTypes.Name).Value;
-            // //ingredientIngredientDto.Updated_By = username;
+            if (await _ingredientService.CheckExistsName(ingredientIngredientDto.Name))
+                return BadRequest("Ingredient Name already exists!");
             ingredientIngredientDto.CreatedDate = DateTime.Now.ToString("MMMM dd, yyyy HH:mm:ss tt");
             if (await _ingredientService.Add1(ingredientIngredientDto))
             {

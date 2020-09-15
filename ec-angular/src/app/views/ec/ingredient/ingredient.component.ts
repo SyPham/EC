@@ -11,17 +11,23 @@ import { ModalNameService } from 'src/app/_core/_service/modal-name.service';
 import { environment } from '../../../../environments/environment';
 import { QRCodeGenerator, DisplayTextModel } from '@syncfusion/ej2-angular-barcode-generator';
 import { GridComponent } from '@syncfusion/ej2-angular-grids';
+import { DatePipe } from '@angular/common';
+
 declare let $: any;
 @Component({
   selector: 'app-ingredient',
   templateUrl: './ingredient.component.html',
-  styleUrls: ['./ingredient.component.scss']
+  styleUrls: ['./ingredient.component.scss'],
+  providers: [DatePipe]
 })
 export class IngredientComponent implements OnInit, AfterViewInit {
   editSettings = { showDeleteConfirmDialog: false, allowEditing: true, mode: 'Normal' };
-  data: IIngredient[];
+  pageSettings = { pageCount: 20, pageSizes: true, currentPage: 1, pageSize: 10 };
+  data: any;
   modalReference: NgbModalRef;
   excelDownloadUrl: string;
+  public mfg = this.datePipe.transform(new Date(), 'yyyyMMdd');
+  public exp = this.datePipe.transform(new Date().setMonth(4), 'yyyyMMdd');
   @ViewChild('barcode')
   public barcode: QRCodeGenerator;
   @ViewChild('printGrid')
@@ -31,7 +37,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     name: '',
     code: '',
     percentage: 0,
-    createdDate: '',
+    createdDate: new Date(),
     supplierID: 0,
     position: 0,
     allow: 0,
@@ -53,15 +59,21 @@ export class IngredientComponent implements OnInit, AfterViewInit {
   text: any;
   dataPrint: any;
   dataPicked: Array<any> = [];
+  filterSettings: any;
+  toolbarOptions: any;
+  @ViewChild('ingredientGrid') ingredientGrid: GridComponent;
+  show: boolean;
   constructor(
     private modalNameService: ModalNameService,
     public modalService: NgbModal,
     private ingredientService: IngredientService,
     private alertify: AlertifyService,
+    private datePipe: DatePipe,
     private route: ActivatedRoute
   ) { }
-  show: boolean;
   ngOnInit() {
+    this.filterSettings = { type: 'Excel' };
+    this.toolbarOptions = ['ExcelExport', 'Search'];
     this.excelDownloadUrl = `${environment.apiUrlEC}Ingredient/ExcelExport`;
     this.ingredientService.currentIngredient.subscribe(res => {
       if (res === 300) {
@@ -71,7 +83,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
           name: '',
           code: '',
           percentage: 0,
-          createdDate: '',
+          createdDate: new Date(),
           supplierID: 0,
           position: 0,
           allow: 0,
@@ -89,6 +101,20 @@ export class IngredientComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     $('[data-toggle="tooltip"]').tooltip();
   }
+  dataBound() {
+    console.log('sadasdasd', this.ingredientGrid.pageSettings.currentPage);
+  }
+  toolbarClick(args): void {
+    switch (args.item.text) {
+      /* tslint:disable */
+      case 'Excel Export':
+        this.ingredientGrid.excelExport();
+        break;
+      /* tslint:enable */
+      case 'PDF Export':
+        break;
+    }
+  }
   actionBegin(args) {
     if (args.requestType === 'beginEdit') {
     }
@@ -98,15 +124,9 @@ export class IngredientComponent implements OnInit, AfterViewInit {
           this.updateBatch(args.data.id, args.data.batch);
           const pd = (args.data.productionDate as Date);
           if (pd instanceof Date) {
-            const month = this.pad(pd.getMonth() + 1);
-            const date = this.pad(pd.getDate());
-            const productionDate = `${pd.getFullYear()}${month}${date}`;
+            const productionDate = this.datePipe.transform(pd, 'yyyyMMdd');
             this.updateProductionDate(args.data.id, productionDate);
-            const time = pd.setMonth(pd.getMonth() + 4);
-            const exp = new Date(time);
-            const monthExp = this.pad(exp.getMonth() + 1);
-            const dateExp = this.pad(exp.getDate());
-            const expDate = `${exp.getFullYear()}${monthExp}${dateExp}`;
+            const expDate = this.datePipe.transform(pd.setMonth(4), 'yyyyMMdd');
             this.updateExp(args.data.id, expDate);
           }
         }
@@ -175,7 +195,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
       margin-top: 25px;
     }
     .content .info ul li.subInfo {
-      padding: .30rem .75rem;
+      padding: .15rem .75rem;
     }
     @page {
         size: A4;
@@ -216,8 +236,9 @@ export class IngredientComponent implements OnInit, AfterViewInit {
          </div>
           <div class='info'>
           <ul>
-            <li class='subInfo'>${ item.name}</li>
-              <li class='subInfo'>${ item.qrCode}</li>
+            <li class='subInfo'>Name: ${ item.name}</li>
+              <li class='subInfo'>QR Code: ${ item.qrCode}</li>
+              <li class='subInfo'>Expired Time: ${ item.expiredTime} min</li>
               <li class='subInfo'>MFG: ${ item.productionDate}</li>
               <li class='subInfo'>EXP: ${ item.exp}</li>
           </ul>
@@ -240,6 +261,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
         name: item.name,
         supplier: item.supplier,
         batch: item.batch,
+        expiredTime: item.expiredTime,
         productionDate: item.productionDate,
         exp: item.exp,
         qrCode: `${item.productionDate}-${item.batch}-${item.code}`
@@ -254,6 +276,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
         name: item.name,
         supplier: item.supplier,
         batch: item.batch,
+        expiredTime: item.expiredTime,
         productionDate: item.productionDate,
         exp: item.exp,
         qrCode: `${item.productionDate}-${item.batch}-${item.code}`
@@ -295,16 +318,10 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     console.log('onChangeDate', args, data);
     if (data) {
       const pd = (args.value as Date);
-      const month = this.pad(pd.getMonth() + 1);
-      const date = this.pad(pd.getDate());
-      const productionDate = `${pd.getFullYear()}${month}${date}`;
-      this.updateProductionDate(data.id, productionDate);
-      const time = pd.setMonth(pd.getMonth() + 4);
-      const exp = new Date(time);
-      const monthExp = this.pad(exp.getMonth() + 1);
-      const dateExp = this.pad(exp.getDate());
-      const expDate = `${exp.getFullYear()}${monthExp}${dateExp}`;
-      this.updateExp(data.id, expDate);
+      const productionDate = this.datePipe.transform(pd, 'yyyyMMdd');
+      this.updateProductionDate(args.data.id, productionDate);
+      const expDate = this.datePipe.transform(pd.setMonth(4), 'yyyyMMdd');
+      this.updateExp(args.data.id, expDate);
     }
   }
   backList() {
@@ -313,14 +330,20 @@ export class IngredientComponent implements OnInit, AfterViewInit {
   }
   getIngredients() {
     // this.spinner.show();
-    this.ingredientService.getIngredients(this.currentPage, this.itemsPerPage)
-      .subscribe((res: PaginatedResult<IIngredient[]>) => {
-        this.data = res.result;
-        this.pagination = res.pagination;
-        this.totalItems = res.pagination.totalItems;
-        this.currentPage = res.pagination.currentPage;
-        this.itemsPerPage = res.pagination.itemsPerPage;
-        //    this.spinner.hide();
+    this.ingredientService.getAllIngredient()
+      .subscribe((res: any) => {
+        this.data = res.map((item: any) => {
+          return {
+            id: item.id,
+            supplier: item.supplier,
+            name: item.name,
+            voc: item.voc,
+            expiredTime: item.expiredTime,
+            materialNO: item.materialNO,
+            unit: item.unit,
+            createdDate: new Date(item.createdDate),
+          };
+        });
       }, error => {
         this.alertify.error(error);
       });
@@ -336,10 +359,11 @@ export class IngredientComponent implements OnInit, AfterViewInit {
             name: item.name,
             supplier: item.supplier,
             batch: 'DEFAULT',
-            productionDate: `${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDate()}`
+            expiredTime: item.expiredTime,
+            productionDate: this.datePipe.transform(new Date(), 'yyyyMMdd'),
+            exp: this.datePipe.transform(new Date().setMonth(4), 'yyyyMMdd')
           };
         });
-
       }, error => {
         this.alertify.error(error);
       });
@@ -428,6 +452,6 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     this.modalReference = this.modalService.open(name, { size: 'xl' });
   }
   NO(index) {
-    return (this.pagination.currentPage - 1) * this.pagination.itemsPerPage + Number(index) + 1;
+    return (this.ingredientGrid.pageSettings.currentPage - 1) * this.pageSettings.pageSize + Number(index) + 1;
   }
 }

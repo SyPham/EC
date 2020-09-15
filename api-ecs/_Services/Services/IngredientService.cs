@@ -64,7 +64,7 @@ namespace EC_API._Services.Services
         }
         public async Task<bool> CheckExistsName(string name)
         {
-            return await _repoIngredient.FindAll().AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()));
+            return await _repoIngredient.FindAll().AnyAsync(x => x.Name.Trim().ToLower().Equals(name.Trim().ToLower()));
         }
 
         //Thêm Ingredient mới vào bảng Ingredient
@@ -100,13 +100,6 @@ namespace EC_API._Services.Services
             return await PagedList<IngredientDto>.CreateAsync(lists, param.PageNumber, param.PageSize);
         }
 
-
-        //public async Task<object> GetIngredientOfGlue(int glueid)
-        //{
-        //    return await _repoIngredient.GetIngredientOfGlue(glueid);
-
-        //    throw new System.NotImplementedException();
-        //}
         //Tìm kiếm Ingredient
         public async Task<PagedList<IngredientDto>> Search(PaginationParams param, object text)
         {

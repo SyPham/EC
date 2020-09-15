@@ -1,23 +1,26 @@
 <div class="card">
     <div class="card-header">
-        <h2>History</h2>
+        <h2>Delivered History</h2>
     </div>
     <div class="card-body">
         <ejs-grid  [dataSource]='data' #grid
-            rowHeight='38'
-            height='600'
-            [enableHover]='false'
+            gridLines='Both'
+            [allowSorting]='true'
+            [allowExcelExport]='true'
             allowFiltering='true'
-            [allowSorting]='true' 
             [filterSettings]='filterSettings'
-            value='Excel'
-            [enableVirtualization]='true'>
+            [pageSettings]='pageSettings'
+            allowPaging="true"
+            [toolbar]='toolbarOptions'
+            allowResizing= 'true'
+            showColumnMenu='true'
+            (toolbarClick)='toolbarClick($event)'>
             <e-columns>
                 <e-column field='glueName' textAlign='Center' headerText='Glue' width='100'></e-column>
                 <e-column field='buildingName' textAlign='Center' headerText='Line' width='130'></e-column>
                 <e-column field='qty' textAlign='Center' headerText='Qty' width='100'></e-column>
                 <e-column field='deliveredBy' textAlign='Center' headerText='Delivered By' width='150'></e-column>
-                <e-column field='createdDate' textAlign='Center' type='dateTime' format='d MMM, yyyy hh:mm:ss a' headerText='Created Date' width='150'></e-column>
+                <e-column field='createdDate' textAlign='Center' type='dateTime' format='d MMM, yyyy hh:mm:ss a' headerText='Delivered Date' width='150'></e-column>
             </e-columns>
         </ejs-grid>
     </div>

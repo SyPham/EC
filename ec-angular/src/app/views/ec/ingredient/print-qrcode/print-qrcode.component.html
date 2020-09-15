@@ -38,9 +38,9 @@
     <ejs-qrcodegenerator #barcode style="display: block;" id='qrcode' #barcode
     width="177px" height="177px" [displayText]='displayTextMethod' mode="SVG" [value]="qrcode"></ejs-qrcodegenerator>
   </div>
-  <div><label>QrCode:</label> {{qrcode}}</div>
   <div><label>Name:</label> {{text}}</div>
-  <div><label>Batch:</label> {{batch}}</div>
+  <div><label>QrCode:</label> {{qrcode}}</div>
+  <div><label>Expired Time:</label> {{expiredTime}} min</div>
   <div><label>MFG:</label> {{mfg}}</div>
   <div><label>EXP:</label> {{exp}}</div>
 </div>

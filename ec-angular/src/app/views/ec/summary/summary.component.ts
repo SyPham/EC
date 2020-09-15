@@ -28,6 +28,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   @ViewChildren('tooltip') tooltip: QueryList<any>;
   @ViewChild('tooltip') public control: TooltipComponent;
   @ViewChild('scanQRCode') scanQRCodeElement: ElementRef;
+  @ViewChild('deliveredGrid') deliveredGrid: GridComponent;
   public filterSettings: object;
   public displayTextMethod: DisplayTextModel = {
     visibility: false
@@ -110,7 +111,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     private spinner: NgxSpinnerService
   ) { }
   public ngOnInit(): void {
-    this.toolbarOptions = ['Edit', 'Delete', 'Search'];
+    this.toolbarOptions = ['Edit', 'Delete', 'Search', 'ExcelExport'];
     this.editSettings = { showDeleteConfirmDialog: false, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
     this.filterSettings = { type: 'Excel' };
     this.showQRCode = false;
@@ -932,5 +933,16 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         t.content = res.join('<br>');
         t.dataBind();
       });
+  }
+  toolbarClick(args): void {
+    switch (args.item.text) {
+      /* tslint:disable */
+      case 'Excel Export':
+        this.deliveredGrid.excelExport();
+        break;
+      /* tslint:enable */
+      case 'PDF Export':
+        break;
+    }
   }
 }

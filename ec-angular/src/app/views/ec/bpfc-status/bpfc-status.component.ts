@@ -67,7 +67,7 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    this.pageSettings = { currentPage: 1, pageSize: 20 };
+    this.pageSettings = { currentPage: 1, pageSize: 10, pageCount: 20 };
     this.editparams = { params: { popupHeight: '300px' } };
     this.editSettings = { showDeleteConfirmDialog: true, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
     this.toolbar = ['Search', 'Default',

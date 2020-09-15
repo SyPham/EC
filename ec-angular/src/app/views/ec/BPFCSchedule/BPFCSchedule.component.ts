@@ -16,6 +16,7 @@ import { DatePipe } from '@angular/common';
   providers: [DatePipe]
 })
 export class BPFCScheduleComponent implements OnInit {
+  pageSettings = { pageCount: 20, pageSizes: true, pageSize: 20 };
   data: any[];
   editSettings: object;
   toolbar: object;
@@ -28,6 +29,7 @@ export class BPFCScheduleComponent implements OnInit {
   importModal: TemplateRef<any>;
   excelDownloadUrl: string;
   users: any[];
+  filterSettings: { type: string; };
   constructor(
     private modelNameService: ModalNameService,
     private alertify: AlertifyService,
@@ -40,6 +42,7 @@ export class BPFCScheduleComponent implements OnInit {
   ngOnInit() {
     this.excelDownloadUrl = `${environment.apiUrlEC}ModelName/ExcelExport`;
     this.toolbar = ['Import Excel', 'Export Excel', 'Search'];
+    this.filterSettings = { type: 'Excel' };
     this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, newRowPosition: 'Normal' };
     this.getAllUsers();
   }
@@ -106,7 +109,7 @@ export class BPFCScheduleComponent implements OnInit {
           id: item.id,
           modelName: item.modelName,
           modelNo: item.modelNo,
-          createdDate: item.createdDate,
+          createdDate: new Date(item.createdDate),
           articleNo: item.articleNo,
           approvalStatus: item.approvalStatus,
           finishedStatus: item.finishedStatus,
