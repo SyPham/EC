@@ -21,7 +21,7 @@
           Dữ liệu kế hoạch làm việc chưa được sắp xếp cho ngày hôm nay! <br>
           The work plan is empty!
         </div>
-        <table *ngIf="data.length > 0" [attr.height]='screenHeight' class="table table-bordered table-sm table-responsive" id='todolist'>
+        <table *ngIf="data.length > 0" class="table table-bordered table-sm table-responsive" id='todolist'>
           <thead class="thead-dark">
             <tr>
               <ng-container *ngFor="let item of lineColumns; let i = index">
@@ -64,8 +64,11 @@
               </tr>
               <!-- count -->
               <tr class="table-warning">
-                <td class="my-align" *ngFor="let value of getValueCell(values.rowCountInfo)">
-                  {{value.count}}
+                <td class="my-align" (dblclick)='showModal(deliveredModal, value)' *ngFor="let value of getValueCell(values.rowCountInfo)">
+                  <ejs-tooltip #tooltipCount class="fix-css" position="RightCenter"
+                     content="loading...">
+                    {{value.count}}
+                  </ejs-tooltip>
                 </td>
               </tr>
                 <!-- actual -->
@@ -215,3 +218,42 @@
 
   </div>
 </div>
+<ng-template #deliveredModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">
+      <i class="fas fa-plus"></i> Delivered Detail
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-12">
+         <ejs-grid  [dataSource]='deliveredData' #deliveredGrid
+            rowHeight='38'
+            height='300'
+            allowFiltering='true'
+            [allowSorting]='true'
+            [filterSettings]='filterSettings'
+            [editSettings]='editSettings'
+            [toolbar]='toolbarOptions'
+            (toolbarClick)='toolbarClick($event)'
+            (actionBegin)="actionBegin($event)"
+            showColumnMenu='true'
+            [toolbar]='toolbarOptions'>
+            <e-columns>
+                <e-column field='glueName' isPrimaryKey='true' textAlign='Center' headerText='Glue' width='100'></e-column>
+                <e-column field='qty' textAlign='Center' headerText='Qty' width='80'></e-column>
+                <e-column field='createdDate' isPrimaryKey='true' textAlign='Center' type='dateTime' format='d MMM, yyyy hh:mm:ss a' headerText='Delivered Date' width='150'></e-column>
+              </e-columns>
+        </ejs-grid>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">Close</button>
+  </div>
+
+</ng-template>

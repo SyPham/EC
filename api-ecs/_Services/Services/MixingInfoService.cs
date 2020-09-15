@@ -56,7 +56,8 @@ namespace EC_API._Services.Services
 
         public async Task<List<MixingInfoDto>> GetMixingInfoByGlueID(int glueID)
         {
-            return await _repoMixingInfor.FindAll().Include(x => x.Glue).Where(x => x.GlueID == glueID && x.Glue.isShow == true).ProjectTo<MixingInfoDto>(_configMapper).OrderBy(x => x.ID).ToListAsync();
+           var gluename = _repoGlue.FindById(glueID).Name;
+            return await _repoMixingInfor.FindAll().Include(x => x.Glue).Where(x => x.GlueName.Equals(gluename) && x.Glue.isShow == true).ProjectTo<MixingInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
     }
 }

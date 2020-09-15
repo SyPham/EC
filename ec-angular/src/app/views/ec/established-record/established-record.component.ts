@@ -25,6 +25,7 @@ export class EstablishedRecordComponent implements OnInit {
       { Id: 2, Name: 'All' },
 
   ];
+  pageSettings = { pageCount: 20, pageSizes: true, pageSize: 12 };
   status = 0;
   startBuildingDate: object = new Date();
   endBuildingDate: object = new Date();

@@ -117,7 +117,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     name: '',
     code: '',
     percentage: 0,
-    createdDate: '',
+    createdDate: new Date(),
     supplierID: 0,
     position: 0,
     allow: 0,

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MakeGlueService } from 'src/app/_core/_service/make-glue.service';
+import { BuildingUserService } from 'src/app/_core/_service/building.user.service';
 
 @Component({
   selector: 'app-glue-history',
@@ -12,24 +13,53 @@ export class GlueHistoryComponent implements OnInit {
   data: any;
   pageSettings: { pageSize: number; };
   toolbarOptions = ['Search', 'Print QRCode' ];
+  filterSettings: { type: string; };
+  users: { ID: any; Username: any; Email: any; }[];
 
   constructor(
     private route: ActivatedRoute,
+    private buildingUserService: BuildingUserService,
     private makeGlueService: MakeGlueService,
   ) { }
 
   ngOnInit() {
+    this.filterSettings = { type: 'Excel' };
     this.onRouteChange();
   }
   onRouteChange() {
     this.route.data.subscribe(data => {
       this.glueID = this.route.snapshot.params.glueID;
+      this.getUsers();
+    });
+  }
+  getUsers() {
+    this.buildingUserService.getAllUsers(1, 1000).subscribe(res => {
+      const data = res.result.map((i: any) => {
+        return {
+          ID: i.ID,
+          Username: i.Username,
+          Email: i.Email
+        };
+      });
+      this.users = data;
       this.getMixingInfoByGlueID(this.glueID);
     });
   }
+  username(id) {
+    return (this.users.find(item => item.ID === id) as any).Username;
+  }
   getMixingInfoByGlueID(glueID) {
     this.makeGlueService.getMixingInfoByGlueID(glueID).subscribe((data: any) => {
-      this.data = data;
+      this.data = data.map((item: any) => {
+        return {
+          code: item.code,
+          createdTime: new Date(item.createdTime),
+          expiredTime: new Date(item.expiredTime),
+          glue: item.glue.name,
+          mixBy: this.username(item.mixBy),
+          realTotal: item.realTotal
+        };
+      });
     });
   }
   count(index) {

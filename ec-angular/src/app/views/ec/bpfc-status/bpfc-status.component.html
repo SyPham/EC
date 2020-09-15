@@ -15,38 +15,38 @@
                 </div>
             </div>
 
-            <ejs-grid #gridModel 
-                [searchSettings]="searchSettings" 
+            <ejs-grid #gridModel
+                [searchSettings]="searchSettings"
                 (dataBound)='dataBound'
                 (toolbarClick)='toolbarClick($event)'
-                (actionBegin)="actionBegin($event)" 
+                (actionBegin)="actionBegin($event)"
                 (recordDoubleClick)='onDoubleClick($event)'
-                (actionComplete)='actionComplete($event)' 
-                [toolbar]='toolbar' 
-                [dataSource]='data' 
+                (actionComplete)='actionComplete($event)'
+                [toolbar]='toolbar'
+                [dataSource]='data'
                 allowPaging='true'
-                showColumnMenu='true'  
-                allowSorting='true' 
-                allowResizing= 'true' 
+                showColumnMenu='true'
+                allowSorting='true'
+                allowResizing= 'true'
                 gridLines='Both'
-                [pageSettings]='pageSettings' 
+                [pageSettings]='pageSettings'
                 [editSettings]='editSettings'>
                 <e-columns>
-                    <e-column field='' headerText='#' isPrimaryKey='true' width='30' textAlign='Center'
+                    <e-column field='' headerText='#' isPrimaryKey='true' width='40' textAlign='Center'
                         isPrimaryKey='true'>
                         <ng-template #template let-data>
                             {{no(data)}}
                         </ng-template>
                     </e-column>
-                    <e-column field='modelName' isPrimaryKey='true' textAlign='Center' headerText='Model Name' width=150>
+                    <e-column field='modelName' isPrimaryKey='true' textAlign='Center' headerText='Model Name' width=120>
                     </e-column>
-                    <e-column field='modelNo' isPrimaryKey='true' textAlign='Center' headerText='Model No' width=80>
+                    <e-column field='modelNo' isPrimaryKey='true' textAlign='Center' headerText='Model No' width=90>
                     </e-column>
                     <e-column field='articleNo' isPrimaryKey='true' textAlign='Center' headerText='Article #' width=80>
                     </e-column>
                     <e-column field='artProcess' isPrimaryKey='true' textAlign='Center' headerText='Process' width=80>
                     </e-column>
-                    <e-column field='createdDate' headerText='Created Date Time' type='date' format='d MMM, yyyy hh:mm:ss a' width='120' textAlign='Center'>
+                    <e-column field='createdDate' headerText='Created Date Time' type='date' format='d MMM, yyyy hh:mm:ss a' width='130' textAlign='Center'>
                         <ng-template #headerTemplate let-data>
                             {{'CREATED_DATETIME_LABEL' | translate}}
                         </ng-template>
@@ -82,7 +82,7 @@
                             {{'APPROVAL_BY_LABEL' | translate}}
                         </ng-template>
                     </e-column>
-                 
+
                     <e-column field='tool' isPrimaryKey='true' headerText='Detail' width='80' textAlign='Center'>
                         <ng-template #headerTemplate let-data>
                             {{'DETAIL_LABEL' | translate}}
@@ -97,7 +97,7 @@
 
         </div>
     </div>
-    
+
     <ng-template #detailModal let-modal>
         <div class="modal-header">
             <h4 class="modal-title">
@@ -110,14 +110,14 @@
         <div class="modal-body">
             <div class="row">
                 <div class="col-md-6">
-                    <ejs-grid #gridglue 
-                              showColumnMenu='true'  
-                              allowSorting='true' 
-                              allowResizing= 'true' 
+                    <ejs-grid #gridglue
+                              showColumnMenu='true'
+                              allowSorting='true'
+                              allowResizing= 'true'
                               gridLines='Both'
-                              [dataSource]='glues' 
+                              [dataSource]='glues'
                               [selectedRowIndex]='0'
-                              height='250px' 
+                              height='250px'
                               (rowSelected)='rowSelected($event)'>
                         <e-columns>
                             <e-column field='name' isPrimaryKey="true" headerText='Chemical' textAlign='Center'
@@ -143,12 +143,12 @@
                     </ejs-grid>
                 </div>
                 <div class="col-md-6">
-                    <ejs-grid #grid 
-                            showColumnMenu='true'  
-                            allowSorting='true' 
-                            allowResizing= 'true' 
+                    <ejs-grid #grid
+                            showColumnMenu='true'
+                            allowSorting='true'
+                            allowResizing= 'true'
                             gridLines='Both'
-                            [dataSource]='ingredients' 
+                            [dataSource]='ingredients'
                             [allowSorting]='true' height='250px'>
                         <e-columns>
                             <e-column field='position' headerText='Item' width=80 textAlign='Center'>
@@ -172,7 +172,7 @@
                     </ejs-grid>
                 </div>
             </div>
-          
+
         </div>
         <div class="modal-footer">
             <button type="submit" (click)='release()' *ngIf="level !== 3 && level !== 4" class="btn btn-success">Release</button>
@@ -211,7 +211,7 @@
                                     </div>
                                 </div>
                             </div>
-                    
+
                         </div>
                     </div>
                 </div>

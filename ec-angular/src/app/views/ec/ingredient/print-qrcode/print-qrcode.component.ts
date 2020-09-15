@@ -32,6 +32,7 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
     visibility: false
   };
   public text: any;
+  expiredTime: any;
   constructor(
     private route: ActivatedRoute,
     private datePipe: DatePipe,
@@ -49,6 +50,7 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
   }
   LoadQrCodeByID(id) {
     this.ingredientService.GetQrcodeByid(id).subscribe((result: any) => {
+      this.expiredTime = result.expiredTime;
       if (result.manufacturingDate === '0001-01-01T00:00:00') {
         this.name = result.name;
         this.dateValue = new Date();
@@ -123,7 +125,7 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
       margin-top: 25px;
     }
     .content .info ul li.subInfo {
-       padding: .30rem .75rem;
+       padding: .15rem .75rem;
     }
     @page {
         size: A4;
@@ -153,8 +155,9 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
          </div>
           <div class='info'>
           <ul>
-            <li class='subInfo'>${ this.text}</li>
-              <li class='subInfo'>${this.qrcode}</li>
+            <li class='subInfo'>Name: ${this.text}</li>
+              <li class='subInfo'>QR Code: ${this.qrcode}</li>
+              <li class='subInfo'>Expired Time: ${this.expiredTime} min</li>
               <li class='subInfo'>MFG: ${this.mfg}</li>
               <li class='subInfo'>EXP: ${this.exp}</li>
           </ul>

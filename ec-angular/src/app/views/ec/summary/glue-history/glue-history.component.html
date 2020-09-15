@@ -10,9 +10,15 @@
               </div>
           </div>
 
-          <ejs-grid #grid  [toolbar]='toolbarOptions'  (toolbarClick)='toolbarClick($event)' [dataSource]='data' allowPaging='true' [pageSettings]='pageSettings' >
+          <ejs-grid #grid  [toolbar]='toolbarOptions'
+          (toolbarClick)='toolbarClick($event)'
+          [dataSource]='data' allowPaging='true'
+          allowFiltering='true'
+          [allowSorting]='true'
+          [filterSettings]='filterSettings'
+          [pageSettings]='pageSettings' >
               <e-columns>
-                  <e-column field='id' headerText='#' width='70' textAlign='Center' isPrimaryKey='true' >
+                  <e-column field='' headerText='#' width='70' textAlign='Center' isPrimaryKey='true' >
                       <ng-template #template let-data>
                           {{count(data.index)}}
                       </ng-template>
@@ -22,9 +28,11 @@
                       <ejs-qrcodegenerator style="display: block;"  #barcode [id]="'barcode' + data.index" width="200px" height="150px" mode="SVG" [value]="data.code"></ejs-qrcodegenerator>
                     </ng-template>
                   </e-column>
-                  <e-column field='glue.name' headerText='Glue Name' width='200' textAlign='Center' >
+                  <e-column field='glue' headerText='Glue Name' width='200' textAlign='Center' >
                   </e-column>
                   <e-column field='realTotal' headerText='Real Total' width='200' textAlign='Center' >
+                  </e-column>
+                  <e-column field='mixBy' headerText='Mix By' width='200' textAlign='Center'>
                   </e-column>
                   <e-column field='expiredTime' headerText='Expired Time' type='date' format='dd/MM/yyyy hh:mm a' width='200' textAlign='Center' >
                   </e-column>
@@ -32,7 +40,7 @@
                   </e-column>
               </e-columns>
           </ejs-grid>
-          
+
       </div>
   </div>
 </div>

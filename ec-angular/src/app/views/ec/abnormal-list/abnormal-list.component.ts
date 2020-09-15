@@ -46,6 +46,7 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
   searchSettings: any = { hierarchyMode: 'Parent' };
   // filterSettings = { type: 'Excel' };
   public toolbarOptions = ['Search'];
+  filterSettings = { type: 'Excel' };
   public ingredients: any = [];
   public pageSettings = { pageSize: 15 };
   batches: any;
@@ -60,7 +61,6 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
     batch: ''
   };
   users: any;
-  public filterSettings: object;
   constructor(
     public modalService: NgbModal,
     private alertify: AlertifyService,
@@ -70,7 +70,6 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
     public ingredientService: IngredientService,
   ) { }
   public ngOnInit(): void {
-    this.filterSettings = { type: 'Excel' };
     this.getUsers();
     this.getIngredient();
   }

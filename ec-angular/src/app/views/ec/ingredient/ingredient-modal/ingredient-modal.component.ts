@@ -16,7 +16,7 @@ export class IngredientModalComponent implements OnInit {
     name: '',
     percentage: 0,
     code: this.makeid(8),
-    createdDate: '',
+    createdDate: new Date(),
     supplierID: 0,
     position: 0,
     allow: 0,
@@ -27,7 +27,7 @@ export class IngredientModalComponent implements OnInit {
   };
   supplier: any [] = [];
   public fieldsGlue: object = { text: 'name', value: 'id' };
-  public textGlue: string = 'Select Supplier name';
+  public textGlue = 'Select Supplier name';
   showBarCode: boolean;
   constructor(
     public activeModal: NgbActiveModal,
@@ -95,8 +95,8 @@ export class IngredientModalComponent implements OnInit {
 
   makeid(length) {
     let result           = '';
-    let characters       = '0123456789';
-    let charactersLength = characters.length;
+    const characters       = '0123456789';
+    const charactersLength = characters.length;
     for ( let i = 0; i < length; i++ ) {
        result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }

@@ -8,10 +8,16 @@
         <ejs-grid #grid [dataSource]='data'
         allowSorting='true'
         allowResizing= 'true'
+        allowPaging="true"
+        [pageSettings]='pageSettings'
+        allowFiltering='true'
+        [filterSettings]='filterSettings'
         [editSettings]='editSettings'
         [toolbar]='toolbar'
         [allowExcelExport]='true'
+        allowResizing= 'true'
         gridLines='Both'
+        showColumnMenu='true'
         (toolbarClick)='toolbarClick($event)'
         (actionBegin)='actionBegin($event)'
         >

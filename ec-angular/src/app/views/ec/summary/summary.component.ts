@@ -5,7 +5,7 @@ import { PlanService } from 'src/app/_core/_service/plan.service';
 import * as signalr from '../../../../assets/js/ec-client.js';
 import { AuthService } from 'src/app/_core/_service/auth.service';
 import { IIngredient } from 'src/app/_core/_model/Ingredient';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { MakeGlueService } from 'src/app/_core/_service/make-glue.service';
 import { AlertifyService } from 'src/app/_core/_service/alertify.service';
 import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
@@ -14,7 +14,7 @@ import { DisplayTextModel } from '@syncfusion/ej2-angular-barcode-generator';
 import { IngredientService } from 'src/app/_core/_service/ingredient.service';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-// import { DataService } from 'src/app/_core/_service/data.service.js';
+
 import { AbnormalService } from 'src/app/_core/_service/abnormal.service.js';
 import { TooltipComponent, Position } from '@syncfusion/ej2-angular-popups';
 
@@ -30,6 +30,8 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   @ViewChildren('tooltip') tooltip: QueryList<any>;
   @ViewChild('tooltip') public control: TooltipComponent;
   @ViewChild('scanQRCode') scanQRCodeElement: ElementRef;
+  @ViewChild('deliveredGrid') deliveredGrid: GridComponent;
+  public filterSettings: object;
   public displayTextMethod: DisplayTextModel = {
     visibility: false
   };
@@ -55,8 +57,8 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   public D: any;
   public E: any;
   public existGlue: any = false;
-  @ViewChild('ddlelement')
-  public dropDownListObject1: DropDownListComponent;
+  public deliveredData: any;
+  @ViewChild('ddlelement') public dropDownListObject1: DropDownListComponent;
   public guidances: any;
   public guidance: any;
   // end make glue
@@ -77,18 +79,16 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   hasWarning: boolean;
   cancel = false;
   hasFullScreen = false;
+  modalReference: NgbModalRef;
+  public editSettings: object;
+  toolbarOptions: string[];
   @HostListener('window:keyup.alt.enter', ['$event']) enter(e: KeyboardEvent) {
     if (!this.disabled) {
       this.Finish();
     }
   }
-  @HostListener('window:keyup.f11', ['$event']) keyup(e: KeyboardEvent) {
-    console.log(`document.fullscreenElement`, document.fullscreenElement);
-    // if (document.fullscreenElement !== null) {
-    //   this.openFullscreen();
-    // } else {
-    //   this.closeFullscreen();
-    // }
+  @HostListener('window:keyup.esc', ['$event']) keyup(e: KeyboardEvent) {
+    this.summary();
   }
   @HostListener('document:fullscreenchange', ['$event']) fullScreen(e) {
 
@@ -113,6 +113,9 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     private spinner: NgxSpinnerService
   ) { }
   public ngOnInit(): void {
+    this.toolbarOptions = ['Edit', 'Delete', 'Search', 'ExcelExport'];
+    this.editSettings = { showDeleteConfirmDialog: false, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
+    this.filterSettings = { type: 'Excel' };
     this.showQRCode = false;
     this.disabled = true;
     this.qrCode = '';
@@ -133,6 +136,40 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     $('input.mixing').tooltip({
       placement: 'right',
       trigger: 'focus'
+    });
+  }
+  actionBegin(args) {
+    if (args.requestType === 'delete') {
+      const id = args.data.id;
+      this.planService.deleteDelivered(id).subscribe(res => {
+        if (res) {
+          this.modalReference.close();
+          this.summary();
+        }
+      });
+    }
+    if (args.requestType === 'save') {
+       if (args.action === 'edit') {
+         const id = args.data.id;
+         const qty = args.data.qty;
+         this.planService.editDelivered(id, qty).subscribe( res => {
+           if (res) {
+             this.modalReference.close();
+             this.summary();
+           }
+         });
+       }
+    }
+  }
+  showModal(name, value) {
+    this.modalReference = this.modalService.open(name, { size: 'lg' });
+    this.deliveredData = value.deliveredInfos.map( (item: any) => {
+      return {
+        id: item.id,
+        glueName: item.glueName,
+        qty: item.qty,
+        createdDate: new Date(item.createdDate)
+      };
     });
   }
   openFullscreen() {
@@ -392,6 +429,46 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       }
     }
   }
+  async onNgModelChangeScanQRCode2(args, item) {
+    const input = args;
+    if (input.length === 8) {
+      try {
+        this.qrCode = input;
+        const result = await this.scanQRCode();
+        if (this.qrCode !== item.code) {
+          this.alertify.warning(`Please you should look for the chemical name "${item.name}"`);
+          this.qrCode = '';
+          this.errorScan();
+          return;
+        }
+        // const checkLock = await this.hasLock(item.name, this.level.name, input[1]);
+        // if (checkLock === true) {
+        //   this.alertify.error('This chemical has been locked!');
+        //   this.qrCode = '';
+        //   this.errorScan();
+        //   return;
+        // }
+        const code = result.code;
+        const ingredient = this.findIngredientCode(code);
+        const batch = 'DEFAULT';
+        this.setBatch(ingredient, batch);
+        if (ingredient) {
+          this.changeInfo('success-scan', ingredient.code);
+          if (ingredient.expected === 0 && ingredient.position === 'A') {
+            this.changeFocusStatus(ingredient.code, false, true);
+            this.changeScanStatus(ingredient.code, false);
+          } else {
+            this.changeScanStatus(ingredient.code, false);
+            this.changeFocusStatus(code, true, false);
+          }
+        }
+      } catch (error) {
+        this.errorScan();
+        this.alertify.error('Wrong Chemical!');
+        this.qrCode = '';
+      }
+    }
+  }
   async onNgModelChangeScanQRCode(args, item) {
     const input = args.split('-') || [];
     const inputdemo = '20200914' + '-' + 'DEFAULT' + '-' + args ;
@@ -436,7 +513,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         this.qrCode = '';
       }
     }
-
   }
   private errorScan() {
     for (const key in this.ingredients) {
@@ -630,9 +706,10 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         qrCode: item.code,
         batch: item.batch,
         consump: item.real,
-        buildingName: buildingName
-      }
+        buildingName
+      };
       this.UpdateConsumptionWithBuilding(obj);
+
     }
   }
 
@@ -885,5 +962,16 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         t.content = res.join('<br>');
         t.dataBind();
       });
+  }
+  toolbarClick(args): void {
+    switch (args.item.text) {
+      /* tslint:disable */
+      case 'Excel Export':
+        this.deliveredGrid.excelExport();
+        break;
+      /* tslint:enable */
+      case 'PDF Export':
+        break;
+    }
   }
 }

@@ -79,4 +79,10 @@ export class PlanService {
   clonePlan(obj) {
     return this.http.post(this.baseUrl + 'Plan/ClonePlan', obj);
   }
+  editDelivered(id, qty) {
+    return this.http.get(`${this.baseUrl}Plan/EditDelivered/${id}/${qty}`, {});
+  }
+  deleteDelivered(id) {
+    return this.http.delete(`${this.baseUrl}Plan/DeleteDelivered/${id}`, {});
+  }
 }

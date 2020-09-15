@@ -3,7 +3,7 @@ export interface IIngredient  {
     name: string;
     code: string;
     percentage: number;
-    createdDate: string;
+    createdDate: Date;
     voc: number;
     supplierID: number;
     position: number;
