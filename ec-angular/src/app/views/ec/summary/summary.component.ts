@@ -1,4 +1,5 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, HostListener, ViewChildren, QueryList } from '@angular/core';
+import { DataService } from './../../../_core/_service/data.service';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, HostListener, ViewChildren, QueryList, ɵConsole } from '@angular/core';
 import { ColumnModel, GridComponent } from '@syncfusion/ej2-angular-grids';
 import { PlanService } from 'src/app/_core/_service/plan.service';
 import * as signalr from '../../../../assets/js/ec-client.js';
@@ -13,7 +14,7 @@ import { DisplayTextModel } from '@syncfusion/ej2-angular-barcode-generator';
 import { IngredientService } from 'src/app/_core/_service/ingredient.service';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { DataService } from 'src/app/_core/_service/data.service.js';
+// import { DataService } from 'src/app/_core/_service/data.service.js';
 import { AbnormalService } from 'src/app/_core/_service/abnormal.service.js';
 import { TooltipComponent, Position } from '@syncfusion/ej2-angular-popups';
 
@@ -393,9 +394,13 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   }
   async onNgModelChangeScanQRCode(args, item) {
     const input = args.split('-') || [];
+    const inputdemo = '20200914' + '-' + 'DEFAULT' + '-' + args ;
+    const input2 = inputdemo.split('-') || [];
+    // if(inputdemo)
     if (input[2]?.length === 8) {
       try {
         this.qrCode = input[2];
+        // this.qrCode = input2[2];
         const result = await this.scanQRCode();
         if (this.qrCode !== item.code) {
           this.alertify.warning(`Please you should look for the chemical name "${item.name}"`);
@@ -404,6 +409,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
           return;
         }
         const checkLock = await this.hasLock(item.name, this.level.name, input[1]);
+        // const checkLock = await this.hasLock(item.name, this.level.name, input2[1]);
         if (checkLock === true) {
           this.alertify.error('This chemical has been locked!');
           this.qrCode = '';
@@ -413,6 +419,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         const code = result.code;
         const ingredient = this.findIngredientCode(code);
         this.setBatch(ingredient, input[1]);
+        // this.setBatch(ingredient, input2[1]);
         if (ingredient) {
           this.changeInfo('success-scan', ingredient.code);
           if (ingredient.expected === 0 && ingredient.position === 'A') {
@@ -551,6 +558,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         this.disabled = false;
       }
     }
+
     // if Chemical is B, focus in chemical C
     if (ingredient.position === 'B') {
       if (currentValue <= max && currentValue >= min) {
@@ -568,6 +576,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         this.alertify.warning(`Invalid!`, true);
       }
     }
+
     // if Chemical is C, focus in chemical D
     if (ingredient.position === 'C') {
       if (currentValue <= max && currentValue >= min) {
@@ -585,6 +594,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         this.alertify.warning(`Invalid!`, true);
       }
     }
+
     // if Chemical is D, focus in chemical E
     if (ingredient.position === 'D') {
       if (currentValue <= max && currentValue >= min) {
@@ -609,12 +619,29 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   onKeyupReal(item, args) {
     if (args.keyCode === 13) {
       this.checkValidPosition(item, args);
-      this.UpdateConsumption(item.code, item.batch, item.real);
+      const levels = [1, 2, 3, 4];
+      const building = JSON.parse(localStorage.getItem('level'));
+      let buildingName = building.name;
+      if (levels.includes(building.level)) {
+        buildingName = 'E';
+      }
+      // this.UpdateConsumption(item.code, item.batch, item.real);
+      const obj = {
+        qrCode: item.code,
+        batch: item.batch,
+        consump: item.real,
+        buildingName: buildingName
+      }
+      this.UpdateConsumptionWithBuilding(obj);
     }
   }
 
   UpdateConsumption(code, batch, consump) {
     this.ingredientService.UpdateConsumption(code, batch, consump).subscribe(() => { });
+  }
+
+  UpdateConsumptionWithBuilding(obj) {
+    this.ingredientService.UpdateConsumptionOfBuilding(obj).subscribe(() => { });
   }
 
   lockClass(item) {

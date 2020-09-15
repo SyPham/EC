@@ -24,7 +24,7 @@ namespace EC_API.DTO
         public int ExpiredTime { get; set; }
         public int Qty { get; set; }
         public int IngredientInfoID { get; set; }
-        public int Consumption { get; set; }
+        public string Consumption { get; set; }
 
     }
 }

@@ -116,7 +116,7 @@ namespace EC_API._Services.Services
             return await PagedList<IngredientDto>.CreateAsync(lists, param.PageNumber, param.PageSize);
         }
 
-        //Hàm Xóa Ingredient
+        // Xóa Ingredient
         public async Task<bool> Delete(object id)
         {
             string token = _accessor.HttpContext.Request.Headers["Authorization"];
@@ -129,7 +129,7 @@ namespace EC_API._Services.Services
             return await _repoIngredient.SaveAll();
         }
 
-        //Hàm Cập nhật Ingredient
+        // Cập nhật Ingredient
         public async Task<bool> Update(IngredientDto model)
         {
             var ingredient = _mapper.Map<Ingredient>(model);
@@ -137,21 +137,29 @@ namespace EC_API._Services.Services
             return await _repoIngredient.SaveAll();
         }
 
-        //Hàm Lấy toàn bộ danh sách Ingredient 
+        // Lấy toàn bộ danh sách Ingredient 
         public async Task<List<IngredientDto>> GetAllAsync()
         {
             return await _repoIngredient.FindAll().Where(x => x.isShow == true).Include(x => x.Supplier).ProjectTo<IngredientDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
 
-        //Hàm Lấy toàn bộ danh sách IngredientInfo
+        // Lấy toàn bộ danh sách IngredientInfo
         public async Task<List<IngredientInfoDto>> GetAllIngredientInfoAsync()
         {
             var resultStart = DateTime.Now;
             var resultEnd = DateTime.Now;
             return await _repoIngredientInfo.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date).ProjectTo<IngredientInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
+
+        // Lấy toàn bộ danh sách IngredientInfo theo building
+        public async Task<List<IngredientInfoDto>> GetAllIngredientInfoByBuildingNameAsync(string name)
+        {
+            var resultStart = DateTime.Now;
+            var resultEnd = DateTime.Now;
+            return await _repoIngredientInfo.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date && x.BuildingName == name).ProjectTo<IngredientInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
+        }
         
-        //Hàm Lấy toàn bộ danh sách IngredientReport
+        // Lấy toàn bộ danh sách IngredientReport
         public async Task<List<IngredientInfoReportDto>> GetAllIngredientInfoReportAsync()
         {
             var resultStart = DateTime.Now;
@@ -159,7 +167,15 @@ namespace EC_API._Services.Services
             return await _repoIngredientInfoReport.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date && x.Qty > 0).ProjectTo<IngredientInfoReportDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
 
-        //Hàm Filter Ingredient Report theo ngay
+        //Hàm Lấy toàn bộ danh sách IngredientReport theo building
+        public async Task<List<IngredientInfoReportDto>> GetAllIngredientInfoReportByBuildingNameAsync(string name)
+        {
+            var resultStart = DateTime.Now;
+            var resultEnd = DateTime.Now;
+            return await _repoIngredientInfoReport.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date && x.BuildingName == name).ProjectTo<IngredientInfoReportDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
+        }
+
+        // Filter Ingredient Report theo ngay
         public async Task<object> GetAllIngredientReportByRange(DateTime min, DateTime max)
         {
             return await _repoIngredientInfo.FindAll()
@@ -167,13 +183,21 @@ namespace EC_API._Services.Services
                 .ToListAsync();
         }
 
-        //Hàm lấy Ingredient theo Ingredient_Id
+        // Filter Ingredient Report theo ngay + building
+        public async Task<object> GetAllIngredientReportByRangeWithBuilding(DateTime min, DateTime max , string name)
+        {
+            return await _repoIngredientInfoReport.FindAll()
+                .Where(x => x.CreatedTime.Date >= min.Date && x.CreatedTime.Date <= max.Date && x.BuildingName == name)
+                .ToListAsync();
+        }
+
+        // lấy Ingredient theo Ingredient_Id
         public IngredientDto GetById(object id)
         {
             return _mapper.Map<Ingredient, IngredientDto>(_repoIngredient.FindById(id));
         }
 
-        //Hàm Check qrcode  IngredientReport co ton tai hay khong
+        // Check qrcode  IngredientReport co ton tai hay khong
         public async Task<bool> CheckBarCodeExists(string code)
         {
             return await _repoIngredient.CheckBarCodeExists(code);
@@ -231,7 +255,7 @@ namespace EC_API._Services.Services
                 SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
                 Qty = model.Unit.ToInt(),
                 Batch = Batch,
-                Consumption = 0,
+                Consumption = "0",
                 Code = model.Code,
                 IngredientID = model.ID,
                 UserID = userid,
@@ -262,7 +286,7 @@ namespace EC_API._Services.Services
                         ManufacturingDate = ProductionDates.Date,
                         SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
                         Qty = model.Unit.ToInt(),
-                        Consumption = 0,
+                        Consumption = "0",
                         Code = model.Code,
                         Batch = Batch,
                         IngredientInfoID = data.ID,
@@ -282,7 +306,7 @@ namespace EC_API._Services.Services
                     SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
                     Qty = model.Unit.ToInt(),
                     Batch = Batch,
-                    Consumption = 0,
+                    Consumption = "0",
                     Code = model.Code,
                     IngredientInfoID = data.ID,
                     UserID = userid,
@@ -317,7 +341,7 @@ namespace EC_API._Services.Services
                         ManufacturingDate = model.ManufacturingDate,
                         SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
                         Qty = model.Unit.ToInt(),
-                        Consumption = 0,
+                        Consumption = "0",
                         Code = model.Code
                     });
                 }
@@ -331,7 +355,7 @@ namespace EC_API._Services.Services
                     ManufacturingDate = model.ManufacturingDate,
                     SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
                     Qty = model.Unit.ToInt(),
-                    Consumption = 0,
+                    Consumption = "0",
                     Code = model.Code
                 });
             }
@@ -406,7 +430,7 @@ namespace EC_API._Services.Services
                 if (await _repoIngredientInfo.CheckBarCodeExists(qrCode))
                 {
                     var result = _repoIngredientInfo.FindAll().FirstOrDefault(x => x.Code == qrCode);
-                    result.Consumption = consump;
+                    result.Consumption = consump.ToString();
                     if (result.Qty != 0)
                     {
                         result.Qty = result.Qty - consump;
@@ -429,8 +453,34 @@ namespace EC_API._Services.Services
             {
                 if (await _repoIngredientInfoReport.CheckBarCodeExists(qrCode))
                 {
-                    var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == qrCode && x.Batch == batch);
-                    result.Consumption = consump;
+                    // var resultEnd = DateTime.Now;
+                    var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == qrCode && x.Batch == batch );
+                    result.Consumption = consump.ToSafetyString();
+                    // if (result.Qty != 0)
+                    // {
+                    //     result.Qty = result.Qty - consump;
+                    // }
+                    var data = await UpdateIngredientInfoReport(result);
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        public async Task<bool> UpdateConsumptionOfBuildingIngredientReport(UpdateConsumpDto entity)
+        {
+            try
+            {
+                if (await _repoIngredientInfoReport.CheckBarCodeExists(entity.qrCode))
+                {
+                    var currentDay = DateTime.Now;
+                    var result = _repoIngredientInfoReport.FindAll().FirstOrDefault(x => x.Code == entity.qrCode && x.Batch == entity.batch && x.BuildingName == entity.buildingName && x.CreatedDate == currentDay.Date);
+                    result.Consumption = entity.consump;
                     // if (result.Qty != 0)
                     // {
                     //     result.Qty = result.Qty - consump;

@@ -1,7 +1,11 @@
+import { AbnormalService } from './../../../_core/_service/abnormal.service';
+import { AlertifyService } from './../../../_core/_service/alertify.service';
+import { IngredientService } from './../../../_core/_service/ingredient.service';
+import { BuildingUserService } from './../../../_core/_service/building.user.service';
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AlertifyService } from 'src/app/_core/_service/alertify.service';
-import { IngredientService } from 'src/app/_core/_service/ingredient.service';
+// import { AlertifyService } from 'src/app/_core/_service/alertify.service';
+// import { IngredientService } from 'src/app/_core/_service/ingredient.service';
 import { DatePipe } from '@angular/common';
 import { FilteringEventArgs } from '@syncfusion/ej2-angular-dropdowns';
 import { EmitType } from '@syncfusion/ej2-base';
@@ -17,8 +21,8 @@ import {
   ToolbarService,
   PageService,
 } from '@syncfusion/ej2-angular-grids';
-import { AbnormalService } from 'src/app/_core/_service/abnormal.service';
-import { BuildingUserService } from 'src/app/_core/_service/building.user.service';
+// import { AbnormalService } from 'src/app/_core/_service/abnormal.service';
+// import { BuildingUserService } from 'src/app/_core/_service/building.user.service';
 declare const $: any;
 
 @Component({
@@ -40,7 +44,7 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
   IngredientData: [];
   batch: string;
   searchSettings: any = { hierarchyMode: 'Parent' };
-  filterSettings = { type: 'Excel' };
+  // filterSettings = { type: 'Excel' };
   public toolbarOptions = ['Search'];
   public ingredients: any = [];
   public pageSettings = { pageSize: 15 };
@@ -95,18 +99,17 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
   ) => {
     let query: Query = new Query();
     // frame the query based on search string with filter type.
-    query =
-      e.text !== '' ? query.where('name', 'contains', e.text, true) : query;
+    query = e.text !== '' ? query.where('name', 'contains', e.text, true) : query;
     // pass the filter data source, filter query to updateData method.
     e.updateData(this.IngredientData, query);
   }
+
   public onFilteringBatch: EmitType<FilteringEventArgs> = (
     e: FilteringEventArgs
   ) => {
     let query: Query = new Query();
     // frame the query based on search string with filter type.
-    query =
-      e.text !== '' ? query.where('batchName', 'contains', e.text, true) : query;
+    query = e.text !== '' ? query.where('batchName', 'contains', e.text, true) : query;
     // pass the filter data source, filter query to updateData method.
     e.updateData(this.IngredientData, query);
   }
@@ -131,8 +134,10 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
       });
     }
   }
+
   search() {
   }
+
   getUsers() {
     this.buildingUserService.getAllUsers(1, 1000).subscribe(res => {
       const data = res.result.map((i: any) => {
@@ -146,12 +151,15 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
       this.getAll();
     });
   }
+
   username(id) {
     return (this.users.find(item => item.ID === id) as any).Username;
   }
+
   rowSelected(args) {
     this.buildingSelected = this.buildingGrid.getSelectedRecords();
   }
+
   rowDeselected(args) {
     this.buildingSelected = this.buildingGrid.getSelectedRecords();
   }
@@ -170,12 +178,14 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
       });
     });
   }
+
   create() {
     this.abnormalService.create(this.abnormal).subscribe(() => {
       this.alertify.success('Successfully!!!');
       this.getAll();
     });
   }
+
   createRange() {
     if (!this.buildingSelected) {
       this.alertify.warning('Please chose buildings first!');
@@ -195,6 +205,7 @@ export class AbnormalListComponent implements OnInit, AfterViewInit {
       this.getAll();
     });
   }
+
   delete(id) {
     this.abnormalService.delete(id).subscribe(() => {
       this.alertify.success('Successfully!!!');

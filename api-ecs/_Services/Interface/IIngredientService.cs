@@ -16,14 +16,19 @@ namespace EC_API._Services.Interface
         Task<bool> UpdatePrint(QrPrintDto entity);
         Task<IngredientDto> ScanQRCode(string qrCode);
         Task<List<IngredientInfoDto>> GetAllIngredientInfoAsync();
+        Task<List<IngredientInfoDto>> GetAllIngredientInfoByBuildingNameAsync(string name);
         Task<List<IngredientInfoReportDto>> GetAllIngredientInfoReportAsync();
+        Task<List<IngredientInfoReportDto>> GetAllIngredientInfoReportByBuildingNameAsync(string name);
         Task<object> GetAllIngredientReportByRange(DateTime min, DateTime max);
+        Task<object> GetAllIngredientReportByRangeWithBuilding(DateTime min, DateTime max, string name);
         
         Task<object> ScanQRCodeFromChemialWareHouse(string qrCode, string building, int userid);
         Task<object> ScanQRCodeFromChemialWareHouseDate(string qrCode, string start , string end);
         Task<bool> UpdateConsumptionChemialWareHouse(string qrCode , int consump);
 
         Task<bool> UpdateConsumptionIngredientReport(string qrCode, string batch, int consump );
+
+        Task<bool> UpdateConsumptionOfBuildingIngredientReport(UpdateConsumpDto entity );
 
         Task<bool> CheckExistsName(string name);
 

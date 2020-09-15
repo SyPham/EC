@@ -64,7 +64,7 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
         }
       });
     } else {
-        this.alertify.error('Wrong Chemical!');
+      this.alertify.error('Wrong Chemical!');
     }
   }
 

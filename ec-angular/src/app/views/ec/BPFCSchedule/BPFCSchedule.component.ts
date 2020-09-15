@@ -43,6 +43,7 @@ export class BPFCScheduleComponent implements OnInit {
     this.editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, newRowPosition: 'Normal' };
     this.getAllUsers();
   }
+
   actionBegin(args) {
     if (args.requestType === 'save') {
       const entity = {
@@ -55,6 +56,7 @@ export class BPFCScheduleComponent implements OnInit {
       });
     }
   }
+
   toolbarClick(args) {
     switch (args.item.text) {
       case 'Import Excel':
@@ -81,24 +83,29 @@ export class BPFCScheduleComponent implements OnInit {
         break;
     }
   }
+
   fileProgress(event) {
     this.file = event.target.files[0];
   }
+
   uploadFile() {
     const createdBy = JSON.parse(localStorage.getItem('user')).User.ID;
     this.bPFCEstablishService.import(this.file, createdBy)
-      .subscribe((res: any) => {
-        this.getAll();
-        this.modalReference.close();
-        this.alertify.success('The excel has been imported into system!');
-      });
+    .subscribe((res: any) => {
+      this.getAll();
+      this.modalReference.close();
+      this.alertify.success('The excel has been imported into system!');
+    });
   }
+
+
   getAllUsers() {
     this.buildingUserService.getAllUsers(1, 1000).subscribe((res: any) => {
       this.users = res.result;
       this.getAll();
     });
   }
+
   getAll() {
     this.bPFCEstablishService.getAll().subscribe( (res: any) => {
       this.data = res.map( (item: any) => {

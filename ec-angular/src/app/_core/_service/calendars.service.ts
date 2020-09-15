@@ -20,33 +20,34 @@ constructor() { }
       return result;
     }
     getMondaysInMonth(obj: number) {
-        let mon = obj - 1 || new Date().getMonth();
-        if (obj === 1) {
-          mon = 0;
-        }
-          let d = new Date(new Date().getFullYear(), mon),
-          month = d.getMonth(),
-          mondays = [];
-        d.setDate(1);
-    
-        // Get the first Monday in the month
-        while (d.getDay() !== 1) {
-          d.setDate(d.getDate() + 1);
-        }
-    
-        // Get all the other Mondays in the month
-        while (d.getMonth() === month) {
-          mondays.push(new Date(d.getTime()));
-          d.setDate(d.getDate() + 7);
-        }
-        return this.toFormatDatesArray(mondays);
+      let mon = obj - 1 || new Date().getMonth();
+      if (obj === 1) {
+        mon = 0;
+      }
+
+      let d = new Date(new Date().getFullYear(), mon),
+      month = d.getMonth(),
+      mondays = [];
+      d.setDate(1);
+
+      // Get the first Monday in the month
+      while (d.getDay() !== 1) {
+        d.setDate(d.getDate() + 1);
+      }
+
+      // Get all the other Mondays in the month
+      while (d.getMonth() === month) {
+        mondays.push(new Date(d.getTime()));
+        d.setDate(d.getDate() + 7);
+      }
+      return this.toFormatDatesArray(mondays);
     }
     getWednesdaysInMonth(month) {
       let wednesdays = [];
       this.getMondaysInMonth(month).map(item => {
         let wednesday = this.addDays(item, 1);
         if (this.monthComparator(item, wednesday) === 1) {
-              wednesdays.push(wednesday);
+            wednesdays.push(wednesday);
           }
       });
       return this.toFormatDatesArray(wednesdays);
@@ -56,7 +57,7 @@ constructor() { }
       this.getMondaysInMonth(month).map(item => {
         let wednesday = this.addDays(item, 2);
         if (this.monthComparator(item, wednesday) === 1) {
-              wednesdays.push(wednesday);
+            wednesdays.push(wednesday);
           }
       });
       return this.toFormatDatesArray(wednesdays);
@@ -283,19 +284,19 @@ constructor() { }
         return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('/');
     }
     dateNow(ch = '/') {
-        function pad(s) {
-            return s < 10 ? '0' + s : s;
-        }
-        let date = new Date();
-        let day = date.getDate(); // yields date
-        let month = date.getMonth() + 1; // yields month (add one as '.getMonth()' is zero indexed)
-        let year = date.getFullYear(); // yields year
-        // let hour = date.getHours(); // yields hours
-        // let minute = date.getMinutes(); // yields minutes
-        // let second = date.getSeconds(); // yields seconds
-        // After this letruct a string with the above results as below
-        let time = pad(month) + ch + pad(day) + ch + year; // + ' ' + hour + ':' + minute + ':' + second;
-        return time;
+      function pad(s) {
+          return s < 10 ? '0' + s : s;
+      }
+      let date = new Date();
+      let day = date.getDate(); // yields date
+      let month = date.getMonth() + 1; // yields month (add one as '.getMonth()' is zero indexed)
+      let year = date.getFullYear(); // yields year
+      // let hour = date.getHours(); // yields hours
+      // let minute = date.getMinutes(); // yields minutes
+      // let second = date.getSeconds(); // yields seconds
+      // After this letruct a string with the above results as below
+      let time = pad(month) + ch + pad(day) + ch + year; // + ' ' + hour + ':' + minute + ':' + second;
+      return time;
     }
     dateFormat(date) {
         let d = new Date(date);

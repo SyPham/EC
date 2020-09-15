@@ -83,18 +83,33 @@ export class IngredientService {
     return this.http.get(this.baseUrl + `ingredient/GetAllIngredientInfo`, {});
   }
 
+  getAllIngredientInfoByBuildingName(BuildingName: string) {
+    return this.http.get(this.baseUrl + `ingredient/GetAllIngredientInfoByBuildingName/${BuildingName}`, {});
+  }
+
   getAllIngredientInfoReport() {
     return this.http.get(this.baseUrl + `ingredient/GetAllIngredientInfoReport`, {});
   }
 
+  getAllIngredientInfoReportByBuildingName(BuildingName: string) {
+    return this.http.get(this.baseUrl + `ingredient/GetAllIngredientInfoReportByBuildingName/${BuildingName}`, {});
+  }
+
   searchInventory(min, max) {
     return this.http.get(`${this.baseUrl}ingredient/Search/${min}/${max}`, {});
+  }
+
+  searchInventoryByBuildingName(min, max, buildingName) {
+    return this.http.get(`${this.baseUrl}ingredient/SearchWithBuildingName/${min}/${max}/${buildingName}`, {});
   }
   deleteIngredientInfo(id: number , code: string, qty: number, batch: string) {
     return this.http.delete(this.baseUrl + `ingredient/DeleteIngredientInfo/${id}/${code}/${qty}/${batch}`);
   }
   UpdateConsumption(qrcode: string , batch: string, consump: number) {
     return this.http.post(this.baseUrl + `ingredient/UpdateConsumptionIngredientReport/${qrcode}/${batch}/${consump}`, {});
+  }
+  UpdateConsumptionOfBuilding(entity) {
+    return this.http.post(this.baseUrl + 'ingredient/UpdateConsumptionOfBuildingIngredientReport', entity);
   }
   createSub(supplier: ISupplier) {
     return this.http.post(this.baseUrl + 'suppier/create', supplier);

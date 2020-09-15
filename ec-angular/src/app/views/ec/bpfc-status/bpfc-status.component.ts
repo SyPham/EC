@@ -77,9 +77,11 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
     ];
     this.getAllUsers();
   }
+
   ngAfterViewInit() {
     this.getBuilding();
   }
+
   getBuilding() {
     const userID = JSON.parse(localStorage.getItem('user')).User.ID;
     this.authService.getBuildingByUserID(userID).subscribe((res: any) => {
@@ -89,11 +91,14 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
   dataBound() {
   }
+
   no(item: any): number {
     return (this.pageSettings.currentPage - 1) * this.pageSettings.pageSize + Number(item.index) + 1;
   }
+
   actionBegin(args) {
     if (args.requestType === 'save') {
       this.modalname.id = args.data.id || 0;
@@ -109,6 +114,7 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       this.delete(args.data[0].id);
     }
   }
+
   actionComplete(e: any): void {
     if (e.requestType === 'add') {
       (e.form.elements.namedItem('name') as HTMLInputElement).focus();
@@ -116,10 +122,11 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       (e.form.elements.namedItem('tool') as HTMLInputElement).disabled = true;
     }
   }
-  onDoubleClick(args: any): void {
 
+  onDoubleClick(args: any): void {
     this.setFocus = args.column;  // Get the column from Double click event
   }
+
   openaddModalName(addModalName) {
     this.modalReference = this.modalService.open(addModalName);
   }
@@ -150,6 +157,7 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       });
     });
   }
+
   filterByApprovedStatus() {
     this.bPFCEstablishService.filterByApprovedStatus().subscribe((res: any) => {
       this.data = res.map(item => {
@@ -176,6 +184,7 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       });
     });
   }
+
   filterByFinishedStatus() {
     this.bPFCEstablishService.filterByFinishedStatus().subscribe((res: any) => {
       this.data = res.map(item => {
@@ -202,6 +211,7 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       });
     });
   }
+
   filterByNotApprovedStatus() {
     this.bPFCEstablishService.filterByNotApprovedStatus().subscribe((res: any) => {
       this.data = res.map(item => {
@@ -228,11 +238,13 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       });
     });
   }
+
   update(modelname) {
     this.modalNameService.update(modelname).subscribe(() => {
       this.alertify.success('Update Modal Name Successfully');
     });
   }
+
   delete(id) {
     this.alertify.confirm('Delete Modal Name', 'Are you sure you want to delete this ModalName ID "' + id + '" ?', () => {
       this.modalNameService.delete(id).subscribe(() => {
@@ -243,12 +255,14 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       });
     });
   }
+
   add(modalname) {
     this.modalNameService.create(modalname).subscribe(() => {
       this.alertify.success('Add Modal Name Successfully');
       this.getAllBPFCStatus();
     });
   }
+
   approval(BPFCEstablishID) {
     const userid = JSON.parse(localStorage.getItem('user')).User.ID;
     this.bPFCEstablishService.approval(BPFCEstablishID, userid).subscribe(() => {
@@ -256,6 +270,7 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       this.getAllBPFCStatus();
     });
   }
+
   done(BPFCEstablishID) {
     const userid = JSON.parse(localStorage.getItem('user')).User.ID;
     this.bPFCEstablishService.done(BPFCEstablishID, userid).subscribe(() => {
@@ -263,6 +278,7 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       this.getAllBPFCStatus();
     });
   }
+
   release() {
     const userid = JSON.parse(localStorage.getItem('user')).User.ID;
     this.bPFCEstablishService.release(this.BPFCEstablishID, userid).subscribe(() => {
@@ -271,6 +287,7 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       this.modalReferenceDetail.close();
     });
   }
+
   reject() {
     const userid = JSON.parse(localStorage.getItem('user')).User.ID;
     this.bPFCEstablishService.reject(this.BPFCEstablishID, userid).subscribe((res: any) => {
@@ -286,6 +303,7 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
   openModalDetail(detail, BPFCEstablishID) {
     this.modalReferenceDetail = this.modalService.open(detail, { size: 'xxl' });
     setTimeout(() => {
@@ -300,6 +318,7 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       this.ingredients = res.list1;
     });
   }
+
   getAllGluesByBPFCID(BPFCEstablishID) {
     this.glueService.getAllGluesByBPFCID(BPFCEstablishID).subscribe((res: any) => {
       this.glues = res.map(item => {
@@ -333,10 +352,12 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
   rowSelected(args: any) {
     const newGlueID = args.data.id;
     this.sortBySup(newGlueID);
   }
+
   toolbarClick(args: any): void {
     switch (args.item.text) {
       case 'Approved':
@@ -353,12 +374,14 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
         break;
     }
   }
+
   getAllUsers() {
     this.buildingUserService.getAllUsers(1, 1000).subscribe((res: any) => {
       this.users = res.result;
       this.filterByFinishedStatus();
     });
   }
+
   /// comment
   createComment() {
     this.comment = {
@@ -375,29 +398,35 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       this.getComments();
     });
   }
+
   updateComment() {
     this.commentService.update(this.comment).subscribe(() => {
       this.alertify.success('The comment has been updated!');
       this.getComments();
     });
   }
+
   deleteComment() {
     this.commentService.delete(this.comment.id).subscribe(() => {
       this.alertify.success('The comment has been deleted!');
       this.getComments();
     });
   }
+
   getComments() {
     this.commentService.getAllCommentByBPFCEstablishID(this.BPFCEstablishID).subscribe((res: any) => {
       this.comments = res;
     });
   }
+
   datetime(d) {
     return this.calendarsService.JSONDateWithTime(d);
   }
+
   username(id) {
     return (this.users.filter((item: any) => item.ID === id)[0] as any).Username;
   }
+
   createdBy(id) {
     if (id === 0) {
       return '#N/A';

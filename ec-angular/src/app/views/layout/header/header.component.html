@@ -66,7 +66,7 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" [routerLink]="[ '/ec/execution/todolist']">{{ 'TODOLIST' | translate }}</a>
-            <a class="dropdown-item" [routerLink]="[ '/ec/setting/ingredient/scanQrcode']">Receiving</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/setting/ingredient/scanQrcode']">Incoming</a>
 
             <a class="dropdown-item" [routerLink]="[ '/ec/execution/addition']">{{ 'ADDITION' | translate }}</a>
             <!-- <a class="dropdown-item" [routerLink]="[ '/ec/line']">Addition</a> -->
@@ -116,7 +116,7 @@
         </li>
       <li class="nav-item">
         <a class="nav-link" href="javascript:;" (click)="logout()"
-          ><i class="fas fa-sign-out-alt"></i> 
+          ><i class="fas fa-sign-out-alt"></i>
           <!-- {{ 'SIGN_OUT' | translate }} -->
         </a>
       </li>

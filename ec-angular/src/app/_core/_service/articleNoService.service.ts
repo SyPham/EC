@@ -22,17 +22,16 @@ export class ArticleNoService {
     params = params.append('pageSize', itemsPerPage);
   }
   return this.http.get<object[]>(this.baseUrl + 'ArticleNo/getArticleNos', { observe: 'response', params})
-  .pipe(
-    map(response => {
-      // console.log(response);
-      paginatedResult.result = response.body;
-      if (response.headers.get('Pagination') != null) {
-        paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
-      }
-      return paginatedResult;
-    }),
-  );
- 
+    .pipe(
+      map(response => {
+        // console.log(response);
+        paginatedResult.result = response.body;
+        if (response.headers.get('Pagination') != null) {
+          paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
+        }
+        return paginatedResult;
+      }),
+    );
   }
   getAlls() {
     return this.http.get<IArticleNo[]>(this.baseUrl + 'ArticleNo/GetAll', {});

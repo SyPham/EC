@@ -25,7 +25,7 @@ namespace EC_API.Models
         public string Batch {get; set ;}
         public int ExpiredTime { get; set; }
         public int Qty { get; set; }
-        public int Consumption { get; set; }
+        public string Consumption { get; set; }
         public int UserID { get; set; }
         public string BuildingName { get; set; }
 

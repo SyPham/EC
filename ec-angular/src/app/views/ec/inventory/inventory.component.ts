@@ -33,7 +33,8 @@ export class InventoryComponent implements OnInit {
   ) { }
 
   public ngOnInit(): void {
-    this.getIngredientInfoReport();
+    // this.getIngredientInfoReport();
+    this.getIngredientInfoReportByBuilding();
   }
   public ngAfterViewInit(): void {
 
@@ -46,26 +47,55 @@ export class InventoryComponent implements OnInit {
       this.data = res ;
     });
   }
+  getIngredientInfoReportByBuilding() {
+    const levels = [1, 2, 3, 4];
+    const building = JSON.parse(localStorage.getItem('level'));
+    let buildingName = building.name;
+    if (levels.includes(building.level)) {
+      buildingName = 'E';
+    }
+    this.ingredientService.getAllIngredientInfoReportByBuildingName(buildingName).subscribe((res: any) => {
+      this.data = res ;
+    });
+  }
+
   startDateOnchange(args) {
     this.startDate = (args.value as Date);
-    this.search(this.startDate, this.endDate);
+    // this.search(this.startDate, this.endDate);
+    this.searchWithBuilding(this.startDate, this.endDate);
   }
 
   endDateOnchange(args) {
     this.endDate = (args.value as Date);
-    this.search(this.startDate, this.endDate);
+    // this.search(this.startDate, this.endDate);
+    this.searchWithBuilding(this.startDate, this.endDate);
   }
 
   onClickDefault() {
     this.startDate = new Date();
     this.endDate = new Date();
-    this.getIngredientInfoReport();
+    // this.getIngredientInfoReport();
+    this.getIngredientInfoReportByBuilding();
   }
-
-
 
   search(startDate, endDate) {
     this.ingredientService.searchInventory(startDate.toDateString(), endDate.toDateString()).subscribe((res: any) => {
+      this.data = res ;
+    });
+  }
+
+  searchWithBuilding(startDate, endDate) {
+    // this.ingredientService.searchInventory(startDate.toDateString(), endDate.toDateString()).subscribe((res: any) => {
+    //   this.data = res ;
+    // });
+    const levels = [1, 2, 3, 4];
+    const building = JSON.parse(localStorage.getItem('level'));
+    let buildingName = building.name;
+    if (levels.includes(building.level)) {
+      buildingName = 'E';
+    }
+    this.ingredientService.searchInventoryByBuildingName(startDate.toDateString(), endDate.toDateString(), buildingName)
+    .subscribe((res: any) => {
       this.data = res ;
     });
   }

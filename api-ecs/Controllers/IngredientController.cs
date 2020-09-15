@@ -49,10 +49,24 @@ namespace EC_API.Controllers
             return Ok(ingredientsInfo);
         }
 
+        [HttpGet("{buildingName}")]
+        public async Task<IActionResult> GetAllIngredientInfoByBuildingName(string buildingName)
+        {
+            var ingredientsInfo = await _ingredientService.GetAllIngredientInfoByBuildingNameAsync(buildingName);
+            return Ok(ingredientsInfo);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAllIngredientInfoReport()
         {
             var ingredientsInfoReport = await _ingredientService.GetAllIngredientInfoReportAsync();
+            return Ok(ingredientsInfoReport);
+        }
+
+        [HttpGet("{buildingName}")]
+        public async Task<IActionResult> GetAllIngredientInfoReportByBuildingName(string buildingName)
+        {
+            var ingredientsInfoReport = await _ingredientService.GetAllIngredientInfoReportByBuildingNameAsync(buildingName);
             return Ok(ingredientsInfoReport);
         }
 
@@ -68,6 +82,13 @@ namespace EC_API.Controllers
         public async Task<IActionResult> Search(DateTime min, DateTime max)
         {
             var lists = await _ingredientService.GetAllIngredientReportByRange(min, max);
+            return Ok(lists);
+        }
+
+        [HttpGet("{min}/{max}/{buildingName}")]
+        public async Task<IActionResult> SearchWithBuildingName(DateTime min, DateTime max, string buildingName)
+        {
+            var lists = await _ingredientService.GetAllIngredientReportByRangeWithBuilding(min, max , buildingName);
             return Ok(lists);
         }
 
@@ -163,6 +184,18 @@ namespace EC_API.Controllers
         {
             return Ok(await _ingredientService.UpdateConsumptionIngredientReport(qrCode,batch,consump));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateConsumptionOfBuildingIngredientReport(UpdateConsumpDto entity)
+        {
+            return Ok(await _ingredientService.UpdateConsumptionOfBuildingIngredientReport(entity));
+        }
+
+        // [HttpPost]
+        // public async Task<IActionResult> UpdateConsumptionOfBuildingIngredientReport(string qrCode, string batch , int consump, string buildingName)
+        // {
+        //     return Ok(await _ingredientService.UpdateConsumptionOfBuildingIngredientReport(qrCode,batch,consump,buildingName));
+        // }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
