@@ -22,6 +22,9 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   @ViewChild('scanText', { static: false }) scanText: ElementRef;
   qrcodeChange: any;
   data: [];
+  dataOut: [];
+  checkout: boolean = false ;
+  checkin: boolean = true ;
   public ingredients: any = [];
   test: any =  'form-control';
   checkCode: boolean ;
@@ -33,10 +36,22 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   ) { }
   public ngOnInit(): void {
     this.getIngredientInfo();
+    this.getIngredientInfoOutput();
     this.getAllIngredient();
   }
   public ngAfterViewInit(): void {
 
+  }
+
+  OutputChange(args) {
+    this.checkin = false ;
+    this.checkout = true ;
+  }
+
+  InputChange(args) {
+    this.checkin = true ;
+    this.checkout = false ;
+    this.getIngredientInfo();
   }
 
   // sau khi scan input thay doi
@@ -56,15 +71,31 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
       buildingName = 'E';
     }
     this.findIngredientCode(barcode);
-    if (this.checkCode === true ) {
-      const userID = JSON.parse(localStorage.getItem('user')).User.ID;
-      this.ingredientService.scanQRCodeFromChemicalWareHouse(args, buildingName, userID).subscribe((res: any) => {
-        if (res === true) {
-          this.getIngredientInfo();
-        }
-      });
+
+    if (this.checkin === true) {
+      if (this.checkCode === true ) {
+        const userID = JSON.parse(localStorage.getItem('user')).User.ID;
+        this.ingredientService.scanQRCodeFromChemicalWareHouse(args, buildingName, userID).subscribe((res: any) => {
+          if (res === true) {
+            this.getIngredientInfo();
+          }
+        });
+      } else {
+        this.alertify.error('Wrong Chemical!');
+      }
     } else {
-      this.alertify.error('Wrong Chemical!');
+        if (this.checkCode === true ) {
+          const userID = JSON.parse(localStorage.getItem('user')).User.ID;
+          this.ingredientService.scanQRCodeOutput(args, buildingName, userID).subscribe((res: any) => {
+            if (res === true) {
+              this.getIngredientInfoOutput();
+            } else {
+              this.alertify.error(res.message);
+            }
+          });
+        } else {
+          this.alertify.error('Wrong Chemical!');
+      }
     }
   }
 
@@ -72,6 +103,13 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   getIngredientInfo() {
     this.ingredientService.getAllIngredientInfo().subscribe((res: any) => {
       this.data = res ;
+      // this.ConvertClass(res);
+    });
+  }
+
+  getIngredientInfoOutput() {
+    this.ingredientService.getAllIngredientInfoOutput().subscribe((res: any) => {
+      this.dataOut = res ;
       // this.ConvertClass(res);
     });
   }

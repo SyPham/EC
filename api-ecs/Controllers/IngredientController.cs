@@ -49,6 +49,13 @@ namespace EC_API.Controllers
             return Ok(ingredientsInfo);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllIngredientInfoOutPut()
+        {
+            var ingredientsInfo = await _ingredientService.GetAllIngredientInfoOutputAsync();
+            return Ok(ingredientsInfo);
+        }
+
         [HttpGet("{buildingName}")]
         public async Task<IActionResult> GetAllIngredientInfoByBuildingName(string buildingName)
         {
@@ -164,6 +171,12 @@ namespace EC_API.Controllers
         public async Task<IActionResult> ScanQRCodeFromChemialWareHouse(string qrCode, string building, int userid)
         {
             return Ok(await _ingredientService.ScanQRCodeFromChemialWareHouse(qrCode, building, userid));
+        }
+
+        [HttpGet("{qrCode}/{building}/{userid}")]
+        public async Task<IActionResult> ScanQRCodeOutput(string qrCode, string building, int userid)
+        {
+            return Ok(await _ingredientService.ScanQRCodeOutput(qrCode, building, userid));
         }
 
         [HttpGet("{qrCode}/{start}/{end}")]

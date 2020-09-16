@@ -141,7 +141,15 @@ namespace EC_API._Services.Services
         {
             var resultStart = DateTime.Now;
             var resultEnd = DateTime.Now;
-            return await _repoIngredientInfo.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date).ProjectTo<IngredientInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
+            return await _repoIngredientInfo.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date && x.Status == false).ProjectTo<IngredientInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
+        }
+
+        // Lấy toàn bộ danh sách IngredientInfo
+        public async Task<List<IngredientInfoDto>> GetAllIngredientInfoOutputAsync()
+        {
+            var resultStart = DateTime.Now;
+            var resultEnd = DateTime.Now;
+            return await _repoIngredientInfo.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date && x.Status == true).ProjectTo<IngredientInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
 
         // Lấy toàn bộ danh sách IngredientInfo theo building
@@ -305,6 +313,54 @@ namespace EC_API._Services.Services
                     UserID = userid,
                     BuildingName = building
                 });
+            return true;
+        }
+
+        public async Task<object> ScanQRCodeOutput(string qrCode,string building, int userid)
+        {
+
+            // load tat ca supplier
+            var supModel = _repoSupplier.GetAll();
+            // lay gia tri "barcode" trong chuỗi qrcode được chuyền lên
+            var Barcode = qrCode.Split('-', '-')[2];
+            // tim ID của ingredient
+            var ingredientID = _repoIngredient.FindAll().FirstOrDefault(x => x.Code.Equals(Barcode)).ID;
+            // Find ingredient theo ingredientID vừa tìm được ở trên
+            var model = _repoIngredient.FindById(ingredientID);
+            // lấy giá trị "Batch" trong chuỗi qrcode được chuyền lên
+            var Batch = qrCode.Split('-', '-')[1];
+
+            var currentDay = DateTime.Now;
+
+
+            // check trong bang ingredientReport xem đã tồn tại code hay chưa , nếu có tồn tại 
+            if (await _repoIngredientInfo.CheckBarCodeExists(Barcode))
+            {
+                // check tiep trong bang ingredientReport xem co du lieu chua 
+                var checkStatus = _repoIngredientInfo.FindAll().Where(x => x.Code == Barcode && x.BuildingName == building && x.Batch == Batch && x.CreatedDate == currentDay.Date && x.Status == false).OrderBy(y => y.CreatedTime).FirstOrDefault();
+                 // nếu khác Null thi update lai
+                if (checkStatus != null)
+                {
+                    checkStatus.Status = true;
+                    await UpdateIngredientInfo(checkStatus);
+                } else {
+                    return new
+                    {
+                        status = false,
+                        message = "Đã dùng hết !"
+                    };
+                }
+            }
+
+            // nếu chưa tồn tại thì thêm mới
+            else {
+                 return new
+                    {
+                        status = false,
+                        message = "Hãy scan qr code Input trước :) !"
+                    };
+            }
+                
             return true;
         }
 

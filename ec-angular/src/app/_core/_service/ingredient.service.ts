@@ -75,12 +75,20 @@ export class IngredientService {
   scanQRCodeFromChemicalWareHouse(qrCode, building, userid) {
     return this.http.get(`${this.baseUrl}ingredient/ScanQRCodeFromChemialWareHouse/${qrCode}/${building}/${userid}`, {});
   }
+
+  scanQRCodeOutput(qrCode, building, userid) {
+    return this.http.get(`${this.baseUrl}ingredient/ScanQRCodeOutput/${qrCode}/${building}/${userid}`, {});
+  }
   getAllSupplier() {
     return this.http.get<ISupplier[]>(this.baseUrl + 'Suppier/GetAll', {});
   }
 
   getAllIngredientInfo() {
     return this.http.get(this.baseUrl + `ingredient/GetAllIngredientInfo`, {});
+  }
+
+  getAllIngredientInfoOutput() {
+    return this.http.get(this.baseUrl + `ingredient/GetAllIngredientInfoOutPut`, {});
   }
 
   getAllIngredientInfoByBuildingName(BuildingName: string) {
