@@ -16,6 +16,7 @@ namespace EC_API._Services.Interface
         Task<bool> UpdatePrint(QrPrintDto entity);
         Task<IngredientDto> ScanQRCode(string qrCode);
         Task<List<IngredientInfoDto>> GetAllIngredientInfoAsync();
+        Task<List<IngredientInfoDto>> GetAllIngredientInfoOutputAsync();
         Task<List<IngredientInfoDto>> GetAllIngredientInfoByBuildingNameAsync(string name);
         Task<List<IngredientInfoReportDto>> GetAllIngredientInfoReportAsync();
         Task<List<IngredientInfoReportDto>> GetAllIngredientInfoReportByBuildingNameAsync(string name);
@@ -23,6 +24,7 @@ namespace EC_API._Services.Interface
         Task<object> GetAllIngredientReportByRangeWithBuilding(DateTime min, DateTime max, string name);
         
         Task<object> ScanQRCodeFromChemialWareHouse(string qrCode, string building, int userid);
+         Task<object> ScanQRCodeOutput(string qrCode, string building, int userid);
         Task<object> ScanQRCodeFromChemialWareHouseDate(string qrCode, string start , string end);
         Task<bool> UpdateConsumptionChemialWareHouse(string qrCode , int consump);
 

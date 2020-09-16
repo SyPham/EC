@@ -29,5 +29,7 @@ namespace EC_API.Models
         public int UserID { get; set; }
         public string BuildingName { get; set; }
 
+        public bool Status { get; set; }
+
     }
 }
