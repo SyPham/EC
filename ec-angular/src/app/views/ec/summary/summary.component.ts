@@ -429,7 +429,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  async onNgModelChangeScanQRCode2(args, item) {
+  async onNgModelChangeScanQRCode(args, item) {
     const input = args;
     if (input.length === 8) {
       try {
@@ -469,7 +469,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  async onNgModelChangeScanQRCode(args, item) {
+  async onNgModelChangeScanQRCode2(args, item) {
     const input = args.split('-') || [];
     const inputdemo = '20200914' + '-' + 'DEFAULT' + '-' + args ;
     const input2 = inputdemo.split('-') || [];

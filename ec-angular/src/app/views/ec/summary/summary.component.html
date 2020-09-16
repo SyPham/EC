@@ -139,7 +139,7 @@
                 </div>
                 <div class="col-xl-10">
                   <input *ngIf="item.scanStatus; else scanBlock" class="form-control form-control-lg"
-                    [autofocus]='item.scanStatus' autoselect [name]="item.code" [(ngModel)]="item.scanCode"
+                    [autofocus]='item.scanStatus' appSelectQrCode [name]="item.code" [(ngModel)]="item.scanCode"
                     [class]="item.info" [ngClass]="lockClass(item)"
                     (ngModelChange)='onNgModelChangeScanQRCode($event, item)' type="text">
                   <ng-template #scanBlock>
