@@ -34,7 +34,7 @@ export class PlanComponent implements OnInit {
   public toolbarOptions: object;
   public editSettings: object;
   startDate: object = new Date();
-  endDate: object = new Date(new Date().setDate(15));
+  endDate: object;
   bpfcID: number;
   level: number;
   hasWorker: boolean;
@@ -84,8 +84,10 @@ export class PlanComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const now = new Date();
+    this.endDate = new Date(now.setDate(now.getDate() + 15));
     this.level = JSON.parse(localStorage.getItem('level')).level;
-    this.pageSettings = { pageSize: 15 };
+    this.pageSettings = { pageCount: 20, pageSizes: true, pageSize: 10};
     this.editparams = { params: { popupHeight: '300px' } };
     if (this.level === WORKER) {
       this.hasWorker = true;

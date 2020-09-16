@@ -46,7 +46,7 @@
     "DEFAULT": "Default",
     "EXPIRED_TIME": "Expired Time (min)",
     "PERCENTAGE": "Percentage",
-    "INGREDIENT_NAME": "Name",
+    "INGREDIENT_NAME": "Chemical Name",
     "ITEM": "Name",
     "ARTICLE_PLACEHOLDER": "Select Article #",
     "ARTICLE_LABEL": "Create Article #",

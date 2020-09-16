@@ -27,7 +27,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
   modalReference: NgbModalRef;
   excelDownloadUrl: string;
   public mfg = this.datePipe.transform(new Date(), 'yyyyMMdd');
-  public exp = this.datePipe.transform(new Date().setMonth(4), 'yyyyMMdd');
+  public exp = this.datePipe.transform(new Date(new Date().setMonth(new Date().getMonth() + 4)), 'yyyyMMdd');
   @ViewChild('barcode')
   public barcode: QRCodeGenerator;
   @ViewChild('printGrid')
@@ -195,7 +195,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
       margin-top: 25px;
     }
     .content .info ul li.subInfo {
-      padding: .15rem .75rem;
+      padding: .20rem .75rem;
     }
     @page {
         size: A4;
@@ -238,7 +238,6 @@ export class IngredientComponent implements OnInit, AfterViewInit {
           <ul>
             <li class='subInfo'>Name: ${ item.name}</li>
               <li class='subInfo'>QR Code: ${ item.qrCode}</li>
-              <li class='subInfo'>Expired Time: ${ item.expiredTime} min</li>
               <li class='subInfo'>MFG: ${ item.productionDate}</li>
               <li class='subInfo'>EXP: ${ item.exp}</li>
           </ul>
@@ -362,7 +361,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
             batch: 'DEFAULT',
             expiredTime: item.expiredTime,
             productionDate: this.datePipe.transform(new Date(), 'yyyyMMdd'),
-            exp: this.datePipe.transform(new Date().setMonth(4), 'yyyyMMdd')
+            exp: this.datePipe.transform(new Date(new Date().setMonth(new Date().getMonth() + 4)), 'yyyyMMdd')
           };
         });
       }, error => {

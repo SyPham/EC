@@ -55,11 +55,15 @@
                   </td>
                 </ng-container>
                 <td rowspan=3 class="my-align">
-                  <div class="btn-group">
-                    <button type="button" (click)="mixingSection(values)" class="btn btn-success btn-sm mr-2">{{ 'MIXING' | translate }}</button>
-                    <button (click)="stirGlue(values)"   type="button" class="btn btn-warning btn-sm mr-2">{{ 'STIR' | translate }}</button>
-                    <button type="button" (click)="pushHistory(values)" class="btn btn-sm btn-info">{{ 'HISTORY' | translate }}</button>
-                  </div>
+                    <button type="button" style="width: 65px;" (click)="mixingSection(values)" class="btn btn-success btn-sm">
+                      <i class="fa fa-glass"></i>
+                      {{ 'MIXING' | translate }}
+                    </button>
+                    <button (click)="stirGlue(values)" style="width: 65px;" type="button" class="btn btn-warning btn-sm my-2">
+                      <i class="fa fa-fan"></i>
+                      {{ 'STIR' | translate }}</button>
+                    <button type="button" style="width: 65px;" (click)="pushHistory(values)" class="btn btn-sm btn-info">
+                      {{ 'HISTORY' | translate }}</button>
                 </td>
               </tr>
               <!-- count -->
@@ -103,7 +107,7 @@
       <div class="col-md-12">
         <div class="row">
 
-          <div class="col-md-2 col-xl-2 text-center">
+          <div class="col-md-4 col-xl-4 text-center">
             <div class="row">
               <div class="col-md-2">
                 <label class="font-weight-bold" for="">{{ 'STEP' | translate }}</label>
@@ -116,12 +120,17 @@
           <div class="col-md-4 col-xl-4 text-center">
             <label class="font-weight-bold" for="">{{ 'INGREDIENT_NAME' | translate}}</label>
           </div>
-          <div class="col-md-4 col-xl-4 text-center">
-            <label class="font-weight-bold" for="">{{ 'EXPECTED' | translate }}</label>
+          <div class="col-md-4">
+            <div class="row">
+              <div class="col-md-8 text-center">
+                 <label class="font-weight-bold" for="">{{ 'EXPECTED' | translate }}</label>
+              </div>
+              <div class="col-md-4 text-center">
+                <label class="font-weight-bold" for="">{{ 'ACTUAL' | translate }}</label>
+              </div>
+            </div>
           </div>
-          <div class="col-md-2 col-xl-2 text-center">
-            <label class="font-weight-bold" for="">{{ 'ACTUAL' | translate }}</label>
-          </div>
+
         </div>
 
         <ng-container *ngFor="let item of ingredients ;let i=index">
@@ -130,7 +139,7 @@
                   <img *ngIf="showArrow(item)" src="../../../../assets/img/gif/arrow.gif" style="width: 30px;height: 30px;"
                     alt="">
                 </div> -->
-            <div class="col-md-2 col-xl-2">
+            <div class="col-md-4 col-xl-4">
               <div class="row">
                 <div class="col-xl-2">
                   <div class="align-middle">
@@ -155,24 +164,26 @@
               <input [class]="item.info" class="form-control form-control-lg lock"
                 [value]="item.name + ' ( ' + item.percentage + '% )'" type="text">
             </div>
-            <div class="form-group col-md-4 col-xl-4">
-              <input *ngIf="item.focusExpected; else expectedBlock" class="form-control form-control-lg"
-                [value]='item.expected' [autofocus]='item.focusExpected' [class]="item.info"
-                (keyup)='onKeyupExpected(item, $event)' type="text">
-              <ng-template #expectedBlock>
-                <input class="form-control form-control-lg lock" [value]='item.expected' [class]="item.info"
-                  (keyup)='onKeyupExpected(item, $event)' type="text">
-              </ng-template>
-            </div>
-            <div class="form-group col-md-2 col-xl-2">
-              <input class="form-control form-control-lg mixing" data-toggle="tooltip" title="tooltip on second input!"
-                *ngIf="item.focusReal; else realElse" [value]='item.real' [id]='item.position' [class]="realClass(item)"
-                [autofocus]='item.focusReal' (keyup)='onKeyupReal(item, $event)' type="text">
-              <ng-template #realElse>
-                <input class="form-control form-control-lg lock mixing" data-toggle="tooltip"
-                  title="tooltip on second input!" [value]='item.real' [id]='item.position' [class]="realClass(item)"
-                  (keyup)='onKeyupReal(item, $event)' type="text">
-              </ng-template>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="col-md-8">
+                  <input *ngIf="item.focusExpected; else expectedBlock" class="form-control form-control-lg" [value]='item.expected'
+                    [autofocus]='item.focusExpected' [class]="item.info" (keyup)='onKeyupExpected(item, $event)' type="text">
+                  <ng-template #expectedBlock>
+                    <input class="form-control form-control-lg lock" [value]='item.expected' [class]="item.info"
+                      (keyup)='onKeyupExpected(item, $event)' type="text">
+                  </ng-template>
+                </div>
+                <div class="col-md-4">
+                  <input class="form-control form-control-lg mixing" data-toggle="tooltip" title="tooltip on second input!"
+                    *ngIf="item.focusReal; else realElse" [value]='item.real' [id]='item.position' [class]="realClass(item)"
+                    [autofocus]='item.focusReal' (keyup)='onKeyupReal(item, $event)' type="text">
+                  <ng-template #realElse>
+                    <input class="form-control form-control-lg lock mixing" data-toggle="tooltip" title="tooltip on second input!"
+                      [value]='item.real' [id]='item.position' [class]="realClass(item)" (keyup)='onKeyupReal(item, $event)' type="text">
+                  </ng-template>
+                </div>
+              </div>
             </div>
             <!-- <div class="col-md-1 text-center">
                   <img *ngIf="check(item)" src="../../../../assets/img/gif/check.jpg" style="width: 30px;height: 30px;" alt="">

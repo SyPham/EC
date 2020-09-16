@@ -16,7 +16,7 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
   public name: any;
   public batch = 'DEFAULT';
   public mfg = this.datePipe.transform(new Date(), 'yyyyMMdd');
-  public exp = this.datePipe.transform(new Date(), 'yyyyMMdd');
+  public exp = this.datePipe.transform(new Date(new Date().setMonth(new Date().getMonth() + 4)), 'yyyyMMdd');
   public id: any;
   public dateValue: any;
   public dateprint: Date = new Date();
@@ -125,7 +125,7 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
       margin-top: 25px;
     }
     .content .info ul li.subInfo {
-       padding: .15rem .75rem;
+       padding: .20rem .75rem;
     }
     @page {
         size: A4;
@@ -157,7 +157,6 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
           <ul>
             <li class='subInfo'>Name: ${this.text}</li>
               <li class='subInfo'>QR Code: ${this.qrcode}</li>
-              <li class='subInfo'>Expired Time: ${this.expiredTime} min</li>
               <li class='subInfo'>MFG: ${this.mfg}</li>
               <li class='subInfo'>EXP: ${this.exp}</li>
           </ul>

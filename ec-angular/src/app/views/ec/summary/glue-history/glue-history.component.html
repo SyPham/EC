@@ -12,27 +12,28 @@
 
           <ejs-grid #grid  [toolbar]='toolbarOptions'
           (toolbarClick)='toolbarClick($event)'
-          [dataSource]='data' allowPaging='true'
+          height='450px'
+          [dataSource]='data'
+          gridLines='Both'
           allowFiltering='true'
           [allowSorting]='true'
           [filterSettings]='filterSettings'
-          [pageSettings]='pageSettings' >
+          showColumnMenu='true'
+          [allowExcelExport]='true'
+          (rowDeselected)='rowDeselected($event)'
+          (rowSelected)='rowSelected($event)' >
               <e-columns>
-                  <e-column field='' headerText='#' width='70' textAlign='Center' isPrimaryKey='true' >
-                      <ng-template #template let-data>
-                          {{count(data.index)}}
-                      </ng-template>
-                  </e-column>
+                  <e-column type='checkbox' isPrimaryKey='true' width='60'></e-column>
                   <e-column field='code' headerText='QRCode' width='200' textAlign='Center' >
                     <ng-template #template let-data>
-                      <ejs-qrcodegenerator style="display: block;"  #barcode [id]="'barcode' + data.index" width="200px" height="150px" mode="SVG" [value]="data.code"></ejs-qrcodegenerator>
+                      <ejs-qrcodegenerator style="display: block;"  #barcode width="100px" height="100px" mode="SVG" [value]="data.code"></ejs-qrcodegenerator>
                     </ng-template>
                   </e-column>
                   <e-column field='glue' headerText='Glue Name' width='200' textAlign='Center' >
                   </e-column>
-                  <e-column field='realTotal' headerText='Real Total' width='200' textAlign='Center' >
+                  <e-column field='realTotal' headerText='Real Total' width='100' textAlign='Center' >
                   </e-column>
-                  <e-column field='mixBy' headerText='Mix By' width='200' textAlign='Center'>
+                  <e-column field='mixBy' headerText='Mix By' width='100' textAlign='Center'>
                   </e-column>
                   <e-column field='expiredTime' headerText='Expired Time' type='date' format='dd/MM/yyyy hh:mm a' width='200' textAlign='Center' >
                   </e-column>
@@ -40,7 +41,32 @@
                   </e-column>
               </e-columns>
           </ejs-grid>
-
+          <table class="table table-hover" style=" position: absolute; top: -500000px;" id="qrcode">
+            <thead class="thead-dark">
+              <tr>
+                <th colspan="2">QR Code</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let item of dataSelected">
+                <tr *ngIf="dataSelected?.length > 0">
+                  <td class="text-center">
+                    <ejs-qrcodegenerator [id]='item.code' style="display: block;" #barcode
+                      width="177px" height="177px" mode="SVG" [value]="item.code"></ejs-qrcodegenerator>
+                  </td>
+                  <td class="text-algin-left">
+                    <div><label>Name:</label> {{item.glue}}</div>
+                    <div><label>QR Code: </label> {{item.code}}</div>
+                    <div><label>MFG:</label> {{item.createdTime}}</div>
+                    <div><label>EXP:</label> {{item.expiredTime}}</div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+      </div>
+      <div class="card-footer">
+        <p class="float-right">{{data?.length}} items</p>
       </div>
   </div>
 </div>

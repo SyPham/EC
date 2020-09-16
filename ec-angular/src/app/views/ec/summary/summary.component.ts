@@ -599,7 +599,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       const max = expected + allow;
       const minRange = this.toFixedIfNecessary(min / 1000, 3);
       const maxRange = this.toFixedIfNecessary(max / 1000, 3);
-      const expectedRange = `${minRange}kg - ${maxRange}kg ( ${this.toFixedIfNecessary(min, 3)}g - ${this.toFixedIfNecessary(max, 3)}g )`;
+      const expectedRange = `${minRange}kg - ${maxRange}kg`;
       if (allow === 0) {
         const kgValue = this.toFixedIfNecessary(expected / 1000, 3);
         this.changeExpected(position, `${kgValue}kg (${expected}g)`);

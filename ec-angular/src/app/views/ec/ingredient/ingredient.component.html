@@ -40,7 +40,7 @@
           [dataSource]='dataPrint' rowHeight='38'
           [allowSelection]='true'
           [selectionSettings]="{ checkboxMode: 'ResetOnRowClick'}"
-          height='600'
+          height='450'
           [editSettings]='editSettings'
            (actionBegin)="actionBegin($event)"
           (rowDeselected)='rowDeselected($event)'
@@ -63,10 +63,10 @@
         </ejs-grid>
       </div>
       <div class="col-xl-4">
-        <table class="table table-hover" id="qrcode">
+        <table class="table table-hover" id="qrcode" height='450'>
           <thead class="thead-dark">
             <tr>
-              <th colspan="2">Barcode</th>
+              <th colspan="2">QR Code</th>
             </tr>
           </thead>
           <tbody>
@@ -80,7 +80,6 @@
                 <td class="text-algin-left">
                     <div><label>Name:</label> {{item.name}}</div>
                     <div><label>QR Code: </label> {{item.productionDate}}-{{item.batch}}-{{item.code}}</div>
-                    <div><label>Expired Time: </label> {{item.expiredTime}} min</div>
                     <div><label>MFG:</label> {{item.productionDate}}</div>
                     <div><label>EXP:</label> {{item.exp}}</div>
                     <div class="text-danger font-weight-bold">
