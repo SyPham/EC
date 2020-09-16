@@ -80,5 +80,6 @@
     "CREATED_DATE_LABEL": "Ngày Giờ Tạo",
     "WORK_PLAN_LABEL": "Kế Hoạch Làm Việc",
     "FILTER_LABEL": "Lọc",
-    "INVENTORY_LABEL": "Kiểm Kê Hàng Tồn Kho"
+    "INVENTORY_LABEL": "Kiểm Kê Hàng Tồn Kho",
+    "SAVE": "Lưu Lại"
 }

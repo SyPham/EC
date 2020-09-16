@@ -190,7 +190,10 @@ namespace EC_API._Services.Services
 
         public async Task<List<GlueCreateDto1>> GetAllGluesByBPFCID(int BPFCID)
         {
-            var lists = await _repoGlue.FindAll().Where(x => x.BPFCEstablishID == BPFCID && x.isShow == true)
+            var lists = await _repoGlue.FindAll()
+                .Include(x => x.GlueIngredients)
+                .ThenInclude(x => x.Ingredient)
+                .Where(x => x.BPFCEstablishID == BPFCID && x.isShow == true)
                 .ProjectTo<GlueCreateDto1>(_configMapper)
                 .OrderByDescending(x => x.ID).Select(x => new GlueCreateDto1
                 {
@@ -208,6 +211,7 @@ namespace EC_API._Services.Services
                     Consumption = x.Consumption,
                     ExpiredTime = x.ExpiredTime,
                     CreatedBy = x.CreatedBy,
+                    GlueIngredients = x.GlueIngredients,
                     Chemical = new GlueDto1 { ID = x.GlueID, Name = x.Name }
                 }).ToListAsync();
             return lists;

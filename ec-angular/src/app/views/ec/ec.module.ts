@@ -29,9 +29,6 @@ import { PlanComponent } from './plan/plan.component';
 import { PrintBarCodeComponent } from './print-bar-code/print-bar-code.component';
 import { LineComponent } from './line/line.component';
 import { SuppilerComponent } from './suppiler/suppiler.component';
-import { PartName1Component } from './part-name1/part-name1.component';
-import { PartName2Component } from './part-name2/part-name2.component';
-import { MaterialNameComponent } from './material-name/material-name.component';
 import { BuildingComponent } from './building/building.component';
 import { BuildingUserComponent } from './building-user/building-user.component';
 import { SummaryComponent } from './summary/summary.component';
@@ -130,9 +127,6 @@ if (lang) {
     PrintBarCodeComponent,
     LineComponent,
     SuppilerComponent,
-    PartName1Component,
-    PartName2Component,
-    MaterialNameComponent,
     BuildingComponent,
     BuildingModalComponent,
     BuildingUserComponent,

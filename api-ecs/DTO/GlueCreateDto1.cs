@@ -31,6 +31,7 @@ namespace EC_API.DTO
         public int KindID { get; set; }
         public int PartID { get; set; }
         public int MaterialID { get; set; }
+        public List<GlueIngredient> GlueIngredients { get; set; }
         public List<Ingredient> Ingredients { get; set; }
         public GlueDto1 Chemical { get; set; }
     }

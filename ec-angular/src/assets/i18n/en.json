@@ -81,5 +81,6 @@
     "CREATED_DATE_LABEL": "Created Date",
     "WORK_PLAN_LABEL": "Work Plan",
     "FILTER_LABEL": "Filter",
-    "INVENTORY_LABEL": "Inventory"
+    "INVENTORY_LABEL": "Inventory",
+    "SAVE": "Save"
 }

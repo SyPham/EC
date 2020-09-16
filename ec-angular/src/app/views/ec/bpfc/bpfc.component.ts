@@ -62,6 +62,7 @@ import { KindService } from 'src/app/_core/_service/kind.service';
 import { PartService } from 'src/app/_core/_service/part.service';
 import { MaterialService } from 'src/app/_core/_service/material.service';
 import { BuildingUserService } from 'src/app/_core/_service/building.user.service';
+import { SwitchComponent } from '@syncfusion/ej2-angular-buttons';
 
 declare const $: any;
 const LEVEL_1 = 3;
@@ -73,6 +74,7 @@ const LEVEL_1 = 3;
 })
 export class BpfcComponent implements OnInit, AfterViewInit {
   modalReference: NgbModalRef;
+  @ViewChild('switch') public switch: SwitchComponent;
   data: IGlue[];
   modelNameData: any;
   modelNoData: any;
@@ -126,12 +128,12 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     materialNO: '',
     unit: 0
   };
-  Editpercentage = {
+  editPercentage = {
     glueID: 0,
     ingredientID: 0,
     percentage: 0,
   };
-  Editallow = {
+  editAllow = {
     glueID: 0,
     ingredientID: 0,
     allow: 0,
@@ -196,9 +198,6 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   public fieldsGlueChemical: object = { text: 'name', value: 'name' };
   public textGlue = 'Select Model Name';
   public textModelName = 'Select Model Name - Model #';
-  public textGluePartname1 = 'Select ';
-  public textGluePartname2 = 'Select';
-  public textGluePartname3 = 'Select';
   public textGlueMaterial = 'Select ';
   public fieldsGlue2: object = { text: 'name', value: 'id' };
   public valueArticleNo: any;
@@ -228,9 +227,6 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   pathNameEdit3: any;
   materialNameEdit: any;
   showBarCode: boolean;
-  partname1: any;
-  partname2: any;
-  partname3: any;
   materialname: any;
   editparamsHis: any = { params: { format: 'n' } };
   public dataPosition: object[] = [
@@ -252,7 +248,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   editParams: IEditCell;
   public fieldsGlueEdit: object = { text: 'name', value: 'name' };
   public fieldsChemical: object = { text: 'name', value: 'name' };
-  public fieldsposition: object = { text: 'name', value: 'name' };
+  public fieldsPosition: object = { text: 'name', value: 'name' };
   public tooltip: Tooltip;
   public ingredientID: any;
   public subID: any;
@@ -342,7 +338,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     private buildingUserService: BuildingUserService,
     private artProcessService: ArtProcessService,
     private ingredientService: IngredientService
-  ) {}
+  ) { }
 
   ngOnInit() {
     localStorage.removeItem('details');
@@ -482,7 +478,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       this.gridglue.refresh();
     }
   }
-  onCreatedGridGlue() {}
+  onCreatedGridGlue() { }
   ngAfterViewInit() {
     $('[data-toggle="tooltip"]').tooltip();
     this.getBuilding();
@@ -628,7 +624,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   /// End Grid Glue Event ------------------------------------------------------------------------------
 
   /// Begin Grid Ingredent Event ------------------------------------------------------------------------------
-  onChangeposition(args, data, index) {
+  onChangePosition(args, data, index) {
     this.modified = false;
     this.history.BeforeAllow = this.glueNewName;
     let details = this.getLocalStore('details');
@@ -702,7 +698,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     this.modifiedGlue = true;
   }
 
-  tollbarClickIngredient(args) {
+  toolbarClickIngredient(args) {
     switch (args.item.text) {
       case 'Add':
         args.cancel = true;
@@ -715,7 +711,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     this.setFocus = args.column; // Get the column from Double click event
   }
 
-  rowSelectedIngridient(args) {
+  rowSelectedIngredient(args) {
     this.ingridientID = args.data.id;
   }
 
@@ -805,9 +801,9 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     this.nameGlue = glueIngredient[0]?.ingredientName || '';
     this.nameGlues =
       glueIngredient[0]?.ingredientName +
-        '^' +
-        this.glueIngredientDetail[0].allow +
-        '%' || '';
+      '^' +
+      this.glueIngredientDetail[0].allow +
+      '%' || '';
     this.A = glueIngredient[0].ingredientName;
     this.glueIngredientDetail = this.renderchemical();
     if (this.glueIngredientDetail[1] === undefined) {
@@ -946,9 +942,9 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       this.nameGlue = glueIngredient[0]?.ingredientName || '';
       this.nameGlues =
         glueIngredient[0]?.ingredientName +
-          '^' +
-          this.glueIngredientDetail[0]?.allow +
-          '%' || '';
+        '^' +
+        this.glueIngredientDetail[0]?.allow +
+        '%' || '';
       this.A = glueIngredient[0]?.ingredientName || '';
       if (this.glueIngredientDetail[1] === undefined) {
         this.B = '';
@@ -1062,17 +1058,18 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     }
   }
 
-  actionBeginIngridient(args) {
+  actionBeginIngredient(args) {
     if (args.requestType === 'beginEdit') {
-      this.Editpercentage.glueID = this.glueid;
-      this.Editpercentage.ingredientID = args.rowData.id;
+      this.editPercentage.glueID = this.glueid;
+      this.editPercentage.ingredientID = args.rowData.id;
       this.percentageDefault = args.rowData.percentage;
-      this.Editallow.glueID = this.glueid;
+      this.editAllow.glueID = this.glueid;
       this.history.BeforeAllow = '';
       this.history.AfterAllow = '';
-      this.Editallow.ingredientID = args.rowData.id;
+      this.editAllow.ingredientID = args.rowData.id;
       this.allowDefault = args.rowData.allow;
     }
+
     if (args.requestType === 'save') {
       this.percentageEdit = {
         percentage: Number(args.data.percentage),
@@ -1082,12 +1079,14 @@ export class BpfcComponent implements OnInit, AfterViewInit {
         allow: Number(args.data.allow),
         id: Number(args.rowData.id),
       };
-      this.Editpercentage.percentage = args.data.percentage;
-      this.Editallow.allow = args.data.allow;
-      const percentageChanged =
-        Number(this.percentageDefault) !== Number(this.percentageChange);
-      const AllowChanged =
-        Number(this.allowDefault) !== Number(this.allowChange);
+      if (args.action === 'edit') {
+        this.allowChange = args.data.allow;
+        this.percentageChange = args.data.percentage;
+      }
+      this.editPercentage.percentage = args.data.percentage;
+      this.editAllow.allow = args.data.allow;
+      const percentageChanged = Number(this.percentageDefault) !== Number(this.percentageChange);
+      const allowChanged = Number(this.allowDefault) !== Number(this.allowChange);
       if (percentageChanged) {
         // update lai percentage
         this.modified = false;
@@ -1099,11 +1098,18 @@ export class BpfcComponent implements OnInit, AfterViewInit {
         );
         details[objIndex].percentage = args.data.percentage;
         this.setLocalStore('details', details);
-        // this.glueIngredientDetail = this.getLocalStore('details');
         this.updateChemicals();
+        // update glueIngredient
+        if (this.gridglue.getSelectedRecords().length > 0) {
+          console.log('glue update percentage', (this.gridglue.getSelectedRecords()[0] as any).glueIngredients);
+          console.log('ingredient update percentage', args.data);
+          const glueIngredients = (this.gridglue.getSelectedRecords()[0] as any).glueIngredients;
+          const index = glueIngredients.findIndex((obj) => obj.ingredientID === args.data.id);
+          glueIngredients[index].percentage = args.data.percentage;
+        }
       }
 
-      if (AllowChanged) {
+      if (allowChanged) {
         // update lai allow
         const details = this.getLocalStore('details');
         const objIndex = details.findIndex(
@@ -1116,13 +1122,25 @@ export class BpfcComponent implements OnInit, AfterViewInit {
         this.modified = false;
         this.history.BeforeAllow = this.glueNewName;
         this.updateChemicals();
+
+        // update glueIngredient
+        if (this.gridglue.getSelectedRecords().length > 0) {
+          console.log('glue update alow', (this.gridglue.getSelectedRecords()[0] as any).glueIngredients);
+          console.log('ingredient update alow', args.data);
+          const glueIngredients = (this.gridglue.getSelectedRecords()[0] as any).glueIngredients;
+          const index = glueIngredients.findIndex((obj) => obj.ingredientID === args.data.id);
+          glueIngredients[index].allow = args.data.allow;
+        }
+
       }
     }
     if (args.requestType === 'delete') {
       this.deleteIngredient();
     }
   }
-
+  updateGlueIngredient() {
+    // if (this.gridglue.getSelectedRecords()[0])
+  }
   loadPreview(glueid) {
     this.glueid = Number(glueid);
     this.getIngredients();
@@ -1211,8 +1229,8 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     modalRef.componentInstance.ingredient = this.ingredient;
     modalRef.componentInstance.title = 'Add Ingredient';
     modalRef.result.then(
-      (result) => {},
-      (reason) => {}
+      (result) => { },
+      (reason) => { }
     );
   }
 
@@ -1423,8 +1441,8 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     this.alertify.confirm(
       'Delete Ingredient',
       'Are you sure you want to delete this IngredientID "' +
-        ingredient.id +
-        '" ?',
+      ingredient.id +
+      '" ?',
       () => {
         this.ingredientService.delete(ingredient.id).subscribe(
           () => {
@@ -1443,6 +1461,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     this.glueService.getAllGluesByBPFCID(BPFCID).subscribe((res: any) => {
       if (this.ingredientID === undefined) {
         this.glues = res;
+        console.log('glue: ', this.glues);
         if (res.length > 0) {
           this.detailGlue = true;
         }
@@ -1543,7 +1562,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
                 voc: item.voc,
                 materialNO: item.materialNO,
                 unit: item.unit
-                };
+              };
               return ingredient;
             });
             this.glueIngredientDetail = details;
@@ -1602,21 +1621,48 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       }
     );
   }
-
+  save() {
+    if (this.gridglue.getSelectedRowIndexes().length > 0) {
+      const details = this.getLocalStore('details');
+      const selectedrecords = this.gridglue.getSelectedRecords()[0] as IGlue; // Get the selected records.
+      selectedrecords.expiredTime = details.filter(
+        (item) => item.position === 'A'
+      )[0].expiredTime;
+      selectedrecords.kindID =
+        selectedrecords.kindID === 0 ? null : selectedrecords.kindID;
+      selectedrecords.partID =
+        selectedrecords.partID === 0 ? null : selectedrecords.partID;
+      selectedrecords.materialID =
+        selectedrecords.materialID === 0 ? null : selectedrecords.materialID;
+      this.selectedRow = this.gridglue.getSelectedRowIndexes();
+      this.glueService.update(selectedrecords).subscribe((res) => {
+        this.alertify.success('Save successed!');
+        this.getAllGluesByBPFCID(this.BPFCID);
+        this.detailGlue = true;
+        this.modified = true;
+        const bpfcInfo = {
+          modelNameID: this.modelNameID,
+          modelNoID: this.modelNoID,
+          articleNoID: this.articleNoID,
+          artProcessID: this.artProcessID,
+        };
+        this.getBPFCID(bpfcInfo);
+        this.getAllBPFC();
+      });
+      if (details.length > 0) {
+        for (const item of details) {
+          this.mapGlueIngredient(item);
+        }
+        this.alertify.success('Successfully!');
+        this.modified = true;
+      }
+    }
+  }
   finished() {
     const userid = JSON.parse(localStorage.getItem('user')).User.ID;
     if (this.gridglue.getSelectedRowIndexes().length === 0) {
       this.alertify.warning('Please select a glue and make the fomula!', true);
     } else {
-      const obj = {
-        Action: 'Created',
-        BPFCEstablishID: this.BPFCID,
-        GlueID: this.glueid,
-        Before: '',
-        After: this.GlueNameDefault,
-        UserID: userid,
-        Remark: '',
-      };
       // this.history.Action = 'Created';
       this.history.BPFCEstablishID = this.BPFCID;
       this.history.GlueID = this.glueid;
@@ -1625,7 +1671,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       this.history.UserID = userid;
       this.bPFCEstablishService
         .AddHistoryBPFC(this.history)
-        .subscribe(() => {});
+        .subscribe(() => { });
 
       const details = this.getLocalStore('details');
       const selectedrecords = this.gridglue.getSelectedRecords()[0] as IGlue; // Get the selected records.
@@ -1668,7 +1714,8 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     this.glue.kindID = null;
     this.glue.partID = null;
     this.glue.materialID = null;
-    (this.glue.consumption = ''), (this.showBarCode = false);
+    this.glue.consumption = '';
+    this.showBarCode = false;
   }
   update() {
     this.glueService.update(this.glue).subscribe((res) => {
@@ -1706,306 +1753,393 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     );
   }
   approval() {
-    const userid = JSON.parse(localStorage.getItem('user')).User.ID;
-    this.bPFCEstablishService.approval(this.BPFCID, userid).subscribe((res) => {
-      this.alertify.success('The BPFC has been approved!');
-      this.createdStatus = this.approvalStatus;
-      const value = this.modelNameDropdownlist.value;
-      const bpfc = this.modelNameDropdownlist.getDataByValue(value) as any;
-      this.modelNameDropdownlist.valueTemplate = `(${this.checkStatus(
-        this.approvalStatus,
-        this.createdStatus
-      )}) ${bpfc.name}`;
-      this.getAllBPFC();
-    });
-  }
-  done() {
-    const userid = JSON.parse(localStorage.getItem('user')).User.ID;
-    const obj = {
-      Action: 'Done',
-      BPFCEstablishID: this.BPFCID,
-      GlueID: 0,
-      UserID: userid,
-    };
-    // if (this.createdStatus === false) {
-    //   this.bPFCEstablishService.AddHistoryBPFC(obj).subscribe(() => {
-    //   });
-    // } else {
-    //   obj.Action = 'Undone';
-    //   this.bPFCEstablishService.AddHistoryBPFC(obj).subscribe(() => {
-    //   });
-    // }
-    this.bPFCEstablishService
-      .done(this.BPFCID, userid)
-      .subscribe((res: any) => {
-        if (res.status === true) {
-          this.alertify.success(res.message);
+    const glueData = (this.gridglue.dataSource as any);
+    let flagAllow = false;
+    let flagPercentage = false;
+    let flagConsumption = false;
+    if (glueData) {
+      for (const glue of glueData) {
+        if (glue.glueIngredients.length > 0) {
+          const glueIngredients = glue.glueIngredients.filter(x => x.position !== 'A');
+          for (const item of glueIngredients) {
+            if (item.allow <= 0) {
+              flagAllow = false;
+              this.approvalStatus = !this.approvalStatus;
+              this.alertify.warning(`The allow of checmical name ${item.ingredient.name} is greater than 0 <br>
+              Mức cho phép của hóa chất ${item.ingredient.name} phải lớn hơn 0!<br>
+               <label>Glue Name: </label> ${glue.name} <br>
+              `, true);
+              return;
+            }
+            if (item.percentage <= 0) {
+              flagPercentage = false;
+              this.approvalStatus = !this.approvalStatus;
+              this.alertify.warning(`The percentage of checmical name ${item.ingredient.name} is greater than 0 <br>
+              Phần trăm của hóa chất ${item.ingredient.name} phải lớn hơn 0!<br>
+               <label>Glue Name: </label> ${glue.name} <br>
+              `, true);
+              return;
+            }
+            flagAllow = true;
+            flagPercentage = true;
+          }
+        }
+        if (glue.consumption <= 0) {
+          flagConsumption = false;
+          this.approvalStatus = !this.approvalStatus;
+          this.alertify.warning(`The consumption of glue name ${glue.name} is greater than 0 <br>
+          Mức tiêu thụ của keo ${glue.name} phải lớn hơn 0! <br>
+          <label>Glue Name: </label> ${glue.name} <br>
+          `, true);
+          return;
+        }
+        flagConsumption = true;
+      }
+      if (flagAllow && flagPercentage && flagConsumption) {
+        const userid = JSON.parse(localStorage.getItem('user')).User.ID;
+        this.bPFCEstablishService.approval(this.BPFCID, userid).subscribe((res) => {
+          this.alertify.success('The BPFC has been approved!');
+          this.createdStatus = this.approvalStatus;
+          const value = this.modelNameDropdownlist.value;
+          const bpfc = this.modelNameDropdownlist.getDataByValue(value) as any;
+          this.modelNameDropdownlist.valueTemplate = `(${this.checkStatus(
+            this.approvalStatus,
+            this.createdStatus
+          )}) ${bpfc.name}`;
           this.getAllBPFC();
+        });
+      }
+    }
+  }
+    done() {
+      const glueData = (this.gridglue.dataSource as any);
+      let flagAllow = false;
+      let flagPercentage = false;
+      let flagConsumption = false;
+      if (glueData) {
+        for (const glue of glueData) {
+          if (glue.glueIngredients.length > 0) {
+            const glueIngredients = glue.glueIngredients.filter(x => x.position !== 'A');
+            for (const item of glueIngredients) {
+              if (item.allow <= 0) {
+                flagAllow = false;
+                this.createdStatus = !this.createdStatus;
+                this.alertify.warning(`The allow of checmical name ${item.ingredient.name} is greater than 0 <br>
+              Mức cho phép của hóa chất ${item.ingredient.name} phải lớn hơn 0!<br>
+               <label>Glue Name: </label> ${glue.name} <br>
+              `, true);
+                return;
+              }
+              if (item.percentage <= 0) {
+                flagPercentage = false;
+                this.createdStatus = !this.createdStatus;
+                this.alertify.warning(`The percentage of checmical name ${item.ingredient.name} is greater than 0 <br>
+              Phần trăm của hóa chất ${item.ingredient.name} phải lớn hơn 0!<br>
+               <label>Glue Name: </label> ${glue.name} <br>
+              `, true);
+                return;
+              }
+              flagAllow = true;
+              flagPercentage = true;
+            }
+          }
+          if (glue.consumption <= 0) {
+            flagConsumption = false;
+            this.createdStatus = !this.createdStatus;
+            this.alertify.warning(`The consumption of glue name ${glue.name} is greater than 0 <br>
+          Mức tiêu thụ của keo ${glue.name} phải lớn hơn 0! <br>
+          <label>Glue Name: </label> ${glue.name} <br>
+          `, true);
+            return;
+          }
+          flagConsumption = true;
+        }
+        if (flagAllow && flagPercentage && flagConsumption) {
+          const userid = JSON.parse(localStorage.getItem('user')).User.ID;
+          const obj = {
+            Action: 'Done',
+            BPFCEstablishID: this.BPFCID,
+            GlueID: 0,
+            UserID: userid,
+          };
+          this.bPFCEstablishService
+            .done(this.BPFCID, userid)
+            .subscribe((res: any) => {
+              if (res.status === true) {
+                this.alertify.success(res.message);
+                this.createdStatus = this.createdStatus;
+                this.getAllBPFC();
+              } else {
+                this.alertify.success(res.message);
+              }
+            });
+        }
+      }
+    }
+
+    getModelNames() {
+      this.modalNameService.getAllModalName().subscribe((res) => {
+        this.modelNameData = res.map((item: any) => {
+          return {
+            id: item.id,
+            name: item.name,
+          };
+        });
+      });
+    }
+    getArticleNoByModelNameID(modelNoID) {
+      this.articleNoService
+        .getArticleNoByModelNoID(modelNoID)
+        .subscribe((res) => {
+          this.articleNoData = res;
+        });
+    }
+    getModelNoByModelNameID(modelNameID) {
+      this.modelNoService.getModelNoByModelNameID(modelNameID)
+        .subscribe((res) => {
+          this.modelNoData = res;
+        });
+    }
+    getArtProcessByArticleNoID(articleNoID) {
+      this.artProcessService
+        .getArtProcessByArticleNoID(articleNoID)
+        .subscribe((res: any) => {
+          this.artProcessData = res.map((item) => {
+            return {
+              id: item.id,
+              name: item.processID === 1 ? 'ASY' : 'STF',
+            };
+          });
+        });
+    }
+    getAllProcess() {
+      this.artProcessService.GetAllProcess().subscribe((res: any) => {
+        this.artProcessDataClone2 = res;
+      });
+    }
+    getAllKind() {
+      this.kindService.getAllKind().subscribe((res) => {
+        this.kinds = res;
+      });
+    }
+    getAllPart() {
+      this.partService.getAllPart().subscribe((res) => {
+        this.parts = res;
+      });
+    }
+    getAllMaterial() {
+      this.materialService.getAllMaterial().subscribe((res) => {
+        this.materials = res;
+      });
+    }
+    getIngredientsByGlueID() {
+      this.ingredientService
+        .getIngredientsByGlueID(this.glueid)
+        .subscribe((res: any) => {
+          this.ingredients1 = res.list1;
+          this.ingredients2 = res.list2;
+        });
+    }
+    getAllSupllier() {
+      this.ingredientService.getAllSupplier().subscribe((res) => {
+        this.supplier = res;
+      });
+    }
+    getArticleNoByModelNoID(modelNoID) {
+      this.articleNoService
+        .getArticleNoByModelNoID(modelNoID)
+        .subscribe((res: any) => {
+          this.articleNosData = res;
+        });
+    }
+    getBPFCID(bpfcInfo) {
+      this.bPFCEstablishService.getBPFCID(bpfcInfo).subscribe((bpfc: any) => {
+        this.resetLifeCycleBPFC();
+        this.BPFCID = bpfc?.id;
+        this.approvalStatus = bpfc.approvalStatus;
+        this.createdStatus = bpfc.finishedStatus;
+        localStorage.removeItem('details');
+        this.glue.BPFCEstablishID = this.BPFCID;
+        this.getAllGluesByBPFCID(this.BPFCID);
+        this.getAllPart();
+        this.getAllKind();
+        this.getAllMaterial();
+        this.getAllIngredient();
+        this.existGlue = true;
+        this.modified = true;
+      });
+    }
+    OndataBound(args) {
+      this.modelNoDropdownlist.value = this.value;
+    }
+    /// API Clone
+    getModelNamesClone() {
+      this.modalNameService.getAllModalName().subscribe((res) => {
+        this.modelNameDataClone = res.map((item: any) => {
+          return {
+            id: item.id,
+            name: item.name,
+          };
+        });
+        this.getModelNoByModelNameIDClone(this.modelNameIDClone);
+        this.articleNosDataClone = [];
+        this.artProcessDataClone = [];
+      });
+    }
+    getArticleNoByModelNameIDClone(modelNoID) {
+      this.articleNoService
+        .getArticleNoByModelNoID(modelNoID)
+        .subscribe((res) => {
+          this.articleNosDataClone = res;
+        });
+    }
+    getModelNoByModelNameIDClone(modelNameID) {
+      this.modelNoService
+        .getModelNoByModelNameID(modelNameID)
+        .subscribe((res: any) => {
+          this.modelNOsDataClone = res;
+        });
+      this.getArticleNoByModelNameIDClone(this.valuemodelNo);
+    }
+    getArtProcessByArticleNoIDClone(articleNoID) {
+      this.artProcessService
+        .getArtProcessByArticleNoID(articleNoID)
+        .subscribe((res: any) => {
+          this.artProcessDataClone = res.map((item) => {
+            return {
+              id: item.id,
+              name: item.ProcessID === 1 ? 'ASY' : 'STF',
+            };
+          });
+        });
+    }
+    clone(clone) {
+      this.modalNameService.clone(clone).subscribe((res: any) => {
+        if (res.status === true) {
+          this.alertify.success('The BPFC has been cloned successfully!');
+          this.modalService.dismissAll();
+          this.getArtProcessByArticleNoID(this.articleNoID);
+          this.clearFormClone();
         } else {
-          this.alertify.success(res.message);
+          this.alertify.error('The BPFC exists!');
         }
       });
-  }
-  getModelNames() {
-    this.modalNameService.getAllModalName().subscribe((res) => {
-      this.modelNameData = res.map((item: any) => {
-        return {
-          id: item.id,
-          name: item.name,
-        };
-      });
-    });
-  }
-  getArticleNoByModelNameID(modelNoID) {
-    this.articleNoService
-      .getArticleNoByModelNoID(modelNoID)
-      .subscribe((res) => {
-        this.articleNoData = res;
-      });
-  }
-  getModelNoByModelNameID(modelNameID) {
-    this.modelNoService.getModelNoByModelNameID(modelNameID)
-    .subscribe((res) => {
-      this.modelNoData = res;
-    });
-  }
-  getArtProcessByArticleNoID(articleNoID) {
-    this.artProcessService
-      .getArtProcessByArticleNoID(articleNoID)
-      .subscribe((res: any) => {
-        this.artProcessData = res.map((item) => {
-          return {
-            id: item.id,
-            name: item.processID === 1 ? 'ASY' : 'STF',
-          };
-        });
-      });
-  }
-  getAllProcess() {
-    this.artProcessService.GetAllProcess().subscribe((res: any) => {
-      this.artProcessDataClone2 = res;
-    });
-  }
-  getAllKind() {
-    this.kindService.getAllKind().subscribe((res) => {
-      this.kinds = res;
-    });
-  }
-  getAllPart() {
-    this.partService.getAllPart().subscribe((res) => {
-      this.parts = res;
-    });
-  }
-  getAllMaterial() {
-    this.materialService.getAllMaterial().subscribe((res) => {
-      this.materials = res;
-    });
-  }
-  getIngredientsByGlueID() {
-    this.ingredientService
-      .getIngredientsByGlueID(this.glueid)
-      .subscribe((res: any) => {
-        this.ingredients1 = res.list1;
-        this.ingredients2 = res.list2;
-      });
-  }
-  getAllSupllier() {
-    this.ingredientService.getAllSupplier().subscribe((res) => {
-      this.supplier = res;
-    });
-  }
-  getArticleNoByModelNoID(modelNoID) {
-    this.articleNoService
-      .getArticleNoByModelNoID(modelNoID)
-      .subscribe((res: any) => {
-        this.articleNosData = res;
-      });
-  }
-  getBPFCID(bpfcInfo) {
-    this.bPFCEstablishService.getBPFCID(bpfcInfo).subscribe((bpfc: any) => {
-      this.resetLifeCycleBPFC();
-      this.BPFCID = bpfc?.id;
-      this.approvalStatus = bpfc.approvalStatus;
-      this.createdStatus = bpfc.finishedStatus;
-      localStorage.removeItem('details');
-      this.glue.BPFCEstablishID = this.BPFCID;
-      this.getAllGluesByBPFCID(this.BPFCID);
-      this.getAllPart();
-      this.getAllKind();
-      this.getAllMaterial();
-      this.getAllIngredient();
-      this.existGlue = true;
-      this.modified = true;
-    });
-  }
-  OndataBound(args) {
-    this.modelNoDropdownlist.value = this.value;
-  }
-  /// API Clone
-  getModelNamesClone() {
-    this.modalNameService.getAllModalName().subscribe((res) => {
-      this.modelNameDataClone = res.map((item: any) => {
-        return {
-          id: item.id,
-          name: item.name,
-        };
-      });
-      this.getModelNoByModelNameIDClone(this.modelNameIDClone);
-      this.articleNosDataClone = [];
-      this.artProcessDataClone = [];
-    });
-  }
-  getArticleNoByModelNameIDClone(modelNoID) {
-    this.articleNoService
-      .getArticleNoByModelNoID(modelNoID)
-      .subscribe((res) => {
-        this.articleNosDataClone = res;
-      });
-  }
-  getModelNoByModelNameIDClone(modelNameID) {
-    this.modelNoService
-      .getModelNoByModelNameID(modelNameID)
-      .subscribe((res: any) => {
-        this.modelNOsDataClone = res;
-      });
-    this.getArticleNoByModelNameIDClone(this.valuemodelNo);
-  }
-  getArtProcessByArticleNoIDClone(articleNoID) {
-    this.artProcessService
-      .getArtProcessByArticleNoID(articleNoID)
-      .subscribe((res: any) => {
-        this.artProcessDataClone = res.map((item) => {
-          return {
-            id: item.id,
-            name: item.ProcessID === 1 ? 'ASY' : 'STF',
-          };
-        });
-      });
-  }
-  clone(clone) {
-    this.modalNameService.clone(clone).subscribe((res: any) => {
-      if (res.status === true) {
-        this.alertify.success('The BPFC has been cloned successfully!');
-        this.modalService.dismissAll();
-        this.getArtProcessByArticleNoID(this.articleNoID);
-        this.clearFormClone();
-      } else {
-        this.alertify.error('The BPFC exists!');
-      }
-    });
-  }
-  // END CLone
-  // End API ------------------------------------------------------------------------------
+    }
+    // END CLone
+    // End API ------------------------------------------------------------------------------
 
-  onChangeModelName(args) {
-    this.resetLifeCycleBPFC();
-    this.modelNameID = args.value;
-    this.getModelNoByModelNameID(this.modelNameID);
-    this.existGlue = false;
-    this.modelNameIDClone = args.value;
-    this.value = args.value;
-    this.valuemodelNo = 0;
-    this.modified = false;
-    this.modelNoData = [];
-    this.articleNosData = [];
-    this.artProcessData = [];
-    this.modelNameSelect = true;
-    this.modelNoSelect = false;
-    this.modelArtSelect = false;
-    this.modelProcessSelect = false;
-  }
-  onChangeModelNo(args) {
-    if (args.isInteracted) {
-      this.modelNoID = args.value;
-      this.valuemodelNo = args.value;
-      this.getArticleNoByModelNoID(this.modelNoID);
+    onChangeModelName(args) {
+      this.resetLifeCycleBPFC();
+      this.modelNameID = args.value;
+      this.getModelNoByModelNameID(this.modelNameID);
       this.existGlue = false;
+      this.modelNameIDClone = args.value;
+      this.value = args.value;
+      this.valuemodelNo = 0;
       this.modified = false;
+      this.modelNoData = [];
       this.articleNosData = [];
       this.artProcessData = [];
-      this.modelNoSelect = true;
-    }
-  }
-  onChangeArticleNo(args) {
-    if (args.isInteracted) {
-      this.articleNoID = args.value;
-      this.getArtProcessByArticleNoID(this.articleNoID);
-      this.existGlue = false;
-      this.modified = false;
-      this.modelArtSelect = true;
-      this.artProcessData = [];
-    }
-  }
-  onClickProcess(args) {
-    this.modelProcessSelect = true;
-    if (args.target.defaultValue) {
-      this.artProcessID = Number(args.target.defaultValue);
-      const bpfcInfo = {
-        modelNameID: this.modelNameID,
-        modelNoID: this.modelNoID,
-        articleNoID: this.articleNoID,
-        artProcessID: this.artProcessID,
-      };
-      this.getBPFCID(bpfcInfo);
-    }
-  }
-  ClickProcessData(args) {}
+      this.modelNameSelect = true;
+      this.modelNoSelect = false;
+      this.modelArtSelect = false;
+      this.modelProcessSelect = false;
 
-  /// Begin event Clone
-  clearFormClone() {
-    this.modelNameIDClone = this.value;
-    this.modelNOIDClone = this.valuemodelNo;
-    this.articleNOIDClone = 0;
-    this.artProcessIDClone = 0;
-    this.articleNosDataClone = [];
-    this.artProcessDataClone = [];
-    this.artProcessDataClone2 = [];
-  }
-  onClickClone() {
-    const clone = {
-      modelNameID: this.modelNameIDClone,
-      modelNOID: this.modelNOIDClone,
-      articleNOID: this.articleNOIDClone,
-      artProcessID: Number(this.artProcessIDClone),
-      bpfcID: this.BPFCID,
-      cloneBy: JSON.parse(localStorage.getItem('user')).User.ID,
-    };
-    this.clone(clone);
-  }
-  onChangeModelNameClone(args) {
-    const valueChange = args.value;
-    if (this.value !== valueChange) {
-      this.modelNOsDataClone = [];
+    }
+    onChangeModelNo(args) {
+      if (args.isInteracted) {
+        this.modelNoID = args.value;
+        this.valuemodelNo = args.value;
+        this.getArticleNoByModelNoID(this.modelNoID);
+        this.existGlue = false;
+        this.modified = false;
+        this.articleNosData = [];
+        this.artProcessData = [];
+        this.modelNoSelect = true;
+      }
+    }
+    onChangeArticleNo(args) {
+      if (args.isInteracted) {
+        this.articleNoID = args.value;
+        this.getArtProcessByArticleNoID(this.articleNoID);
+        this.existGlue = false;
+        this.modified = false;
+        this.modelArtSelect = true;
+        this.artProcessData = [];
+      }
+    }
+    onClickProcess(args) {
+      console.log('approvalStatus', this.approvalStatus)
+      console.log('createdStatus', this.createdStatus)
+      this.modelProcessSelect = true;
+      if (args.target.defaultValue) {
+        this.artProcessID = Number(args.target.defaultValue);
+        const bpfcInfo = {
+          modelNameID: this.modelNameID,
+          modelNoID: this.modelNoID,
+          articleNoID: this.articleNoID,
+          artProcessID: this.artProcessID,
+        };
+        this.getBPFCID(bpfcInfo);
+      }
+    }
+    ClickProcessData(args) { }
+
+    /// Begin event Clone
+    clearFormClone() {
+      this.modelNameIDClone = this.value;
+      this.modelNOIDClone = this.valuemodelNo;
+      this.articleNOIDClone = 0;
+      this.artProcessIDClone = 0;
+      this.articleNosDataClone = [];
+      this.artProcessDataClone = [];
+      this.artProcessDataClone2 = [];
+    }
+    onClickClone() {
+      const clone = {
+        modelNameID: this.modelNameIDClone,
+        modelNOID: this.modelNOIDClone,
+        articleNOID: this.articleNOIDClone,
+        artProcessID: Number(this.artProcessIDClone),
+        bpfcID: this.BPFCID,
+        cloneBy: JSON.parse(localStorage.getItem('user')).User.ID,
+      };
+      this.clone(clone);
+    }
+    onChangeModelNameClone(args) {
+      const valueChange = args.value;
+      if (this.value !== valueChange) {
+        this.modelNOsDataClone = [];
+        this.modelNameIDClone = args.value;
+        this.getModelNoByModelNameIDClone(this.modelNameIDClone);
+      }
       this.modelNameIDClone = args.value;
       this.getModelNoByModelNameIDClone(this.modelNameIDClone);
     }
-    this.modelNameIDClone = args.value;
-    this.getModelNoByModelNameIDClone(this.modelNameIDClone);
-  }
-  onChangeModelNoClone(args) {
-    this.modelNOIDClone = args.value;
-    if (this.modelNOIDClone !== null) {
-      this.getArticleNoByModelNameIDClone(this.modelNOIDClone);
+    onChangeModelNoClone(args) {
+      this.modelNOIDClone = args.value;
+      if (this.modelNOIDClone !== null) {
+        this.getArticleNoByModelNameIDClone(this.modelNOIDClone);
+      }
+      this.articleNosDataClone = [];
+      this.artProcessDataClone = [];
     }
-    this.articleNosDataClone = [];
-    this.artProcessDataClone = [];
-  }
-  onChangeArticleNoClone(args) {
-    if (args.isInteracted) {
-      this.articleNOIDClone = args.value;
-      // this.getArtProcessByArticleNoIDClone(this.articleNOIDClone);
-      // this.artProcessDataClone2 = [];
+    onChangeArticleNoClone(args) {
+      if (args.isInteracted) {
+        this.articleNOIDClone = args.value;
+        // this.getArtProcessByArticleNoIDClone(this.articleNOIDClone);
+        // this.artProcessDataClone2 = [];
+      }
     }
-  }
-  onChangeProcessClone(args) {
-    if (args.isInteracted) {
-      this.artProcessIDClone = args.value;
+    onChangeProcessClone(args) {
+      if (args.isInteracted) {
+        this.artProcessIDClone = args.value;
+      }
     }
-  }
 
   public onFilteringModelNameClone: EmitType<FilteringEventArgs> = (
-    e: FilteringEventArgs
-  ) => {
+      e: FilteringEventArgs
+    ) => {
     let query: Query = new Query();
     // frame the query based on search string with filter type.
     query =

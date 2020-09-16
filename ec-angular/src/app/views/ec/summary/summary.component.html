@@ -1,7 +1,7 @@
 <ngx-spinner [fullScreen]="false" type="square-jelly-box" size="medium">
   <p class="loading">Loading data...</p>
 </ngx-spinner>
-<div class="card" #fullScreen >
+<div class="card" #fullScreen style="overflow: auto;" >
   <div class="card-header d-flex p-1">
     <h4>{{ 'TODOLIST' | translate }}</h4>
     <ul class="nav nav-pills ml-auto p-2" *ngIf="existGlue">

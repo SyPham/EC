@@ -670,6 +670,7 @@ namespace EC_API._Services.Services
         {
             var bpfc = await _repoBPFCEstablish
                         .FindAll()
+                        .Include(x=>x.Glues).ThenInclude(x=>x.GlueIngredients)
                        .FirstOrDefaultAsync(x =>
                           x.ModelNameID == bpfcInfo.ModelNameID
                          && x.ModelNoID == bpfcInfo.ModelNoID

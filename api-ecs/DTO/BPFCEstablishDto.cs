@@ -26,5 +26,6 @@ namespace EC_API.DTO
         public DateTime CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public DateTime? UpdateTime { get; set; }
+        
     }
 }
