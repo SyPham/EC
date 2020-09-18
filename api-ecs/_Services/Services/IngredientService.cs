@@ -357,7 +357,7 @@ namespace EC_API._Services.Services
                  return new
                     {
                         status = false,
-                        message = "Hãy scan qr code Input trước :) !"
+                        message = "Hãy scan QR Code hàng nhập trước :) !"
                     };
             }
                 

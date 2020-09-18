@@ -47,9 +47,7 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
     this.checkout = true ;
     this.getIngredientInfoOutput();
   }
-  aaa() {
-    console.log('aaaa')
-  }
+
   InputChange(args) {
     this.checkin = true ;
     this.checkout = false ;
