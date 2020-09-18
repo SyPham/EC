@@ -83,9 +83,9 @@ namespace EC_API._Services.Services
             glue.Code = await GenatateGlueCode(glue.Code);
             glue.CreatedDate = DateTime.Now.ToString("MMMM dd, yyyy HH:mm:ss tt");
             var nameList = new List<int>();
-            foreach (var item in _repoGlue.FindAll().Where(x => x.BPFCEstablishID == model.BPFCEstablishID))
+            foreach (var item in _repoGlue.FindAll().Where(x => x.isShow == true && x.BPFCEstablishID == model.BPFCEstablishID))
             {
-                if (item.Name.Length == 1 || item.Name.Length == 2)
+                if (item.Name.ToInt() > 0)
                 {
                     nameList.Add(item.Name.ToInt());
                 }

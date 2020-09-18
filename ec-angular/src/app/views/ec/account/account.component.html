@@ -7,22 +7,24 @@
       </div>
       <!-- /.card-header -->
       <div class="card-body table-responsive p-0">
-        <ejs-grid #grid 
-          [dataSource]="userData" 
+        <ejs-grid #grid
+          [dataSource]="userData"
           allowPaging='true'
           gridLines='Both'
-          (created)='createdUsers()' 
+          (created)='createdUsers()'
           (dataBound)='dataBound()'
           (actionBegin)="actionBegin($event)"
           (actionComplete)="actionComplete($event)"
-          [toolbar]='toolbar' 
+          [toolbar]='toolbar'
           [pageSettings]='pageSettings'
+          allowExcelExport='true'
+          (toolbarClick)='toolbarClick($event)'
           [editSettings]='editSettings'
         >
           <e-columns>
             <e-column field="ID" width="80" isPrimaryKey="true" headerText="ID">
               <ng-template #template let-data>
-                {{data.index}}
+                {{NO(data.index)}}
               </ng-template>
             </e-column>
             <e-column field="Username" headerText="Username"> </e-column>

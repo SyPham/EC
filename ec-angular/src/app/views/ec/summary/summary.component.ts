@@ -288,6 +288,20 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       });
     });
   }
+  checkIncoming(ingredient, building, batch): Promise<any> {
+    const levels = [1, 2, 3, 4];
+    let buildingName = building;
+    if (levels.includes(this.level.level)) {
+      buildingName = 'E';
+    }
+    return new Promise((resolve, reject) => {
+      this.ingredientService.checkIncoming(ingredient, batch, buildingName).subscribe((res) => {
+        resolve(res);
+      }, err => {
+        reject(false);
+      });
+    });
+  }
   //
   getValueCell(cellObject) {
     return Object.values(cellObject);
@@ -429,7 +443,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  async onNgModelChangeScanQRCode(args, item) {
+  async onNgModelChangeScanQRCode2(args, item) {
     const input = args;
     if (input.length === 8) {
       try {
@@ -469,15 +483,11 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  async onNgModelChangeScanQRCode2(args, item) {
+  async onNgModelChangeScanQRCode(args, item) {
     const input = args.split('-') || [];
-    const inputdemo = '20200914' + '-' + 'DEFAULT' + '-' + args ;
-    const input2 = inputdemo.split('-') || [];
-    // if(inputdemo)
     if (input[2]?.length === 8) {
       try {
         this.qrCode = input[2];
-        // this.qrCode = input2[2];
         const result = await this.scanQRCode();
         if (this.qrCode !== item.code) {
           this.alertify.warning(`Please you should look for the chemical name "${item.name}"`);
@@ -485,8 +495,15 @@ export class SummaryComponent implements OnInit, AfterViewInit {
           this.errorScan();
           return;
         }
+        const checkIncoming = await this.checkIncoming(item.name, this.level.name, input[1]);
+        if (checkIncoming === false) {
+          this.alertify.error(`Invalid!`);
+          this.qrCode = '';
+          this.errorScan();
+          return;
+        }
+
         const checkLock = await this.hasLock(item.name, this.level.name, input[1]);
-        // const checkLock = await this.hasLock(item.name, this.level.name, input2[1]);
         if (checkLock === true) {
           this.alertify.error('This chemical has been locked!');
           this.qrCode = '';
@@ -496,7 +513,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         const code = result.code;
         const ingredient = this.findIngredientCode(code);
         this.setBatch(ingredient, input[1]);
-        // this.setBatch(ingredient, input2[1]);
         if (ingredient) {
           this.changeInfo('success-scan', ingredient.code);
           if (ingredient.expected === 0 && ingredient.position === 'A') {

@@ -172,5 +172,7 @@ export class IngredientService {
   UpdatePrint(ingredient) {
     return this.http.put(this.baseUrl + 'ingredient/UpdatePrint', ingredient);
   }
-
+  checkIncoming(ingredient, batch, building) {
+    return this.http.get(`${this.baseUrl}ingredient/CheckIncoming/${ingredient}/${batch}/${building}`, {});
+  }
 }

@@ -13,30 +13,22 @@ export class AccountComponent implements OnInit {
   userData: object;
   buildings: [];
   fieldsBuilding: object = { text: 'name', value: 'name' };
-  editSettings: object;
+  editSettings = { showDeleteConfirmDialog: false, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
   buildingUsers: [];
   user: any;
-  password: any;
+  password = '';
   userID: number;
   buildingID: number;
-  toolbar: ToolbarItems[];
-  passwordFake: any;
-  pageSettings: PageSettingsModel;
-  @ViewChild('grid')
-  public grid: GridComponent;
+  toolbar = ['Add', 'Edit', 'Delete', 'Update', 'Cancel', 'ExcelExport' , 'Search'];
+  passwordFake = `aRlG8BBHDYjrood3UqjzRl3FubHFI99nEPCahGtZl9jvkexwlJ`;
+  pageSettings = { pageCount: 20, pageSizes: true, pageSize: 10 };
+  @ViewChild('grid') public grid: GridComponent;
   constructor(
     private accountService: AccountService,
     private alertify: AlertifyService,
   ) { }
 
   ngOnInit() {
-    this.password = '';
-    this.toolbar = ['Add', 'Edit', 'Delete', 'Update', 'Cancel', 'Search'];
-    this.pageSettings = { currentPage: 1, pageSize: 20 };
-    this.editSettings = { showDeleteConfirmDialog: true, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
-    this.passwordFake = `aRlG8BBHDYjrood3UqjzRl3FubHFI99nEPCahGtZl9jvkexwlJ`;
-    this.getBuildingUsers();
-    this.getBuildings();
     this.getAllUsers();
   }
   // life cycle ejs-grid
@@ -73,7 +65,15 @@ export class AccountComponent implements OnInit {
       this.delete(args.data[0].ID);
     }
   }
-
+  toolbarClick(args) {
+    switch (args.item.text) {
+      case 'Excel Export':
+        this.grid.excelExport({ hierarchyExportMode: 'All' });
+        break;
+      default:
+        break;
+    }
+  }
   actionComplete(args) {
     if (args.requestType === 'edit') {
       (args.form.elements.namedItem('ID') as HTMLInputElement).disabled = true;
@@ -94,29 +94,45 @@ export class AccountComponent implements OnInit {
     this.buildingID = args.itemData.id;
   }
   getBuildings() {
-    this.accountService.getBuildings().subscribe((res: any) => {
-      this.buildings = res || [];
-    });
-  }
-  getAllUsers() {
-    this.accountService.getAllUsers(1, 10000).subscribe(res => {
-      const users = res.result.map((item: any) => {
-        return {
-          ID: item.ID,
-          Username: item.Username,
-          Password: this.passwordFake + item.ID,
-          Email: item.Email,
-          EmployeeID: item.EmployeeID,
-          BuildingName: this.buildingTempate(item.ID)
-        };
+    return new Promise( (res, rej) => {
+      this.accountService.getBuildings().subscribe((result: any) => {
+        this.buildings = result || [];
+        res(result);
+      }, error => {
+        rej(error);
       });
-      this.userData = users;
-
     });
   }
+ async getAllUsers() {
+   try {
+     await this.getBuildings();
+     await this.getBuildingUsers();
+     this.accountService.getAllUsers(1, 10000).subscribe(res => {
+       const users = res.result.map((item: any) => {
+         return {
+           ID: item.ID,
+           Username: item.Username,
+           Password: this.passwordFake + item.ID,
+           Email: item.Email,
+           EmployeeID: item.EmployeeID,
+           BuildingName: this.buildingTempate(item.ID)
+         };
+       });
+       this.userData = users;
+     });
+   } catch (error) {
+     this.alertify.error(error + '');
+   }
+  }
+
   getBuildingUsers() {
-    this.accountService.getBuildingUsers().subscribe(res => {
-      this.buildingUsers = res as any;
+    return new Promise((res, rej) => {
+      this.accountService.getBuildingUsers().subscribe(result => {
+        this.buildingUsers = result as any;
+        res(result);
+      }, err => {
+        rej(err);
+      });
     });
   }
   mapBuildingUser(userid, buildingid) {
@@ -173,4 +189,7 @@ export class AccountComponent implements OnInit {
       return buildingName || '#N/A';
     }
   // end template ejs-grid
+  NO(index) {
+    return (this.grid.pageSettings.currentPage - 1) * this.pageSettings.pageSize + Number(index) + 1;
+  }
 }

@@ -1104,8 +1104,10 @@ export class BpfcComponent implements OnInit, AfterViewInit {
           console.log('glue update percentage', (this.gridglue.getSelectedRecords()[0] as any).glueIngredients);
           console.log('ingredient update percentage', args.data);
           const glueIngredients = (this.gridglue.getSelectedRecords()[0] as any).glueIngredients;
-          const index = glueIngredients.findIndex((obj) => obj.ingredientID === args.data.id);
-          glueIngredients[index].percentage = args.data.percentage;
+          if (glueIngredients.length > 0) {
+            const index = glueIngredients.findIndex((obj) => obj.ingredientID === args.data.id);
+            glueIngredients[index].percentage = args.data.percentage;
+          }
         }
       }
 
@@ -1128,10 +1130,11 @@ export class BpfcComponent implements OnInit, AfterViewInit {
           console.log('glue update alow', (this.gridglue.getSelectedRecords()[0] as any).glueIngredients);
           console.log('ingredient update alow', args.data);
           const glueIngredients = (this.gridglue.getSelectedRecords()[0] as any).glueIngredients;
-          const index = glueIngredients.findIndex((obj) => obj.ingredientID === args.data.id);
-          glueIngredients[index].allow = args.data.allow;
+          if (glueIngredients.length > 0) {
+             const index = glueIngredients.findIndex((obj) => obj.ingredientID === args.data.id);
+             glueIngredients[index].allow = args.data.allow;
+          }
         }
-
       }
     }
     if (args.requestType === 'delete') {
@@ -2005,6 +2008,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       this.artProcessService
         .getArtProcessByArticleNoID(articleNoID)
         .subscribe((res: any) => {
+          console.log('getArtProcessByArticleNoIDClone', res);
           this.artProcessDataClone = res.map((item) => {
             return {
               id: item.id,
@@ -2127,8 +2131,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     onChangeArticleNoClone(args) {
       if (args.isInteracted) {
         this.articleNOIDClone = args.value;
-        // this.getArtProcessByArticleNoIDClone(this.articleNOIDClone);
-        // this.artProcessDataClone2 = [];
+        this.getArtProcessByArticleNoIDClone(this.articleNOIDClone);
       }
     }
     onChangeProcessClone(args) {

@@ -70,7 +70,7 @@ namespace EC_API._Services.Services
         //Lấy toàn bộ danh sách Brand 
         public async Task<List<MaterialDto>> GetAllAsync()
         {
-            return await _repoLine.FindAll().ProjectTo<MaterialDto>(_configMapper).OrderBy(x => x.ID).ToListAsync();
+            return await _repoLine.FindAll().ProjectTo<MaterialDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
 
         //Lấy Brand theo Brand_Id

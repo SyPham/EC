@@ -744,12 +744,12 @@ namespace EC_API._Services.Services
             var gluesData = new List<Glue>();
             if (bpfcClone.Glues == null)
             {
-                gluesData = bpfc.Glues.ToList();
+                gluesData = bpfc.Glues.Where(x => x.isShow == true).ToList();
             }
             else
             {
-                var list2 = bpfcClone.Glues.Select(x => x.Name);
-                var list1 = bpfc.Glues.Select(x => x.Name);
+                var list2 = bpfcClone.Glues.Where(x => x.isShow == true).Select(x => x.Name);
+                var list1 = bpfc.Glues.Where(x => x.isShow == true).Select(x => x.Name);
                 var check = list1.Except(list2);
                 gluesData = bpfc.Glues.Where(x =>x.isShow == true && check.Contains(x.Name)).ToList();
             }
@@ -760,6 +760,7 @@ namespace EC_API._Services.Services
                 var glue = new Glue();
                 glue.Code = await this.GenatateGlueCode(item.Code);
                 glue.Name = item.Name;
+                glue.isShow = true;
                 glue.Consumption = item.Consumption;
                 glue.CreatedBy = clone.CloneBy;
                 glue.MaterialID = item.MaterialID;
@@ -806,7 +807,7 @@ namespace EC_API._Services.Services
                                               .Include(x => x.ModelNo)
                                               .Include(x => x.ArtProcess)
                                               .Include(x => x.ArticleNo)
-                                              .Include(x => x.Glues.Where(x=>x.isShow == true))
+                                              .Include(x => x.Glues)
                                               .ThenInclude(x => x.GlueIngredients)
                                               .Include(x => x.Plans)
                                               .FirstOrDefaultAsync(x => x.ModelNameID == clone.ModelNameID
@@ -828,7 +829,7 @@ namespace EC_API._Services.Services
                                         .Include(x => x.ModelNo)
                                         .Include(x => x.ArtProcess)
                                         .Include(x => x.ArticleNo)
-                                        .Include(x => x.Glues.Where(x => x.isShow == true)).ThenInclude(x => x.GlueIngredients)
+                                        .Include(x => x.Glues).ThenInclude(x => x.GlueIngredients)
                                         .Include(x => x.Plans)
                                         .FirstOrDefaultAsync(x => x.ID == clone.BPFCID);
                     if (bpfc == null)

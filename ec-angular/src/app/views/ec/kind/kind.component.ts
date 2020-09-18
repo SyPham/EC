@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { GridComponent } from '@syncfusion/ej2-angular-grids';
 import { KindService } from 'src/app/_core/_service/kind.service';
 import { AlertifyService } from 'src/app/_core/_service/alertify.service';
@@ -11,27 +11,21 @@ import { AlertifyService } from 'src/app/_core/_service/alertify.service';
 export class KindComponent implements OnInit {
   kind: any;
   data: any;
-  editparams: object;
-  editSettings: object;
-  toolbarOptions = ['Search' ];
-  toolbar: string[];
-  grid: GridComponent;
-  searchSettings: any = { hierarchyMode: 'Parent' } ;
-  pageSettings: { pageSize: number; };
+  editSettings = { showDeleteConfirmDialog: false, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
+  toolbarOptions = ['ExcelExport', 'Add', 'Edit', 'Delete', 'Cancel', 'Search'];
+  @ViewChild('grid') grid: GridComponent;
+  pageSettings = { pageCount: 20, pageSizes: true, pageSize: 10 };
+  filterSettings = { type: 'Excel' };
   constructor(
     private kindService: KindService,
     private alertify: AlertifyService,
     ) { }
 
   ngOnInit() {
-    this.pageSettings = { pageSize: 6 };
     this.kind = {
       id: 0,
       name: ''
     };
-    this.editparams = { params: { popupHeight: '300px' } };
-    this.editSettings = { showDeleteConfirmDialog: false, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
-    this.toolbar = ['Add', 'Delete', 'Search'];
     this.getAllKind();
   }
   // api
@@ -49,7 +43,7 @@ export class KindComponent implements OnInit {
   }
 
   update() {
-    this.kindService.create(this.kind).subscribe(() => {
+    this.kindService.update(this.kind).subscribe(() => {
       this.alertify.success('Add Kind Successfully');
       // this.modalReference.close() ;
       this.getAllKind();
@@ -69,15 +63,42 @@ export class KindComponent implements OnInit {
   // end api
 
   // grid event
-  actionBegin(args) {
-    if (args.requestType === 'beginEdit') {
-      this.kind.name = args.rowData.name ;
+  toolbarClick(args): void {
+    switch (args.item.text) {
+      /* tslint:disable */
+      case 'Excel Export':
+        this.grid.excelExport();
+        break;
+      /* tslint:enable */
+      default:
+        break;
     }
-    if (args.requestType === 'save' ) {
-      this.kind.id = args.data.id ;
-      this.kind.name = args.data.name;
-      this.update();
+  }
+  actionBegin(args) {
+    if (args.requestType === 'save') {
+      if (args.action === 'add') {
+        this.kind.id = 0;
+        this.kind.name = args.data.name;
+        this.create();
+      }
+      if (args.action === 'edit') {
+        this.kind.id = args.data.id;
+        this.kind.name = args.data.name;
+        this.update();
+      }
+    }
+    if (args.requestType === 'delete') {
+      this.delete(args.data[0].id);
+    }
+  }
+  actionComplete(e: any): void {
+    if (e.requestType === 'add') {
+      (e.form.elements.namedItem('name') as HTMLInputElement).focus();
+      (e.form.elements.namedItem('id') as HTMLInputElement).disabled = true;
     }
   }
   // end event
+  NO(index) {
+    return (this.grid.pageSettings.currentPage - 1) * this.pageSettings.pageSize + Number(index) + 1;
+  }
 }

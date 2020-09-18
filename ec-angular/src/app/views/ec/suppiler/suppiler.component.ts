@@ -1,17 +1,9 @@
 import { ISupplier } from './../../../_core/_model/Supplier';
 import { IngredientService } from './../../../_core/_service/ingredient.service';
-import { ModalNameService } from './../../../_core/_service/modal-name.service';
-import { GlueService } from './../../../_core/_service/glue.service';
-import { GlueIngredientService } from './../../../_core/_service/glue-ingredient.service';
-import { LineService } from './../../../_core/_service/line.service';
-import { PlanService } from './../../../_core/_service/plan.service';
-import { Plan } from './../../../_core/_model/plan';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AlertifyService } from 'src/app/_core/_service/alertify.service';
-import { PageSettingsModel, GridComponent } from '@syncfusion/ej2-angular-grids';
+import { GridComponent } from '@syncfusion/ej2-angular-grids';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EditService, ToolbarService, PageService } from '@syncfusion/ej2-angular-grids';
-import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-suppiler',
   templateUrl: './suppiler.component.html',
@@ -19,71 +11,60 @@ import { ActivatedRoute } from '@angular/router';
 })
 
 export class SuppilerComponent implements OnInit {
-  public pageSettings: PageSettingsModel;
-  public toolbarOptions = ['Search'];
-  public editSettings: object;
-  public toolbar: string[];
-  public editparams: object;
-  public grid: GridComponent;
-  modalReference: NgbModalRef;
+  public pageSettings = { pageCount: 20, pageSizes: true, currentPage: 1, pageSize: 10 };
+  public toolbarOptions = ['ExcelExport', 'Add', 'Edit', 'Delete', 'Cancel', 'Search'];
+  public editSettings = { showDeleteConfirmDialog: false, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
   public data: object[];
-  searchSettings: any = { hierarchyMode: 'Parent' };
-
+  filterSettings = { type: 'Excel' };
   modalSup: ISupplier = {
     id: 0,
     name: ''
   };
-  public textGlueLineName: string = 'Select ';
-  public fieldsGlue: object = { text: 'name', value: 'name' };
-  public fieldsGlueEdit: object = { text: 'name', value: 'name' };
+  @ViewChild('grid') grid: GridComponent;
+  public textGlueLineName = 'Select ';
   public supplier: object[];
-  public lineName: object[];
-  public modelName: object[];
-  public glueName: object[];
   public setFocus: any;
-  lineNameEdit: any;
-  glueNameEdit: any;
-  modelNameEdit: any;
   constructor(
-    private route: ActivatedRoute,
     private alertify: AlertifyService,
     public modalService: NgbModal,
-    private planService: PlanService,
-    private lineService: LineService,
-    private glueIngredientService: GlueIngredientService,
-    private modalNameService: ModalNameService,
-    private glueService: GlueService,
     private ingredientService: IngredientService
   ) { }
 
   ngOnInit(): void {
-    this.pageSettings = { pageSize: 20 };
-    this.editparams = { params: { popupHeight: '300px' } };
-    this.editSettings = { showDeleteConfirmDialog: false, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
-    this.toolbar = ['Add', 'Delete', 'Search', 'Update', 'Cancel'];
-    this.getAllSupllier();
+    this.getAllSupplier();
   }
 
-  getAllSupllier() {
+  getAllSupplier() {
     this.ingredientService.getAllSupplier().subscribe(res => {
       this.supplier = res;
     });
   }
   actionBegin(args) {
-    if (args.requestType === 'beginEdit') {
-      this.modalSup.name = args.rowData.name;
-    }
     if (args.requestType === 'save') {
-      this.modalSup.id = args.data.id || 0;
-      this.modalSup.name = args.data.name;
-      if (args.data.id > 0) {
+      if (args.action === 'edit') {
+        this.modalSup.id = args.data.id || 0;
+        this.modalSup.name = args.data.name;
         this.update(this.modalSup);
-      } else {
+      }
+      if (args.action === 'add') {
+        this.modalSup.id = 0;
+        this.modalSup.name = args.data.name;
         this.add(this.modalSup);
       }
     }
     if (args.requestType === 'delete') {
       this.delete(args.data[0].id);
+    }
+  }
+  toolbarClick(args): void {
+    switch (args.item.text) {
+      /* tslint:disable */
+      case 'Excel Export':
+        this.grid.excelExport();
+        break;
+      /* tslint:enable */
+      default:
+        break;
     }
   }
   actionComplete(e: any): void {
@@ -98,32 +79,35 @@ export class SuppilerComponent implements OnInit {
   delete(id) {
     this.alertify.confirm('Delete Supplier', 'Are you sure you want to delete this Supplier "' + id + '" ?', () => {
       this.ingredientService.deleteSub(id).subscribe(() => {
-        this.getAllSupllier();
+        this.getAllSupplier();
         this.alertify.success('Supplier has been deleted');
       }, error => {
-        this.alertify.error('Failed to delete the Modal Name');
+          this.alertify.error('Failed to delete the supplier');
       });
     });
   }
   update(modalSup) {
     this.ingredientService.updateSub(modalSup).subscribe(res => {
-      this.alertify.success('Updated successed!');
-      this.getAllSupllier();
+      this.alertify.success('Updated successfully!');
+      this.getAllSupplier();
     });
   }
   add(modalSup) {
     this.ingredientService.createSub(modalSup).subscribe(() => {
-      this.alertify.success('Add Supplier Successfully');
-      this.getAllSupllier();
+      this.alertify.success('Add supplier successfully');
+      this.getAllSupplier();
       this.modalSup.name = '';
     });
   }
   save() {
     this.ingredientService.createSub(this.modalSup).subscribe(() => {
-      this.alertify.success('Add Supplier Successfully');
-      // this.modalReference.close() ;
-      this.getAllSupllier();
+      this.alertify.success('Add supplier successfully');
+      this.getAllSupplier();
       this.modalSup.name = '';
     });
+  }
+
+  NO(index) {
+    return (this.grid.pageSettings.currentPage - 1) * this.grid.pageSettings.pageSize + Number(index) + 1;
   }
 }

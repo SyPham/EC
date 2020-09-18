@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { GridComponent } from '@syncfusion/ej2-angular-grids';
 import { MaterialService } from 'src/app/_core/_service/material.service';
 import { AlertifyService } from 'src/app/_core/_service/alertify.service';
@@ -11,27 +11,22 @@ import { AlertifyService } from 'src/app/_core/_service/alertify.service';
 export class MaterialComponent implements OnInit {
   material: any;
   data: any;
-  editparams: object;
-  editSettings: object;
-  toolbarOptions = ['Search' ];
-  toolbar: string[];
-  grid: GridComponent;
-  searchSettings: any = { hierarchyMode: 'Parent' } ;
-  pageSettings: { pageSize: number; };
+  editSettings = { showDeleteConfirmDialog: false, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
+  toolbarOptions = ['ExcelExport', 'Add', 'Edit', 'Delete', 'Cancel', 'Search'];
+  @ViewChild('grid') grid: GridComponent;
+  pageSettings = { pageCount: 20, pageSizes: true, pageSize: 10 };
+  filterSettings = { type: 'Excel' };
   constructor(
     private materialService: MaterialService,
     private alertify: AlertifyService,
     ) { }
 
   ngOnInit() {
-    this.pageSettings = { pageSize: 6 };
     this.material = {
       id: 0,
       name: ''
     };
-    this.editparams = { params: { popupHeight: '300px' } };
     this.editSettings = { showDeleteConfirmDialog: false, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
-    this.toolbar = ['Add', 'Delete', 'Search'];
     this.getAllMaterial();
   }
   // api
@@ -49,7 +44,7 @@ export class MaterialComponent implements OnInit {
   }
 
   update() {
-    this.materialService.create(this.material).subscribe(() => {
+    this.materialService.update(this.material).subscribe(() => {
       this.alertify.success('Add Material Successfully');
       // this.modalReference.close() ;
       this.getAllMaterial();
@@ -69,15 +64,42 @@ export class MaterialComponent implements OnInit {
   // end api
 
   // grid event
-  actionBegin(args) {
-    if (args.requestType === 'beginEdit') {
-      this.material.name = args.rowData.name ;
+  toolbarClick(args): void {
+    switch (args.item.text) {
+      /* tslint:disable */
+      case 'Excel Export':
+        this.grid.excelExport();
+        break;
+      /* tslint:enable */
+      default:
+        break;
     }
-    if (args.requestType === 'save' ) {
-      this.material.id = args.data.id ;
-      this.material.name = args.data.name;
-      this.update();
+  }
+  actionBegin(args) {
+    if (args.requestType === 'save') {
+      if (args.action === 'add') {
+        this.material.id = 0;
+        this.material.name = args.data.name;
+        this.create();
+      }
+      if (args.action === 'edit') {
+        this.material.id = args.data.id;
+        this.material.name = args.data.name;
+        this.update();
+      }
+    }
+    if (args.requestType === 'delete') {
+      this.delete(args.data[0].id);
+    }
+  }
+  actionComplete(e: any): void {
+    if (e.requestType === 'add') {
+      (e.form.elements.namedItem('name') as HTMLInputElement).focus();
+      (e.form.elements.namedItem('id') as HTMLInputElement).disabled = true;
     }
   }
   // end event
+  NO(index) {
+    return (this.grid.pageSettings.currentPage - 1) * this.grid.pageSettings.pageSize + Number(index) + 1;
+  }
 }

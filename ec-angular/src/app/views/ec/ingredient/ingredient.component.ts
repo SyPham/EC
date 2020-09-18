@@ -10,7 +10,7 @@ import { IIngredient } from 'src/app/_core/_model/Ingredient';
 import { ModalNameService } from 'src/app/_core/_service/modal-name.service';
 import { environment } from '../../../../environments/environment';
 import { QRCodeGenerator, DisplayTextModel } from '@syncfusion/ej2-angular-barcode-generator';
-import { GridComponent } from '@syncfusion/ej2-angular-grids';
+import { GridComponent, RowDDService } from '@syncfusion/ej2-angular-grids';
 import { DatePipe } from '@angular/common';
 
 declare let $: any;
@@ -18,14 +18,20 @@ declare let $: any;
   selector: 'app-ingredient',
   templateUrl: './ingredient.component.html',
   styleUrls: ['./ingredient.component.scss'],
-  providers: [DatePipe]
+  providers: [DatePipe, RowDDService]
 })
 export class IngredientComponent implements OnInit, AfterViewInit {
   editSettings = { showDeleteConfirmDialog: false, allowEditing: true, mode: 'Normal' };
   pageSettings = { pageCount: 20, pageSizes: true, currentPage: 1, pageSize: 10 };
   data: any;
+  destData: object[] = [];
   modalReference: NgbModalRef;
   excelDownloadUrl: string;
+  srcDropOptions = { targetID: 'DestGrid' };
+  public displayTextMethod: DisplayTextModel = {
+    visibility: false
+  };
+  destDropOptions = { targetID: 'Grid' };
   public mfg = this.datePipe.transform(new Date(), 'yyyyMMdd');
   public exp = this.datePipe.transform(new Date(new Date().setMonth(new Date().getMonth() + 4)), 'yyyyMMdd');
   @ViewChild('barcode')
@@ -452,6 +458,6 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     this.modalReference = this.modalService.open(name, { size: 'xl' });
   }
   NO(index) {
-    return (this.ingredientGrid.pageSettings.currentPage - 1) * this.pageSettings.pageSize + Number(index) + 1;
+    return (this.ingredientGrid.pageSettings.currentPage - 1) * this.ingredientGrid.pageSettings.pageSize + Number(index) + 1;
   }
 }

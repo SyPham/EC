@@ -23,7 +23,7 @@ export class DeliveredHistoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.filterSettings = { type: 'Excel' };
-    this.toolbarOptions = ['ExcelExport', 'Search'];
+    this.toolbarOptions = ['Excel Export', 'Search'];
     this.loadData();
   }
   toolbarClick(args): void {

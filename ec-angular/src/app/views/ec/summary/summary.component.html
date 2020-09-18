@@ -55,14 +55,14 @@
                   </td>
                 </ng-container>
                 <td rowspan=3 class="my-align">
-                    <button type="button" style="width: 65px;" (click)="mixingSection(values)" class="btn btn-success btn-sm">
+                    <button type="button" style="width: 90px;" (click)="mixingSection(values)" class="btn btn-success btn-sm">
                       <i class="fa fa-glass"></i>
                       {{ 'MIXING' | translate }}
                     </button>
-                    <button (click)="stirGlue(values)" style="width: 65px;" type="button" class="btn btn-warning btn-sm my-2">
+                    <button (click)="stirGlue(values)" style="width: 90px;" type="button" class="btn btn-warning btn-sm my-2">
                       <i class="fa fa-fan"></i>
                       {{ 'STIR' | translate }}</button>
-                    <button type="button" style="width: 65px;" (click)="pushHistory(values)" class="btn btn-sm btn-info">
+                    <button type="button" style="width: 90px;" (click)="pushHistory(values)" class="btn btn-sm btn-info">
                       {{ 'HISTORY' | translate }}</button>
                 </td>
               </tr>
@@ -148,7 +148,7 @@
                 </div>
                 <div class="col-xl-10">
                   <input *ngIf="item.scanStatus; else scanBlock" class="form-control form-control-lg"
-                    [autofocus]='item.scanStatus' appSelectQrCode [name]="item.code" [(ngModel)]="item.scanCode"
+                    [autofocus]='item.scanStatus' autoselect [name]="item.code" [(ngModel)]="item.scanCode"
                     [class]="item.info" [ngClass]="lockClass(item)"
                     (ngModelChange)='onNgModelChangeScanQRCode($event, item)' type="text">
                   <ng-template #scanBlock>

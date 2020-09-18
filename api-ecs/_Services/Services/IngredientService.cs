@@ -490,7 +490,6 @@ namespace EC_API._Services.Services
             }
             catch (Exception)
             {
-
                 throw;
             }
 
@@ -585,6 +584,12 @@ namespace EC_API._Services.Services
             }
         }
 
-       
+        public async Task<bool> CheckIncoming(string ingredientName, string batch, string building)
+        {
+            var from = DateTime.Now.AddDays(-5).Date;
+            var to = DateTime.Now.Date;
+            return await _repoIngredientInfo.FindAll()
+            .Where(x=> x.CreatedDate >= from && x.CreatedDate >= to ).AnyAsync( x=> x.BuildingName.Equals(building) && x.Name.Trim().Equals(ingredientName.Trim()) && x.Batch.Equals(batch));
+        }
     }
 }

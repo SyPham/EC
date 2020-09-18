@@ -390,6 +390,11 @@ namespace EC_API.Controllers
         {
             return Ok(await _ingredientService.DeleteIngredientInfo(id , code , qty , batch));
         }
-       
+       [HttpGet("{ingredientName}/{batch}/{building}")]
+        public async Task<IActionResult> CheckIncoming(string ingredientName, string batch, string building)
+        {
+            return Ok(await _ingredientService.CheckIncoming(ingredientName, batch, building));
+        }
+
     }
 }

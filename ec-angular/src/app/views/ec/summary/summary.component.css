@@ -1,7 +1,7 @@
 /* input:focus{
     background-color: rgb(252, 248, 54);
   } */
- 
+
   #todolist th:nth-child(1), #delegateTable tr td:nth-child(1){
   /* display: none; */
 }
@@ -57,7 +57,7 @@ input {
   to {background-color:  #e7f70c;}
 }
 
-/* @media (min-width: 1285px) { 
+/* @media (min-width: 1285px) {
   input {
     height: calc(2.5em + 1.5rem + 4px);
     padding: .5rem 1rem;
@@ -97,7 +97,7 @@ input.summary:focus {
 .my-sticky-glue
 {
   position:sticky;
-  left: 74px;
+  left: 72px;
   z-index: 997;
   background-color: #ffffff;
 }

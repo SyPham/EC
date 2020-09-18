@@ -33,6 +33,7 @@ namespace EC_API._Services.Interface
         Task<bool> UpdateConsumptionOfBuildingIngredientReport(UpdateConsumpDto entity );
 
         Task<bool> CheckExistsName(string name);
+        Task<bool> CheckIncoming(string ingredientName, string batch, string building);
 
     }
 }

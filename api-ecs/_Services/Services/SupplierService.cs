@@ -34,6 +34,7 @@ namespace EC_API._Services.Services
         public async Task<bool> Add(SuppilerDto model)
         {
             var Supplier = _mapper.Map<Supplier>(model);
+            Supplier.isShow = true;
             _repoSupplier.Add(Supplier);
             return await _repoSupplier.SaveAll();
         }
@@ -71,7 +72,13 @@ namespace EC_API._Services.Services
         //Cập nhật Supplier
         public async Task<bool> Update(SuppilerDto model)
         {
+            string token = _accessor.HttpContext.Request.Headers["Authorization"];
+            var userID = JWTExtensions.GetDecodeTokenByProperty(token, "nameid").ToInt();
+            if (userID == 0) return false;
             var supplier = _mapper.Map<Supplier>(model);
+            supplier.isShow = true;
+            supplier.ModifiedBy = userID;
+            supplier.ModifiedDate = DateTime.Now;
             _repoSupplier.Update(supplier);
             return await _repoSupplier.SaveAll();
         }
@@ -79,7 +86,7 @@ namespace EC_API._Services.Services
         //Lấy toàn bộ danh sách Supplier 
         public async Task<List<SuppilerDto>> GetAllAsync()
         {
-            return await _repoSupplier.FindAll().Where(x => x.isShow == true).ProjectTo<SuppilerDto>(_configMapper).OrderBy(x => x.ID).ToListAsync();
+            return await _repoSupplier.FindAll().Where(x => x.isShow == true).ProjectTo<SuppilerDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
 
         //Lấy Supplier theo Supplier_Id

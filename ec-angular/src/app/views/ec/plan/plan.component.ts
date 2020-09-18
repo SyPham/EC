@@ -92,16 +92,16 @@ export class PlanComponent implements OnInit {
     if (this.level === WORKER) {
       this.hasWorker = true;
       this.editSettings = { showDeleteConfirmDialog: false, allowEditing: false, allowAdding: false, allowDeleting: false, mode: 'Normal' };
-      this.toolbarOptions = ['Search'];
+      this.toolbarOptions = ['ExcelExport', 'Search'];
     } else {
       this.hasWorker = false;
       this.editSettings = { showDeleteConfirmDialog: false, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
-      this.toolbarOptions = ['Add', 'Save', 'Cancel',
+      this.toolbarOptions = ['ExcelExport', 'Add', 'Save', 'Cancel',
         { text: 'Delete Range', tooltipText: 'Delete Range', prefixIcon: 'fa fa-trash', id: 'DeleteRange' }, 'Search',
         { text: 'Clone', tooltipText: 'Copy', prefixIcon: 'fa fa-copy', id: 'Clone' }
       ];
     }
-    this.toolbar = ['Add', 'Delete', 'Search', 'Copy'];
+    this.toolbar = ['ExcelExport', 'Add', 'Delete', 'Search', 'Copy'];
     this.getAll(this.startDate, this.endDate);
     this.getAllBPFC();
     const buildingID = JSON.parse(localStorage.getItem('level')).id;
@@ -286,6 +286,11 @@ export class PlanComponent implements OnInit {
           console.log('Delete Range', selectedRecords);
           this.deleteRange(selectedRecords);
         }
+        break;
+      case 'Excel Export':
+        this.grid.excelExport();
+        break;
+      default:
         break;
     }
   }

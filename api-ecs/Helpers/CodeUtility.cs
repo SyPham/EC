@@ -686,7 +686,6 @@ namespace EC_API.Helpers
             int.TryParse(value.ToString(), out result);
             return result;
         }
-
         /// <summary>
         /// Chuyển value về dạng số thực(Float).
         /// Trả về dạng số thực(Float) của value

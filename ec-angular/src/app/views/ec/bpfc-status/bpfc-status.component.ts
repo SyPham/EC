@@ -70,7 +70,7 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
     this.pageSettings = { currentPage: 1, pageSize: 10, pageCount: 20 };
     this.editparams = { params: { popupHeight: '300px' } };
     this.editSettings = { showDeleteConfirmDialog: true, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
-    this.toolbar = ['Search', 'Default',
+    this.toolbar = ['ExcelExport', 'Search', 'Default',
       { text: 'Approved', tooltipText: 'Approved', prefixIcon: 'fa fa-check', id: 'Approved' },
       { text: 'Not Approved', tooltipText: 'Not Approved', prefixIcon: 'fa fa-times', id: 'Not Approved' },
       'All'
@@ -342,7 +342,7 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
           partNameID: item.partNameID,
           pathName: item.pathName,
           bpfcName: `${item.modelName } - ${item.modelNo } - ${item.articleNo } - ${item.artProcess }`,
-        }
+        };
       });
       if (this.glues.length === 0) {
         this.glueid = 0;
@@ -368,6 +368,9 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
         break;
       case 'All':
         this.getAllBPFCStatus();
+        break;
+      case 'Excel Export':
+        this.gridModel.excelExport();
         break;
       case 'Default':
         this.filterByFinishedStatus();
@@ -431,7 +434,7 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
     if (id === 0) {
       return '#N/A';
     }
-    let result = (this.users.filter((item: any) => item.ID === id)[0] as any);
+    const result = (this.users.filter((item: any) => item.ID === id)[0] as any);
     if (result !== undefined) {
       return result.Username;
     } else {

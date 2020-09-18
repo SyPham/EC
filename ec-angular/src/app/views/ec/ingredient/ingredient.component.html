@@ -35,26 +35,28 @@
     </div>
     <div class="row" *ngIf="show">
       <div class="col-xl-8">
-        <ejs-grid #printGrid id='overviewgrid'
+        <ejs-grid #printGrid id='Grid'
           (rowDeselected)=rowDeselected($event)
           [dataSource]='dataPrint' rowHeight='38'
           [allowSelection]='true'
           [selectionSettings]="{ checkboxMode: 'ResetOnRowClick'}"
           height='450'
           [editSettings]='editSettings'
-           (actionBegin)="actionBegin($event)"
+          (actionBegin)="actionBegin($event)"
           (rowDeselected)='rowDeselected($event)'
           (rowSelected)='rowSelected($event)'
           [enableHover]='false'
+          [allowRowDragAndDrop]='true'
           [toolbar]='toolbar'
+          [rowDropSettings]="srcDropOptions"
           [allowSorting]='true'>
           <e-columns>
             <e-column type='checkbox' isPrimaryKey='true' width='60'></e-column>
             <e-column field='supplier' isPrimaryKey='true' headerText='Supplier' width='100'></e-column>
-            <e-column field='name' isPrimaryKey='true' headerText='Ingredient Name' width='130'></e-column>
+            <e-column field='name' isPrimaryKey='true' headerText='Ingredient Name' width='100'></e-column>
             <e-column field='batch' headerText='Batch' width='100'>
             </e-column>
-            <e-column field='productionDate'  headerText='Production date' width='150'>
+            <e-column field='productionDate'  headerText='Production date' width='100'>
               <ng-template #editTemplate let-data>
               <ejs-datepicker [value]='data.productionDate' (change)='onChangeDate($event, data)'></ejs-datepicker>
               </ng-template>
@@ -63,6 +65,41 @@
         </ejs-grid>
       </div>
       <div class="col-xl-4">
+        <!-- <ejs-grid #printGrid id='DestGrid'
+          (rowDeselected)=rowDeselected($event)
+          [dataSource]='destData'
+          [allowSelection]='true'
+          [selectionSettings]="{ checkboxMode: 'ResetOnRowClick'}"
+          height='450'
+          [editSettings]='editSettings'
+          (actionBegin)="actionBegin($event)"
+          (rowDeselected)='rowDeselected($event)'
+          (rowSelected)='rowSelected($event)'
+          [enableHover]='false'
+          [allowRowDragAndDrop]='true'
+          [toolbar]='toolbar'
+          [rowDropSettings]="destDropOptions"
+          [allowSorting]='true'>
+          <e-columns>
+            <e-column field='' isPrimaryKey='true' headerText='QR Code' >
+              <ng-template let-data #template>
+                <ejs-qrcodegenerator #barcode [id]='data.code' [displayText]='displayTextMethod' style="display: block;" width="177px"
+                  height="177px" mode="SVG" [value]="data.productionDate + '-' + data.batch + '-' + data.code"></ejs-qrcodegenerator>
+              </ng-template>
+            </e-column>
+            <e-column field='' isPrimaryKey='true' headerText='Info' >
+              <ng-template let-data #template>
+                  <div><label>Name:</label> {{data.name}}</div>
+                    <div><label>QR Code: </label> {{data.productionDate}}-{{data.batch}}-{{data.code}}</div>
+                    <div><label>MFG:</label> {{data.productionDate}}</div>
+                    <div><label>EXP:</label> {{data.exp}}</div>
+                    <div class="text-danger font-weight-bold">
+                      {{data.batch.length !== '' && data.productionDate !== '' ? '' : '(*)Please enter batch code and production date'}}
+                    </div>
+              </ng-template>
+            </e-column>
+          </e-columns>
+        </ejs-grid> -->
         <table class="table table-hover" id="qrcode" height='450'>
           <thead class="thead-dark">
             <tr>
@@ -75,7 +112,6 @@
                 <td class="text-center">
                   <ejs-qrcodegenerator [id]='item.code' style="display: block;" [displayText]='displayTextMethod' #barcode
                     width="177px" height="177px" mode="SVG" [value]="item.qrCode"></ejs-qrcodegenerator>
-
                 </td>
                 <td class="text-algin-left">
                     <div><label>Name:</label> {{item.name}}</div>

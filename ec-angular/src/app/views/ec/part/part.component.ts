@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PartService } from 'src/app/_core/_service/part.service';
 import { AlertifyService } from 'src/app/_core/_service/alertify.service';
 import { GridComponent } from '@syncfusion/ej2-angular-grids';
@@ -11,33 +11,27 @@ import { GridComponent } from '@syncfusion/ej2-angular-grids';
 export class PartComponent implements OnInit {
   part: any;
   data: any;
-  editparams: object;
-  editSettings: object;
-  toolbarOptions = ['Search' ];
-  toolbar: string[];
-  grid: GridComponent;
-  searchSettings: any = { hierarchyMode: 'Parent' } ;
-  pageSettings: { pageSize: number; };
+  editSettings = { showDeleteConfirmDialog: false, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
+  toolbarOptions = ['ExcelExport', 'Add', 'Edit', 'Delete', 'Cancel', 'Search' ];
+  @ViewChild('grid') grid: GridComponent;
+  pageSettings = { pageCount: 20, pageSizes: true, pageSize: 10 };
+  filterSettings = { type: 'Excel' };
   constructor(
     private partService: PartService,
     private alertify: AlertifyService,
     ) { }
 
   ngOnInit() {
-    this.pageSettings = { pageSize: 6 };
-    this.part ={
+    this.part = {
       id: 0,
       name: ''
     };
-    this.editparams = { params: { popupHeight: '300px' } };
-    this.editSettings = { showDeleteConfirmDialog: false, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
-    this.toolbar = ['Add', 'Delete', 'Search'];
     this.getAllPart();
   }
   // api
   getAllPart() {
     this.partService.getAllPart().subscribe(res => {
-      this.data = res ;
+      this.data = res;
     });
   }
   create() {
@@ -49,7 +43,7 @@ export class PartComponent implements OnInit {
   }
 
   update() {
-    this.partService.create(this.part).subscribe(() => {
+    this.partService.update(this.part).subscribe(() => {
       this.alertify.success('Add Part Successfully');
       this.getAllPart();
       this.part.name = '';
@@ -68,15 +62,42 @@ export class PartComponent implements OnInit {
   // end api
 
   // grid event
-  actionBegin(args) {
-    if (args.requestType === 'beginEdit') {
-      this.part.name = args.rowData.name ;
+  toolbarClick(args): void {
+    switch (args.item.text) {
+      /* tslint:disable */
+      case 'Excel Export':
+        this.grid.excelExport();
+        break;
+      /* tslint:enable */
+      default:
+        break;
     }
+  }
+  actionBegin(args) {
     if (args.requestType === 'save' ) {
-      this.part.id = args.data.id ;
-      this.part.name = args.data.name;
-      this.update();
+      if (args.action === 'add') {
+        this.part.id = 0;
+        this.part.name = args.data.name;
+        this.create();
+      }
+      if (args.action === 'edit') {
+        this.part.id = args.data.id;
+        this.part.name = args.data.name;
+        this.update();
+      }
+    }
+    if (args.requestType === 'delete') {
+      this.delete(args.data[0].id);
+    }
+  }
+  actionComplete(e: any): void {
+    if (e.requestType === 'add') {
+      (e.form.elements.namedItem('name') as HTMLInputElement).focus();
+      (e.form.elements.namedItem('id') as HTMLInputElement).disabled = true;
     }
   }
   // end event
+  NO(index) {
+    return (this.grid.pageSettings.currentPage - 1) * this.grid.pageSettings.pageSize + Number(index) + 1;
+  }
 }
