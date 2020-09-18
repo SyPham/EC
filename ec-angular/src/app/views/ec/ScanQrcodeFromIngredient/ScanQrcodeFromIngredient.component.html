@@ -28,15 +28,30 @@
         </ng-container>
         <div class="row">
           <div class="col-md-12 mt-4 text-center">
-            <ejs-radiobutton label="{{'INPUT_LABEL' | translate}}" (change)='InputChange($event)' value="input" style="margin: 3px;" name="state" checked="true"></ejs-radiobutton>
-            <ejs-radiobutton label=" {{'OUTPUT_LABEL' | translate}}" (change)='OutputChange($event)' value="output" style="margin: 3px;" name="state"></ejs-radiobutton>
+             <!-- success -->
+            <div style="font-size: 30px;" class="pretty p-icon p-round">
+              <input (change)='InputChange($event)' type="radio" checked name="icon_solid" />
+              <div  class="state p-success">
+                <i class="icon mdi mdi-check"></i>
+                <label>{{'INPUT_LABEL' | translate}}</label>
+              </div>
+            </div>
+            <div style="font-size: 30px;" class="pretty p-icon p-round">
+              <input (change)='OutputChange($event)' type="radio" name="icon_solid" />
+              <div  class="state p-success">
+                <i class="icon mdi mdi-check"></i>
+                <label>{{'OUTPUT_LABEL' | translate}}</label>
+              </div>
+            </div>
+            <!-- <ejs-radiobutton label="{{'INPUT_LABEL' | translate}}" (change)='InputChange($event)' cssClass="e-success" value="input" style="margin: 3px;" name="state" checked="true"></ejs-radiobutton>
+            <ejs-radiobutton label=" {{'OUTPUT_LABEL' | translate}}" (change)='OutputChange($event)' cssClass="e-info" value="output" style="margin: 3px;" name="state"></ejs-radiobutton> -->
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div *ngIf="checkin"  class="card-body">
+  <div  class="card-body">
     <div class="row">
       <div class="col-md-12">
         <table class="table table-bordered">
@@ -49,8 +64,8 @@
               <th style="text-align: center;" scope="col">Batch</th>
               <th style="text-align: center;" scope="col">Expired date</th>
               <th style="text-align: center;" scope="col">Receive Qty (Kg)</th>
+              <th style="text-align: center;" scope="col">Status</th>
               <th style="text-align: center;" scope="col">Options</th>
-              <!-- <th style="text-align: center;" scope="col">Comsumption</th> -->
             </tr>
           </thead>
           <tbody>
@@ -63,9 +78,16 @@
               <td style="text-align: center;">{{item.expiredTime}}</td>
               <td style="text-align: center;">{{item.qty}} KG</td>
               <td style="text-align: center;">
+                <ng-container *ngIf="item.status === true; else elseTemplate">
+                  <span class="badge badge-secondary">Đã hết</span>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <span class="badge badge-success">Còn</span>
+                </ng-template>
+              </td>
+              <td style="text-align: center;">
                 <button  (click)="delete(item)" type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
               </td>
-              <!-- <td style="text-align: center;">{{item.consumption}}</td> -->
             </tr>
           </tbody>
         </table>
@@ -74,7 +96,7 @@
     </div>
   </div>
 
-  <div *ngIf="checkout" class="card-body">
+  <!-- <div *ngIf="checkout" class="card-body">
     <div class="row">
       <div class="col-md-12">
         <table class="table table-bordered">
@@ -87,8 +109,8 @@
               <th style="text-align: center;" scope="col">Batch</th>
               <th style="text-align: center;" scope="col">Expired date</th>
               <th style="text-align: center;" scope="col">Receive Qty (Kg)</th>
-              <!-- <th style="text-align: center;" scope="col">Options</th> -->
-              <!-- <th style="text-align: center;" scope="col">Comsumption</th> -->
+              <th style="text-align: center;" scope="col">Status</th>
+              <th style="text-align: center;" scope="col">Options</th>
             </tr>
           </thead>
           <tbody>
@@ -100,16 +122,23 @@
               <td style="text-align: center;">{{item.batch}}</td>
               <td style="text-align: center;">{{item.expiredTime}}</td>
               <td style="text-align: center;">{{item.qty}} KG</td>
-              <!-- <td style="text-align: center;">
+              <td style="text-align: center;">
+                <ng-container *ngIf="item.status === true; else elseTemplate">
+                  <span class="badge badge-secondary">Đã hết</span>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <span class="badge badge-success">Còn</span>
+                </ng-template>
+              </td>
+              <td style="text-align: center;">
                 <button  (click)="delete(item)" type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-              </td> -->
-              <!-- <td style="text-align: center;">{{item.consumption}}</td> -->
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
 
     </div>
-  </div>
+  </div> -->
 
 </div>

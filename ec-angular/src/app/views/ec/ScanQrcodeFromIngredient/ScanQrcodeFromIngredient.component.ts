@@ -36,7 +36,6 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   ) { }
   public ngOnInit(): void {
     this.getIngredientInfo();
-    this.getIngredientInfoOutput();
     this.getAllIngredient();
   }
   public ngAfterViewInit(): void {
@@ -46,8 +45,11 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   OutputChange(args) {
     this.checkin = false ;
     this.checkout = true ;
+    this.getIngredientInfoOutput();
   }
-
+  aaa() {
+    console.log('aaaa')
+  }
   InputChange(args) {
     this.checkin = true ;
     this.checkout = false ;
@@ -109,7 +111,7 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
 
   getIngredientInfoOutput() {
     this.ingredientService.getAllIngredientInfoOutput().subscribe((res: any) => {
-      this.dataOut = res ;
+      this.data = res ;
       // this.ConvertClass(res);
     });
   }
@@ -149,6 +151,7 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
     this.ingredientService.deleteIngredientInfo(item.id, item.code, item.qty, item.batch).subscribe(() => {
       this.alertify.success('Delete Success!');
       this.getIngredientInfo();
+      this.getIngredientInfoOutput();
     });
   }
 

@@ -141,7 +141,7 @@ namespace EC_API._Services.Services
         {
             var resultStart = DateTime.Now;
             var resultEnd = DateTime.Now;
-            return await _repoIngredientInfo.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date && x.Status == false).ProjectTo<IngredientInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
+            return await _repoIngredientInfo.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date ).ProjectTo<IngredientInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
 
         // Lấy toàn bộ danh sách IngredientInfo
@@ -149,7 +149,7 @@ namespace EC_API._Services.Services
         {
             var resultStart = DateTime.Now;
             var resultEnd = DateTime.Now;
-            return await _repoIngredientInfo.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date && x.Status == true).ProjectTo<IngredientInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
+            return await _repoIngredientInfo.FindAll().Where(x => x.CreatedDate >= resultStart.Date && x.CreatedDate <= resultEnd.Date ).ProjectTo<IngredientInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
 
         // Lấy toàn bộ danh sách IngredientInfo theo building
