@@ -85,5 +85,8 @@
     "SAVE": "Save",
     "INPUT_LABEL": "Input",
     "OUTPUT_LABEL": "Output",
-    "INCOMING_LABEL": "Incoming"
+    "INCOMING_LABEL": "Incoming",
+    "OUTOFSTOCK_LABEL": "Out of stock",
+    "STOCKING_LABEL": "Stocking"
+
 }

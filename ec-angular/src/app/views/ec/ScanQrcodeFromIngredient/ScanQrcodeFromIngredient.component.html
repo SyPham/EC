@@ -79,10 +79,10 @@
               <td style="text-align: center;">{{item.qty}} KG</td>
               <td style="text-align: center;">
                 <ng-container *ngIf="item.status === true; else elseTemplate">
-                  <span class="badge badge-secondary">Đã hết</span>
+                  <span class="badge badge-secondary">{{'OUTOFSTOCK_LABEL' | translate}}</span>
                 </ng-container>
                 <ng-template #elseTemplate>
-                  <span class="badge badge-success">Còn</span>
+                  <span class="badge badge-success">{{'STOCKING_LABEL' | translate}}</span>
                 </ng-template>
               </td>
               <td style="text-align: center;">
