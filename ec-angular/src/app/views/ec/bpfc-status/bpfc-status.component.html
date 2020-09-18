@@ -39,26 +39,26 @@
                             {{no(data)}}
                         </ng-template>
                     </e-column>
-                    <e-column field='modelName' isPrimaryKey='true' textAlign='Center' headerText='Model Name' width=120>
+                    <e-column field='modelName' isPrimaryKey='true' textAlign='Center' headerText='Model Name' width=130>
                     </e-column>
-                    <e-column field='modelNo' isPrimaryKey='true' textAlign='Center' headerText='Model No' width=90>
+                    <e-column field='modelNo' isPrimaryKey='true' textAlign='Center' headerText='Model No' width=104>
                     </e-column>
-                    <e-column field='articleNo' isPrimaryKey='true' textAlign='Center' headerText='Article #' width=80>
+                    <e-column field='articleNo' isPrimaryKey='true' textAlign='Center' headerText='Article #' width=97>
                     </e-column>
-                    <e-column field='artProcess' isPrimaryKey='true' textAlign='Center' headerText='Process' width=80>
+                    <e-column field='artProcess' isPrimaryKey='true' textAlign='Center' headerText='Process' width=97>
                     </e-column>
-                    <e-column field='createdDate' headerText='Created Date Time' type='date' format='d MMM, yyyy hh:mm:ss a' width='130' textAlign='Center'>
+                    <e-column field='createdDate' headerText='Created Date Time' type='date' format='dd MMM, yyyy hh:mm:ss a' width='155' textAlign='Center'>
                         <ng-template #headerTemplate let-data>
                             {{'CREATED_DATETIME_LABEL' | translate}}
                         </ng-template>
                     </e-column>
-                    <e-column field='createdBy' headerText='PIC' width='100' textAlign='Center'>
+                    <e-column field='createdBy' headerText='PIC' width='90' textAlign='Center'>
                         <ng-template #headerTemplate let-data>
                             {{'PIC_LABEL' | translate}}
                         </ng-template>
                     </e-column>
 
-                    <e-column field='finishedStatus' isPrimaryKey='true' headerText='Finished' width='80'
+                    <e-column field='finishedStatus' isPrimaryKey='true' headerText='Finished' width='130'
                         textAlign='Center'>
                         <ng-template #headerTemplate let-data>
                             {{'FINISH_LABEL' | translate}}
@@ -68,7 +68,7 @@
                            <span *ngIf="data.finishedStatus == false" class="badge badge-danger">No</span>
                         </ng-template>
                     </e-column>
-                    <e-column field='approvalStatus' isPrimaryKey='true' headerText='Approval Status' width='80' textAlign='Center'>
+                    <e-column field='approvalStatus' isPrimaryKey='true' headerText='Approval Status' width='130' textAlign='Center'>
                         <ng-template #headerTemplate let-data>
                             {{'APPROVAL_STATUS_LABEL' | translate}}
                         </ng-template>
@@ -84,7 +84,7 @@
                         </ng-template>
                     </e-column>
 
-                    <e-column field='tool' isPrimaryKey='true' headerText='Detail' width='80' textAlign='Center'>
+                    <e-column field='tool' isPrimaryKey='true' headerText='Detail' width='70' textAlign='Center'>
                         <ng-template #headerTemplate let-data>
                             {{'DETAIL_LABEL' | translate}}
                         </ng-template>

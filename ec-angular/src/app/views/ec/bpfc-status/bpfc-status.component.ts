@@ -441,4 +441,5 @@ export class BpfcStatusComponent implements OnInit, AfterViewInit {
       return '#N/A';
     }
   }
+
 }

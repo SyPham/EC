@@ -22,7 +22,10 @@
         (actionBegin)='actionBegin($event)'
         >
           <e-columns>
-            <e-column field='modelName' isPrimaryKey='true' textAlign='Center' headerText='Model Name' width=150>
+            <e-column field='#' isPrimaryKey='true' textAlign='Center' headerText='#' width=40>
+              <ng-template let-data #template>{{NO(data.index)}}</ng-template>
+            </e-column>
+            <e-column field='modelName' isPrimaryKey='true' textAlign='Center' headerText='Model Name' width=130>
             </e-column>
             <e-column field='modelNo' isPrimaryKey='true' textAlign='Center' headerText='Model NO' width=80>
             </e-column>
@@ -33,7 +36,7 @@
             <e-column field='finishedStatus' isPrimaryKey='true' textAlign='Center' headerText='Status' width=80>
               <ng-template #template let-data>{{data.finishedStatus == true? 'Yes': 'No'}}</ng-template>
             </e-column>
-            <e-column field='createdDate' isPrimaryKey='true' type='date' format='d MMM, yyyy hh:mm:ss a' headerText='Update Time'  textAlign='Center' width=130></e-column>
+            <e-column field='createdDate' isPrimaryKey='true' type='date' format='d MMM, yyyy hh:mm:ss a' headerText='Update Time'  textAlign='Center' width=150></e-column>
             <e-column field='approvedBy' isPrimaryKey='true' textAlign='Center' headerText='Approval By Supervisor' width=150></e-column>
             <e-column field='season' textAlign='Center' headerText='Season' width=150></e-column>
           </e-columns>

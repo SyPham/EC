@@ -1,8 +1,9 @@
 <ngx-spinner [fullScreen]="false" type="square-jelly-box" size="medium">
   <p class="loading">Loading data...</p>
 </ngx-spinner>
-<div class="card" #fullScreen style="overflow: auto;" >
-  <div class="card-header d-flex p-1">
+
+<div class="card" *ngIf="existGlue" #fullScreen style="overflow: auto;" >
+  <div class="card-header d-flex p-1" *ngIf="existGlue">
     <h4>{{ 'TODOLIST' | translate }}</h4>
     <ul class="nav nav-pills ml-auto p-2" *ngIf="existGlue">
       <li class="nav-item"><a class="my-cursor-pointer nav-link table-success mr-2" >{{ 'CONSUMPTION_LABEL' | translate }}(kg)</a></li>
@@ -93,116 +94,6 @@
       </div>
     </div>
   </div>
-  <div class="card-body" *ngIf="show">
-    <div class="row">
-      <div class="col-md-12 my-2">
-        <h3 class="text-center text-danger">{{ 'GLUE_NAME' | translate }}: {{makeGlue.name}} </h3>
-      </div>
-      <div class="col-md-4"></div>
-      <div class="col-md-4">
-      </div>
-
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="row">
-
-          <div class="col-md-4 col-xl-4 text-center">
-            <div class="row">
-              <div class="col-md-2">
-                <label class="font-weight-bold" for="">{{ 'STEP' | translate }}</label>
-              </div>
-              <div class="col-md-10">
-                <label class="font-weight-bold" for="">{{ 'SCAN_QRCODE' | translate }}</label>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 col-xl-4 text-center">
-            <label class="font-weight-bold" for="">{{ 'INGREDIENT_NAME' | translate}}</label>
-          </div>
-          <div class="col-md-4">
-            <div class="row">
-              <div class="col-md-8 text-center">
-                 <label class="font-weight-bold" for="">{{ 'EXPECTED' | translate }}</label>
-              </div>
-              <div class="col-md-4 text-center">
-                <label class="font-weight-bold" for="">{{ 'ACTUAL' | translate }}</label>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <ng-container *ngFor="let item of ingredients ;let i=index">
-          <div class="row">
-            <!-- <div class="col-md-1 col-xl-1 text-center">
-                  <img *ngIf="showArrow(item)" src="../../../../assets/img/gif/arrow.gif" style="width: 30px;height: 30px;"
-                    alt="">
-                </div> -->
-            <div class="col-md-4 col-xl-4">
-              <div class="row">
-                <div class="col-xl-2">
-                  <div class="align-middle">
-                    <img *ngIf="showArrow(item)" src="../../../../assets/img/gif/arrow.gif" alt="">
-                  </div>
-                </div>
-                <div class="col-xl-10">
-                  <input *ngIf="item.scanStatus; else scanBlock" class="form-control form-control-lg"
-                    [autofocus]='item.scanStatus' autoselect [name]="item.code" [(ngModel)]="item.scanCode"
-                    [class]="item.info" [ngClass]="lockClass(item)"
-                    (ngModelChange)='onNgModelChangeScanQRCode($event, item)' type="text">
-                  <ng-template #scanBlock>
-                    <input class="form-control form-control-lg" [(ngModel)]="item.scanCode" [name]="item.code"
-                      [class]="item.info" [ngClass]="lockClass(item)"
-                      (ngModelChange)='onNgModelChangeScanQRCode($event, item)' type="text">
-                  </ng-template>
-                </div>
-              </div>
-
-            </div>
-            <div class="form-group col-md-4 col-xl-4">
-              <input [class]="item.info" class="form-control form-control-lg lock"
-                [value]="item.name + ' ( ' + item.percentage + '% )'" type="text">
-            </div>
-            <div class="col-md-4">
-              <div class="row">
-                <div class="col-md-8">
-                  <input *ngIf="item.focusExpected; else expectedBlock" class="form-control form-control-lg" [value]='item.expected'
-                    [autofocus]='item.focusExpected' [class]="item.info" (keyup)='onKeyupExpected(item, $event)' type="text">
-                  <ng-template #expectedBlock>
-                    <input class="form-control form-control-lg lock" [value]='item.expected' [class]="item.info"
-                      (keyup)='onKeyupExpected(item, $event)' type="text">
-                  </ng-template>
-                </div>
-                <div class="col-md-4">
-                  <input class="form-control form-control-lg mixing" data-toggle="tooltip" title="tooltip on second input!"
-                    *ngIf="item.focusReal; else realElse" [value]='item.real' [id]='item.position' [class]="realClass(item)"
-                    [autofocus]='item.focusReal' (keyup)='onKeyupReal(item, $event)' type="text">
-                  <ng-template #realElse>
-                    <input class="form-control form-control-lg lock mixing" data-toggle="tooltip" title="tooltip on second input!"
-                      [value]='item.real' [id]='item.position' [class]="realClass(item)" (keyup)='onKeyupReal(item, $event)' type="text">
-                  </ng-template>
-                </div>
-              </div>
-            </div>
-            <!-- <div class="col-md-1 text-center">
-                  <img *ngIf="check(item)" src="../../../../assets/img/gif/check.jpg" style="width: 30px;height: 30px;" alt="">
-                  <img *ngIf="cancel" src="../../../../assets/img/gif/x.png" style="width: 30px;height: 30px;" alt="">
-                </div> -->
-          </div>
-        </ng-container>
-
-        <div class="text-center my-2">
-          <button type="button" [disabled]="disabled" (click)="Finish()" class="btn btn-success"><i
-              class="fas fa-save"></i>
-            {{ 'FINISHED' | translate }}</button>
-          <button type="button" (click)="back()" class="btn btn-primary ml-2"><i class="fa fa-arrow-circle-left"></i>
-            {{ 'BACK' | translate }}</button>
-        </div>
-        <p class="text-center my-2 text-danger" *ngIf="!disabled">{{ 'NOTE' | translate }}</p>
-      </div>
-    </div>
-  </div>
   <div class="card-body" *ngIf="showQRCode">
     <div class="row">
       <div class="col-md-4"></div>
@@ -227,6 +118,139 @@
 
     </div>
 
+  </div>
+</div>
+<div class="card" *ngIf="showQRCode" style="overflow: auto;">
+  <div class="card-header d-flex p-1" *ngIf="existGlue">
+    <h4>{{ 'TODOLIST' | translate }}</h4>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-4"></div>
+      <div class="col-md-4 text-center">
+        <button type="button" (click)="back()" class="btn btn-primary ml-2"><i class="fa fa-arrow-circle-left"></i>
+          {{ 'BACK' | translate }}</button>
+        <button type="button" (click)="printGlue()" class="btn btn-success ml-2"><i class="fa fa-print"></i>
+          Print</button>
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+    <hr>
+    <div class="row" *ngIf="showQRCode">
+      <div class="col-md-4"></div>
+      <div class="col-md-4 text-center">
+        <ejs-qrcodegenerator style="display: block;" [displayText]='displayTextMethod' id='qrcode' #qrcode width="400px"
+          height="400px" mode="SVG" [value]="code"></ejs-qrcodegenerator>
+        <label id='glueName' for="">{{makeGlue.name }}</label> <br>
+        <label id='glueNameExpiredTime' for="">Expired on: {{expiredTime | date:'M/d , h:mm a '}}</label>
+      </div>
+      <div class="col-md-4"></div>
+
+    </div>
+
+  </div>
+</div>
+<div *ngIf="show" class="card my-height">
+  <div class="card-body my-vertical">
+    <div class="row">
+      <div class="col-md-12">
+        <h2 class="text-center text-danger">{{ 'GLUE_NAME' | translate }}: {{makeGlue.name}} </h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+
+          <div class="col-md-4 col-xl-4 text-center">
+            <div class="row">
+              <div class="col-md-2">
+                <label class="font-weight-bold" for="">{{ 'STEP' | translate }}</label>
+              </div>
+              <div class="col-md-10">
+                <label class="font-weight-bold" for="">{{ 'SCAN_QRCODE' | translate }}</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2 col-xl-2 text-center">
+            <label class="font-weight-bold" for="">{{ 'INGREDIENT_NAME' | translate}}</label>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-8 text-center">
+                <label class="font-weight-bold" for="">{{ 'EXPECTED' | translate }}</label>
+              </div>
+              <div class="col-md-4 text-center">
+                <label class="font-weight-bold" for="">{{ 'ACTUAL' | translate }}</label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <ng-container *ngFor="let item of ingredients ;let i=index">
+          <div class="row mb-1">
+            <div class="col-md-4 col-xl-4">
+              <div class="row">
+                <div class="col-xl-2">
+                  <div class="align-middle">
+                    <img *ngIf="showArrow(item)" src="../../../../assets/img/gif/arrow.gif" alt="">
+                  </div>
+                </div>
+                <div class="col-xl-10">
+                  <input *ngIf="item.scanStatus; else scanBlock" class="form-control form-control-lg rounded-pill"
+                    [autofocus]='item.scanStatus' autoselect [name]="item.code" [(ngModel)]="item.scanCode"
+                    [class]="item.info" [ngClass]="lockClass(item)"
+                    (ngModelChange)='onNgModelChangeScanQRCode($event, item)' type="text">
+                  <ng-template #scanBlock>
+                    <input class="form-control form-control-lg rounded-pill" [(ngModel)]="item.scanCode" [name]="item.code"
+                      [class]="item.info" [ngClass]="lockClass(item)"
+                      (ngModelChange)='onNgModelChangeScanQRCode($event, item)' type="text">
+                  </ng-template>
+                </div>
+              </div>
+
+            </div>
+            <div class="form-group col-md-2 col-xl-2">
+              <input [class]="item.info" class="form-control form-control-lg rounded-pill lock"
+                [value]="item.name + ' ( ' + item.percentage + '% )'" type="text">
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-8">
+                  <input *ngIf="item.focusExpected; else expectedBlock" class="form-control form-control-lg rounded-pill"
+                    [value]='item.expected' [autofocus]='item.focusExpected' [class]="item.info"
+                    (keyup)='onKeyupExpected(item, $event)' type="text">
+                  <ng-template #expectedBlock>
+                    <input class="form-control form-control-lg rounded-pill lock" [value]='item.expected' [class]="item.info"
+                      (keyup)='onKeyupExpected(item, $event)' type="text">
+                  </ng-template>
+                </div>
+                <div class="col-md-4">
+                  <input class="form-control form-control-lg rounded-pill mixing" data-toggle="tooltip"
+                    title="tooltip on second input!" *ngIf="item.focusReal; else realElse" [value]='item.real'
+                    [id]='item.position' [class]="realClass(item)" [autofocus]='item.focusReal'
+                    (keyup)='onKeyupReal(item, $event)' type="text">
+                  <ng-template #realElse>
+                    <input class="form-control form-control-lg rounded-pill lock mixing" data-toggle="tooltip"
+                      title="tooltip on second input!" [value]='item.real' [id]='item.position' [class]="realClass(item)"
+                      (keyup)='onKeyupReal(item, $event)' type="text">
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="text-center mb-1">
+          <button type="button" [disabled]="disabled" (click)="Finish()" class="btn btn-success rounded-pill"><i
+              class="fas fa-save"></i>
+            {{ 'FINISHED' | translate }}</button>
+          <button type="button" (click)="back()" class="btn btn-primary rounded-pill ml-2"><i class="fa fa-arrow-circle-left"></i>
+            {{ 'BACK' | translate }}</button>
+        </div>
+        <p class="text-center my-2 text-danger" *ngIf="!disabled">{{ 'NOTE' | translate }}</p>
+      </div>
+    </div>
   </div>
 </div>
 <ng-template #deliveredModal let-modal>

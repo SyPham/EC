@@ -2073,8 +2073,6 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       }
     }
     onClickProcess(args) {
-      console.log('approvalStatus', this.approvalStatus)
-      console.log('createdStatus', this.createdStatus)
       this.modelProcessSelect = true;
       if (args.target.defaultValue) {
         this.artProcessID = Number(args.target.defaultValue);

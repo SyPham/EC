@@ -109,3 +109,59 @@ input.summary:focus {
 .my-cursor-pointer {
   cursor: pointer;
 }
+
+@media only screen and (max-height: 1024px){
+  .my-height {
+    min-height: 868px;
+    position: relative;
+  };
+}
+@media only screen and (max-height: 978px){
+  .my-height {
+    min-height: 788px;
+    position: relative;
+  };
+}
+@media only screen and (min-height: 1101px){
+  .my-height {
+    min-height: 945px;
+    position: relative;
+
+  };
+}
+@media only screen and (min-height: 768px){
+.my-height {
+    min-height: 612px;
+    position: relative;
+  };
+}
+@media only screen and (min-height: 625px){
+.my-height {
+    min-height: 470px;
+    position: relative;
+  };
+}
+@media only screen and (min-height: 694px){
+.my-height {
+    min-height: 539px;
+    position: relative;
+  };
+}
+@media only screen and (min-height: 781px){
+.my-height {
+    min-height: 625px;
+    position: relative;
+  };
+}
+.my-vertical {
+  position: absolute;
+	left: 50%;
+  top: 50%;
+  width: 100%;
+	transform: translate(-50%, -50%);
+}
+/* .my-background {
+  background-size:100% 100%;
+  background-repeat: no-repeat;
+  background-image:  url('../../../../assets/img/bg1.jpg');
+} */

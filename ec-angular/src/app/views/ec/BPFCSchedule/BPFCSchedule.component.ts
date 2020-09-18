@@ -16,7 +16,7 @@ import { DatePipe } from '@angular/common';
   providers: [DatePipe]
 })
 export class BPFCScheduleComponent implements OnInit {
-  pageSettings = { pageCount: 20, pageSizes: true, pageSize: 20 };
+  pageSettings = { pageCount: 20, pageSizes: true, pageSize: 10 };
   data: any[];
   editSettings: object;
   toolbar: object;
@@ -132,5 +132,7 @@ export class BPFCScheduleComponent implements OnInit {
   showModal(importModal) {
     this.modalReference = this.modalService.open(importModal, { size: 'xl' });
   }
-
+  NO(index) {
+    return (this.gridObj.pageSettings.currentPage - 1) * this.gridObj.pageSettings.pageSize + Number(index) + 1;
+  }
 }

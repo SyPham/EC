@@ -495,13 +495,13 @@ export class SummaryComponent implements OnInit, AfterViewInit {
           this.errorScan();
           return;
         }
-        const checkIncoming = await this.checkIncoming(item.name, this.level.name, input[1]);
-        if (checkIncoming === false) {
-          this.alertify.error(`Invalid!`);
-          this.qrCode = '';
-          this.errorScan();
-          return;
-        }
+        // const checkIncoming = await this.checkIncoming(item.name, this.level.name, input[1]);
+        // if (checkIncoming === false) {
+        //   this.alertify.error(`Invalid!`);
+        //   this.qrCode = '';
+        //   this.errorScan();
+        //   return;
+        // }
 
         const checkLock = await this.hasLock(item.name, this.level.name, input[1]);
         if (checkLock === true) {
@@ -615,7 +615,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       const max = expected + allow;
       const minRange = this.toFixedIfNecessary(min / 1000, 3);
       const maxRange = this.toFixedIfNecessary(max / 1000, 3);
-      const expectedRange = `${minRange}kg - ${maxRange}kg`;
+      const expectedRange = `${minRange}kg - ${maxRange}kg ( ${this.toFixedIfNecessary(min, 3)}g - ${this.toFixedIfNecessary(max, 3)}g )`;
       if (allow === 0) {
         const kgValue = this.toFixedIfNecessary(expected / 1000, 3);
         this.changeExpected(position, `${kgValue}kg (${expected}g)`);
