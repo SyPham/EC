@@ -26,7 +26,7 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   checkout: boolean = false ;
   checkin: boolean = true ;
   public ingredients: any = [];
-  test: any =  'form-control';
+  test: any =  'form-control w3-light-grey';
   checkCode: boolean ;
   constructor(
     public modalService: NgbModal,
