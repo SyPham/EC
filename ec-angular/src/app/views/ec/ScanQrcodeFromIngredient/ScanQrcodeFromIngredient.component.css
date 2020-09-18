@@ -1,3 +1,6 @@
+/* @import '~pretty-checkbox/src/pretty-checkbox.scss'; */
+/* @import '~pretty-checkbox/scss/variables';
+@import '~pretty-checkbox/scss/core'; */
 input.success-scan {
   width: 100%;
   padding: 12px 20px;
@@ -14,4 +17,15 @@ input.error-scan {
   border: none;
   background-color: #dc3545;
   color: white;
+}
+.e-success::before {
+  border-color: #689f38;
+}
+.e-radio +.e-success:hover::before {
+  border-color: #b1afaf
+}
+
+input.largerCheckbox {
+  width: 40px;
+  height: 40px;
 }

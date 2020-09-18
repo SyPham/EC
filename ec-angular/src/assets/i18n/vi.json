@@ -84,6 +84,7 @@
     "SAVE": "Lưu Lại",
     "INPUT_LABEL": "Hàng Nhập",
     "OUTPUT_LABEL": "Kết Thúc",
-    "INCOMING_LABEL": "Hàng Nhập"
-
+    "INCOMING_LABEL": "Hàng Nhập",
+    "OUTOFSTOCK_LABEL": "Đã hết",
+    "STOCKING_LABEL": "Còn"
 }

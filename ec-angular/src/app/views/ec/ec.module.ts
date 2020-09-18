@@ -68,6 +68,8 @@ import { TimePickerModule } from '@syncfusion/ej2-angular-calendars';
 import { DateTimePickerModule } from '@syncfusion/ej2-angular-calendars';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { SelectQrCodeDirective } from './select.qrcode.directive';
+import { NgxPrettyCheckboxModule } from 'ngx-pretty-checkbox';
+
 setCulture('de-DE');
 
 const lang = localStorage.getItem('lang');
@@ -105,6 +107,7 @@ if (lang) {
     TimePickerModule ,
     Ng2SearchPipeModule,
     DateTimePickerModule,
+    NgxPrettyCheckboxModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,

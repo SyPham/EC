@@ -6,12 +6,47 @@
   <div class="card-body">
     <div class="row">
       <div class="col-md-12">
-        <div class="row">
+        <form class="w3-container w3-card-4  w3-text-black " >
+          <h2 class="w3-center">Scan QR Code</h2>
+
+          <div class="w3-row w3-section">
+            <div class="w3-col" style="width:100px">
+              <img src="../../../../assets/img/gif/1981.gif" height="40px" width="80%" alt="">
+            </div>
+            <div class="w3-rest">
+              <input [ngClass]="test" name="qrcode"  [autofocus]="true" autoselect  [ngModel]="qrcodeChange"  (ngModelChange)='onNgModelChangeScanQRCode($event)' type="text">
+            </div>
+            <div class="row">
+              <div class="col-md-12 mt-4 text-center">
+                 <!-- success -->
+                <div style="font-size: 30px;" class="pretty p-icon p-round">
+                  <input (change)='InputChange($event)' type="radio" checked name="icon_solid" />
+                  <div class="state p-success">
+                    <i class="icon mdi mdi-check"></i>
+                    <label>{{'INPUT_LABEL' | translate}}</label>
+                  </div>
+                </div>
+
+                <div style="font-size: 30px;" class="pretty p-icon p-round">
+                  <input (change)='OutputChange($event)' type="radio" name="icon_solid" />
+                  <div class="state p-success">
+                    <i class="icon mdi mdi-check"></i>
+                    <label>{{'OUTPUT_LABEL' | translate}}</label>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- <div class="row">
           <div class="col-sm-12 text-center">
             <label class="font-weight-bold" for="">Scan QR Code</label>
           </div>
-        </div>
-        <ng-container>
+        </div> -->
+
+        <!-- <ng-container>
           <div class="row">
             <div class="col-md-2">
               <div style="text-align: right;">
@@ -19,24 +54,41 @@
               </div>
             </div>
             <div class="col-md-8">
-              <input [ngClass]="test" [autofocus]="true" autoselect  [ngModel]="qrcodeChange"  (ngModelChange)='onNgModelChangeScanQRCode($event)' type="text">
+              <input [ngClass]="test"  [autofocus]="true" autoselect  [ngModel]="qrcodeChange"  (ngModelChange)='onNgModelChangeScanQRCode($event)' type="text">
             </div>
-            <!-- <div class="col-md-2">
+            <div class="col-md-2">
               <button (click)="confirm()" type="button" class="btn btn-success"><i class="fas fa-save"></i> Confirm</button>
-            </div> -->
+            </div>
           </div>
-        </ng-container>
-        <div class="row">
+        </ng-container> -->
+
+        <!-- <div class="row">
           <div class="col-md-12 mt-4 text-center">
-            <ejs-radiobutton label="{{'INPUT_LABEL' | translate}}" (change)='InputChange($event)' value="input" style="margin: 3px;" name="state" checked="true"></ejs-radiobutton>
-            <ejs-radiobutton label=" {{'OUTPUT_LABEL' | translate}}" (change)='OutputChange($event)' value="output" style="margin: 3px;" name="state"></ejs-radiobutton>
+
+            <div style="font-size: 30px;" class="pretty p-icon p-round">
+              <input (change)='InputChange($event)' type="radio" checked name="icon_solid" />
+              <div class="state p-success">
+                <i class="icon mdi mdi-check"></i>
+                <label>{{'INPUT_LABEL' | translate}}</label>
+              </div>
+            </div>
+
+            <div style="font-size: 30px;" class="pretty p-icon p-round">
+              <input (change)='OutputChange($event)' type="radio" name="icon_solid" />
+              <div class="state p-success">
+                <i class="icon mdi mdi-check"></i>
+                <label>{{'OUTPUT_LABEL' | translate}}</label>
+              </div>
+            </div>
+
           </div>
-        </div>
+        </div> -->
+
       </div>
     </div>
   </div>
 
-  <div *ngIf="checkin"  class="card-body">
+  <div  class="card-body">
     <div class="row">
       <div class="col-md-12">
         <table class="table table-bordered">
@@ -49,8 +101,8 @@
               <th style="text-align: center;" scope="col">Batch</th>
               <th style="text-align: center;" scope="col">Expired date</th>
               <th style="text-align: center;" scope="col">Receive Qty (Kg)</th>
+              <th style="text-align: center;" scope="col">Status</th>
               <th style="text-align: center;" scope="col">Options</th>
-              <!-- <th style="text-align: center;" scope="col">Comsumption</th> -->
             </tr>
           </thead>
           <tbody>
@@ -63,9 +115,16 @@
               <td style="text-align: center;">{{item.expiredTime}}</td>
               <td style="text-align: center;">{{item.qty}} KG</td>
               <td style="text-align: center;">
+                <ng-container *ngIf="item.status === true; else elseTemplate">
+                  <span class="badge badge-secondary">{{'OUTOFSTOCK_LABEL' | translate}}</span>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <span class="badge badge-success">{{'STOCKING_LABEL' | translate}}</span>
+                </ng-template>
+              </td>
+              <td style="text-align: center;">
                 <button  (click)="delete(item)" type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
               </td>
-              <!-- <td style="text-align: center;">{{item.consumption}}</td> -->
             </tr>
           </tbody>
         </table>
@@ -74,7 +133,7 @@
     </div>
   </div>
 
-  <div *ngIf="checkout" class="card-body">
+  <!-- <div *ngIf="checkout" class="card-body">
     <div class="row">
       <div class="col-md-12">
         <table class="table table-bordered">
@@ -87,8 +146,8 @@
               <th style="text-align: center;" scope="col">Batch</th>
               <th style="text-align: center;" scope="col">Expired date</th>
               <th style="text-align: center;" scope="col">Receive Qty (Kg)</th>
-              <!-- <th style="text-align: center;" scope="col">Options</th> -->
-              <!-- <th style="text-align: center;" scope="col">Comsumption</th> -->
+              <th style="text-align: center;" scope="col">Status</th>
+              <th style="text-align: center;" scope="col">Options</th>
             </tr>
           </thead>
           <tbody>
@@ -100,16 +159,23 @@
               <td style="text-align: center;">{{item.batch}}</td>
               <td style="text-align: center;">{{item.expiredTime}}</td>
               <td style="text-align: center;">{{item.qty}} KG</td>
-              <!-- <td style="text-align: center;">
+              <td style="text-align: center;">
+                <ng-container *ngIf="item.status === true; else elseTemplate">
+                  <span class="badge badge-secondary">Đã hết</span>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <span class="badge badge-success">Còn</span>
+                </ng-template>
+              </td>
+              <td style="text-align: center;">
                 <button  (click)="delete(item)" type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-              </td> -->
-              <!-- <td style="text-align: center;">{{item.consumption}}</td> -->
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
 
     </div>
-  </div>
+  </div> -->
 
 </div>

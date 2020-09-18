@@ -15,10 +15,12 @@
 @import '../node_modules/@syncfusion/ej2-grids/styles/bootstrap4.css';
 @import '../node_modules/@syncfusion/ej2-treegrid/styles/bootstrap4.css';
 @import '../node_modules/sweetalert2/dist/sweetalert2.min.css';
+/* @import '../pretty-checkbox/src/pretty-checkbox.scss'; */
+/* @import '~pretty-checkbox/src/pretty-checkbox.scss'; */
 .modal-xxl {
     min-width: 95%!important;
 }
- 
+
 /*!
  * Load Awesome v1.1.0 (http://github.danielcardoso.net/load-awesome/)
  * Copyright 2015 Daniel Cardoso <@DanielCardoso>
