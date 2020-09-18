@@ -58,9 +58,6 @@ export class IngredientComponent implements OnInit, AfterViewInit {
   itemsPerPage = 15;
   totalItems: any;
   file: any;
-  public displayTextMethod: DisplayTextModel = {
-    visibility: false
-  };
   toolbar = ['Search'];
   text: any;
   dataPrint: any;
