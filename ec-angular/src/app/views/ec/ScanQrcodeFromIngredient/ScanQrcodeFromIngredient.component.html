@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-header">
-    <h3>Incoming</h3>
+    <h3>{{'INCOMING_LABEL' | translate}}</h3>
 
   </div>
   <div class="card-body">
@@ -28,8 +28,8 @@
         </ng-container>
         <div class="row">
           <div class="col-md-12 mt-4 text-center">
-            <ejs-radiobutton label="Input" (change)='InputChange($event)' value="input" style="margin: 3px;" name="state" checked="true"></ejs-radiobutton>
-            <ejs-radiobutton label="Output" (change)='OutputChange($event)' value="output" style="margin: 3px;" name="state"></ejs-radiobutton>
+            <ejs-radiobutton label="{{'INPUT_LABEL' | translate}}" (change)='InputChange($event)' value="input" style="margin: 3px;" name="state" checked="true"></ejs-radiobutton>
+            <ejs-radiobutton label=" {{'OUTPUT_LABEL' | translate}}" (change)='OutputChange($event)' value="output" style="margin: 3px;" name="state"></ejs-radiobutton>
           </div>
         </div>
       </div>

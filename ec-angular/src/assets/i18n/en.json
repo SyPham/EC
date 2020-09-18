@@ -82,5 +82,8 @@
     "WORK_PLAN_LABEL": "Work Plan",
     "FILTER_LABEL": "Filter",
     "INVENTORY_LABEL": "Inventory",
-    "SAVE": "Save"
+    "SAVE": "Save",
+    "INPUT_LABEL": "Input",
+    "OUTPUT_LABEL": "Output",
+    "INCOMING_LABEL": "Incoming"
 }
