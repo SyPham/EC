@@ -51,6 +51,7 @@ namespace EC_API
                     "http://10.4.0.76:96",
                     "http://10.4.0.76:1001",
                     "http://10.4.4.92:1000",
+                    "http://10.4.0.76:1005",
                     "http://10.4.0.76:1000") //register for client
                     .AllowAnyMethod()
                     .AllowAnyHeader()
