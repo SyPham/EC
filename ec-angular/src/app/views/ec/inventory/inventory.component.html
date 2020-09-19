@@ -19,16 +19,93 @@
           <i class="fa fa-times"></i>
         </button>
       </div>
-      <div class="col-md-3">
+      <!-- <div class="col-md-3">
         <input class="form-control form-control-sm" placeholder='&#xf002; Search...'  type="text" name="search" [(ngModel)]="searchText" autocomplete="off" >
-      </div>
+      </div> -->
     </div>
   </div>
 
   <div class="card-body">
     <div class="row">
       <div class="col-md-12">
-        <table class="table table-bordered">
+        <ejs-grid #ingredientinforeportGrid  [dataSource]='data'
+          [allowExcelExport]='true' [allowSorting]='true' allowFiltering='true' [filterSettings]='filterSettings'
+          [toolbar]='toolbarOptions' showColumnMenu='true' [pageSettings]='pageSettings'
+          allowPaging="true" gridLines='Both' (toolbarClick)='toolbarClick($event)'>
+          <e-columns>
+            <!-- <e-column field='#' headerText='#' width='40'>
+            <ng-template let-data #template>
+              {{NO(data.index)}}
+            </ng-template>
+          </e-column> -->
+            <e-column field='createdTime' textAlign='Center' headerText='Time' width='100'>
+              <ng-template #headerTemplate>
+                {{'TIME_LABEL' | translate}}
+              </ng-template>
+              <ng-template #template let-data>
+                {{data.createdTime | date:'yyyy-MM-dd , hh:mm:ss a'}}
+              </ng-template>
+
+            </e-column>
+
+            <e-column field='supplierName' textAlign='Center' headerText='Supplier' width='130'>
+              <ng-template #headerTemplate>
+                {{'SUPPLIER' | translate}}
+              </ng-template>
+            </e-column>
+
+            <e-column field='name' textAlign='Center' headerText='Ingredient' width='130'>
+              <ng-template #headerTemplate>
+                {{'INGREDIENT_LABEL' | translate}}
+              </ng-template>
+
+            </e-column>
+
+            <e-column field='manufacturingDate' textAlign='Center' headerText='Production date' width='130'>
+              <ng-template #headerTemplate>
+                {{'PRODUCTION_DATE_LABEL' | translate}}
+              </ng-template>
+              <ng-template #template let-data>
+                {{data.manufacturingDate | date:'yyyy-MM-dd'}}
+              </ng-template>
+            </e-column>
+
+            <e-column field='batch' textAlign='Center' headerText='Batch' width='130'>
+              <ng-template #headerTemplate>
+                {{'BATCH_LABEL' | translate}}
+              </ng-template>
+            </e-column>
+
+            <e-column field='expiredTime' textAlign='Center' headerText='Expired Date' width='130'>
+              <ng-template #headerTemplate>
+                {{'EXPIRED_DATE_LABEL' | translate}}
+              </ng-template>
+              <ng-template #template let-data>
+                {{data.expiredTime | date:'yyyy-MM-dd'}}
+              </ng-template>
+            </e-column>
+
+            <e-column field='qty' textAlign='Center' headerText='Recieve Qty (Kg)' width='130'>
+              <ng-template #headerTemplate>
+                {{'QTY_LABEL' | translate}}
+              </ng-template>
+              <ng-template #template let-data>
+                {{data.qty}} Kg
+              </ng-template>
+            </e-column>
+
+            <e-column field='consumption' textAlign='Center' headerText='Consumption' width='100'>
+              <ng-template #headerTemplate>
+                {{'CONSUMPTION_LABEL' | translate}}
+              </ng-template>
+              <ng-template #template let-data>
+                {{data.consumption}} Kg
+              </ng-template>
+
+            </e-column>
+          </e-columns>
+        </ejs-grid>
+        <!-- <table class="table table-bordered">
           <thead class="thead-dark">
             <tr>
               <th style="text-align: center;" scope="col">Time</th>
@@ -53,7 +130,7 @@
               <td style="text-align: center;">{{item.consumption}} KG</td>
             </tr>
           </tbody>
-        </table>
+        </table> -->
       </div>
 
     </div>

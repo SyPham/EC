@@ -55,6 +55,7 @@ import { BpfcComponent } from './bpfc/bpfc.component';
 import { BpfcStatusComponent } from './bpfc-status/bpfc-status.component';
 import { AutofocusDirective } from './focus.directive';
 import { AutoSelectDirective } from './select.directive';
+import { SearchDirective } from './search.directive';
 import { GlueHistoryComponent } from './summary/glue-history/glue-history.component';
 import { SelectTextDirective } from './select.text.directive';
 import { InventoryComponent } from './inventory/inventory.component';
@@ -144,6 +145,7 @@ if (lang) {
     AutofocusDirective,
     SelectTextDirective,
     AutoSelectDirective,
+    SearchDirective,
     GlueHistoryComponent,
     InventoryComponent,
     DeliveredHistoryComponent,
