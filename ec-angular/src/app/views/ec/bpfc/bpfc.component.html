@@ -168,9 +168,9 @@
               (click)='approval()' *ngIf='modelNameID > 0' [(ngModel)]="approvalStatus" [checked]="approvalStatus">
             </ejs-switch>
           </ng-container>
-          <button type="button" (click)='save()' ejs-button cssClass="e-small e-warning ml-2"><i
+          <!-- <button type="button" (click)='save()' ejs-button cssClass="e-small e-warning ml-2"><i
               class="fas fa-save"></i> {{ 'SAVE' | translate}}
-          </button>
+          </button> -->
           <button type="button" (click)='finished()' *ngIf='modelNameID > 0' ejs-button
             cssClass="e-small e-success ml-2"><i class="fas fa-save"></i> {{ 'FINISHED' | translate}}
           </button>

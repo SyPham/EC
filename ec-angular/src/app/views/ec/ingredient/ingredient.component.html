@@ -147,18 +147,19 @@
         gridLines='Both'
         (toolbarClick)='toolbarClick($event)'>
         <e-columns>
-          <e-column field='#' headerText='#' width='50'>
+          <e-column field='#' headerText='#' width='40'>
             <ng-template let-data #template>
               {{NO(data.index)}}
             </ng-template>
           </e-column>
           <e-column field='supplier' headerText='Supplier' textAlign='Center' width='100'></e-column>
-          <e-column field='name' headerText='Ingredient Name' textAlign='Center' width='130'></e-column>
+          <e-column field='name' headerText='Ingredient Name' textAlign='Center' width='120'></e-column>
           <e-column field='voc' headerText='VOC' textAlign='Center' width='80'></e-column>
-          <e-column field='expiredTime' headerText='ExpiredTime' textAlign='Center' width='130'></e-column>
-          <e-column field='materialNO' headerText='Material #' textAlign='Center' width='130'></e-column>
+          <e-column field='expiredDate' headerText='Expired Date' type='dateTime' format='d MMM, yyyy' textAlign='Center' width='130'></e-column>
+          <e-column field='expiredTime' headerText='Expired Time' textAlign='Center' width='130'></e-column>
+          <e-column field='materialNO' headerText='Material #' textAlign='Center' width='100'></e-column>
           <e-column field='unit' headerText='Unit(kg)' textAlign='Center' width='100'></e-column>
-          <e-column field='createdDate' headerText='Created Date' textAlign='Center' type='dateTime' format='d MMM, yyyy hh:mm:ss a' width='180'></e-column>
+          <e-column field='createdDate' headerText='Created Date' textAlign='Center' type='dateTime' format='dd MMM, yyyy hh:mm:ss a' width='180'></e-column>
           <e-column field='Option' headerText='Option' textAlign='Center' width='130'>
             <ng-template let-data #template >
                 <div class="btn-group" data-toggle="tooltip" data-placement="top" title="Print QRCode">

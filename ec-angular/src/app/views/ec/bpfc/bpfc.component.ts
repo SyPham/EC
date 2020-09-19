@@ -125,6 +125,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     allow: 0,
     voc: 0,
     expiredTime: 0,
+    expiredDate: new Date(),
     materialNO: '',
     unit: 0
   };
@@ -1562,6 +1563,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
                 allow: item.allow,
                 position: item.position,
                 expiredTime: item.expiredTime,
+                expiredDate: item.expiredDate,
                 voc: item.voc,
                 materialNO: item.materialNO,
                 unit: item.unit
@@ -1624,43 +1626,43 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       }
     );
   }
-  save() {
-    if (this.gridglue.getSelectedRowIndexes().length > 0) {
-      const details = this.getLocalStore('details');
-      const selectedrecords = this.gridglue.getSelectedRecords()[0] as IGlue; // Get the selected records.
-      selectedrecords.expiredTime = details.filter(
-        (item) => item.position === 'A'
-      )[0].expiredTime;
-      selectedrecords.kindID =
-        selectedrecords.kindID === 0 ? null : selectedrecords.kindID;
-      selectedrecords.partID =
-        selectedrecords.partID === 0 ? null : selectedrecords.partID;
-      selectedrecords.materialID =
-        selectedrecords.materialID === 0 ? null : selectedrecords.materialID;
-      this.selectedRow = this.gridglue.getSelectedRowIndexes();
-      this.glueService.update(selectedrecords).subscribe((res) => {
-        this.alertify.success('Save successed!');
-        this.getAllGluesByBPFCID(this.BPFCID);
-        this.detailGlue = true;
-        this.modified = true;
-        const bpfcInfo = {
-          modelNameID: this.modelNameID,
-          modelNoID: this.modelNoID,
-          articleNoID: this.articleNoID,
-          artProcessID: this.artProcessID,
-        };
-        this.getBPFCID(bpfcInfo);
-        this.getAllBPFC();
-      });
-      if (details.length > 0) {
-        for (const item of details) {
-          this.mapGlueIngredient(item);
-        }
-        this.alertify.success('Successfully!');
-        this.modified = true;
-      }
-    }
-  }
+  // save() {
+  //   if (this.gridglue.getSelectedRowIndexes().length > 0) {
+  //     const details = this.getLocalStore('details');
+  //     const selectedrecords = this.gridglue.getSelectedRecords()[0] as IGlue; // Get the selected records.
+  //     selectedrecords.expiredTime = details.filter(
+  //       (item) => item.position === 'A'
+  //     )[0].expiredTime;
+  //     selectedrecords.kindID =
+  //       selectedrecords.kindID === 0 ? null : selectedrecords.kindID;
+  //     selectedrecords.partID =
+  //       selectedrecords.partID === 0 ? null : selectedrecords.partID;
+  //     selectedrecords.materialID =
+  //       selectedrecords.materialID === 0 ? null : selectedrecords.materialID;
+  //     this.selectedRow = this.gridglue.getSelectedRowIndexes();
+  //     this.glueService.update(selectedrecords).subscribe((res) => {
+  //       this.alertify.success('Save successed!');
+  //       this.getAllGluesByBPFCID(this.BPFCID);
+  //       this.detailGlue = true;
+  //       this.modified = true;
+  //       const bpfcInfo = {
+  //         modelNameID: this.modelNameID,
+  //         modelNoID: this.modelNoID,
+  //         articleNoID: this.articleNoID,
+  //         artProcessID: this.artProcessID,
+  //       };
+  //       this.getBPFCID(bpfcInfo);
+  //       this.getAllBPFC();
+  //     });
+  //     if (details.length > 0) {
+  //       for (const item of details) {
+  //         this.mapGlueIngredient(item);
+  //       }
+  //       this.alertify.success('Successfully!');
+  //       this.modified = true;
+  //     }
+  //   }
+  // }
   finished() {
     const userid = JSON.parse(localStorage.getItem('user')).User.ID;
     if (this.gridglue.getSelectedRowIndexes().length === 0) {

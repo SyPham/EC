@@ -23,6 +23,7 @@ namespace EC_API.Models
         public string VOC { get; set; }
         public int CreatedBy { get; set; }
         public int ExpiredTime { get; set; }
+        public DateTime ExpiredDate { get; set; }
         public bool isShow { get; set; }
         public int ModifiedBy { get; set; }
         public DateTime ModifiedDate { get; set; }

@@ -86,6 +86,17 @@
     "OUTPUT_LABEL": "Output",
     "INCOMING_LABEL": "Incoming",
     "OUTOFSTOCK_LABEL": "Out of stock",
-    "STOCKING_LABEL": "Stocking"
+    "STOCKING_LABEL": "Stocking",
+    "TIME_LABEL": "Time",
+    "INGREDIENT_LABEL": "Ingredient",
+    "PRODUCTION_DATE_LABEL": "Production Date",
+    "BATCH_LABEL": "Batch",
+    "EXPIRED_DATE_LABEL": "Expired Date",
+    "STATUS_LABEL": "Status",
+    "QTY_LABEL": "Receive Qty (Kg)",
+    "TROUBLESHOOTING_LABEL": "Troubleshooting",
+    "SEARCH_LABEL": "Search",
+    "BLACK_LIST_LABEL": "Black List",
+    "DELIVERED_HISTORY_LABEL": "Delivered History"
 
 }

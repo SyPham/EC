@@ -22,6 +22,7 @@ export class IngredientModalComponent implements OnInit {
     allow: 0,
     voc: 0,
     expiredTime: 0,
+    expiredDate: new Date(),
     materialNO: '',
     unit: 0
   };

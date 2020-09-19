@@ -6,7 +6,7 @@
   <div class="card-body">
     <div class="row">
       <div class="col-md-12">
-        <form class="w3-container w3-card-4  w3-text-black " >
+        <form class="w3-container w3-card-4  w3-text-black ">
           <h2 class="w3-center">Scan QR Code</h2>
 
           <div class="w3-row w3-section">
@@ -14,11 +14,12 @@
               <img src="../../../../assets/img/gif/1981.gif" height="40px" width="80%" alt="">
             </div>
             <div class="w3-rest">
-              <input [ngClass]="test" name="qrcode"  [autofocus]="true" autoselect  [ngModel]="qrcodeChange"  (ngModelChange)='onNgModelChangeScanQRCode($event)' type="text">
+              <input [ngClass]="test" name="qrcode" [autofocus]="true" autoselect [ngModel]="qrcodeChange"
+                (ngModelChange)='onNgModelChangeScanQRCode($event)' type="text">
             </div>
             <div class="row">
               <div class="col-md-12 mt-4 text-center">
-                 <!-- success -->
+                <!-- success -->
                 <div style="font-size: 30px;" class="pretty p-icon p-round">
                   <input (change)='InputChange($event)' type="radio" checked name="icon_solid" />
                   <div class="state p-success">
@@ -88,21 +89,21 @@
     </div>
   </div>
 
-  <div  class="card-body">
+  <div class="card-body">
     <div class="row">
       <div class="col-md-12">
         <table class="table table-bordered">
           <thead class="thead-dark">
             <tr>
-              <th style="text-align: center;" scope="col">Time</th>
-              <th style="text-align: center;" scope="col">Supplier</th>
-              <th style="text-align: center;" scope="col">Ingredient</th>
-              <th style="text-align: center;" scope="col">Production Date</th>
-              <th style="text-align: center;" scope="col">Batch</th>
-              <th style="text-align: center;" scope="col">Expired date</th>
-              <th style="text-align: center;" scope="col">Receive Qty (Kg)</th>
-              <th style="text-align: center;" scope="col">Status</th>
-              <th style="text-align: center;" scope="col">Options</th>
+              <th style="text-align: center;" scope="col">{{'TIME_LABEL' | translate}}</th>
+              <th style="text-align: center;" scope="col">{{'SUPPLIER' | translate}}</th>
+              <th style="text-align: center;" scope="col">{{'INGREDIENT_LABEL' | translate}}</th>
+              <th style="text-align: center;" scope="col">{{'PRODUCTION_DATE_LABEL' | translate}}</th>
+              <th style="text-align: center;" scope="col">{{'BATCH_LABEL' | translate}}</th>
+              <th style="text-align: center;" scope="col">{{'EXPIRED_DATE_LABEL' | translate}}</th>
+              <th style="text-align: center;" scope="col">{{'QTY_LABEL' | translate}}</th>
+              <th style="text-align: center;" scope="col">{{'STATUS_LABEL' | translate}}</th>
+              <th style="text-align: center;" scope="col">{{'OPTION' | translate}}</th>
             </tr>
           </thead>
           <tbody>
@@ -123,7 +124,7 @@
                 </ng-template>
               </td>
               <td style="text-align: center;">
-                <button  (click)="delete(item)" type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                <button (click)="delete(item)" type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
               </td>
             </tr>
           </tbody>

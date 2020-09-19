@@ -98,6 +98,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     allow: 0,
     voc: 0,
     expiredTime: 0,
+    expiredDate: new Date(),
     materialNO: '',
     unit: 0
   };
@@ -156,15 +157,15 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
   public modelNo: [];
   public percentageEdit: {};
   public allowEdit: {};
-  public totalPercentage: number = 0;
+  public totalPercentage = 0;
   public fieldsBPFCs: object = { text: 'name', value: 'id' };
   public fieldsGlueChemical: object = { text: 'name', value: 'name' };
-  public textGlue: string = 'Select Model Name';
-  public textModelName: string = 'Select Model Name - Model #';
-  public textGluePartname1: string = 'Select ';
-  public textGluePartname2: string = 'Select';
-  public textGluePartname3: string = 'Select';
-  public textGlueMaterial: string = 'Select ';
+  public textGlue = 'Select Model Name';
+  public textModelName = 'Select Model Name - Model #';
+  public textGluePartname1 = 'Select ';
+  public textGluePartname2 = 'Select';
+  public textGluePartname3 = 'Select';
+  public textGlueMaterial = 'Select ';
   public fieldsGlue2: object = { text: 'name', value: 'id' };
   public valueArticleNo: any;
   public articleNofields: object = { text: 'name', value: 'id' };
@@ -180,7 +181,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     },
   ];
   public valueProcess = 1;
-  public textGlue2: string = 'Select Model No';
+  public textGlue2 = 'Select Model No';
   existGlue: any = false;
   modelNoText: any;
 
@@ -227,7 +228,6 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     glueID: 0,
     position: ''
   };
-  public valuess: string = 'Badminton';
   @ViewChild('chemicalDropdownlist')
   public chemicalDropdownlist: DropDownListComponent;
   @ViewChildren('positionDropdownlist')
@@ -655,6 +655,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
             allow: item.allow,
             position: item.position,
             expiredTime: item.expiredTime,
+            expiredDate: item.expiredDate,
             voc: item.voc,
             materialNO: '',
             unit: 0
@@ -721,20 +722,20 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     localStorage.removeItem(key);
   }
   dynamicSort(property) {
-    var sortOrder = 1;
+    let sortOrder = 1;
 
     if (property[0] === '-') {
       sortOrder = -1;
       property = property.substr(1);
     }
-
-    return function (a, b) {
-      if (sortOrder == -1) {
+    // tslint:disable-next-line:only-arrow-functions
+    return function(a, b) {
+      if (sortOrder === -1) {
         return b[property].localeCompare(a[property]);
       } else {
         return a[property].localeCompare(b[property]);
       }
-    }
+    };
   }
   renderchemical(): any[] {
     this.glueIngredientDetail = this.glueIngredientDetail || [];
@@ -863,7 +864,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     const temp = arrPercentageEdit.map(item => {
       if (item.ingredientID !== percentageEdit.id) {
         return item.percentage;
-      } else return 0;
+      } else { return 0; }
     });
     const numbers: any = temp;
     const length = numbers.push(percentageEdit.percentage);

@@ -57,7 +57,6 @@ import { AutofocusDirective } from './focus.directive';
 import { AutoSelectDirective } from './select.directive';
 import { GlueHistoryComponent } from './summary/glue-history/glue-history.component';
 import { SelectTextDirective } from './select.text.directive';
-import { ScanQrcodeFromIngredientComponent } from './ScanQrcodeFromIngredient/ScanQrcodeFromIngredient.component';
 import { InventoryComponent } from './inventory/inventory.component';
 import { TooltipModule } from '@syncfusion/ej2-angular-popups';
 import { DeliveredHistoryComponent } from './delivered-history/delivered-history.component';
@@ -68,7 +67,7 @@ import { TimePickerModule } from '@syncfusion/ej2-angular-calendars';
 import { DateTimePickerModule } from '@syncfusion/ej2-angular-calendars';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { SelectQrCodeDirective } from './select.qrcode.directive';
-import { NgxPrettyCheckboxModule } from 'ngx-pretty-checkbox';
+import { IncomingComponent } from './incoming/incoming.component';
 
 setCulture('de-DE');
 
@@ -107,7 +106,6 @@ if (lang) {
     TimePickerModule ,
     Ng2SearchPipeModule,
     DateTimePickerModule,
-    NgxPrettyCheckboxModule,
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,
@@ -147,13 +145,13 @@ if (lang) {
     SelectTextDirective,
     AutoSelectDirective,
     GlueHistoryComponent,
-    ScanQrcodeFromIngredientComponent,
     InventoryComponent,
     DeliveredHistoryComponent,
     SearchComponent,
     AbnormalListComponent,
     StirComponent,
-    SelectQrCodeDirective
+    SelectQrCodeDirective,
+    IncomingComponent
   ]
 })
 export class ECModule { }

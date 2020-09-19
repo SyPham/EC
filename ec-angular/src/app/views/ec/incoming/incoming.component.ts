@@ -4,17 +4,16 @@ import { AlertifyService } from 'src/app/_core/_service/alertify.service';
 import { DisplayTextModel } from '@syncfusion/ej2-angular-barcode-generator';
 import { IngredientService } from 'src/app/_core/_service/ingredient.service';
 import { DatePipe } from '@angular/common';
-import { ok } from 'assert';
 
 @Component({
-  selector: 'app-ScanQrcodeFromIngredient',
-  templateUrl: './ScanQrcodeFromIngredient.component.html',
-  styleUrls: ['./ScanQrcodeFromIngredient.component.css'],
+  selector: 'app-incoming',
+  templateUrl: './incoming.component.html',
+  styleUrls: ['./incoming.component.css'],
   providers: [
     DatePipe
   ]
 })
-export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit {
+export class IncomingComponent implements OnInit {
   @ViewChild('scanQRCode') scanQRCodeElement: ElementRef;
   public displayTextMethod: DisplayTextModel = {
     visibility: false
@@ -23,11 +22,11 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   qrcodeChange: any;
   data: [];
   dataOut: [];
-  checkout: boolean = false ;
-  checkin: boolean = true ;
+  checkout = false;
+  checkin = true;
   public ingredients: any = [];
-  test: any =  'form-control w3-light-grey';
-  checkCode: boolean ;
+  test: any = 'form-control w3-light-grey';
+  checkCode: boolean;
   constructor(
     public modalService: NgbModal,
     private alertify: AlertifyService,
@@ -38,19 +37,16 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
     this.getIngredientInfo();
     this.getAllIngredient();
   }
-  public ngAfterViewInit(): void {
-
-  }
 
   OutputChange(args) {
-    this.checkin = false ;
-    this.checkout = true ;
+    this.checkin = false;
+    this.checkout = true;
     this.getIngredientInfoOutput();
   }
 
   InputChange(args) {
-    this.checkin = true ;
-    this.checkout = false ;
+    this.checkin = true;
+    this.checkout = false;
     this.getIngredientInfo();
   }
 
@@ -73,7 +69,7 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
     this.findIngredientCode(barcode);
 
     if (this.checkin === true) {
-      if (this.checkCode === true ) {
+      if (this.checkCode === true) {
         const userID = JSON.parse(localStorage.getItem('user')).User.ID;
         this.ingredientService.scanQRCodeFromChemicalWareHouse(args, buildingName, userID).subscribe((res: any) => {
           if (res === true) {
@@ -84,17 +80,17 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
         this.alertify.error('Wrong Chemical!');
       }
     } else {
-        if (this.checkCode === true ) {
-          const userID = JSON.parse(localStorage.getItem('user')).User.ID;
-          this.ingredientService.scanQRCodeOutput(args, buildingName, userID).subscribe((res: any) => {
-            if (res === true) {
-              this.getIngredientInfoOutput();
-            } else {
-              this.alertify.error(res.message);
-            }
-          });
-        } else {
-          this.alertify.error('Wrong Chemical!');
+      if (this.checkCode === true) {
+        const userID = JSON.parse(localStorage.getItem('user')).User.ID;
+        this.ingredientService.scanQRCodeOutput(args, buildingName, userID).subscribe((res: any) => {
+          if (res === true) {
+            this.getIngredientInfoOutput();
+          } else {
+            this.alertify.error(res.message);
+          }
+        });
+      } else {
+        this.alertify.error('Wrong Chemical!');
       }
     }
   }
@@ -102,14 +98,14 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   // load danh sach IngredientInfo
   getIngredientInfo() {
     this.ingredientService.getAllIngredientInfo().subscribe((res: any) => {
-      this.data = res ;
+      this.data = res;
       // this.ConvertClass(res);
     });
   }
 
   getIngredientInfoOutput() {
     this.ingredientService.getAllIngredientInfoOutput().subscribe((res: any) => {
-      this.data = res ;
+      this.data = res;
       // this.ConvertClass(res);
     });
   }
@@ -119,10 +115,10 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
     for (const item of this.ingredients) {
       if (item.code === code) {
         // return true;
-        this.checkCode = true ;
+        this.checkCode = true;
         break;
       } else {
-        this.checkCode = false ;
+        this.checkCode = false;
       }
     }
   }
@@ -130,7 +126,7 @@ export class ScanQrcodeFromIngredientComponent implements OnInit, AfterViewInit 
   // lay toan bo Ingredient
   getAllIngredient() {
     this.ingredientService.getAllIngredient().subscribe((res: any) => {
-      this.ingredients = res ;
+      this.ingredients = res;
     });
   }
 

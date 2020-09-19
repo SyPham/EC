@@ -30,8 +30,8 @@ import { MaterialComponent } from './material/material.component';
 import { BpfcComponent } from './bpfc/bpfc.component';
 import { BpfcStatusComponent } from './bpfc-status/bpfc-status.component';
 import { GlueHistoryComponent } from './summary/glue-history/glue-history.component';
-import { ScanQrcodeFromIngredientComponent } from './ScanQrcodeFromIngredient/ScanQrcodeFromIngredient.component';
 import { DeliveredHistoryComponent } from './delivered-history/delivered-history.component';
+import { IncomingComponent } from './incoming/incoming.component';
 
 const routes: Routes = [
   {
@@ -75,14 +75,6 @@ const routes: Routes = [
         component: IngredientComponent,
         data: {
           title: 'Ingredient'
-        }
-      },
-      {
-        path: 'setting/ingredient/scanQrcode',
-        // resolve: { ingredients: IngredientResolver },
-        component: ScanQrcodeFromIngredientComponent,
-        data: {
-          title: 'scanQrcode'
         }
       },
       {
@@ -196,6 +188,14 @@ const routes: Routes = [
         component: SummaryComponent,
         data: {
           title: 'todolist'
+        }
+      },
+      {
+        path: 'execution/incoming',
+        // resolve: { ingredients: IngredientResolver },
+        component: IncomingComponent,
+        data: {
+          title: 'Incoming'
         }
       },
       {

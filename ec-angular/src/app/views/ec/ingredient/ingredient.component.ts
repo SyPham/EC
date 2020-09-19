@@ -48,6 +48,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     position: 0,
     allow: 0,
     expiredTime: 0,
+    expiredDate: new Date(),
     voc: 0,
     materialNO: '',
     unit: 0
@@ -92,6 +93,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
           allow: 0,
           voc: 0,
           expiredTime: 0,
+          expiredDate: new Date(),
           materialNO: '',
           unit: 0
         };

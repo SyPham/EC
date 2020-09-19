@@ -86,5 +86,18 @@
     "OUTPUT_LABEL": "Kết Thúc",
     "INCOMING_LABEL": "Hàng Nhập",
     "OUTOFSTOCK_LABEL": "Đã hết",
-    "STOCKING_LABEL": "Còn"
+    "STOCKING_LABEL": "Còn",
+    "TIME_LABEL": "Ngày Nhập",
+    "INGREDIENT_LABEL": "Hóa Chất",
+    "PRODUCTION_DATE_LABEL": "Ngày Sản Xuất",
+    "BATCH_LABEL": "Mã Thùng",
+    "EXPIRED_DATE_LABEL": "Ngày Hết Hạn",
+    "STATUS_LABEL": "Tình Trạng",
+    "QTY_LABEL": "Số Lượng (Kg)",
+    "TROUBLESHOOTING_LABEL": "Xử Lý Sự Cố",
+    "SEARCH_LABEL": "Tìm Kiếm",
+    "BLACK_LIST_LABEL": "Danh sách Đen",
+    "DELIVERED_HISTORY_LABEL": "Lịch Sử Giao Hàng"
+
+
 }
