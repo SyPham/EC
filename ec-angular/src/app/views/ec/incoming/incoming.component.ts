@@ -4,6 +4,7 @@ import { AlertifyService } from 'src/app/_core/_service/alertify.service';
 import { DisplayTextModel } from '@syncfusion/ej2-angular-barcode-generator';
 import { IngredientService } from 'src/app/_core/_service/ingredient.service';
 import { DatePipe } from '@angular/common';
+import { GridComponent } from '@syncfusion/ej2-angular-grids';
 
 @Component({
   selector: 'app-incoming',
@@ -18,6 +19,10 @@ export class IncomingComponent implements OnInit {
   public displayTextMethod: DisplayTextModel = {
     visibility: false
   };
+  public filterSettings: object;
+  pageSettings = { pageCount: 20, pageSizes: true, pageSize: 10 };
+  @ViewChild('grid') public grid: GridComponent;
+  toolbarOptions: string[];
   @ViewChild('scanText', { static: false }) scanText: ElementRef;
   qrcodeChange: any;
   data: [];
@@ -49,7 +54,17 @@ export class IncomingComponent implements OnInit {
     this.checkout = false;
     this.getIngredientInfo();
   }
-
+  toolbarClick(args): void {
+    switch (args.item.text) {
+      /* tslint:disable */
+      case 'Excel Export':
+        this.grid.excelExport();
+        break;
+      /* tslint:enable */
+      case 'PDF Export':
+        break;
+    }
+  }
   // sau khi scan input thay doi
   async onNgModelChangeScanQRCode(args) {
     const input = args.split('-');

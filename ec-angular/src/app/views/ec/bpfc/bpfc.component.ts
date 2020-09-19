@@ -1770,7 +1770,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
             if (item.allow <= 0) {
               flagAllow = false;
               this.approvalStatus = !this.approvalStatus;
-              this.alertify.warning(`The allow of checmical name ${item.ingredient.name} is greater than 0 <br>
+              this.alertify.warning(`The allow of checmical name ${item.ingredient.name} must be greater than 0 <br>
               Mức cho phép của hóa chất ${item.ingredient.name} phải lớn hơn 0!<br>
                <label>Glue Name: </label> ${glue.name} <br>
               `, true);
@@ -1779,7 +1779,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
             if (item.percentage <= 0) {
               flagPercentage = false;
               this.approvalStatus = !this.approvalStatus;
-              this.alertify.warning(`The percentage of checmical name ${item.ingredient.name} is greater than 0 <br>
+              this.alertify.warning(`The percentage of checmical name ${item.ingredient.name} must be greater than 0 <br>
               Phần trăm của hóa chất ${item.ingredient.name} phải lớn hơn 0!<br>
                <label>Glue Name: </label> ${glue.name} <br>
               `, true);
@@ -1792,7 +1792,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
         if (glue.consumption <= 0) {
           flagConsumption = false;
           this.approvalStatus = !this.approvalStatus;
-          this.alertify.warning(`The consumption of glue name ${glue.name} is greater than 0 <br>
+          this.alertify.warning(`The consumption of glue name ${glue.name} must be greater than 0 <br>
           Mức tiêu thụ của keo ${glue.name} phải lớn hơn 0! <br>
           <label>Glue Name: </label> ${glue.name} <br>
           `, true);
