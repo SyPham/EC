@@ -9,7 +9,7 @@ export interface IIngredient  {
     position: number;
     allow: number;
     expiredTime: number;
-    expiredDate: Date;
+   daysToExpiration: number;
     materialNO: string;
     unit: number;
 }

@@ -18,7 +18,7 @@ namespace EC_API.DTO
         public double VOC { get; set; }
         public string Supplier { get; set; }
         public int SupplierID { get; set; }
-        public DateTime ExpiredDate { get; set; }
+        public int DaysToExpiration { get; set; }
         public int ExpiredTime { get; set; }
         public DateTime ManufacturingDate { get; set; }
 

@@ -98,7 +98,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     allow: 0,
     voc: 0,
     expiredTime: 0,
-    expiredDate: new Date(),
+    daysToExpiration: 0,
     materialNO: '',
     unit: 0
   };
@@ -655,7 +655,7 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
             allow: item.allow,
             position: item.position,
             expiredTime: item.expiredTime,
-            expiredDate: item.expiredDate,
+            daysToExpiration: item.daysToExpiration,
             voc: item.voc,
             materialNO: '',
             unit: 0

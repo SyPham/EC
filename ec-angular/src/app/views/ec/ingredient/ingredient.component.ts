@@ -27,6 +27,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
   destData: object[] = [];
   modalReference: NgbModalRef;
   excelDownloadUrl: string;
+  defaultDate = new Date(null);
   srcDropOptions = { targetID: 'DestGrid' };
   public displayTextMethod: DisplayTextModel = {
     visibility: false
@@ -48,7 +49,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     position: 0,
     allow: 0,
     expiredTime: 0,
-    expiredDate: new Date(),
+    daysToExpiration: 0,
     voc: 0,
     materialNO: '',
     unit: 0
@@ -93,7 +94,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
           allow: 0,
           voc: 0,
           expiredTime: 0,
-          expiredDate: new Date(),
+          daysToExpiration: 0,
           materialNO: '',
           unit: 0
         };
@@ -264,6 +265,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
         code: item.code,
         name: item.name,
         supplier: item.supplier,
+        supplierID: item.supplierID,
         batch: item.batch,
         expiredTime: item.expiredTime,
         productionDate: item.productionDate,
@@ -279,6 +281,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
         code: item.code,
         name: item.name,
         supplier: item.supplier,
+        supplierID: item.supplierID,
         batch: item.batch,
         expiredTime: item.expiredTime,
         productionDate: item.productionDate,
@@ -340,10 +343,12 @@ export class IngredientComponent implements OnInit, AfterViewInit {
           return {
             id: item.id,
             supplier: item.supplier,
+            supplierID: item.supplierID,
             name: item.name,
             code: item.code,
             voc: item.voc,
             expiredTime: item.expiredTime,
+            daysToExpiration: item.daysToExpiration,
             materialNO: item.materialNO,
             unit: item.unit,
             createdDate: new Date(item.createdDate),
@@ -363,8 +368,10 @@ export class IngredientComponent implements OnInit, AfterViewInit {
             code: item.code,
             name: item.name,
             supplier: item.supplier,
+            supplierID: item.supplierID,
             batch: 'DEFAULT',
             expiredTime: item.expiredTime,
+            daysToExpiration: item.daysToExpiration,
             productionDate: this.datePipe.transform(new Date(), 'yyyyMMdd'),
             exp: this.datePipe.transform(new Date(new Date().setMonth(new Date().getMonth() + 4)), 'yyyyMMdd')
           };

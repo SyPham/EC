@@ -126,6 +126,7 @@ namespace EC_API._Services.Services
         public async Task<bool> Update(IngredientDto model)
         {
             var ingredient = _mapper.Map<Ingredient>(model);
+            ingredient.isShow = true;
             _repoIngredient.Update(ingredient);
             return await _repoIngredient.SaveAll();
         }
