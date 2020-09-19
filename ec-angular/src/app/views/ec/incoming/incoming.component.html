@@ -12,7 +12,8 @@
               <img src="../../../../assets/img/gif/1981.gif" height="40px" width="80%" alt="">
             </div>
             <div class="w3-rest">
-              <input [ngClass]="test" name="qrcode" [autofocus]="true" autoselect [ngModel]="qrcodeChange"
+              <!-- [autofocusSearch]="true" -->
+              <input [ngClass]="test" name="qrcode" autofocusSearch [ngModel]="qrcodeChange"
                 (ngModelChange)='onNgModelChangeScanQRCode($event)' type="text">
             </div>
             <div class="row">
@@ -43,72 +44,103 @@
   <div class="card-body">
     <div class="row">
       <div class="col-md-12">
-          <!-- <ejs-grid  [dataSource]='data' #grid
-            gridLines='Both'
-            [allowSorting]='true'
-            [allowExcelExport]='true'
-            allowFiltering='true'
-            [filterSettings]='filterSettings'
-            [pageSettings]='pageSettings'
-            allowPaging="true"
-            [toolbar]='toolbarOptions'
-            allowResizing= 'true'
-            showColumnMenu='true'
-            (toolbarClick)='toolbarClick($event)'>
-            <e-columns>
-                <e-column field='createdTime' textAlign='Center' headerText='Glue' width='100'>
-                  <ng-template #headerTemplate>
-                      {{'TIME_LABEL' | translate}}
-                  </ng-template>
-                </e-column>
-                <e-column field='supplierName' textAlign='Center' headerText='Line' width='130'>
-                  <ng-template #headerTemplate>
-                  {{'SUPPLIER' | translate}}
-                  </ng-template>
-                </e-column>
-                <e-column field='name' textAlign='Center' headerText='Line' width='130'>
-                    <ng-template #headerTemplate>
-                    {{'INGREDIENT_LABEL' | translate}}
-                    </ng-template>
-                </e-column>
-                <e-column field='manufacturingDate' textAlign='Center' headerText='Line' width='130'>
-                    <ng-template #headerTemplate>
-                      {{'INGREDIENT_LABEL' | translate}}
-                    </ng-template>
-                </e-column>
-                <e-column field='batch' textAlign='Center' headerText='Line' width='130'>
-                    <ng-template #headerTemplate>
-                      {{'BATCH_LABEL' | translate}}
-                    </ng-template>
-                </e-column>
-                <e-column field='expiredTime' textAlign='Center' headerText='Line' width='130'>
-                      <ng-template #headerTemplate>
-                        {{'INGREDIENT_LABEL' | translate}}
-                      </ng-template>
-                </e-column>
-                <e-column field='supplierName' textAlign='Center' headerText='Line' width='130'>
-                    <ng-template #headerTemplate>
-                      {{'INGREDIENT_LABEL' | translate}}
-                    </ng-template>
-                </e-column>
-                <e-column field='qty' textAlign='Center' headerText='Qty' width='100'>
-                  <ng-template #headerTemplate>
-                  {{'QTY_LABEL' | translate}}
-                  </ng-template>
-                </e-column>
-                <e-column field='status' textAlign='Center' headerText='Delivered By' width='150'>
-                  <ng-template #headerTemplate>
-                    {{'STATUS_LABEL' | translate}}
-                  </ng-template>
-                </e-column>
-                <e-column field='' textAlign='Center' headerText='Option' width='150'>
-                  <ng-template #headerTemplate>
-                  {{'OPTION' | translate}}
-                  </ng-template>
-                </e-column>
-            </e-columns>
-        </ejs-grid> -->
-        <table class="table table-bordered">
+
+        <ejs-grid #ingredientinfoGrid  [dataSource]='data'
+          [allowExcelExport]='true' [allowSorting]='true' allowFiltering='true' [filterSettings]='filterSettings'
+          [toolbar]='toolbarOptions' showColumnMenu='true' [pageSettings]='pageSettings'
+          allowPaging="true" gridLines='Both' (toolbarClick)='toolbarClick($event)'>
+          <e-columns>
+            <!-- <e-column field='#' headerText='#' width='40'>
+            <ng-template let-data #template>
+              {{NO(data.index)}}
+            </ng-template>
+          </e-column> -->
+            <e-column field='createdTime' textAlign='Center' headerText='Time' width='100'>
+              <ng-template #headerTemplate>
+                {{'TIME_LABEL' | translate}}
+              </ng-template>
+              <ng-template #template let-data>
+                {{data.createdTime | date:'yyyy-MM-dd , hh:mm:ss a'}}
+              </ng-template>
+
+            </e-column>
+
+            <e-column field='supplierName' textAlign='Center' headerText='Supplier' width='130'>
+              <ng-template #headerTemplate>
+                {{'SUPPLIER' | translate}}
+              </ng-template>
+            </e-column>
+
+            <e-column field='name' textAlign='Center' headerText='Ingredient' width='130'>
+              <ng-template #headerTemplate>
+                {{'INGREDIENT_LABEL' | translate}}
+              </ng-template>
+
+            </e-column>
+
+            <e-column field='manufacturingDate' textAlign='Center' headerText='Production date' width='130'>
+              <ng-template #headerTemplate>
+                {{'PRODUCTION_DATE_LABEL' | translate}}
+              </ng-template>
+              <ng-template #template let-data>
+                {{data.manufacturingDate | date:'yyyy-MM-dd'}}
+              </ng-template>
+            </e-column>
+
+            <e-column field='batch' textAlign='Center' headerText='Batch' width='130'>
+              <ng-template #headerTemplate>
+                {{'BATCH_LABEL' | translate}}
+              </ng-template>
+            </e-column>
+
+            <e-column field='expiredTime' textAlign='Center' headerText='Expired Date' width='130'>
+              <ng-template #headerTemplate>
+                {{'EXPIRED_DATE_LABEL' | translate}}
+              </ng-template>
+              <ng-template #template let-data>
+                {{data.expiredTime | date:'yyyy-MM-dd'}}
+              </ng-template>
+            </e-column>
+
+            <e-column field='qty' textAlign='Center' headerText='Recieve Qty (Kg)' width='130'>
+              <ng-template #headerTemplate>
+                {{'QTY_LABEL' | translate}}
+              </ng-template>
+              <ng-template #template let-data>
+                {{data.qty}} Kg
+              </ng-template>
+            </e-column>
+
+            <e-column field='status' textAlign='Center' headerText='Status' width='100'>
+              <ng-template #headerTemplate>
+                {{'STATUS_LABEL' | translate}}
+              </ng-template>
+              <ng-template #template let-data>
+                <ng-container *ngIf="data.status === true; else elseTemplate">
+                  <span class="badge badge-secondary">{{'OUTOFSTOCK_LABEL' | translate}}</span>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <span class="badge badge-success">{{'STOCKING_LABEL' | translate}}</span>
+                </ng-template>
+
+              </ng-template>
+
+            </e-column>
+
+            <e-column field='Option' textAlign='Center' headerText='Option' width='150'>
+              <ng-template #headerTemplate>
+                {{'OPTION' | translate}}
+              </ng-template>
+              <ng-template #template let-data>
+                <div class="btn-group">
+                  <button type="button" (click)='delete(data)' class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                </div>
+              </ng-template>
+
+            </e-column>
+          </e-columns>
+        </ejs-grid>
+        <!-- <table class="table table-bordered">
           <thead class="thead-dark">
             <tr>
               <th style="text-align: center;" scope="col">{{'TIME_LABEL' | translate}}</th>
@@ -144,7 +176,7 @@
               </td>
             </tr>
           </tbody>
-        </table>
+        </table> -->
       </div>
     </div>
   </div>

@@ -19,11 +19,12 @@ export class IncomingComponent implements OnInit {
   public displayTextMethod: DisplayTextModel = {
     visibility: false
   };
-  public filterSettings: object;
-  pageSettings = { pageCount: 20, pageSizes: true, pageSize: 10 };
+  // public filterSettings: object;
+  pageSettings = { pageCount: 20, pageSizes: true, pageSize: 20 };
   @ViewChild('grid') public grid: GridComponent;
-  toolbarOptions: string[];
+  // toolbarOptions: string[];
   @ViewChild('scanText', { static: false }) scanText: ElementRef;
+  @ViewChild('ingredientinfoGrid') ingredientinfoGrid: GridComponent;
   qrcodeChange: any;
   data: [];
   dataOut: [];
@@ -32,6 +33,9 @@ export class IncomingComponent implements OnInit {
   public ingredients: any = [];
   test: any = 'form-control w3-light-grey';
   checkCode: boolean;
+  autofocus: boolean = false ;
+  toolbarOptions = ['Search'];
+  filterSettings = { type: 'Excel' };
   constructor(
     public modalService: NgbModal,
     private alertify: AlertifyService,
@@ -43,9 +47,16 @@ export class IncomingComponent implements OnInit {
     this.getAllIngredient();
   }
 
+  NO(index) {
+    return (this.ingredientinfoGrid.pageSettings.currentPage - 1) * this.ingredientinfoGrid.pageSettings.pageSize + Number(index) + 1;
+  }
+  dataBound() {
+
+  }
   OutputChange(args) {
     this.checkin = false;
     this.checkout = true;
+    // this.qrcodeChange = null ;
     this.getIngredientInfoOutput();
   }
 
@@ -53,6 +64,7 @@ export class IncomingComponent implements OnInit {
     this.checkin = true;
     this.checkout = false;
     this.getIngredientInfo();
+    // this.qrcodeChange = null ;
   }
   toolbarClick(args): void {
     switch (args.item.text) {
@@ -82,7 +94,6 @@ export class IncomingComponent implements OnInit {
       buildingName = 'E';
     }
     this.findIngredientCode(barcode);
-
     if (this.checkin === true) {
       if (this.checkCode === true) {
         const userID = JSON.parse(localStorage.getItem('user')).User.ID;

@@ -2,15 +2,14 @@ import { Directive, AfterViewInit, ElementRef, Input, OnChanges, HostListener } 
 
 @Directive({
   // tslint:disable-next-line:directive-selector
-  selector: '[autofocus]'
+  selector: '[autofocusSearch]'
 })
-export class AutofocusDirective implements AfterViewInit {
-  @Input('autofocus') autofocusStatus: boolean;
-  @HostListener('focusout') onFocusout() {
+export class SearchDirective implements AfterViewInit {
+  @HostListener('ngModelChange') onFocusout() {
     setTimeout( () => {
       this.host.nativeElement.focus();
       this.host.nativeElement.select();
-    }, 300);
+    }, 0);
   }
   @HostListener('focus') onBlur() {
     setTimeout( () => {
@@ -20,11 +19,9 @@ export class AutofocusDirective implements AfterViewInit {
 
   constructor(private host: ElementRef) { }
   ngAfterViewInit() {
-    if (this.autofocusStatus === true) {
       setTimeout(() => {
         this.host.nativeElement.focus();
         this.host.nativeElement.select();
       }, 300);
     }
-  }
 }

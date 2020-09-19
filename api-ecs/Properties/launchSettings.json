@@ -25,9 +25,9 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       
-      // "applicationUrl": "http://10.4.4.92:1002"
+      "applicationUrl": "http://10.4.4.92:1002"
       // "applicationUrl": "http://10.4.0.76:1002"
-      "applicationUrl": "http://10.4.4.224:1002"
+      // "applicationUrl": "http://10.4.4.224:1002"
     },
     "Docker": {
       "commandName": "Docker",
