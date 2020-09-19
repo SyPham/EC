@@ -21,7 +21,7 @@ namespace EC_API.DTO
         public DateTime ManufacturingDate { get; set; }
         public string SupplierName { get; set; }
         public string Batch { get; set; }
-        public int ExpiredTime { get; set; }
+        public DateTime ExpiredTime { get; set; }
         public int Qty { get; set; }
         public string Consumption { get; set; }
         public bool Status { get; set; }

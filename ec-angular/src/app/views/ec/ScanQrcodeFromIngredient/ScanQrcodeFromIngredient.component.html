@@ -18,6 +18,7 @@
             </div>
             <div class="row">
               <div class="col-md-12 mt-4 text-center">
+
                  <!-- success -->
                 <div style="font-size: 30px;" class="pretty p-icon p-round">
                   <input (change)='InputChange($event)' type="radio" checked name="icon_solid" />
@@ -29,7 +30,7 @@
 
                 <div style="font-size: 30px;" class="pretty p-icon p-round">
                   <input (change)='OutputChange($event)' type="radio" name="icon_solid" />
-                  <div class="state p-success">
+                  <div class="state p-danger">
                     <i class="icon mdi mdi-check"></i>
                     <label>{{'OUTPUT_LABEL' | translate}}</label>
                   </div>
@@ -112,7 +113,7 @@
               <td style="text-align: center;">{{item.name }}</td>
               <td style="text-align: center;">{{item.manufacturingDate | date:'yyyy-MM-dd'}}</td>
               <td style="text-align: center;">{{item.batch}}</td>
-              <td style="text-align: center;">{{item.expiredTime}}</td>
+              <td style="text-align: center;">{{item.expiredTime | date:'yyyy-MM-dd'}}</td>
               <td style="text-align: center;">{{item.qty}} KG</td>
               <td style="text-align: center;">
                 <ng-container *ngIf="item.status === true; else elseTemplate">
