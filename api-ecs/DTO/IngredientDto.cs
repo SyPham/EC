@@ -26,7 +26,9 @@ namespace EC_API.DTO
         public string Position { get; set; }
         public string MaterialNO { get; set; }
         public double Unit { get; set; }
+
         public int DaysToExpiration { get; set; }
+
         public int ExpiredTime { get; set; }
         public DateTime ManufacturingDate { get; set; }
         public bool isShow { get; set; }

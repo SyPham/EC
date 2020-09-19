@@ -1,4 +1,4 @@
-import { Component, OnInit, PipeTransform } from '@angular/core';
+import { Component, OnInit, PipeTransform, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertifyService } from 'src/app/_core/_service/alertify.service';
 import { IngredientService } from 'src/app/_core/_service/ingredient.service';
@@ -7,6 +7,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { DecimalPipe } from '@angular/common';
+import { GridComponent } from '@syncfusion/ej2-angular-grids';
 
 @Component({
   selector: 'app-inventory',
@@ -22,6 +23,10 @@ export class InventoryComponent implements OnInit {
   endDate: object = new Date();
   qrcodeChange: any;
   searchText: any;
+  toolbarOptions = ['Search', 'ExcelExport'];
+  pageSettings = { pageCount: 20, pageSizes: true, pageSize: 20 };
+  filterSettings = { type: 'Excel' };
+  @ViewChild('ingredientinforeportGrid') ingredientinforeportGrid: GridComponent;
   data: any = [];
   public ingredients: any = [];
   constructor(
@@ -41,6 +46,17 @@ export class InventoryComponent implements OnInit {
   }
   resetSearch() {
     this.searchText = null ;
+  }
+  toolbarClick(args) {
+    switch (args.item.text) {
+      /* tslint:disable */
+      case 'Excel Export':
+        this.ingredientinforeportGrid.excelExport();
+        break;
+      /* tslint:enable */
+      case 'PDF Export':
+        break;
+    }
   }
   getIngredientInfoReport() {
     this.ingredientService.getAllIngredientInfo().subscribe((res: any) => {
