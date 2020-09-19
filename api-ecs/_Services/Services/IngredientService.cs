@@ -243,6 +243,7 @@ namespace EC_API._Services.Services
             var Batch = qrCode.Split('-', '-')[1];
             // sau đó convert sang kiểu date time
             var ProductionDates = Convert.ToDateTime(ProductionDate.Substring(0, 4) + "/" + ProductionDate.Substring(4, 2) + "/" + ProductionDate.Substring(6, 2));
+            var exp = ProductionDates.AddMonths(3);
             // khai báo biến start = ngày hiện tại
             var resultStart = DateTime.Now;
             // khai báo biến end = ngày hiện tại
@@ -251,7 +252,7 @@ namespace EC_API._Services.Services
             var data = await CreateIngredientInfo(new IngredientInfo
             {
                 Name = model.Name,
-                ExpiredTime = model.ExpiredTime,
+                ExpiredTime = exp.Date,
                 ManufacturingDate = ProductionDates.Date,
                 SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
                 Qty = model.Unit.ToInt(),
@@ -283,7 +284,7 @@ namespace EC_API._Services.Services
                     await CreateIngredientInfoReport(new IngredientInfoReport
                     {
                         Name = model.Name,
-                        ExpiredTime = model.ExpiredTime,
+                        ExpiredTime = ProductionDates.Date.AddMonths(3),
                         ManufacturingDate = ProductionDates.Date,
                         SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
                         Qty = model.Unit.ToInt(),
@@ -302,7 +303,7 @@ namespace EC_API._Services.Services
                 await CreateIngredientInfoReport(new IngredientInfoReport
                 {
                     Name = model.Name,
-                    ExpiredTime = model.ExpiredTime,
+                    ExpiredTime = ProductionDates.Date.AddMonths(3),
                     ManufacturingDate = ProductionDates.Date,
                     SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
                     Qty = model.Unit.ToInt(),
@@ -366,48 +367,48 @@ namespace EC_API._Services.Services
 
         public async Task<object> ScanQRCodeFromChemialWareHouseDate(string qrCode, string start, string end)
         {
-            var supModel = _repoSupplier.GetAll();
-            var modelID = _repoIngredient.FindAll().FirstOrDefault(x => x.Code.Equals(qrCode) && x.isShow == true).ID;
-            var model = _repoIngredient.FindById(modelID);
-            var resultStart = DateTime.Now;
-            var resultEnd = DateTime.Now;
-            if (await _repoIngredientInfo.CheckBarCodeExists(qrCode))
-            {
-                var result = _repoIngredientInfo.FindAll().FirstOrDefault(x => x.Code == qrCode && x.CreatedDate <= resultEnd.Date && x.CreatedDate >= resultStart.Date);
+            // var supModel = _repoSupplier.GetAll();
+            // var modelID = _repoIngredient.FindAll().FirstOrDefault(x => x.Code.Equals(qrCode) && x.isShow == true).ID;
+            // var model = _repoIngredient.FindById(modelID);
+            // var resultStart = DateTime.Now;
+            // var resultEnd = DateTime.Now;
+            // if (await _repoIngredientInfo.CheckBarCodeExists(qrCode))
+            // {
+            //     var result = _repoIngredientInfo.FindAll().FirstOrDefault(x => x.Code == qrCode && x.CreatedDate <= resultEnd.Date && x.CreatedDate >= resultStart.Date);
 
-                if (result != null)
-                {
-                    result.Qty = model.Unit.ToInt() + result.Qty;
-                    await UpdateIngredientInfo(result);
-                }
-                else
-                {
-                    var data = await CreateIngredientInfo(new IngredientInfo
-                    {
+            //     if (result != null)
+            //     {
+            //         result.Qty = model.Unit.ToInt() + result.Qty;
+            //         await UpdateIngredientInfo(result);
+            //     }
+            //     else
+            //     {
+            //         var data = await CreateIngredientInfo(new IngredientInfo
+            //         {
 
-                        Name = model.Name,
-                        ExpiredTime = model.ExpiredTime,
-                        ManufacturingDate = model.ManufacturingDate,
-                        SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
-                        Qty = model.Unit.ToInt(),
-                        Consumption = "0",
-                        Code = model.Code
-                    });
-                }
-            }
-            else
-            {
-                var data = await CreateIngredientInfo(new IngredientInfo
-                {
-                    Name = model.Name,
-                    ExpiredTime = model.ExpiredTime,
-                    ManufacturingDate = model.ManufacturingDate,
-                    SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
-                    Qty = model.Unit.ToInt(),
-                    Consumption = "0",
-                    Code = model.Code
-                });
-            }
+            //             Name = model.Name,
+            //             ExpiredTime = model.ExpiredTime,
+            //             ManufacturingDate = model.ManufacturingDate,
+            //             SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
+            //             Qty = model.Unit.ToInt(),
+            //             Consumption = "0",
+            //             Code = model.Code
+            //         });
+            //     }
+            // }
+            // else
+            // {
+            //     var data = await CreateIngredientInfo(new IngredientInfo
+            //     {
+            //         Name = model.Name,
+            //         ExpiredTime = model.ExpiredTime,
+            //         ManufacturingDate = model.ManufacturingDate,
+            //         SupplierName = supModel.FirstOrDefault(s => s.ID == model.SupplierID).Name,
+            //         Qty = model.Unit.ToInt(),
+            //         Consumption = "0",
+            //         Code = model.Code
+            //     });
+            // }
             return true;
 
         }
