@@ -100,6 +100,9 @@
                 <ng-template #headerTemplate let-data>
                   {{'CONSUMPTION' | translate}}
                 </ng-template>
+                <ng-template #template let-data>
+                  <span [class]="changeConsumptionColor(data)">{{data.consumption === '' ? '0' : data.consumption}}</span>
+                </ng-template>
               </e-column>
               <e-column field='expiredTime' headerText='Expired Time' isPrimaryKey="true" textAlign='Center'
                 width='150'>
@@ -242,7 +245,11 @@
                         {{'INGREDIENT_NAME' | translate}}
                       </ng-template>
                     </e-column>
-                    <e-column field='percentage' headerText='%' textAlign='Center' width=60></e-column>
+                    <e-column field='percentage' headerText='%' textAlign='Center' width=60>
+                      <ng-template let-data #template>
+                        <div [class]="changePercentageColor(data)">{{data.percentage}}</div>
+                      </ng-template>
+                    </e-column>
                     <e-column field='allow' headerText='Allow (%)' textAlign='Center' width=60>
                       <ng-template #headerTemplate let-data>
                         <div>
@@ -250,7 +257,7 @@
                         </div>
                       </ng-template>
                       <ng-template #template let-data>
-                        <span>&#177; {{data.allow}}</span>
+                        <div [class]="changeAllowColor(data)">&#177; {{data.allow}}</div>
                       </ng-template>
                     </e-column>
                   </e-columns>

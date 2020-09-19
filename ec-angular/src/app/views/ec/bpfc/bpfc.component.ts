@@ -78,6 +78,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   data: IGlue[];
   modelNameData: any;
   modelNoData: any;
+  positions = ['B', 'C', 'D', 'E'];
   articleNoData: any;
   modelNameClone: any;
   modelNoClone: any;
@@ -1187,6 +1188,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
   getIngredients() {
     this.glueIngredientService.getIngredients(this.glueid).subscribe(
       (res: any) => {
+        console.log(res);
         this.ingredients1 = res.result.list1;
         this.ingredients2 = res.result.list2;
       },
@@ -1770,7 +1772,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
             if (item.allow <= 0) {
               flagAllow = false;
               this.approvalStatus = !this.approvalStatus;
-              this.alertify.warning(`The allow of checmical name ${item.ingredient.name} must be greater than 0 <br>
+              this.alertify.warning(`The allowance of checmical name ${item.ingredient.name} must be greater than 0 <br>
               Mức cho phép của hóa chất ${item.ingredient.name} phải lớn hơn 0!<br>
                <label>Glue Name: </label> ${glue.name} <br>
               `, true);
@@ -2181,4 +2183,22 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     e.updateData(this.artProcessDataClone, query);
   }
   /// End Clone
+  changeAllowColor(data) {
+    if (data.position === null) { return ''; }
+    if (this.positions.includes(data.position) && data.allow === 0) {
+      return 'font-weight-bold text-white p-2 rounded-circle warning-text';
+    }
+  }
+  changePercentageColor(data) {
+    if (data.percentage === null) { return ''; }
+    if (this.positions.includes(data.position) && data.percentage === 0) {
+      return 'font-weight-bold text-white p-2 rounded-circle warning-text';
+    }
+  }
+  changeConsumptionColor(data) {
+    if (data.glueIngredients.length === 0) { return ''; }
+    if (data.consumption === '') {
+      return 'font-weight-bold text-white p-2 rounded-circle warning-text';
+    }
+  }
 }

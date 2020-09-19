@@ -41,5 +41,15 @@
 .e-bigger .radiobutton-control h4 {
     font-size: 20px;
 }
+.warning-text {
+  animation: warning-frames .5s infinite;
+  color: black;
+  /* border: 1px solid #3CBC8D; */
 
+}
+
+@keyframes warning-frames {
+  from {background-color: rgb(212, 10, 10);}
+  to {background-color:  #ff6565;}
+}
 /* custom code end*/
