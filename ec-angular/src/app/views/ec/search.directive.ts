@@ -5,11 +5,13 @@ import { Directive, AfterViewInit, ElementRef, Input, OnChanges, HostListener } 
   selector: '[autofocusSearch]'
 })
 export class SearchDirective implements AfterViewInit {
-  @HostListener('ngModelChange') onFocusout() {
-    setTimeout( () => {
-      this.host.nativeElement.focus();
-      this.host.nativeElement.select();
-    }, 0);
+  @HostListener('ngModelChange', ['$event']) onChange(value) {
+    const input = value.split('-') || [];
+    if (input[2]?.length === 8) {
+      setTimeout(() => {
+        this.host.nativeElement.select();
+      }, 300);
+    }
   }
   @HostListener('focus') onBlur() {
     setTimeout( () => {
