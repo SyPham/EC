@@ -5,57 +5,60 @@
 <div class="card" *ngIf="existGlue" #fullScreen style="overflow: auto;" >
   <div class="card-header d-flex p-1" *ngIf="existGlue">
     <h4>{{ 'TODOLIST' | translate }}</h4>
-    <ul class="nav nav-pills ml-auto p-2" *ngIf="existGlue">
+    <div class="d-inline-flex ml-auto">
+      <button class="btn btn-xs p-2 mr-1 bg-success">{{ 'CONSUMPTION_LABEL' | translate }}(kg)</button>
+      <button class="btn btn-xs p-2 mr-1 bg-warning">{{ 'COUNT' | translate }}</button>
+      <button class="btn btn-xs p-2 mr-1 bg-primary">{{ 'ACTUAL' | translate }}</button>
+      <button (click)="openFullscreen()" class="btn btn-xs p-2 mr-1 bg-secondary" *ngIf="!hasFullScreen"><i class="fa fa-expand-arrows-alt"></i> Fullscreen</button>
+      <button (click)='closeFullscreen()' class="btn btn-xs p-2 mr-1 bg-info" *ngIf="hasFullScreen"><i class="fa fa-times"></i> Close Fullscreen</button>
+    </div>
+    <!-- <ul class="nav nav-pills ml-auto p-2" *ngIf="existGlue">
       <li class="nav-item"><a class="my-cursor-pointer nav-link table-success mr-2" >{{ 'CONSUMPTION_LABEL' | translate }}(kg)</a></li>
       <li class="nav-item"><a class="my-cursor-pointer nav-link table-warning mr-2">{{ 'COUNT' | translate }}</a></li>
       <li class="nav-item"><a class="my-cursor-pointer nav-link table-primary mr-2">{{ 'ACTUAL' | translate }}</a></li>
       <li class="nav-item" (click)="openFullscreen()" *ngIf="!hasFullScreen"><a class="my-cursor-pointer nav-link mr-2 table-secondary"><i class="fa fa-expand-arrows-alt"></i> Fullscreen</a></li>
       <li class="nav-item" (click)='closeFullscreen()' *ngIf="hasFullScreen"><a class="my-cursor-pointer nav-link table-info"><i class="fa fa-times"></i> Close Fullscreen</a></li>
-    </ul>
+    </ul> -->
   </div>
   <div class="row" *ngIf="existGlue">
     <div class="col-md-12">
-      <div class="card-body" style="padding: 0">
+      <div class="card-body" style="padding: 0;">
         <div class="alert alert-danger alert-dismissible" *ngIf="hasWarning">
           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
           <h5><i class="icon fas fa-ban"></i> Cảnh báo! - Warning!</h5>
           Dữ liệu kế hoạch làm việc chưa được sắp xếp cho ngày hôm nay! <br>
           The work plan is empty!
         </div>
-        <table *ngIf="data.length > 0" class="table table-bordered table-sm table-responsive" id='todolist'>
-          <thead class="thead-dark">
-            <tr>
-              <ng-container *ngFor="let item of lineColumns; let i = index">
-                <th class="text-center sticky-top" [ngClass]="frozen(item.field)" colspan="2" *ngIf="item.field === 'TotalConsumption'">
-                  {{ labelLang(item.field) | translate }}</th>
-                <th class="my-align sticky-top" [ngClass]="frozen(item.field)" rowspan="2"
-                  *ngIf="item.field !== 'GlueID' && item.field !== 'TotalConsumption' && item.field !== 'Standard' && item.field !== 'Real' && item.field !== 'Count'">
-                  {{ labelLang(item.field) | translate }}</th>
-              </ng-container>
-              <th class="my-align sticky-top" rowspan="2">{{ 'COUNT' | translate }}</th>
-              <th style="vertical-align: middle;" class="text-center sticky-top" rowspan="2">{{ 'OPTION' | translate }}</th>
-            </tr>
-            <tr>
-              <th class="my-align my-sticky-top">{{ 'STANDARD' | translate }}</th>
-              <th class="my-align my-sticky-top">{{ 'ACTUAL_TODOLIST' | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-          <tbody>
-            <ng-container *ngFor="let values of linevalue; let j = index">
-              <!-- value -->
+          <table *ngIf="data.length > 0" [attr.height]='screenHeight' class="table table-bordered table-sm table-responsive"
+            id='todolist'>
+            <thead class="thead-dark">
               <tr>
-                <ng-container *ngFor="let value of getCellValue(values); let i = index">
-                  <td [attr.rowspan]="hasRowspan(i) ? 3 : ''" [class.table-success]="!hasRowspan(i)" class="my-align"  [ngClass]="frozenBody(i)">
-                      <ejs-tooltip #tooltip class="fix-css" position='RightCenter' (beforeRender)="onBeforeRender($event, value, j)" *ngIf="hasObject(value); else elseBlockValue" content="loading...">
+                <ng-container *ngFor="let item of lineColumns; let i = index">
+                  <th *ngIf="i !== 0" class="my-align sticky-top" [ngClass]="frozen(item.field)" rowspan="2">
+                    {{ labelLang(item.field) | translate }}</th>
+                </ng-container>
+                <th style="vertical-align: middle;" class="text-center sticky-top" rowspan="2">{{ 'OPTION' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tbody>
+              <ng-container *ngFor="let values of linevalue; let j = index">
+                <!-- value -->
+                <tr>
+                  <ng-container *ngFor="let value of getCellValue(values); let i = index">
+                    <td [attr.rowspan]="hasRowspan(i) ? 3 : ''" [class.table-success]="!hasRowspan(i)" class="my-align"
+                      [ngClass]="frozenBody(i)">
+                      <ejs-tooltip #tooltip class="fix-css" position='RightCenter'
+                        (beforeRender)="onBeforeRender($event, value, j)" *ngIf="hasObject(value); else elseBlockValue"
+                        content="loading...">
                         {{value.glueName}}
                       </ejs-tooltip>
                       <ng-template #elseBlockValue>
                         {{value == 0 || value === '0kg' ? 0 : value}}
                       </ng-template>
-                  </td>
-                </ng-container>
-                <td rowspan=3 class="my-align">
+                    </td>
+                  </ng-container>
+                  <td rowspan=3 class="my-align">
                     <button type="button" style="width: 90px;" (click)="mixingSection(values)" class="btn btn-success btn-sm">
                       <i class="fa fa-glass"></i>
                       {{ 'MIXING' | translate }}
@@ -65,32 +68,32 @@
                       {{ 'STIR' | translate }}</button>
                     <button type="button" style="width: 90px;" (click)="pushHistory(values)" class="btn btn-sm btn-info">
                       {{ 'HISTORY' | translate }}</button>
-                </td>
-              </tr>
-              <!-- count -->
-              <tr class="table-warning">
-                <td class="my-align" (dblclick)='showModal(deliveredModal, value)' *ngFor="let value of getValueCell(values.rowCountInfo)">
-                  <ejs-tooltip #tooltipCount class="fix-css" position="RightCenter"
-                     content="loading...">
-                    {{value.count}}
-                  </ejs-tooltip>
-                </td>
-              </tr>
+                  </td>
+                </tr>
+                <!-- count -->
+                <tr class="table-warning">
+                  <td class="my-align" (dblclick)='showModal(deliveredModal, value)'
+                    *ngFor="let value of getValueCell(values.rowCountInfo)">
+                    <ejs-tooltip #tooltipCount class="fix-css" position="RightCenter" content="loading...">
+                      {{value.count}}
+                    </ejs-tooltip>
+                  </td>
+                </tr>
                 <!-- actual -->
-              <tr  class="table-primary">
-                <td class="my-align" (click)='editDomain(value)'
-                  *ngFor="let value of getValueCell(values.rowRealInfo); let i = index">
-                  <input type="text" *ngIf="!value.editable"
-                    [value]="value.value == 0 || value.value === '0kg' ? 0 : value.value + 'kg'"
-                    class="form-control my-align summaryhide real">
-                  <input type="text" (blur)='blurTd(value)' *ngIf="value.editable" autofocustext
-                    (keypress)='dispatchGlue($event, value)' [(ngModel)]="value.value" style="pointer-events: initial"
-                    [value]="value.value" class="form-control my-align summary real">
-                </td>
-              </tr>
-            </ng-container>
-          </tbody>
-        </table>
+                <tr class="table-primary">
+                  <td class="my-align" (click)='editDomain(value)'
+                    *ngFor="let value of getValueCell(values.rowRealInfo); let i = index">
+                    <input type="text" *ngIf="!value.editable"
+                      [value]="value.value == 0 || value.value === '0kg' ? 0 : value.value + 'kg'"
+                      class="form-control my-align summaryhide real">
+                    <input type="text" (blur)='blurTd(value)' *ngIf="value.editable" autofocustext
+                      (keypress)='dispatchGlue($event, value)' [(ngModel)]="value.value" style="pointer-events: initial"
+                      [value]="value.value" class="form-control my-align summary real">
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
       </div>
     </div>
   </div>

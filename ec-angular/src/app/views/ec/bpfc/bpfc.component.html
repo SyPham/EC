@@ -399,7 +399,7 @@
         </div>
         <div class="col-md-12">
           <div class="form-group">
-            <label for="Name">Article NO</label>{{articleNOIDClone}}
+            <label for="Name">Article NO</label>
             <span style="color:red">(*)</span>
             <ejs-dropdownlist #modelNameDropdownlist class="w-100 float-left" [dataSource]='articleNosDataClone'
               [fields]='fieldsBPFCs' [allowFiltering]='true' (filtering)='onFilteringArticleNOClone($event)'
@@ -411,7 +411,7 @@
         </div>
         <div class="col-md-12">
           <div class="form-group">
-            <label for="Name">Process</label> {{artProcessIDClone}}
+            <label for="Name">Process</label>
             <span style="color:red">(*)</span>
             <div class="col-md-9 mt-2">
               <ng-container *ngFor="let item of artProcessDataClone2">

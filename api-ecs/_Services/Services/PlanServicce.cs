@@ -359,10 +359,10 @@ namespace EC_API._Services.Services
                 };
                 header.Add(itemHeader);
             }
-            header.Add(new HeaderForSummary
-            {
-                field = "TotalConsumption"
-            });
+            // header.Add(new HeaderForSummary
+            // {
+            //     field = "TotalConsumption"
+            // });
             // end header
 
             // Data

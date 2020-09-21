@@ -13,7 +13,7 @@
       <span style="color: transparent">|</span>
     </div>
     <div class="btn-group pb-3">
-      <button type="button" (click)="printBarcode()" *ngIf="!show" class="btn btn-success mx-2">Print QRcode</button>
+      <button type="button" (click)="printBarcode()" *ngIf="!show" class="btn btn-success mx-2">Print QR Code</button>
     </div>
     <div class="btn-group pb-3">
       <button type="button" (click)="showModal(importModal)" *ngIf="!show" class="btn btn-success">Import Excel</button>
@@ -56,10 +56,11 @@
             <e-column field='name' isPrimaryKey='true' headerText='Ingredient Name' width='100'></e-column>
             <e-column field='batch' headerText='Batch' width='100'>
             </e-column>
-            <e-column field='productionDate'  headerText='Production date' width='100'>
-              <ng-template #editTemplate let-data>
-              <ejs-datepicker [value]='data.productionDate' (change)='onChangeDate($event, data)'></ejs-datepicker>
-              </ng-template>
+            <e-column field='productionDate' type='date' format='yyyyMMdd'editType='datepickeredit' headerText='Production date' width='100'>
+              <ng-template #template let-data>{{data.productionDate | date: 'yyyyMMdd'}}</ng-template>
+              <!-- <ng-template #editTemplate let-data>
+              <ejs-datepicker [value]='data.productionDate' format='yyyy/MM/dd' (change)='onChangeDate($event, data)'></ejs-datepicker>
+              </ng-template> -->
             </e-column>
           </e-columns>
         </ejs-grid>
@@ -110,17 +111,15 @@
             <ng-container *ngFor="let item of dataPicked">
               <tr *ngIf="dataPicked.length > 0">
                 <td class="text-center">
-                  <ejs-qrcodegenerator [id]='item.code' style="display: block;" [displayText]='displayTextMethod' #barcode
-                    width="177px" height="177px" mode="SVG" [value]="item.qrCode"></ejs-qrcodegenerator>
+                    <ejs-qrcodegenerator [id]='item.code' style="display: block;" [displayText]='displayTextMethod' 
+                      width="177px" height="177px" mode="SVG"
+                      value="{{item.productionDate | date: 'yyyyMMdd'}}-{{item.batch}}-{{item.code}}"></ejs-qrcodegenerator>
                 </td>
                 <td class="text-algin-left">
                     <div><label>Name:</label> {{item.name}}</div>
-                    <div><label>QR Code: </label> {{item.productionDate}}-{{item.batch}}-{{item.code}}</div>
-                    <div><label>MFG:</label> {{item.productionDate}}</div>
+                    <div><label>QR Code: </label> {{item.productionDate | date: 'yyyyMMdd'}}-{{item.batch}}-{{item.code}}</div>
+                    <div><label>MFG:</label> {{item.productionDate | date: 'yyyyMMdd'}}</div>
                     <div><label>EXP:</label> {{item.exp}}</div>
-                    <div class="text-danger font-weight-bold">
-                      {{item.batch.length !== '' && item.productionDate !== '' ? '' : '(*)Please enter batch code and production date'}}
-                    </div>
                 </td>
               </tr>
             </ng-container>
@@ -155,7 +154,9 @@
           <e-column field='supplier' headerText='Supplier' textAlign='Center' width='100'></e-column>
           <e-column field='name' headerText='Ingredient Name' textAlign='Center' width='120'></e-column>
           <e-column field='voc' headerText='VOC' textAlign='Center' width='80'></e-column>
-          <e-column field='daysToExpiration' headerText='Days To Expiration' textAlign='Center' width='130'></e-column>
+          <e-column field='daysToExpiration' headerText='Expiry After' textAlign='Center' width='130'>
+            <ng-template #template let-data>{{data.daysToExpiration}} days</ng-template>
+          </e-column>
           <e-column field='expiredTime' headerText='Expired Time' textAlign='Center' width='130'></e-column>
           <e-column field='materialNO' headerText='Material #' textAlign='Center' width='100'></e-column>
           <e-column field='unit' headerText='Unit(kg)' textAlign='Center' width='100'></e-column>

@@ -14,6 +14,7 @@ import { GridComponent, RowDDService } from '@syncfusion/ej2-angular-grids';
 import { DatePipe } from '@angular/common';
 
 declare let $: any;
+const CURRENT_DATE = new Date();
 @Component({
   selector: 'app-ingredient',
   templateUrl: './ingredient.component.html',
@@ -28,6 +29,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
   modalReference: NgbModalRef;
   excelDownloadUrl: string;
   defaultDate = new Date(null);
+  currentDate = new Date();
   srcDropOptions = { targetID: 'DestGrid' };
   public displayTextMethod: DisplayTextModel = {
     visibility: false
@@ -62,12 +64,37 @@ export class IngredientComponent implements OnInit, AfterViewInit {
   file: any;
   toolbar = ['Search'];
   text: any;
-  dataPrint: any;
-  dataPicked: Array<any> = [];
+  dataPrint: Array<{
+    id: number,
+    code: string,
+    name: string,
+    supplier: string,
+    supplierID: number,
+    batch: string,
+    expiredTime: number,
+    productionDate: Date,
+    daysToExpiration: number,
+    exp: string,
+    qrCode: string
+  }> = [];
+  dataPicked: Array<{
+    id: number,
+    code: string,
+    name: string,
+    supplier: string,
+    supplierID: number,
+    batch: string,
+    expiredTime: number,
+    productionDate: Date,
+    daysToExpiration: number,
+    exp: string,
+    qrCode: string
+  }> = [];
   filterSettings: any;
   toolbarOptions: any;
   @ViewChild('ingredientGrid') ingredientGrid: GridComponent;
   show: boolean;
+  pd: Date;
   constructor(
     private modalNameService: ModalNameService,
     public modalService: NgbModal,
@@ -77,6 +104,7 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute
   ) { }
   ngOnInit() {
+    console.log(this.currentDate);
     this.filterSettings = { type: 'Excel' };
     this.toolbarOptions = ['ExcelExport', 'Search'];
     this.excelDownloadUrl = `${environment.apiUrlEC}Ingredient/ExcelExport`;
@@ -108,7 +136,6 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     $('[data-toggle="tooltip"]').tooltip();
   }
   dataBound() {
-    console.log('sadasdasd', this.ingredientGrid.pageSettings.currentPage);
   }
   toolbarClick(args): void {
     switch (args.item.text) {
@@ -122,19 +149,16 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     }
   }
   actionBegin(args) {
-    if (args.requestType === 'beginEdit') {
-    }
-    if (args.requestType === 'save') {
-      if (args.action === 'edit') {
-        if (args.data) {
-          this.updateBatch(args.data.id, args.data.batch);
-          const pd = (args.data.productionDate as Date);
-          if (pd instanceof Date) {
-            const productionDate = this.datePipe.transform(pd, 'yyyyMMdd');
-            this.updateProductionDate(args.data.id, productionDate);
-            const expDate = this.datePipe.transform(pd.setMonth(4), 'yyyyMMdd');
-            this.updateExp(args.data.id, expDate);
-          }
+    if (args.requestType === 'save' && args.action === 'edit') {
+      console.log('requestType', args);
+      for (const key in this.dataPrint) {
+        if (this.dataPrint[key].id === args.data.id) {
+          this.dataPrint[key].batch = args.data.batch;
+          this.dataPrint[key].productionDate = args.data.productionDate;
+          // tslint:disable-next-line:max-line-length
+          this.dataPrint[key].qrCode = `${this.datePipe.transform(args.data.productionDate, 'yyyyMMdd')}-${args.data.batch}-${args.data.code}`;
+          console.log(this.dataPrint[key]);
+          break;
         }
       }
     }
@@ -243,8 +267,8 @@ export class IngredientComponent implements OnInit, AfterViewInit {
           <div class='info'>
           <ul>
             <li class='subInfo'>Name: ${ item.name}</li>
-              <li class='subInfo'>QR Code: ${ item.qrCode}</li>
-              <li class='subInfo'>MFG: ${ item.productionDate}</li>
+              <li class='subInfo'>QR Code: ${item.productionDate}-${item.batch}-${item.code}</li>
+              <li class='subInfo'>MFG: ${ this.datePipe.transform(item.productionDate, 'yyyyMMdd')}</li>
               <li class='subInfo'>EXP: ${ item.exp}</li>
           </ul>
          </div>
@@ -259,37 +283,14 @@ export class IngredientComponent implements OnInit, AfterViewInit {
 
   }
   rowSelected(args) {
-    this.dataPicked = this.printGrid.getSelectedRecords().map((item: any) => {
-      return {
-        id: item.id,
-        code: item.code,
-        name: item.name,
-        supplier: item.supplier,
-        supplierID: item.supplierID,
-        batch: item.batch,
-        expiredTime: item.expiredTime,
-        productionDate: item.productionDate,
-        exp: item.exp,
-        qrCode: `${item.productionDate}-${item.batch}-${item.code}`
-      };
-    });
+    setTimeout(() => {
+      this.dataPicked = this.printGrid.getSelectedRecords() as any;
+    }, 300);
   }
   rowDeselected(args) {
-    this.dataPicked = this.printGrid.getSelectedRecords().map((item: any) => {
-      return {
-        id: item.id,
-        code: item.code,
-        name: item.name,
-        supplier: item.supplier,
-        supplierID: item.supplierID,
-        batch: item.batch,
-        expiredTime: item.expiredTime,
-        productionDate: item.productionDate,
-        exp: item.exp,
-        qrCode: `${item.productionDate}-${item.batch}-${item.code}`
-      };
-    });
-
+    setTimeout(() => {
+      this.dataPicked = this.printGrid.getSelectedRecords() as any;
+    }, 300);
   }
   updateBatch(id, batch) {
     for (const key in this.dataPrint) {
@@ -298,11 +299,23 @@ export class IngredientComponent implements OnInit, AfterViewInit {
         break;
       }
     }
+    for (const key in this.dataPicked) {
+      if (this.dataPicked[key].id === id) {
+        this.dataPicked[key].batch = batch;
+        break;
+      }
+    }
   }
-  updateProductionDate(id, batch) {
+  updateProductionDate(id, productionDate) {
     for (const key in this.dataPrint) {
       if (this.dataPrint[key].id === id) {
-        this.dataPrint[key].productionDate = batch;
+        this.dataPrint[key].productionDate = productionDate;
+        break;
+      }
+    }
+    for (const key in this.dataPicked) {
+      if (this.dataPicked[key].id === id) {
+        this.dataPicked[key].productionDate = productionDate;
         break;
       }
     }
@@ -314,21 +327,26 @@ export class IngredientComponent implements OnInit, AfterViewInit {
         break;
       }
     }
-  }
-  onChange(args, data) {
-    this.updateBatch(data.id, args.target.value);
+    for (const key in this.dataPicked) {
+      if (this.dataPicked[key].id === id) {
+        this.dataPicked[key].exp = batch;
+        break;
+      }
+    }
   }
   pad(d) {
     return (d < 10) ? '0' + d.toString() : d.toString();
   }
   onChangeDate(args, data) {
-    console.log('onChangeDate', args, data);
-    if (data) {
-      const pd = (args.value as Date);
-      const productionDate = this.datePipe.transform(pd, 'yyyyMMdd');
-      this.updateProductionDate(args.data.id, productionDate);
-      const expDate = this.datePipe.transform(pd.setMonth(4), 'yyyyMMdd');
-      this.updateExp(args.data.id, expDate);
+    console.log(args);
+    if (args.isInteracted) {
+      // if (args.value === null) { return; }
+      // this.pd = (args.value as Date);
+      // const productionDate = this.datePipe.transform(this.pd, 'yyyyMMdd');
+      // console.log(productionDate);
+      // this.updateProductionDate(data.id, productionDate);
+      // const expDate = this.datePipe.transform(this.pd.setDate(this.pd.getDate() + data.daysToExpiration), 'yyyy/MM/dd');
+      // this.updateExp(data.id, expDate);
     }
   }
   backList() {
@@ -359,7 +377,6 @@ export class IngredientComponent implements OnInit, AfterViewInit {
       });
   }
   getAllIngredients() {
-    // this.spinner.show();
     this.ingredientService.getAllIngredient()
       .subscribe((res: any) => {
         this.dataPrint = res.map((item: any) => {
@@ -372,8 +389,9 @@ export class IngredientComponent implements OnInit, AfterViewInit {
             batch: 'DEFAULT',
             expiredTime: item.expiredTime,
             daysToExpiration: item.daysToExpiration,
-            productionDate: this.datePipe.transform(new Date(), 'yyyyMMdd'),
-            exp: this.datePipe.transform(new Date(new Date().setMonth(new Date().getMonth() + 4)), 'yyyyMMdd')
+            productionDate: new Date(),
+            qrCode: `${this.datePipe.transform(new Date(), 'yyyyMMdd')}-DEFAULT-${item.code}`,
+            exp: this.datePipe.transform(new Date(new Date().setDate(new Date().getDate() + item.daysToExpiration)), 'yyyyMMdd')
           };
         });
       }, error => {

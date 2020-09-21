@@ -1,5 +1,5 @@
 import { DataService } from './../../../_core/_service/data.service';
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, HostListener, ViewChildren, QueryList, ɵConsole } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, HostListener, ViewChildren, QueryList, ɵConsole, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ColumnModel, GridComponent } from '@syncfusion/ej2-angular-grids';
 import { PlanService } from 'src/app/_core/_service/plan.service';
 import * as signalr from '../../../../assets/js/ec-client.js';
@@ -23,7 +23,8 @@ declare var Swal: any;
 @Component({
   selector: 'app-summary',
   templateUrl: './summary.component.html',
-  styleUrls: ['./summary.component.css']
+  styleUrls: ['./summary.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SummaryComponent implements OnInit, AfterViewInit {
   @ViewChild('fullScreen') divRef;
@@ -110,9 +111,17 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     private abnormalService: AbnormalService,
     private alertify: AlertifyService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
     private spinner: NgxSpinnerService
   ) { }
   public ngOnInit(): void {
+    // deactivate the change detection for this component and its children
+    this.cdr.detach();
+
+    // interval for doing the change detection every 5 seconds
+    setInterval(() => {
+      this.cdr.detectChanges();
+    }, 300);
     this.toolbarOptions = ['Edit', 'Delete', 'Search', 'ExcelExport'];
     this.editSettings = { showDeleteConfirmDialog: false, allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Normal' };
     this.filterSettings = { type: 'Excel' };
@@ -174,7 +183,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   }
   openFullscreen() {
     // Use this.divRef.nativeElement here to request fullscreen
-    this.screenHeight = screen.height - 100;
+    this.screenHeight = screen.height;
     this.hasFullScreen = true;
     const elem = this.divRef.nativeElement;
     if (elem.requestFullscreen) {
@@ -198,11 +207,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       (window.top.document as any).msExitFullscreen();
     }
     this.hasFullScreen = false;
-    this.screenHeight = window.innerHeight - 200;
-  }
-  created(args) {
-  }
-  dataBound() {
+    this.screenHeight = window.innerHeight - 250;
   }
   labelLang(text) {
     if (text === 'Chemical') {
@@ -212,10 +217,19 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       return 'ID';
     }
     if (text === 'Supplier') {
-      return 'SUPPLIER';
+      return 'SUPPLIER_LABEL';
     }
     if (text === 'TotalConsumption') {
       return 'TOTAL_COMSUMPTION';
+    }
+    if (text === 'Standard') {
+      return 'STANDARD';
+    }
+    if (text === 'Real') {
+      return 'ACTUAL_TODOLIST';
+    }
+    if (text === 'Count') {
+      return 'COUNT';
     }
     return text;
   }
@@ -953,20 +967,20 @@ export class SummaryComponent implements OnInit, AfterViewInit {
 
   }
   frozen(field) {
-    if (field === 'Supplier') {
-      return 'my-sticky';
-    }
-    if (field === 'Chemical') {
-      return 'my-sticky-glue';
-    }
+    // if (field === 'Supplier') {
+    //   return 'my-sticky';
+    // }
+    // if (field === 'Chemical') {
+    //   return 'my-sticky-glue';
+    // }
   }
   frozenBody(i) {
-    if (i === 0) {
-      return 'my-sticky';
-    }
-    if (i === 1) {
-      return 'my-sticky-glue';
-    }
+    // if (i === 0) {
+    //   return 'my-sticky';
+    // }
+    // if (i === 1) {
+    //   return 'my-sticky-glue';
+    // }
   }
 
   onBeforeRender(args, data, i) {

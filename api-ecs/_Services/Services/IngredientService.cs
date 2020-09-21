@@ -366,7 +366,7 @@ namespace EC_API._Services.Services
             return true;
         }
 
-        public async Task<object> ScanQRCodeFromChemialWareHouseDate(string qrCode, string start, string end)
+        public Task<object> ScanQRCodeFromChemialWareHouseDate(string qrCode, string start, string end)
         {
             // var supModel = _repoSupplier.GetAll();
             // var modelID = _repoIngredient.FindAll().FirstOrDefault(x => x.Code.Equals(qrCode) && x.isShow == true).ID;
@@ -410,8 +410,7 @@ namespace EC_API._Services.Services
             //         Code = model.Code
             //     });
             // }
-            return true;
-
+            throw new NotImplementedException();
         }
 
         public async Task<IngredientInfo> CreateIngredientInfo(IngredientInfo data)

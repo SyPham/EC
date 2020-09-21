@@ -4,6 +4,7 @@ import { DisplayTextModel, QRCodeGenerator } from '@syncfusion/ej2-angular-barco
 import { DatePipe } from '@angular/common';
 import { IngredientService } from 'src/app/_core/_service/ingredient.service';
 import { TextBoxComponent } from '@syncfusion/ej2-angular-inputs';
+import { IIngredient } from 'src/app/_core/_model/Ingredient';
 
 @Component({
   selector: 'app-print-qrcode',
@@ -11,19 +12,13 @@ import { TextBoxComponent } from '@syncfusion/ej2-angular-inputs';
   styleUrls: ['./print-qrcode.component.css'],
   providers: [DatePipe]
 })
-export class PrintQRCodeComponent implements OnInit, AfterViewInit {
-  public qrcode: any;
-  public name: any;
+export class PrintQRCodeComponent implements OnInit {
+  public qrcode = '';
   public batch = 'DEFAULT';
-  public mfg = this.datePipe.transform(new Date(), 'yyyyMMdd');
+  public mfgTemp = new Date();
+  public mfg = this.datePipe.transform(this.mfgTemp, 'yyyyMMdd');
   public exp = this.datePipe.transform(new Date(new Date().setMonth(new Date().getMonth() + 4)), 'yyyyMMdd');
-  public id: any;
-  public dateValue: any;
-  public dateprint: Date = new Date();
-  public dateprints: any;
-  public dateValueDefault: any;
-  public deadlineDefault: any;
-  data: [];
+  public ingredient: IIngredient;
   @ViewChild('barcode')
   public barcode: QRCodeGenerator;
   @ViewChild('displayText')
@@ -31,36 +26,35 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
   public displayTextMethod: DisplayTextModel = {
     visibility: false
   };
-  public text: any;
-  expiredTime: any;
+  name: any;
   constructor(
     private route: ActivatedRoute,
     private datePipe: DatePipe,
     private ingredientService: IngredientService,
   ) {
-    this.dateprints = this.datePipe.transform(this.dateprint, 'MM-dd-yyyy');
   }
 
   ngOnInit(): void {
     this.onRouteChange();
-    this.LoadQrCodeByID(this.id);
   }
-  ngAfterViewInit() {
-
+  getByID(Id) {
+    this.ingredientService.getByID(Id)
+      .subscribe(res => {
+        this.ingredient = res;
+        this.mfg = this.datePipe.transform(this.mfgTemp, 'yyyyMMdd');
+        // tslint:disable-next-line:max-line-length
+        this.exp = this.datePipe.transform(this.mfgTemp.setDate(this.mfgTemp.getDate() + this.ingredient.daysToExpiration), 'yyyyMMdd');
+        this.qrcode = `${this.mfg}-${this.batch}-${this.ingredient.code}`;
+      }, error => {
+      });
   }
-  LoadQrCodeByID(id) {
-    this.ingredientService.GetQrcodeByid(id).subscribe((result: any) => {
-      this.expiredTime = result.expiredTime;
-      if (result.manufacturingDate === '0001-01-01T00:00:00') {
-        this.name = result.name;
-        this.dateValue = new Date();
-        this.dateValueDefault = new Date();
-      } else {
-        this.name = result.name;
-        this.dateValue = result.manufacturingDate;
-        this.dateValueDefault = result.manufacturingDate;
-      }
-    });
+  onChangeProductionDate(args) {
+    if (args.isInteracted) {
+      const pd = args.value as Date;
+      this.mfg = this.datePipe.transform(pd, 'yyyyMMdd');
+      this.exp = this.datePipe.transform(pd.setDate(pd.getDate() + this.ingredient.daysToExpiration), 'yyyyMMdd');
+      this.qrcode = `${this.mfg}-${this.batch}-${this.ingredient.code}`;
+    }
   }
   printData() {
     const printContent = document.getElementById('qrcode');
@@ -155,7 +149,7 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
          </div>
           <div class='info'>
           <ul>
-            <li class='subInfo'>Name: ${this.text}</li>
+            <li class='subInfo'>Name: ${this.ingredient.name}</li>
               <li class='subInfo'>QR Code: ${this.qrcode}</li>
               <li class='subInfo'>MFG: ${this.mfg}</li>
               <li class='subInfo'>EXP: ${this.exp}</li>
@@ -172,40 +166,12 @@ export class PrintQRCodeComponent implements OnInit, AfterViewInit {
   }
   onRouteChange() {
     this.route.data.subscribe(data => {
-      this.qrcode = `${this.mfg}-${this.batch}-${this.route.snapshot.paramMap.get('code')}`;
-      this.name = this.route.snapshot.paramMap.get('name');
-      this.text = this.route.snapshot.paramMap.get('name');
-      this.id = this.route.snapshot.params.id;
+      this.getByID(this.route.snapshot.params.id);
+      this.name = this.route.snapshot.params.name;
     });
   }
   onChangeBatch(args) {
     this.qrcode = `${this.mfg}-${args}-${this.route.snapshot.paramMap.get('code')}`;
-  }
-  PrintChanges(args) {
-    const printtime = this.datePipe.transform(args.value, 'MM-dd-yyyy');
-    this.deadlineDefault = printtime;
-    // tslint:disable-next-line: prefer-const
-    let d = new Date(args.value);
-    d.setMonth(d.getMonth() + 3);
-    this.dateprints = this.datePipe.transform(d, 'MM-dd-yyyy');
-    // tslint:disable-next-line: prefer-const
-    let Ingredient = {
-      id: Number(this.route.snapshot.params.id),
-      manufacturingDate: printtime
-    };
-    if (printtime !== this.datePipe.transform(this.dateValueDefault, 'MM-dd-yyyy')) {
-      this.ingredientService.UpdatePrint(Ingredient).subscribe(() => {
-        if (printtime === this.datePipe.transform(this.dateValueDefault, 'yyyyMMdd')) {
-          this.text = this.name;
-          this.qrcode = `${this.mfg}-${this.batch}-${this.route.snapshot.paramMap.get('code')}`;
-        } else {
-          this.mfg = this.datePipe.transform(this.dateValue, 'yyyyMMdd');
-          this.exp = this.datePipe.transform(this.dateprints, 'yyyyMMdd');
-          this.text = this.name;
-          this.qrcode = `${this.mfg}-${this.batch}-${this.route.snapshot.paramMap.get('code')}`;
-        }
-      });
-    }
   }
 }
 

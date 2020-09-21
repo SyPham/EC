@@ -4,7 +4,7 @@
     <div class="row">
       <div class="col-md-2">
         <div class="e-input-group">
-          <input class="e-input" readonly type="text" [(ngModel)]="name" placeholder="" />
+          <input class="e-input" readonly type="text" [value]="name" placeholder="" />
         </div>
       </div>
       <div class="col-md-2">
@@ -13,12 +13,12 @@
         </div>
       </div>
       <div class="col-md-3">
-        <ejs-datepicker format='MM-dd-yyyy'  placeholder="Order Date"
-        (change)='PrintChanges($event)' [(ngModel)]="dateValue"  floatLabelType='Never'></ejs-datepicker>
+        <ejs-datepicker (change)='onChangeProductionDate($event)' format='yyyyMMdd' placeholder="Production Date"
+        [(ngModel)]="mfgTemp"  floatLabelType='Never'></ejs-datepicker>
       </div>
       <div class="col-md-3">
         <div class="e-input-group">
-          <input [(ngModel)]="dateprints" class="e-input" readonly type="text" placeholder="" />
+          <input [(ngModel)]="exp" class="e-input" readonly type="text" placeholder="" />
         </div>
       </div>
       <div class="col-md-2">
@@ -38,7 +38,7 @@
     <ejs-qrcodegenerator #barcode style="display: block;" id='qrcode' #barcode
     width="177px" height="177px" [displayText]='displayTextMethod' mode="SVG" [value]="qrcode"></ejs-qrcodegenerator>
   </div>
-  <div><label>Name:</label> {{text}}</div>
+  <div><label>Name:</label> {{name}}</div>
   <div><label>QrCode:</label> {{qrcode}}</div>
   <div><label>MFG:</label> {{mfg}}</div>
   <div><label>EXP:</label> {{exp}}</div>

@@ -69,6 +69,9 @@ export class IngredientService {
   getAllIngredient() {
     return this.http.get<IIngredient[]>(this.baseUrl + 'ingredient/GetAll', {});
   }
+  getByID(Id) {
+    return this.http.get<IIngredient>(this.baseUrl + 'ingredient/GetbyID/' + Id, {});
+  }
   scanQRCode(qrCode) {
     return this.http.get(this.baseUrl + 'ingredient/ScanQRCode/' + qrCode, {});
   }
