@@ -158,9 +158,13 @@
           <e-column field='daysToExpiration' headerText='Expire After' textAlign='Center' width='130'>
             <ng-template #template let-data>{{data.daysToExpiration}} days</ng-template>
           </e-column>
-          <e-column field='expiredTime' headerText='Expired Time' textAlign='Center' width='130'></e-column>
+          <e-column field='expiredTime' headerText='Expired Time' textAlign='Center' width='130'>
+            <ng-template #template let-data>{{data.expiredTime}} minutes</ng-template>
+          </e-column>
           <e-column field='materialNO' headerText='Material #' textAlign='Center' width='100'></e-column>
-          <e-column field='unit' headerText='Unit(kg)' textAlign='Center' width='100'></e-column>
+          <e-column field='unit' headerText='Unit' textAlign='Center' width='100'>
+            <ng-template #template let-data>{{data.unit}} kg</ng-template>
+          </e-column>
           <e-column field='createdDate' headerText='Created Date' textAlign='Center' type='dateTime' format='dd MMM, yyyy hh:mm:ss a' width='180'></e-column>
           <e-column field='Option' headerText='Option' textAlign='Center' width='130'>
             <ng-template let-data #template >
