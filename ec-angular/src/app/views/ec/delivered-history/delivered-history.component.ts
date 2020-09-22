@@ -81,4 +81,7 @@ export class DeliveredHistoryComponent implements OnInit {
        });
       });
   }
+  NO(index) {
+    return (this.grid.pageSettings.currentPage - 1) * this.grid.pageSettings.pageSize + Number(index) + 1;
+  }
 }

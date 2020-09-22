@@ -46,7 +46,7 @@
       <div class="col-md-12">
 
         <ejs-grid #ingredientinfoGrid  [dataSource]='data'
-          [allowExcelExport]='true' [allowSorting]='true' allowFiltering='true' [filterSettings]='filterSettings'
+          [allowExcelExport]='true' [allowSorting]='true'  allowResizing='true' allowFiltering='true' [filterSettings]='filterSettings'
           [toolbar]='toolbarOptions' showColumnMenu='true' [pageSettings]='pageSettings'
           allowPaging="true" gridLines='Both' (toolbarClick)='toolbarClick($event)'>
           <e-columns>
@@ -55,7 +55,7 @@
               {{NO(data.index)}}
             </ng-template>
           </e-column> -->
-            <e-column field='createdTime' textAlign='Center' headerText='Time' width='100'>
+            <e-column field='createdTime' textAlign='Center' headerText='Time' width='150'>
               <ng-template #headerTemplate>
                 {{'TIME_LABEL' | translate}}
               </ng-template>
@@ -65,13 +65,13 @@
 
             </e-column>
 
-            <e-column field='supplierName' textAlign='Center' headerText='Supplier' width='130'>
+            <e-column field='supplierName' textAlign='Center' headerText='Supplier' width='120'>
               <ng-template #headerTemplate>
                 {{'SUPPLIER' | translate}}
               </ng-template>
             </e-column>
 
-            <e-column field='name' textAlign='Center' headerText='Ingredient' width='130'>
+            <e-column field='name' textAlign='Center' headerText='Ingredient' width='100'>
               <ng-template #headerTemplate>
                 {{'INGREDIENT_LABEL' | translate}}
               </ng-template>
@@ -87,7 +87,7 @@
               </ng-template>
             </e-column>
 
-            <e-column field='batch' textAlign='Center' headerText='Batch' width='130'>
+            <e-column field='batch' textAlign='Center' headerText='Batch' width='100'>
               <ng-template #headerTemplate>
                 {{'BATCH_LABEL' | translate}}
               </ng-template>
@@ -127,7 +127,7 @@
 
             </e-column>
 
-            <e-column field='Option' textAlign='Center' headerText='Option' width='150'>
+            <e-column field='Option' textAlign='Center' headerText='Option' width='90'>
               <ng-template #headerTemplate>
                 {{'OPTION' | translate}}
               </ng-template>

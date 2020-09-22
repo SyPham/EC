@@ -150,4 +150,7 @@ export class EstablishedRecordComponent implements OnInit {
     }
     return '#N/A';
   }
+  NO(index) {
+    return (this.gridObj.pageSettings.currentPage - 1) * this.gridObj.pageSettings.pageSize + Number(index) + 1;
+  }
 }

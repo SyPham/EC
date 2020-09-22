@@ -23,7 +23,7 @@ const CURRENT_DATE = new Date();
 })
 export class IngredientComponent implements OnInit, AfterViewInit {
   editSettings = { showDeleteConfirmDialog: false, allowEditing: true, mode: 'Normal' };
-  pageSettings = { pageCount: 20, pageSizes: true, currentPage: 1, pageSize: 10 };
+  pageSettings = { pageCount: 20, pageSizes: true, currentPage: 1, pageSize: 20 };
   data: any;
   destData: object[] = [];
   modalReference: NgbModalRef;
