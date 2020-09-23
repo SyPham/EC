@@ -37,204 +37,299 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'ec'
+      title: 'ec',
+      breadcrumb: 'Home'
     },
     children: [
+
       // setting
       {
-        path: 'setting/account-1',
-        component: AccountComponent,
+        path: 'setting',
         data: {
-          title: 'account'
-        }
+          title: 'setting',
+          breadcrumb: 'Setting'
+        },
+        children: [
+          {
+            path: '',
+            component: IngredientComponent,
+          },
+          {
+            path: 'ingredient',
+            // component: IngredientComponent,
+            data: {
+              title: 'Ingredient',
+              breadcrumb: 'Ingredient',
+              url: 'ec/setting/Ingredient'
+            },
+            children: [
+              {
+                path: '',
+                component: IngredientComponent,
+              },
+              {
+                path: 'print-qrcode/:id/:code/:name',
+                component: PrintQRCodeComponent,
+                data: {
+                  title: 'Print QRCode',
+                  breadcrumb: 'Print QRCode'
+                }
+              }
+            ]
+          },
+          {
+            path: 'account-1',
+            component: AccountComponent,
+            data: {
+              title: 'account',
+              breadcrumb: 'Account'
+            }
+          },
+          {
+            path: 'account-2',
+            component: BuildingUserComponent,
+            data: {
+              title: 'Account 2',
+              breadcrumb: 'Account 2'
+            }
+          },
+          {
+            path: 'building',
+            component: BuildingComponent,
+            data: {
+              title: 'Building',
+              breadcrumb: 'Building'
+            }
+          },
+          {
+            path: 'supplier',
+            component: SuppilerComponent,
+            data: {
+              title: 'Suppiler',
+              breadcrumb: 'Suppiler'
+            }
+          },
+          {
+            path: 'kind',
+            component: KindComponent,
+            data: {
+              title: 'Kind',
+              breadcrumb: 'Kind'
+            }
+          },
+          {
+            path: 'part',
+            component: PartComponent,
+            data: {
+              title: 'Part',
+              breadcrumb: 'Part'
+            }
+          },
+          {
+            path: 'material',
+            component: MaterialComponent,
+            data: {
+              title: 'Material',
+              breadcrumb: 'Material'
+            }
+          },
+          {
+            path: 'glue',
+            component: GlueComponent,
+            resolve: { glues: GlueResolver },
+            data: {
+              title: 'Glue',
+              breadcrumb: 'Glue'
+            }
+          },
+        ]
       },
+       // end setting
+
       {
-        path: 'setting/account-2',
-        component: BuildingUserComponent,
+        path: 'troubleshooting',
         data: {
-          title: 'Account 2'
-        }
+          title: 'Troubleshooting',
+          breadcrumb: 'Troubleshooting'
+        },
+        children: [
+          {
+            path: 'search',
+            component: SearchComponent,
+            data: {
+              title: 'Troubleshooting Search',
+              breadcrumb: 'Search'
+            }
+          },
+          {
+            path: 'Abnormal-List',
+            component: AbnormalListComponent,
+            data: {
+              title: 'Troubleshooting Black List',
+              breadcrumb: 'Abnormal-List'
+            }
+          },
+        ]
       },
-      {
-        path: 'setting/building',
-        component: BuildingComponent,
-        data: {
-          title: 'Building'
-        }
-      },
-      {
-        path: 'setting/supplier',
-        component: SuppilerComponent,
-        data: {
-          title: 'Suppiler'
-        }
-      },
-      {
-        path: 'setting/ingredient',
-        // resolve: { ingredients: IngredientResolver },
-        component: IngredientComponent,
-        data: {
-          title: 'Ingredient'
-        }
-      },
-      {
-        path: 'report/inventory',
-        // resolve: { ingredients: IngredientResolver },
-        component: InventoryComponent,
-        data: {
-          title: 'Inventory'
-        }
-      },
-      {
-        path: 'troubleshooting/search',
-        // resolve: { ingredients: IngredientResolver },
-        component: SearchComponent,
-        data: {
-          title: 'Inventory'
-        }
-      },
-      {
-        path: 'troubleshooting/Abnormal-List',
-        // resolve: { ingredients: IngredientResolver },
-        component: AbnormalListComponent,
-        data: {
-          title: 'Inventory'
-        }
-      },
-      {
-        path: 'setting/ingredient/print-qrcode/:id/:code/:name',
-        component: PrintQRCodeComponent,
-        data: {
-          title: 'Print QRCode'
-        }
-      },
-      {
-        path: 'setting/kind',
-        component: KindComponent,
-        data: {
-          title: 'Kind'
-        }
-      },
-      {
-        path: 'setting/part',
-        component: PartComponent,
-        data: {
-          title: 'Part'
-        }
-      },
-      {
-        path: 'setting/material',
-        component: MaterialComponent,
-        data: {
-          title: 'Material'
-        }
-      },
-      {
-        path: 'setting/glue',
-        component: GlueComponent,
-        resolve: { glues: GlueResolver },
-        data: {
-          title: 'Glue'
-        }
-      },
-      // end setting
 
       // establish
       {
-        path: 'establish/bpfc',
-        resolve: { glues: GlueResolver },
-        component: BpfcComponent,
+        path: 'establish',
         data: {
-          title: 'bpfc'
-        }
+          title: 'Establish',
+          breadcrumb: 'Establish'
+        },
+        children: [
+          {
+            path: 'bpfc-schedule',
+            component: BPFCScheduleComponent,
+            data: {
+              title: 'BPFC Schedule',
+              breadcrumb: 'BPFC Schedule'
+            }
+          },
+          {
+            path: 'bpfc',
+            resolve: { glues: GlueResolver },
+            component: BpfcComponent,
+            data: {
+              title: 'bpfc',
+              breadcrumb: 'BPFC'
+            }
+          }
+        ]
       },
       // end establish
 
       // manage
       {
-        path: 'manage/bpfc-status',
-        component: BpfcStatusComponent,
+        path: 'manage',
         data: {
-          title: 'BPFC Status'
-        }
-      },
-      {
-        path: 'manage/bpfc-schedule',
-        // resolve: { ingredients: IngredientResolver },
-        component: BPFCScheduleComponent,
-        data: {
-          title: 'BPFC Schedule'
-        }
-      },
-      {
-        path: 'manage/workplan',
-        component: PlanComponent,
-        data: {
-          title: 'Workplan'
-        }
+          title: 'Manage',
+          breadcrumb: 'Manage'
+        },
+        children: [
+          {
+            path: 'workplan',
+            component: PlanComponent,
+            data: {
+              title: 'Workplan',
+              breadcrumb: 'Work Plan'
+            }
+          },
+          {
+            path: 'bpfc-status',
+            component: BpfcStatusComponent,
+            data: {
+              title: 'BPFC Status',
+              breadcrumb: 'BPFC Status'
+            }
+          }
+        ]
       },
       // end manage
 
       // execution
       {
-        path: 'execution/addition',
-        component: MakeGlueComponent,
+        path: 'execution',
         data: {
-          title: 'Addtion'
-        }
-      },
-      {
-        path: 'execution/todolist',
-        component: SummaryComponent,
-        data: {
-          title: 'todolist'
-        }
-      },
-      {
-        path: 'execution/incoming',
-        // resolve: { ingredients: IngredientResolver },
-        component: IncomingComponent,
-        data: {
-          title: 'Incoming'
-        }
-      },
-      {
-        path: 'execution/stir',
-        component: StirComponent,
-        data: {
-          title: 'Stir'
-        }
-      },
-      {
-        path: 'execution/todolist/history/:glueID',
-        component: GlueHistoryComponent,
-        data: {
-          title: 'History'
-        }
+          title: 'Execution',
+          breadcrumb: 'Execution'
+        },
+        children: [
+          {
+            path: 'addition',
+            component: MakeGlueComponent,
+            data: {
+              title: 'Addtion',
+              breadcrumb: 'Addtion'
+            }
+          },
+          {
+            path: 'todolist',
+            // component: SummaryComponent,
+            data: {
+              title: 'todolist',
+              breadcrumb: 'Todolist'
+            },
+            children: [
+              {
+                path: '',
+                component: SummaryComponent,
+              },
+              {
+                path: 'stir',
+                component: StirComponent,
+                data: {
+                  title: 'Stir',
+                  breadcrumb: 'Stir'
+                }
+              },
+              {
+                path: 'history/:glueID',
+                component: GlueHistoryComponent,
+                data: {
+                  title: 'History',
+                  breadcrumb: 'History'
+                }
+              },
+            ]
+          },
+          {
+            path: 'incoming',
+            // resolve: { ingredients: IngredientResolver },
+            component: IncomingComponent,
+            data: {
+              title: 'Incoming',
+              breadcrumb: 'Incoming'
+            }
+          },
+        ]
       },
       // end execution
+
        // report
-       {
-        path: 'report/established-record',
-        component: EstablishedRecordComponent,
-        data: {
-          title: 'Established Record'
-        }
-      },
       {
-        path: 'report/comsumption',
-        component: SummaryComponent,
+        path: 'report',
         data: {
-          title: 'Comsumption'
-        }
+          title: 'Report',
+          breadcrumb: 'Report'
+        },
+        children: [
+          {
+            path: 'established-record',
+            component: EstablishedRecordComponent,
+            data: {
+              title: 'Established Record',
+              breadcrumb: 'Established Record'
+            }
+          },
+          {
+            path: 'comsumption',
+            component: SummaryComponent,
+            data: {
+              title: 'Comsumption',
+              breadcrumb: 'Comsumption'
+            }
+          },
+          {
+            path: 'delivered-history',
+            component: DeliveredHistoryComponent,
+            data: {
+              title: 'Delivered History',
+              breadcrumb: 'Delivered History'
+            }
+          },
+          {
+            path: 'inventory',
+            component: InventoryComponent,
+            data: {
+              title: 'Inventory',
+              breadcrumb: 'Inventory'
+            }
+          }
+        ]
       },
-      {
-        path: 'report/delivered-history',
-        component: DeliveredHistoryComponent,
-        data: {
-          title: 'Delivered History'
-        }
-      }
       // end report
     ]
   }

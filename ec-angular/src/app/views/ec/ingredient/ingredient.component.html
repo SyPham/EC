@@ -1,10 +1,10 @@
 <div class="card">
-  <div class="card-header">
+  <!-- <div class="card-header">
     <h3 class="title">
       Ingredient List
     </h3>
 
-  </div>
+  </div> -->
   <div class="card-body">
     <div class="btn-group pb-3">
       <button type="button" (click)="openIngredientModalComponent()" *ngIf="!show" class="btn btn-success">Add</button>
@@ -111,7 +111,7 @@
             <ng-container *ngFor="let item of dataPicked">
               <tr *ngIf="dataPicked.length > 0">
                 <td class="text-center">
-                    <ejs-qrcodegenerator [id]='item.code' style="display: block;" [displayText]='displayTextMethod' 
+                    <ejs-qrcodegenerator [id]='item.code' style="display: block;" [displayText]='displayTextMethod'
                       width="177px" height="177px" mode="SVG"
                       value="{{item.productionDate | date: 'yyyyMMdd'}}-{{item.batch}}-{{item.code}}"></ejs-qrcodegenerator>
                 </td>

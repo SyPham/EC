@@ -236,7 +236,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   stirGlue(values) {
     // this.dataService.changeMessage(2);
     this.ingredientService.changeIngredient(values);
-    return this.router.navigate(['/ec/execution/stir']);
+    return this.router.navigate(['/ec/execution/todolist/stir']);
   }
   summary() {
     const E_BUILDING = 8;

@@ -1,4 +1,23 @@
-<div class="py-2">
-  <!-- <h2 class="text-danger text-center">******Thông báo hệ thống sẽ bảo trì từ 8:00 AM đến 9:00 AM******</h2> -->
+
+<!-- <ol class="breadcrumb breadcrumb-bg-pink aaa">
+  <li *ngFor="let breadcrumb of breadcrumbs; let i=index">
+    <a (click)="gotoRouter(breadcrumb)" > {{ breadcrumb.label }}</a>
+  </li>
+</ol> -->
+
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <ol class="breadcrumb breadcrumb-arrow">
+          <li  *ngFor="let breadcrumb of breadcrumbs; let i=index"><a style="cursor: pointer;" (click)="gotoRouter(breadcrumb)" >{{ breadcrumb.label | translate  }}</a></li>
+          <!-- <li><a href="#">Library</a></li>
+          <li class="active"><span>Data</span></li> -->
+        </ol>
+      </div>
+    </div>
+  </div>
 </div>
+
+
 

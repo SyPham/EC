@@ -2,20 +2,20 @@
 <div class="col-md-4">
   <div class="card">
     <div class="card-header">
-      <h3 class="card-title"><i class="fas fa-building"></i> Building List 
+      <h3 class="card-title"><i class="fas fa-building"></i> Building List
       </h3>
     </div>
     <!-- /.card-header -->
 
     <div class="card-body table-responsive p-0">
-      <ejs-treegrid #treegrid [dataSource]="data" 
-                    contextMenuClick='contextMenuClick($event)' 
-                    [treeColumnIndex]='1' 
+      <ejs-treegrid #treegrid [dataSource]="data"
+                    contextMenuClick='contextMenuClick($event)'
+                    [treeColumnIndex]='1'
                     allowSorting='true'
-                    gridLines='Both' 
+                    gridLines='Both'
                     (created)='created()'
-                    [toolbar]='toolbar' 
-                    childMapping="childNodes" 
+                    [toolbar]='toolbar'
+                    childMapping="childNodes"
                     (rowSelected)="rowSelected($event)"
       >
         <e-columns>
@@ -31,19 +31,19 @@
 <div class="col-md-8">
   <div class="card">
     <div class="card-header">
-      <h3 class="card-title"><i class="fas fa-users"></i> User List 
+      <h3 class="card-title"><i class="fas fa-users"></i> User List
       </h3>
     </div>
     <!-- /.card-header -->
 
     <div class="card-body table-responsive p-0">
-      <ejs-treegrid #treegrid [dataSource]="userData" 
-                    contextMenuClick='contextMenuClick($event)' 
-                    [treeColumnIndex]='1' 
+      <ejs-treegrid #treegrid [dataSource]="userData"
+                    contextMenuClick='contextMenuClick($event)'
+                    [treeColumnIndex]='1'
                     allowSorting='true'
-                    gridLines='Both' 
+                    gridLines='Both'
                     (created)='createdUsers()'
-                    [toolbar]='toolbar' 
+                    [toolbar]='toolbar'
                     childMapping="childNodes"
       >
         <e-columns>

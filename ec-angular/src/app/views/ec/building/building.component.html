@@ -1,25 +1,25 @@
 <div class="col-md-12">
   <div class="card">
-    <div class="card-header">
+    <!-- <div class="card-header">
       <h3 class="card-title"><i class="fas fa-project-diagram"></i> Building List
       </h3>
-    </div>
+    </div> -->
     <!-- /.card-header -->
 
     <div class="card-body table-responsive p-0">
-      <ejs-treegrid #treegrid [dataSource]="data" 
-                    (contextMenuClick)='contextMenuClick($event)' 
-                    (toolbarClick)='toolbarClick($event)' 
-                    [treeColumnIndex]='1' 
+      <ejs-treegrid #treegrid [dataSource]="data"
+                    (contextMenuClick)='contextMenuClick($event)'
+                    (toolbarClick)='toolbarClick($event)'
+                    [treeColumnIndex]='1'
                     allowSorting='true'
-                    gridLines='Both' 
+                    gridLines='Both'
                     (created)='created()'
-                    [editSettings]="editing" 
+                    [editSettings]="editing"
                     [contextMenuItems]='contextMenuItems'
-                    (actionComplete)="actionComplete($event)" 
-                    [toolbar]='toolbar' 
-                    childMapping="childNodes" 
-                    allowExcelExport='true' 
+                    (actionComplete)="actionComplete($event)"
+                    [toolbar]='toolbar'
+                    childMapping="childNodes"
+                    allowExcelExport='true'
                     allowPdfExport='true'
                     (rowSelected)="rowSelected($event)"
       >

@@ -1,7 +1,7 @@
 <div class="card">
-  <div class="card-header">
+  <!-- <div class="card-header">
     <h3>Execution - Stir</h3>
-  </div>
+  </div> -->
   <div class="card-body">
     <h3 class="text-center text-danger">311HM</h3>
      <ejs-grid  [dataSource]='glues' #grid
@@ -82,7 +82,7 @@
         <input type="text" class="form-control form-control-sm" [value]="rpm" name="" disabled id="">
       </div>
     </div>
-    
+
     <div class="row">
       <div class="col-md-3 mt-2">
         <label>Minutes: </label>
@@ -91,7 +91,7 @@
         <input type="text" [(value)]="minutes" class="form-control form-control-sm" disabled>
       </div>
     </div>
-    
+
     <div class="row">
       <div class="col-md-3 mt-2">
         <label>Valid: </label>
@@ -103,10 +103,10 @@
         <ng-template #elseTemplate>
           <button style="margin: 3px;" type="button" class="btn btn-danger btn-sm">Invalid</button>
         </ng-template>
-    
+
       </div>
     </div>
-    
+
     <div class="row">
       <div class="col-md-12 mt-4 text-center">
         <button style="margin: 3px;" type="button" onclick="alert('This function will be coming soon')"
