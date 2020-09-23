@@ -11,5 +11,8 @@ namespace EC_API._Services.Interface
     {
         Task<MixingInfo> Mixing(MixingInfoForCreateDto mixing);
         Task<List<MixingInfoDto>> GetMixingInfoByGlueID(int glueID);
+        Task<object> Stir(string glueName);
+        Task<object> GetRPM(int mixingInfoID, string building, string startTime, string endTime);
+
     }
 }

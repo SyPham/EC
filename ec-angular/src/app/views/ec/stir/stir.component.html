@@ -1,141 +1,123 @@
 <div class="card">
   <div class="card-header">
     <h3>Execution - Stir</h3>
-
   </div>
   <div class="card-body">
+    <h3 class="text-center text-danger">311HM</h3>
+     <ejs-grid  [dataSource]='glues' #grid
+            gridLines='Both'
+            [allowSorting]='true'
+            [allowExcelExport]='true'
+            allowFiltering='true'
+            [filterSettings]='filterSettings'
+            [pageSettings]='pageSettings'
+            allowPaging="true"
+            [toolbar]='toolbarOptions'
+            allowResizing= 'true'
+            [rowHeight]='60'
+            showColumnMenu='true'
+            (toolbarClick)='toolbarClick($event)'>
+            <e-columns>
+                <e-column field='#' headerText='#' width='50'>
+                  <ng-template let-data #template>
+                    <span class='font-weight-bold'>
+                    {{NO(data.index)}}</span>
+                  </ng-template>
+                </e-column>
+                <!-- <e-column field='glueName' textAlign='Center' headerText='Glue' width='100'></e-column> -->
+                <e-column field='qty' textAlign='Center' headerText='Qty' width='70'>
+                  <ng-template #template let-data>{{data.qty}} kg</ng-template>
+                </e-column>
+                <e-column field='startTime' textAlign='Center' type='dateTime' format='hh:mm:ss a' headerText='Start Time' width='100'>
+                  <ng-template #template let-data>{{data.startTime !== "0001-01-01T00:00:00" ? (data.startTime | date: 'hh:mm:ss a') : '#N/A'}}</ng-template>
+                </e-column>
+                <e-column field='endTime' textAlign='Center' type='dateTime' format='hh:mm:ss a' headerText='End Time' width='100'>
+                  <ng-template #template let-data>{{data.endTime !== "0001-01-01T00:00:00" ? (data.endTime | date: 'hh:mm:ss a') : '#N/A'}}</ng-template>
+                </e-column>
+                <e-column field='status' textAlign='Center' headerText='Status' width='100'>
+                  <ng-template #template let-data>
+                    <span *ngIf="data.status === false"  class='badge badge-danger'>{{data.status === false ? 'Chưa khuấy' : 'Đã Khuấy'}}</span>
+                    <span *ngIf="data.status === true"  class='badge badge-success'>{{data.status === false ? 'Chưa khuấy' : 'Đã Khuấy'}}</span>
+                  </ng-template>
+                </e-column>
+                <e-column field='createdTime' textAlign='Center' type='dateTime' format='d MMM, yyyy hh:mm:ss a' headerText='Mixing Time' width='150'></e-column>
+                <e-column field='setting' textAlign='Center' headerText='Setting' width='150'>
+                  <ng-template #template let-data>
+                    <ng-container *ngFor="let item of settingData">
+                      <ejs-radiobutton  *ngIf="data.status === false" [label]="item.name" name="stir" [checked]='data.settingID > 0' cssClass="e-success mr-2" [checked]='data.settingID === item.id' [value]="item.id" (change)='onChange($event, data)'>
+                      </ejs-radiobutton>
+                    </ng-container>
+                  </ng-template>
+                </e-column>
+                <e-column field='option' textAlign='Center' headerText='Option' width='100'>
+                  <ng-template #template let-data>
+                    <div class="btn-group mr-2" *ngIf="data.status === false">
+                      <button type="button" (click)='saveStir(data)' class="btn btn-xs btn-info"><i class="fa fa-save"></i></button>
+                    </div>
+                    <div class="btn-group">
+                      <button type="button" (click)='showModal(infoModal,data)' class="btn btn-xs btn-info"><i class="fa fa-search"></i></button>
+                    </div>
+                  </ng-template>
+                </e-column>
+            </e-columns>
+        </ejs-grid>
+  </div>
+</div>
+
+<ng-template #infoModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">
+      <i class="fas fa-plus"></i> Info
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
     <div class="row">
-      <div class="col-md-12">
-        <div class="row">
-          <div class="col-sm-12 text-center">
-            <label style="color: transparent;" class="font-weight-bold" for="">Scan QRCode</label>
-          </div>
-        </div>
-        <ng-container>
-          <div class="row">
-
-            <div class="col-md-5">
-              <div class="card">
-                <div class="col-md-12 card-body table-responsive">
-
-                  <div class="row">
-                    <div class="col-md-3 mt-2">
-                      <label style="color: transparent;">: </label>
-                    </div>
-                    <div class="col-md-9 mt-3">
-                      <ng-container *ngFor="let item of settingData">
-                        <ejs-radiobutton [label]="item.name" name="stir" cssClass="e-success" [value]="item.id" (change)='onChange($event)'></ejs-radiobutton>
-                      </ng-container>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-3 mt-2">
-                      <label>Date: </label>
-                    </div>
-                    <div class="col-md-8 mt-2">
-                      <ejs-datepicker format='EEEE,d MMMM, y' readonly=true [value]='dateValue'  ></ejs-datepicker>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-3 mt-2">
-                      <label>Start Time: </label>
-                    </div>
-                    <div class="col-md-8 mt-2">
-                      <ejs-timepicker id='timepicker' readonly=true [value]='value' [step]='interval' [format]='customFormat' ></ejs-timepicker>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-3 mt-2">
-                      <label>End Time: </label>
-                    </div>
-                    <div class="col-md-8 mt-2">
-                      <ejs-timepicker readonly=true [value]='Envalue' [format]='customFormat' id='timepicker'></ejs-timepicker>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-3 mt-2">
-                      <label style="color: transparent;">S: </label>
-                    </div>
-                    <div class="col-md-8 mt-2">
-                      <button style="margin: 3px;" type="button" (click)="saveStir()" class="btn btn-info ">Save</button>
-                      <button style="margin: 3px;" [disabled]="disabled" (click)="searchStir()" type="button" class="btn btn-info ">Search</button>
-                    </div>
-                  </div>
-                  <!-- End Model Name -->
-                </div>
-              </div>
-
-            </div>
-
-            <div  class="col-md-7">
-              <div  class="card">
-                <div *ngIf="isShow" class="col-md-12 card-body table-responsive">
-
-                  <div style="visibility: hidden;" class="row">
-                    <div class="col-md-3 mt-2">
-                      <label>Process: </label>
-                    </div>
-                    <div class="col-md-9 mt-2">
-                      <ng-container >
-                        <ejs-radiobutton label="A" >
-                        </ejs-radiobutton>
-                        <ejs-radiobutton label="B" >
-                        </ejs-radiobutton>
-                      </ng-container>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-3 mt-2">
-                      <label>AVG RPM: </label>
-                    </div>
-                    <div class="col-md-8 mt-2">
-                      <input type="text" class="form-control form-control-sm" value="345" name="" disabled id="">
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-3 mt-2">
-                      <label>Minutes: </label>
-                    </div>
-                    <div class="col-md-8 mt-2">
-                      <input type="text" [(value)] ="timeStir" class="form-control form-control-sm"  disabled>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-3 mt-2">
-                      <label>Valid: </label>
-                    </div>
-                    <div class="col-md-8 mt-2">
-                      <ng-container *ngIf="timeStir > 3; else elseTemplate">
-                        <button  style="margin: 3px;" type="button" class="btn btn-info btn-sm">Ok</button>
-                      </ng-container>
-                      <ng-template #elseTemplate>
-                        <button  style="margin: 3px;" type="button" class="btn btn-danger btn-sm">Invalid</button>
-                      </ng-template>
-
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-12 mt-4 text-center">
-                      <button style="margin: 3px;" type="button" onclick="alert('This function will be coming soon')" class="btn btn-success">Confirm</button>
-                    </div>
-                  </div>
-
-                  <!-- End Model Name -->
-                </div>
-              </div>
-            </div>
-          </div>
-        </ng-container>
+      <div class="col-md-3 mt-2">
+        <label>AVG RPM: </label>
+      </div>
+      <div class="col-md-8 mt-2">
+        <input type="text" class="form-control form-control-sm" [value]="rpm" name="" disabled id="">
       </div>
     </div>
+    
+    <div class="row">
+      <div class="col-md-3 mt-2">
+        <label>Minutes: </label>
+      </div>
+      <div class="col-md-8 mt-2">
+        <input type="text" [(value)]="minutes" class="form-control form-control-sm" disabled>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-3 mt-2">
+        <label>Valid: </label>
+      </div>
+      <div class="col-md-8 mt-2">
+        <ng-container *ngIf="totalMinutes > 3; else elseTemplate">
+          <button style="margin: 3px;" type="button" class="btn btn-info btn-sm">Ok</button>
+        </ng-container>
+        <ng-template #elseTemplate>
+          <button style="margin: 3px;" type="button" class="btn btn-danger btn-sm">Invalid</button>
+        </ng-template>
+    
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-12 mt-4 text-center">
+        <button style="margin: 3px;" type="button" onclick="alert('This function will be coming soon')"
+          class="btn btn-success">Confirm</button>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">Close</button>
   </div>
 
-</div>
+</ng-template>
+

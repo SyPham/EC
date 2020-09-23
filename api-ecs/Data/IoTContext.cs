@@ -7,6 +7,7 @@ namespace EC_API.Data
     {
         public IoTContext(DbContextOptions<IoTContext> options) : base(options) { }
         public DbSet<Mixing> Mixing { get; set; }
+        public DbSet<RawData> RawData { get; set; }
       
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

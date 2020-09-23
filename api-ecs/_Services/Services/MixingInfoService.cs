@@ -18,19 +18,25 @@ namespace EC_API._Services.Services
         private readonly IMixingInfoRepository _repoMixingInfor;
         private readonly IMixingService _repoMixing;
         private readonly IGlueRepository _repoGlue;
+        private readonly IRawDataRepository _repoRawData;
+        private readonly IStirRepository _repoStir;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configMapper;
 
         public MixingInfoService(
             IMixingInfoRepository repoMixingInfor,
             IMixingService repoMixing,
+            IRawDataRepository repoRawData,
             IMapper mapper, IGlueRepository repoGlue,
+            IStirRepository repoStir,
             MapperConfiguration configMapper)
         {
             _repoMixingInfor = repoMixingInfor;
             _repoMixing = repoMixing;
             _repoGlue = repoGlue;
             _mapper = mapper;
+            _repoStir = repoStir;
+            _repoRawData = repoRawData;
             _configMapper = configMapper;
         }
     
@@ -58,6 +64,56 @@ namespace EC_API._Services.Services
         {
            var gluename = _repoGlue.FindById(glueID).Name;
             return await _repoMixingInfor.FindAll().Include(x => x.Glue).Where(x => x.GlueName.Equals(gluename) && x.Glue.isShow == true).ProjectTo<MixingInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
+        }
+
+        public async Task<object> Stir(string glueName)
+        {
+            var currentDate = DateTime.Now.Date;
+            var model = from a in _repoMixingInfor.FindAll().Where(x=> x.GlueName.Equals(glueName) && x.CreatedTime.Date == currentDate)
+                        join b in _repoStir.FindAll().Where(x => x.GlueName.Equals(glueName) && x.CreatedTime.Date == currentDate) on a.ID equals b.MixingInfoID into gj
+                        from ab in gj.DefaultIfEmpty()
+                        select new {
+                            a.ID,
+                            a.GlueName,
+                            a.ChemicalA,
+                            a.ChemicalB,
+                            a.ChemicalC,
+                            a.ChemicalD,
+                            a.ChemicalE,
+                            a.CreatedTime,
+                            ab.StartTime,
+                            ab.EndTime,
+                            Status = ab.StartTime != null ? true :false
+                        };
+           return await model.ToListAsync();
+        }
+
+        public async Task<object> GetRPM(int mixingInfoID, string building, string startTime, string endTime)
+        {
+            var start = Convert.ToDateTime(startTime);
+            var end = Convert.ToDateTime(endTime);
+            TimeSpan minutes = new TimeSpan();
+            var model = await _repoRawData.FindAll().Where(x=> x.MixingInfoID == mixingInfoID && x.CreatedDateTime >= start && x.CreatedDateTime <= end).Select(x=> new{x.RPM , x.CreatedDateTime} ).OrderByDescending(x=> x.CreatedDateTime).ToListAsync();
+           if (model.Count() > 0) {
+                var max = model.Select(x => x.CreatedDateTime).FirstOrDefault();
+                var min = model.Select(x => x.CreatedDateTime).LastOrDefault();
+                if (min != DateTime.MinValue && max != DateTime.MinValue)
+                {
+                    minutes = max - min;
+                }
+                return new
+                {
+                    rpm = Math.Round(model.Select(x => x.RPM).Average()),
+                    totalMinutes = Math.Round(minutes.TotalMinutes, 2),
+                    minutes
+                };
+           }
+            return new
+            {
+                rpm = 0,
+                totalMinutes = 0,
+                minutes
+            };
         }
     }
 }

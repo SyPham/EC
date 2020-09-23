@@ -1,14 +1,15 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { AlertifyService } from 'src/app/_core/_service/alertify.service';
 import { IngredientService } from 'src/app/_core/_service/ingredient.service';
 import { DatePipe } from '@angular/common';
 import { FilteringEventArgs } from '@syncfusion/ej2-angular-dropdowns';
 import { EmitType } from '@syncfusion/ej2-base';
 import { Query } from '@syncfusion/ej2-data';
-import { TimePickerComponent } from '@syncfusion/ej2-angular-calendars';
-import { DataService } from 'src/app/_core/_service/data.service';
 import { SettingService } from 'src/app/_core/_service/setting.service';
+import { StirService } from 'src/app/_core/_service/stir.service';
+import { GridComponent } from '@syncfusion/ej2-angular-grids';
+
 declare const $: any;
 @Component({
   selector: 'app-stir',
@@ -20,101 +21,132 @@ declare const $: any;
   ]
 })
 export class StirComponent implements OnInit {
+  modalReference: NgbModalRef;
+  public filterSettings = { type: 'Excel' };
+  pageSettings = { pageCount: 20, pageSizes: true, pageSize: 10 };
+  @ViewChild('grid') public grid: GridComponent;
+  toolbarOptions = ['Excel Export', 'Search'];
   public value: any =  '';
   public dateValue: any =  '';
   public Envalue: any =  '';
-  public interval: number = 1;
-  public customFormat: string = 'HH:mm:ss a';
-  ingredientID: number;
-  qrcodeChange: any;
-  data: [];
-  isShow: boolean = false;
-  showBatch: boolean = false;
-  disabled: boolean = true;
-  IngredientData: [] ;
+  public interval = 1;
+  public customFormat = 'HH:mm:ss a';
   public ingredients: any = [];
-  timeStir: number = 0 ;
+  timeStir = 0 ;
   glueID: number;
   settingID: number ;
   settingData: object = [];
+  glues: any;
+  glueName: any;
+  rpm = 0;
+  minutes = 0;
+  totalMinutes = 0;
   constructor(
     public modalService: NgbModal,
     private alertify: AlertifyService,
     private datePipe: DatePipe,
     public ingredientService: IngredientService,
     public settingService: SettingService,
-    private dataService: DataService
+    public stirService: StirService,
   ) { }
   public ngOnInit(): void {
-    this.getIngredient();
     this.getAllSetting();
     this.ingredientService.currentIngredient.subscribe((res: any) => {
       this.glueID = res.GlueID ;
     });
+    this.glueName = '311HM';
+    this.loadStir();
   }
-  // tslint:disable-next-line: use-lifecycle-interface
-  public ngAfterViewInit(): void {
-
+  toolbarClick(args): void {
+    switch (args.item.text) {
+      /* tslint:disable */
+      case 'Excel Export':
+        this.grid.excelExport();
+        break;
+      /* tslint:enable */
+      case 'PDF Export':
+        break;
+    }
   }
-
-  onChange(args) {
-    this.isShow = false ;
-    this.disabled = false ;
+  onChange(args, data) {
+    console.log(args);
     this.settingID = args.value ;
-    const dateCreate = this.datePipe.transform(args.value, 'yyyy-MM-dd HH:mm:ss');
-    this.value = new Date();
-    this.dateValue = new Date();
-    const endValue = new Date (this.value);
+    const startTime = new Date();
+    const endTime = new Date ();
     if (this.settingID === 1) {
-      endValue.setMinutes (this.value.getMinutes() + 4);
+      endTime.setMinutes(startTime.getMinutes() + 4);
       this.timeStir = 3.53 ;
     } else {
-      endValue.setMinutes (this.value.getMinutes() + 6);
+      endTime.setMinutes(startTime.getMinutes() + 6);
       this.timeStir = 2.58 ;
     }
-    this.Envalue = endValue ;
+    for (const key in this.glues) {
+      if (this.glues[key].id === data.id) {
+        this.glues[key].startTime = startTime;
+        this.glues[key].endTime = endTime;
+        this.glues[key].settingID = args.value;
+        break;
+      }
+    }
+    this.grid.refresh();
+    console.log(this.glues);
+  }
+  getStirInfo(glueName): Promise<any> {
+    return this.stirService.getStirInfo(glueName).toPromise();
+  }
+  getRPM(mixingInfoID, building, startTime, endTime ): Promise<any> {
+    return this.stirService.getRPM(mixingInfoID, 'E', startTime, endTime ).toPromise();
+  }
+  async loadStir() {
+    try {
+      const result = await this.getStirInfo(this.glueName);
+      const res = result.map((item: any) => {
+        return {
+          id: item.id,
+          glueName: item.glueName,
+          // tslint:disable-next-line:max-line-length
+          qty: parseFloat(item.chemicalA) || 0 + parseFloat(item.chemicalB) || 0 + parseFloat(item.chemicalC) || 0 + parseFloat(item.chemicalD) || 0 + parseFloat(item.chemicalE) || 0,
+          createdTime: item.createdTime,
+          status: item.status,
+          startTime: item.startTime,
+          endTime: item.endTime,
+          settingID: 0
+        };
+      });
+      this.glues = res;
+    } catch (error) {
+      this.alertify.error(error + '');
+    }
+  }
+  async loadRPM(mixingInfoID, building, startTime, endTime) {
+    try {
+      const obj = await this.getRPM(mixingInfoID, building, startTime, endTime );
+      if (obj.rpm === 0) {
+        this.alertify.warning('Không tìm thấy rpm trong khoản thời gian này!', true);
+        this.modalReference.close();
+        return;
+      }
+      this.rpm = obj.rpm;
+      this.minutes = obj.minutes;
+      this.totalMinutes = obj.totalMinutes;
+    } catch (error) {
+      this.alertify.error(error + '');
+    }
   }
 
-  saveStir() {
+  saveStir(data) {
+    console.log(data);
     const model = {
-      glueID: this.glueID,
-      settingID: this.settingID,
-      mixingInfoID: 0,
-      startTime: this.datePipe.transform(this.value, 'yyyy-MM-dd HH:mm:ss'),
-      endTime: this.datePipe.transform(this.Envalue, 'yyyy-MM-dd HH:mm:ss')
+      glueName: data.glueName,
+      settingID: data.settingID,
+      mixingInfoID: data.id,
+      startTime: this.datePipe.transform(data.startTime as Date, 'yyyy-MM-dd HH:mm:ss'),
+      endTime: this.datePipe.transform(data.endTime as Date, 'yyyy-MM-dd HH:mm:ss')
     };
     this.settingService.AddStir(model).subscribe((res) => {
       this.alertify.success('Success');
+      this.loadStir();
     });
-  }
-
-  getIngredient() {
-    this.ingredientService.getAllIngredient().subscribe((res: any) => {
-      this.IngredientData = res ;
-    });
-  }
-
-  openPopupDropdownlist() {
-    $('[data-toggle="tooltip"]').tooltip();
-  }
-
-  public onFilteringIngredientName: EmitType<FilteringEventArgs> = (
-    e: FilteringEventArgs
-  ) => {
-    let query: Query = new Query();
-    // frame the query based on search string with filter type.
-    query = e.text !== '' ? query.where('name', 'contains', e.text, true) : query;
-    // pass the filter data source, filter query to updateData method.
-    e.updateData(this.IngredientData, query);
-  }
-
-  onChangeIngredientName(args) {
-    this.isShow = false ;
-    this.showBatch = true;
-  }
-
-  searchStir() {
-    this.isShow = true ;
   }
 
   getAllSetting() {
@@ -122,5 +154,14 @@ export class StirComponent implements OnInit {
       this.settingData = res ;
     });
   }
-
+  NO(index) {
+    return `Lần ${(this.grid.pageSettings.currentPage - 1) * this.grid.pageSettings.pageSize + Number(index) + 1}`;
+  }
+  async showModal(name, data) {
+    console.log('show modal', data);
+    this.modalReference = this.modalService.open(name, { size: 'lg' });
+    const startTime = this.datePipe.transform(data.startTime, 'yyyy-MM-dd HH:mm:ss');
+    const endTime = this.datePipe.transform(data.endTime, 'yyyy-MM-dd HH:mm:ss');
+    await this.loadRPM(data.id, 'E', startTime, endTime);
+  }
 }

@@ -160,6 +160,7 @@ namespace EC_API
             services.AddScoped<ISettingRepository, SettingRepository>();
             services.AddScoped<IStirRepository, StirRepository>();
             services.AddScoped<IAbnormalRepository, AbnormalRepository>();
+            services.AddScoped<IRawDataRepository, RawDataRepository>();
 
 
             //Services

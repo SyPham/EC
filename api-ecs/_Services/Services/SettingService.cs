@@ -39,10 +39,8 @@ namespace EC_API._Services.Services
         {
             try
             {
-                var mixingInfoID = _repoMixingInfo.FindAll().FirstOrDefault(x => x.GlueID == model.GlueID).ID;
-                model.MixingInfoID = mixingInfoID ;
-                var Stir = _mapper.Map<Stir>(model);
-                _repoStir.Add(Stir);
+                var stir = _mapper.Map<Stir>(model);
+                _repoStir.Add(stir);
                 return await _repoStir.SaveAll();
                 
             }

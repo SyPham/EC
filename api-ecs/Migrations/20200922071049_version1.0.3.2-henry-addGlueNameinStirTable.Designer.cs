@@ -4,14 +4,16 @@ using EC_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EC_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200922071049_version1.0.3.2-henry-addGlueNameinStirTable")]
+    partial class version1032henryaddGlueNameinStirTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -884,6 +886,9 @@ namespace EC_API.Migrations
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("GlueID")
+                        .HasColumnType("int");
 
                     b.Property<string>("GlueName")
                         .HasColumnType("nvarchar(max)");
