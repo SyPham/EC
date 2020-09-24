@@ -33,6 +33,7 @@ export class StirComponent implements OnInit {
   public interval = 1;
   public customFormat = 'HH:mm:ss a';
   public ingredients: any = [];
+  public building = JSON.parse(localStorage.getItem('level'));
   timeStir = 0 ;
   glueID: number;
   settingID: number ;
@@ -183,8 +184,12 @@ export class StirComponent implements OnInit {
   }
 
   getAllSetting() {
-    this.settingService.getAllSetting().subscribe((res) => {
-      this.settingData = res ;
+    let level = this.building.level;
+    if ([1, 2, 3, 4, 5].includes(level)) {
+      level = 8;
+    }
+    this.settingService.getSettingByBuilding(level).subscribe((res) => {
+    this.settingData = res ;
     });
   }
   NO(index) {
