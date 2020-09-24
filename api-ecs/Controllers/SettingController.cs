@@ -29,7 +29,13 @@ namespace EC_API.Controllers
             return Ok(settings);
         }
 
-       
+        [HttpGet("{buildingID}")]
+        public async Task<IActionResult> GetSettingByBuilding(int buildingID)
+        {
+            var settings = await _settingService.GetSettingByBuilding(buildingID);
+            return Ok(settings);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(StirDTO create)
         {
@@ -44,19 +50,41 @@ namespace EC_API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(KindDto update)
+        public async Task<IActionResult> Update(StirDTO update)
         {
-            if (await _kindService.Update(update))
+            if (await _settingService.Update(update))
                 return NoContent();
-            return BadRequest($"Updating Kind {update.ID} failed on save");
+            return BadRequest($"Updating stir {update.ID} failed on save");
         }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpPut]
+        public async Task<IActionResult> UpdateSetting(SettingDTO update)
         {
-            if (await _kindService.Delete(id))
+            if (await _settingService.UpdateSetting(update))
                 return NoContent();
-            throw new Exception("Error deleting the Kind");
+            return BadRequest($"Updating setting {update.ID} failed on save");
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateSetting(SettingDTO create)
+        {
+
+            //create.CreatedDate = DateTime.Now;
+            if (await _settingService.AddSetting(create))
+            {
+                return NoContent();
+            }
+
+            throw new Exception("Creating the setting failed on save");
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteSetting(int id)
+        {
+            var settings = await _settingService.DeleteSetting(id);
+            if (settings)
+            {
+                return NoContent();
+            }
+
+            throw new Exception("Deleting the setting failed on save");
         }
     }
 }

@@ -98,7 +98,17 @@
     "SEARCH_LABEL": "Tìm Kiếm",
     "BLACK_LIST_LABEL": "Danh sách Đen",
     "DELIVERED_HISTORY_LABEL": "Lịch Sử Giao Hàng",
-    "SUPPLIER_LABEL": "NCC"
+    "SUPPLIER_LABEL": "NCC",
+    "SEQ_LABEL": "Lần",
+    "QTY_LABEL_STIR": "SL",
+    "START_TIME_LABEL": "TG Bắt Đầu",
+    "END_TIME_LABEL": "TG Kết Thúc",
+    "MIXING_STATUS_LABEL": "Trạng Thái Trộn",
+    "AVG_RPM_LABEL": "TB Số Vòng Quay",
+    "DUR_LABEL": "Khoảng TG",
+    "STATUS_LABEL_STIR": "Trạng Thái",
+    "MIXING_TIME_LABEL": "TG Trộn",
+    "GLUE_TYPE_LABEL": "Loại Máy"
 
 
 }

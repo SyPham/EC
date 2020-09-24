@@ -12,5 +12,6 @@ namespace EC_API.Models
         public int Level { get; set; }
         public int? ParentID { get; set; }
         public ICollection<Plan> Plans { get; set; }
+        public ICollection<Setting> Settings { get; set; }
     }
 }

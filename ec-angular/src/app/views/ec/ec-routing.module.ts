@@ -32,6 +32,7 @@ import { BpfcStatusComponent } from './bpfc-status/bpfc-status.component';
 import { GlueHistoryComponent } from './summary/glue-history/glue-history.component';
 import { DeliveredHistoryComponent } from './delivered-history/delivered-history.component';
 import { IncomingComponent } from './incoming/incoming.component';
+import { BuildingSettingComponent } from './building-setting/building-setting.component';
 
 const routes: Routes = [
   {
@@ -45,7 +46,14 @@ const routes: Routes = [
         path: 'setting/account-1',
         component: AccountComponent,
         data: {
-          title: 'account'
+          title: 'Account'
+        }
+      },
+      {
+        path: 'setting/building-setting',
+        component: BuildingSettingComponent,
+        data: {
+          title: 'Building Setting'
         }
       },
       {

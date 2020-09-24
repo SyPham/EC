@@ -15,6 +15,9 @@ namespace EC_API.DTO
         public string GlueName { get; set; }
         public int SettingID { get; set; }
         public int MixingInfoID { get; set; }
+        public double TotalMinutes { get; set; }
+        public int RPM { get; set; }
+        public bool Status { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public DateTime CreatedTime { get; set; }

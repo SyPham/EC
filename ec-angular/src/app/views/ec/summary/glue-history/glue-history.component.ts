@@ -15,7 +15,7 @@ import { DatePipe } from '@angular/common';
 export class GlueHistoryComponent implements OnInit {
   glueID: any;
   data: any;
-  toolbarOptions = ['ExcelExport', 'Search', 'Print QRCode' ];
+  toolbarOptions = ['ExcelExport', 'Search', 'Print QR Code' ];
   pageSettings = { pageCount: 20, pageSizes: true, pageSize: 5 };
   filterSettings: { type: string; };
   users: { ID: any; Username: any; Email: any; }[];
@@ -205,7 +205,7 @@ export class GlueHistoryComponent implements OnInit {
         // this.grid.excelExport(exportProperties);
         break;
       /* tslint:enable */
-      case 'Print QRCode':
+      case 'Print QR Code':
         this.printData();
         break;
     }

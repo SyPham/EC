@@ -41,6 +41,8 @@ export class StirComponent implements OnInit {
   rpm = 0;
   minutes = 0;
   totalMinutes = 0;
+  status: boolean;
+  stir: any;
   constructor(
     public modalService: NgbModal,
     private alertify: AlertifyService,
@@ -103,14 +105,18 @@ export class StirComponent implements OnInit {
       const res = result.map((item: any) => {
         return {
           id: item.id,
+          stirID: item.stirID,
           glueName: item.glueName,
           // tslint:disable-next-line:max-line-length
           qty: parseFloat(item.chemicalA) || 0 + parseFloat(item.chemicalB) || 0 + parseFloat(item.chemicalC) || 0 + parseFloat(item.chemicalD) || 0 + parseFloat(item.chemicalE) || 0,
           createdTime: item.createdTime,
-          status: item.status,
+          mixingStatus: item.mixingStatus,
           startTime: item.startTime,
           endTime: item.endTime,
-          settingID: 0
+          settingID: item.settingID,
+          status: item.status,
+          totalMinutes: item.totalMinutes,
+          rpm: item.rpm
         };
       });
       this.glues = res;
@@ -137,6 +143,10 @@ export class StirComponent implements OnInit {
   saveStir(data) {
     console.log(data);
     const model = {
+      id: 0,
+      rpm: 0,
+      totalMinutes: 0,
+      status: false,
       glueName: data.glueName,
       settingID: data.settingID,
       mixingInfoID: data.id,
@@ -149,19 +159,45 @@ export class StirComponent implements OnInit {
     });
   }
 
+  updateStir() {
+    const model = {
+      id: this.stir.stirID,
+      rpm: this.rpm,
+      totalMinutes: this.totalMinutes,
+      status: this.status,
+      glueName: this.stir.glueName,
+      settingID: this.stir.settingID,
+      mixingInfoID: this.stir.mixingInfoID,
+      startTime: this.stir.startTime,
+      endTime: this.stir.endTime
+    };
+    this.settingService.updateStir(model).subscribe((res) => {
+      this.alertify.success('Success');
+      this.modalReference.close();
+      this.loadStir();
+    });
+  }
+
   getAllSetting() {
     this.settingService.getAllSetting().subscribe((res) => {
       this.settingData = res ;
     });
   }
   NO(index) {
-    return `Lần ${(this.grid.pageSettings.currentPage - 1) * this.grid.pageSettings.pageSize + Number(index) + 1}`;
+    return (this.grid.pageSettings.currentPage - 1) * this.grid.pageSettings.pageSize + Number(index) + 1;
   }
   async showModal(name, data) {
     console.log('show modal', data);
+    this.stir = data;
     this.modalReference = this.modalService.open(name, { size: 'lg' });
     const startTime = this.datePipe.transform(data.startTime, 'yyyy-MM-dd HH:mm:ss');
     const endTime = this.datePipe.transform(data.endTime, 'yyyy-MM-dd HH:mm:ss');
+    if (data.settingID === 1) {
+      this.status = this.totalMinutes <= 4 ? true : false;
+    }
+    if (data.settingID === 2) {
+      this.status = this.totalMinutes <= 6 ? true : false;
+    }
     await this.loadRPM(data.id, 'E', startTime, endTime);
   }
 }

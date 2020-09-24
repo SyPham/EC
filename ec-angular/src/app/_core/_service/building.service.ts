@@ -29,6 +29,9 @@ export class BuildingService {
   getBuildingsAsTreeView() {
     return this.http.get(`${this.baseUrl}Building/GetAllAsTreeView`);
   }
+  getBuildingsForSetting() {
+    return this.http.get(`${this.baseUrl}Building/GetBuildingsForSetting`);
+  }
   createMainBuilding(Building) { return this.http.post(`${this.baseUrl}Building/CreateMainBuilding`, Building); }
   createSubBuilding(Building) { return this.http.post(`${this.baseUrl}Building/CreateSubBuilding`, Building); }
 }

@@ -14,6 +14,9 @@ namespace EC_API.Models
         public int ID { get; set; }
         public string GlueName { get; set; }
         public int SettingID { get; set; }
+        public int RPM { get; set; }
+        public bool Status { get; set; }
+        public double TotalMinutes { get; set; }
         public int MixingInfoID { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
