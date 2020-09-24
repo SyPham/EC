@@ -74,6 +74,7 @@ namespace EC_API._Services.Services
                         from ab in gj.DefaultIfEmpty()
                         select new {
                             a.ID,
+                            StirID = ab.ID,
                             a.GlueName,
                             a.ChemicalA,
                             a.ChemicalB,
@@ -83,7 +84,11 @@ namespace EC_API._Services.Services
                             a.CreatedTime,
                             ab.StartTime,
                             ab.EndTime,
-                            Status = ab.StartTime != null ? true :false
+                            ab.SettingID,
+                            ab.Status,
+                            ab.RPM,
+                            ab.TotalMinutes,
+                            MixingStatus = ab.StartTime != null ? true :false
                         };
            return await model.ToListAsync();
         }

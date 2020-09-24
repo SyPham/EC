@@ -4,14 +4,16 @@ using EC_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EC_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200923023600_version1.0.3.2-henry-addRPM-TotalMinutes-Status-InStirTable")]
+    partial class version1032henryaddRPMTotalMinutesStatusInStirTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -864,27 +866,10 @@ namespace EC_API.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("BuildingID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MachineCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MachineType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MaxRPM")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MinRPM")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("BuildingID");
 
                     b.ToTable("Settings");
                 });
@@ -920,8 +905,8 @@ namespace EC_API.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<double>("TotalMinutes")
-                        .HasColumnType("float");
+                    b.Property<int>("TotalMinutes")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
@@ -1138,15 +1123,6 @@ namespace EC_API.Migrations
                     b.HasOne("EC_API.Models.Plan", "Plan")
                         .WithMany("PlanDetails")
                         .HasForeignKey("PlanID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("EC_API.Models.Setting", b =>
-                {
-                    b.HasOne("EC_API.Models.Building", "Building")
-                        .WithMany("Settings")
-                        .HasForeignKey("BuildingID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit {
     '/setting/ingredient',
     '/setting/kind',
     '/setting/part',
+    '/setting/building-setting',
     '/setting/material',
     //
     '/establish/bpfc',
@@ -44,6 +45,7 @@ export class LoginComponent implements OnInit {
     '/setting/building',
     '/setting/supplier',
     '/setting/ingredient',
+    '/setting/building-setting',
     '/setting/kind',
     '/setting/part',
     '/setting/material',

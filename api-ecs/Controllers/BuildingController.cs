@@ -51,7 +51,12 @@ namespace EC_API.Controllers
             Response.AddPagination(lists.CurrentPage, lists.PageSize, lists.TotalCount, lists.TotalPages);
             return Ok(lists);
         }
-
+        [HttpGet]
+        public async Task<IActionResult> GetBuildingsForSetting()
+        {
+            var buildings = await _buildingService.GetBuildingsForSetting();
+            return Ok(buildings);
+        }
         [HttpPost]
         public async Task<IActionResult> Create(BuildingDto create)
         {

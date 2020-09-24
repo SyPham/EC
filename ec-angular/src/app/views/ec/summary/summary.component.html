@@ -6,9 +6,9 @@
   <div class="card-header d-flex p-1" *ngIf="existGlue">
     <h4>{{ 'TODOLIST' | translate }}</h4>
     <div class="d-inline-flex ml-auto">
-      <button class="btn btn-xs p-2 mr-1 bg-success">{{ 'CONSUMPTION_LABEL' | translate }}(kg)</button>
-      <button class="btn btn-xs p-2 mr-1 bg-warning">{{ 'COUNT' | translate }}</button>
-      <button class="btn btn-xs p-2 mr-1 bg-primary">{{ 'ACTUAL' | translate }}</button>
+      <button class="btn btn-xs p-2 mr-1 my-bg-success">{{ 'CONSUMPTION_LABEL' | translate }}(kg)</button>
+      <button class="btn btn-xs p-2 mr-1 my-bg-warning">{{ 'COUNT' | translate }}</button>
+      <button class="btn btn-xs p-2 mr-1 my-bg-primary">{{ 'ACTUAL' | translate }}</button>
       <button (click)="openFullscreen()" class="btn btn-xs p-2 mr-1 bg-secondary" *ngIf="!hasFullScreen"><i class="fa fa-expand-arrows-alt"></i> Fullscreen</button>
       <button (click)='closeFullscreen()' class="btn btn-xs p-2 mr-1 bg-info" *ngIf="hasFullScreen"><i class="fa fa-times"></i> Close Fullscreen</button>
     </div>

@@ -4,15 +4,15 @@
 
 export const environment = {
   production: false,
-  // apiUrlEC: 'http://10.4.4.224:1002/api/',
-  // apiUrl: 'http://10.4.0.76:106/api/',
-  // hub: 'http://10.4.4.224:1002/ec-hub'
+  apiUrlEC: 'http://10.4.4.224:1002/api/',
+  apiUrl: 'http://10.4.0.76:106/api/',
+  hub: 'http://10.4.4.224:1002/ec-hub'
   // apiUrlEC: 'http://10.4.0.76:1002/api/',
   // apiUrl: 'http://10.4.0.76:106/api/',
   // hub: 'http://10.4.0.76:1002/ec-hub'
-  apiUrlEC: 'http://10.4.4.92:1002/api/',
-  apiUrl: 'http://10.4.0.76:106/api/',
-  hub: 'http://10.4.4.92:1002/ec-hub'
+  // apiUrlEC: 'http://10.4.4.92:1002/api/',
+  // apiUrl: 'http://10.4.0.76:106/api/',
+  // hub: 'http://10.4.4.92:1002/ec-hub'
 };
 
 /*

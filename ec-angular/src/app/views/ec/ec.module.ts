@@ -69,6 +69,7 @@ import { DateTimePickerModule } from '@syncfusion/ej2-angular-calendars';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { SelectQrCodeDirective } from './select.qrcode.directive';
 import { IncomingComponent } from './incoming/incoming.component';
+import { BuildingSettingComponent } from './building-setting/building-setting.component';
 setCulture('de-DE');
 
 const lang = localStorage.getItem('lang');
@@ -152,7 +153,8 @@ if (lang) {
     AbnormalListComponent,
     StirComponent,
     SelectQrCodeDirective,
-    IncomingComponent
+    IncomingComponent,
+    BuildingSettingComponent
   ]
 })
 export class ECModule { }

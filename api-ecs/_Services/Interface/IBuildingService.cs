@@ -12,6 +12,7 @@ namespace EC_API._Services.Interface
     {
         Task<IEnumerable<HierarchyNode<BuildingDto>>> GetAllAsTreeView();
         Task<List<BuildingDto>> GetBuildings();
+        Task<object> GetBuildingsForSetting();
         Task<object> CreateMainBuilding(BuildingDto buildingDto);
         Task<object> CreateSubBuilding(BuildingDto buildingDto);
     }

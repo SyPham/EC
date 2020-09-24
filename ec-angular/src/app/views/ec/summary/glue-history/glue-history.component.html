@@ -24,7 +24,7 @@
           (rowSelected)='rowSelected($event)' >
               <e-columns>
                   <e-column type='checkbox' isPrimaryKey='true' width='60'></e-column>
-                  <e-column field='code' headerText='QRCode' width='200' textAlign='Center' >
+                  <e-column field='code' headerText='QR Code' width='200' textAlign='Center' >
                     <ng-template #template let-data>
                       <ejs-qrcodegenerator style="display: block;"  #barcode width="100px" height="100px" mode="SVG" [value]="data.code"></ejs-qrcodegenerator>
                     </ng-template>

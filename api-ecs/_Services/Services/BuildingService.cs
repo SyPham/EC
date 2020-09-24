@@ -125,5 +125,7 @@ namespace EC_API._Services.Services
                 return false;
             }
         }
+
+        public async Task<object> GetBuildingsForSetting() => await _repoBuilding.FindAll().Where(x => x.Level == 4).Select(x => new { x.ID, x.Name }).OrderBy(x => x.Name).ToListAsync();
     }
 }

@@ -82,7 +82,7 @@
     "ACTUAL_TODOLIST": "Delivered/Actual",
     "DELIVERED": "Delivered",
     "BACK": "Back",
-    "SCAN_QRCODE": "Scan QRCode",
+    "SCAN_QRCODE": "Scan QR Code",
     "HISTORY": "History",
     "History": "History",
     "MIXING": "Mix",
@@ -126,8 +126,19 @@
     "Abnormal-List": "Black List",
     "DELIVERED_HISTORY_LABEL": "Delivered History",
     "Delivered History": "Delivered History",
-    "SUPPLIER_LABEL": "Supplier",
     "Supplier": "Supplier",
-    "Home": "Home"
+    "Home": "Home",
+    "SUPPLIER_LABEL": "Supplier",
+    "SEQ_LABEL": "Seq.",
+    "QTY_LABEL_STIR": "Qty",
+    "START_TIME_LABEL": "Start Time",
+    "END_TIME_LABEL": "End Time",
+    "MIXING_STATUS_LABEL": "Mixing Status",
+    "AVG_RPM_LABEL": "AVG RPM",
+    "DUR_LABEL": "DUR",
+    "STATUS_LABEL_STIR": "Status",
+    "MIXING_TIME_LABEL": "Mixing Time",
+    "GLUE_TYPE_LABEL": "Glue Type",
+    "Building Setting": "Building Setting"
 
 }

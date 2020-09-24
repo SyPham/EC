@@ -141,7 +141,9 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   public ngAfterViewInit(): void {
     console.log(screen.height);
     console.log(window.innerHeight);
-    this.screenHeight = window.innerHeight - 200;
+    this.screenHeight = window.innerHeight - 260;
+    console.log('ngAfterViewInit screen', this.screenHeight);
+
     $('input.mixing').tooltip({
       placement: 'right',
       trigger: 'focus'
@@ -183,8 +185,6 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   }
   openFullscreen() {
     // Use this.divRef.nativeElement here to request fullscreen
-    this.screenHeight = screen.height;
-    this.hasFullScreen = true;
     const elem = this.divRef.nativeElement;
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
@@ -195,6 +195,8 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     } else if (elem.webkitRequestFullscreen) {
       elem.webkitRequestFullscreen();
     }
+    this.screenHeight = window.innerHeight;
+    this.hasFullScreen = true;
   }
   closeFullscreen() {
     if (document.exitFullscreen) {
@@ -207,7 +209,8 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       (window.top.document as any).msExitFullscreen();
     }
     this.hasFullScreen = false;
-    this.screenHeight = window.innerHeight - 250;
+    this.screenHeight = window.innerHeight - 403;
+    console.log('close full screen', this.screenHeight);
   }
   labelLang(text) {
     if (text === 'Chemical') {
@@ -235,8 +238,10 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   }
   stirGlue(values) {
     // this.dataService.changeMessage(2);
+    console.log('stir glue', values);
     this.ingredientService.changeIngredient(values);
-    return this.router.navigate(['/ec/execution/todolist/stir']);
+    const url = '/ec/execution/todolist/stir/' + values.Chemical.glueName;
+    return this.router.navigate([url]);
   }
   summary() {
     const E_BUILDING = 8;

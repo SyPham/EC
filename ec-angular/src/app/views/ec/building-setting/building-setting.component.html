@@ -1,0 +1,61 @@
+<div class="card">
+    <div class="card-header"><h2>{{ 'Building Setting' | translate }}</h2></div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <ejs-grid  [dataSource]='buildings' #gridBuilding
+                    gridLines='Both'
+                    [allowSorting]='true'
+                    [allowExcelExport]='true'
+                    allowFiltering='true'
+                    [filterSettings]='filterSettings'
+                    [toolbar]='toolbarOptions'
+                    allowResizing= 'true'
+                    showColumnMenu='true'
+                    (rowSelected)='rowSelectedBuilding($event)'
+                    (toolbarClick)='toolbarClickBuilding($event)'>
+                    <e-columns>
+                        <e-column field='#' textAlign='Center' headerText='#' width='40'>
+                        <ng-template let-data #template>
+                            {{NO(data.index)}}
+                        </ng-template>
+                        </e-column>
+                        <e-column field='name' textAlign='Center' headerText='Building' width='100'></e-column>
+                    </e-columns>
+                </ejs-grid>
+            </div>
+            <div class="col-md-8">
+                <ejs-grid  [dataSource]='settings' #gridSetting
+                    gridLines='Both'
+                    [allowSorting]='true'
+                    [allowExcelExport]='true'
+                    allowFiltering='true'
+                    [filterSettings]='filterSettings'
+                    [pageSettings]='pageSettings'
+                    allowPaging="true"
+                    [toolbar]='toolbarOptions'
+                    allowResizing= 'true'
+                    showColumnMenu='true'
+                    [editSettings]='editSettings'
+                    (actionBegin)="actionBeginSetting($event)"
+                    (actionComplete)="actionCompleteSetting($event)"
+                    (toolbarClick)='toolbarClick($event)'>
+                    <e-columns>
+                        <e-column field='#' isPrimaryKey='true' textAlign='Center' headerText='#' width='40'>
+                        <ng-template let-data #template>
+                            {{NO(data.index)}}
+                        </ng-template>
+                        </e-column>
+                        <e-column field='machineCode' textAlign='Center' headerText='Machine' width='100'></e-column>
+                        <e-column field='machineType' textAlign='Center' headerText='Machine Type' width='130'></e-column>
+                        <e-column field='minRPM' textAlign='Center' headerText='Min RPM' width='100'>
+                        <ng-template #template let-data>{{data.minRPM}}</ng-template>
+                        </e-column>
+                        <e-column field='maxRPM' textAlign='Center' headerText='Max RPM' width='100'></e-column>
+                    </e-columns>
+                </ejs-grid>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer"></div>
+</div>

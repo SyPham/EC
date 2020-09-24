@@ -32,6 +32,7 @@ import { BpfcStatusComponent } from './bpfc-status/bpfc-status.component';
 import { GlueHistoryComponent } from './summary/glue-history/glue-history.component';
 import { DeliveredHistoryComponent } from './delivered-history/delivered-history.component';
 import { IncomingComponent } from './incoming/incoming.component';
+import { BuildingSettingComponent } from './building-setting/building-setting.component';
 
 const routes: Routes = [
   {
@@ -93,6 +94,15 @@ const routes: Routes = [
               breadcrumb: 'Account 2'
             }
           },
+          {
+            path: 'building-setting',
+            component: BuildingSettingComponent,
+            data: {
+              title: 'Building Setting',
+              breadcrumb: 'Building Setting'
+            }
+          }
+          ,
           {
             path: 'building',
             component: BuildingComponent,
@@ -259,6 +269,14 @@ const routes: Routes = [
               },
               {
                 path: 'stir',
+                component: StirComponent,
+                data: {
+                  title: 'Stir',
+                  breadcrumb: 'Stir'
+                }
+              },
+              {
+                path: 'stir/:glueName',
                 component: StirComponent,
                 data: {
                   title: 'Stir',

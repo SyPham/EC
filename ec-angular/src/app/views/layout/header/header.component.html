@@ -37,7 +37,8 @@
             <a class="dropdown-item" [routerLink]="[ '/ec/setting/kind']">{{ 'KIND' | translate }}</a>
             <a class="dropdown-item" [routerLink]="[ '/ec/setting/part']">{{ 'PART' | translate }}</a>
             <a class="dropdown-item" [routerLink]="[ '/ec/setting/material']">{{ 'MATERIAL' | translate }}</a>
-            <a class="dropdown-item" [routerLink]="[ '/ec/setting/glue']">{{ 'GLUE' | translate }}</a>
+            <a class="dropdown-item" [routerLink]="[ '/ec/setting/building-setting']">{{ 'Building Setting' | translate }}</a>
+            <!-- <a class="dropdown-item" [routerLink]="[ '/ec/setting/glue']">{{ 'GLUE' | translate }}</a> -->
             </div>
           </li>
           <li class="nav-item dropdown" *ngIf="level === ADMIN || level === SUPERVISOR || level === STAFF">
