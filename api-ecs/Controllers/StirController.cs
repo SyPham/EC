@@ -29,5 +29,10 @@ namespace EC_API.Controllers
         {
             return Ok(await _mixingInfoService.GetRPM(mixingInfoID, building, start, end));
         }
+        [HttpGet("{machineCode}/{start}/{end}")]
+        public async Task<IActionResult> GetRPMByMachineCode(string machineCode, string start, string end)
+        {
+            return Ok(await _mixingInfoService.GetRPMByMachineCode(machineCode, start, end));
+        }
     }
 }

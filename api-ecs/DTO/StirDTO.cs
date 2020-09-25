@@ -13,7 +13,7 @@ namespace EC_API.DTO
         }
         public int ID { get; set; }
         public string GlueName { get; set; }
-        public int SettingID { get; set; }
+        public int? SettingID { get; set; }
         public int MixingInfoID { get; set; }
         public double TotalMinutes { get; set; }
         public int RPM { get; set; }

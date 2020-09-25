@@ -90,8 +90,9 @@ input.summary:focus {
 .my-sticky
 {
   position:sticky;
-  left:0px;
+  top:0px;
   z-index: 997;
+  height: 40px;
   background-color: #ffffff;
 }
 .my-sticky-glue
@@ -103,7 +104,7 @@ input.summary:focus {
 }
 .my-sticky-top {
   position: sticky;
-    top: 32px;
+    top: 45px;
     z-index: 998;
 }
 .my-cursor-pointer {
@@ -175,3 +176,36 @@ input.summary:focus {
 .my-bg-primary {
   background-color: #b8daff;
 }
+#todolist {
+}
+
+#todolist thead {
+  width: calc(100% - 17px); /* - 17px because of the scrollbar width */
+}
+
+#todolist tbody {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+#todolist tbody tr td,
+#todolist thead tr th {
+  font-weight: bold;
+}
+#todolist thead tr th[rowspan]:nth-child(2),
+#todolist tbody tr td[rowspan]:nth-child(2) {
+  position: -webkit-sticky;
+  position: sticky; 
+  left:80px;
+  background-color: whitesmoke;
+
+}
+#todolist thead tr th[rowspan]:first-child,
+#todolist tbody tr td[rowspan]:first-child {
+  position: -webkit-sticky;
+  position: sticky; 
+  left:0;
+  width: 80px;
+  background-color: whitesmoke;
+}
+
+

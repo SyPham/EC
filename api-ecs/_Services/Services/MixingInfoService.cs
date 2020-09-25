@@ -20,6 +20,7 @@ namespace EC_API._Services.Services
         private readonly IGlueRepository _repoGlue;
         private readonly IRawDataRepository _repoRawData;
         private readonly IStirRepository _repoStir;
+        private readonly ISettingRepository _repoSetting;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configMapper;
 
@@ -27,6 +28,7 @@ namespace EC_API._Services.Services
             IMixingInfoRepository repoMixingInfor,
             IMixingService repoMixing,
             IRawDataRepository repoRawData,
+            ISettingRepository repoSetting,
             IMapper mapper, IGlueRepository repoGlue,
             IStirRepository repoStir,
             MapperConfiguration configMapper)
@@ -38,6 +40,7 @@ namespace EC_API._Services.Services
             _repoStir = repoStir;
             _repoRawData = repoRawData;
             _configMapper = configMapper;
+            _repoSetting = repoSetting;
         }
     
         public async Task<MixingInfo> Mixing(MixingInfoForCreateDto mixing)
@@ -60,17 +63,21 @@ namespace EC_API._Services.Services
             }
         }
 
-        public async Task<List<MixingInfoDto>> GetMixingInfoByGlueID(int glueID)
+        public async Task<List<MixingInfoDto>> GetMixingInfoByGlueName(string glueName)
         {
-           var gluename = _repoGlue.FindById(glueID).Name;
-            return await _repoMixingInfor.FindAll().Include(x => x.Glue).Where(x => x.GlueName.Equals(gluename) && x.Glue.isShow == true).ProjectTo<MixingInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
+            return await _repoMixingInfor.FindAll().Include(x => x.Glue).Where(x => x.GlueName.Equals(glueName) && x.Glue.isShow == true).ProjectTo<MixingInfoDto>(_configMapper).OrderByDescending(x => x.ID).ToListAsync();
         }
 
         public async Task<object> Stir(string glueName)
         {
             var currentDate = DateTime.Now.Date;
+            var STIRRED = 1;
+            var NOT_STIRRED_YET = 0;
+            var NA = 2;
+            var minDate = DateTime.MinValue;
+           
             var model = from a in _repoMixingInfor.FindAll().Where(x=> x.GlueName.Equals(glueName) && x.CreatedTime.Date == currentDate)
-                        join b in _repoStir.FindAll().Where(x => x.GlueName.Equals(glueName) && x.CreatedTime.Date == currentDate) on a.ID equals b.MixingInfoID into gj
+                        join b in _repoStir.FindAll().Include(x=>x.Setting).Where(x => x.GlueName.Equals(glueName) && x.CreatedTime.Date == currentDate) on a.ID equals b.MixingInfoID into gj
                         from ab in gj.DefaultIfEmpty()
                         select new {
                             a.ID,
@@ -85,10 +92,11 @@ namespace EC_API._Services.Services
                             ab.StartTime,
                             ab.EndTime,
                             ab.SettingID,
+                            MachineType = ab.SettingID == null ? string.Empty : ab.Setting.MachineType,
                             ab.Status,
                             ab.RPM,
                             ab.TotalMinutes,
-                            MixingStatus = ab.StartTime != null ? true :false
+                            MixingStatus = ab.ID > 0 && ab.SettingID == null ? NA : ab.SettingID != null ? STIRRED : NOT_STIRRED_YET
                         };
            return await model.ToListAsync();
         }
@@ -113,6 +121,40 @@ namespace EC_API._Services.Services
                     minutes
                 };
            }
+            return new
+            {
+                rpm = 0,
+                totalMinutes = 0,
+                minutes
+            };
+        }
+
+        public Task<object> GetRPMByMachineID(int machineID, string startTime, string endTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<object> GetRPMByMachineCode(string machineCode, string startTime, string endTime)
+        {
+            var start = Convert.ToDateTime(startTime);
+            var end = Convert.ToDateTime(endTime);
+            TimeSpan minutes = new TimeSpan();
+            var model = await _repoRawData.FindAll().Where(x => x.MachineID.Equals(machineCode) && x.CreatedDateTime >= start && x.CreatedDateTime <= end).Select(x => new { x.RPM, x.CreatedDateTime }).OrderByDescending(x => x.CreatedDateTime).ToListAsync();
+            if (model.Count() > 0)
+            {
+                var max = model.Select(x => x.CreatedDateTime).FirstOrDefault();
+                var min = model.Select(x => x.CreatedDateTime).LastOrDefault();
+                if (min != DateTime.MinValue && max != DateTime.MinValue)
+                {
+                    minutes = max - min;
+                }
+                return new
+                {
+                    rpm = Math.Round(model.Select(x => x.RPM).Average()),
+                    totalMinutes = Math.Round(minutes.TotalMinutes, 2),
+                    minutes
+                };
+            }
             return new
             {
                 rpm = 0,

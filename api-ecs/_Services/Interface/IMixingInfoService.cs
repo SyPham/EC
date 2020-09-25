@@ -10,9 +10,11 @@ namespace EC_API._Services.Interface
     public interface IMixingInfoService
     {
         Task<MixingInfo> Mixing(MixingInfoForCreateDto mixing);
-        Task<List<MixingInfoDto>> GetMixingInfoByGlueID(int glueID);
+        Task<List<MixingInfoDto>> GetMixingInfoByGlueName(string glueName);
         Task<object> Stir(string glueName);
         Task<object> GetRPM(int mixingInfoID, string building, string startTime, string endTime);
+        Task<object> GetRPMByMachineID(int machineID, string startTime, string endTime);
+        Task<object> GetRPMByMachineCode(string machineCode, string startTime, string endTime);
 
     }
 }

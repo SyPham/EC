@@ -12,6 +12,7 @@ import { GridComponent } from '@syncfusion/ej2-angular-grids';
 import { ActivatedRoute } from '@angular/router';
 
 declare const $: any;
+
 @Component({
   selector: 'app-stir',
   templateUrl: './stir.component.html',
@@ -22,6 +23,9 @@ declare const $: any;
   ]
 })
 export class StirComponent implements OnInit {
+  STIRRED = 1;
+  NOT_STIRRED_YET = 0;
+  NA = 2;
   modalReference: NgbModalRef;
   public filterSettings = { type: 'Excel' };
   pageSettings = { pageCount: 20, pageSizes: true, pageSize: 10 };
@@ -78,21 +82,29 @@ export class StirComponent implements OnInit {
   onChange(args, data) {
     console.log(args);
     this.settingID = args.value ;
+    const minTime = '0001-01-01T00:00:00';
     const startTime = new Date();
     const endTime = new Date ();
     if (this.settingID === 1) {
       endTime.setMinutes(startTime.getMinutes() + 4);
-      this.timeStir = 3.53 ;
     } else {
       endTime.setMinutes(startTime.getMinutes() + 6);
-      this.timeStir = 2.58 ;
     }
     for (const key in this.glues) {
       if (this.glues[key].id === data.id) {
-        this.glues[key].startTime = startTime;
-        this.glues[key].endTime = endTime;
-        this.glues[key].settingID = args.value;
-        break;
+        if (args.value === 'NA') {
+          this.glues[key].startTime = minTime;
+          this.glues[key].endTime = minTime;
+          this.glues[key].settingID = null;
+          this.glues[key].x = true;
+          break;
+        } else {
+          this.glues[key].startTime = startTime;
+          this.glues[key].endTime = endTime;
+          this.glues[key].settingID = args.value;
+          this.glues[key].x = false;
+          break;
+        }
       }
     }
     this.grid.refresh();
@@ -103,6 +115,9 @@ export class StirComponent implements OnInit {
   }
   getRPM(mixingInfoID, building, startTime, endTime ): Promise<any> {
     return this.stirService.getRPM(mixingInfoID, 'E', startTime, endTime ).toPromise();
+  }
+  getRPMByMachineCode(machineCode, startTime, endTime): Promise<any> {
+    return this.stirService.getRPMByMachineCode(machineCode, startTime, endTime).toPromise();
   }
   async loadStir() {
     try {
@@ -121,7 +136,8 @@ export class StirComponent implements OnInit {
           settingID: item.settingID,
           status: item.status,
           totalMinutes: item.totalMinutes,
-          rpm: item.rpm
+          rpm: item.rpm,
+          x: false
         };
       });
       this.glues = res;
@@ -144,9 +160,28 @@ export class StirComponent implements OnInit {
       this.alertify.error(error + '');
     }
   }
+  async loadRPMByMachineCode(machineCode, startTime, endTime) {
+    try {
+      const obj = await this.getRPMByMachineCode(machineCode, startTime, endTime);
+      if (obj.rpm === 0) {
+        this.alertify.warning(`Can not find the RPM at this moment!!! <br> Không tìm thấy RPM trong khoản thời gian này!`, true);
+        this.modalReference.close();
+        return;
+      }
+      this.rpm = obj.rpm;
+      this.minutes = obj.minutes;
+      this.totalMinutes = obj.totalMinutes;
+    } catch (error) {
+      this.alertify.error(error + '');
+    }
+  }
 
   saveStir(data) {
     console.log(data);
+    if (data.settingID === null && data.x === false) {
+      this.alertify.warning(`Please select glue type radio button first!!!<br> Hãy chọn loại keo trước!!!`, true);
+      return;
+    }
     const model = {
       id: 0,
       rpm: 0,
@@ -207,6 +242,6 @@ export class StirComponent implements OnInit {
     if (data.settingID === 2) {
       this.status = this.totalMinutes <= 6 ? true : false;
     }
-    await this.loadRPM(data.id, 'E', startTime, endTime);
+    await this.loadRPMByMachineCode(data.machineCode, startTime, endTime);
   }
 }

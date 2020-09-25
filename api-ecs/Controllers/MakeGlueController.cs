@@ -69,10 +69,10 @@ namespace EC_API.Controllers
         {
             return Ok(await _mixingInfoService.Mixing(update));
         }
-        [HttpGet("GetMixingInfoByGlueID/{glueID}")]
-        public async Task<IActionResult> GetMixingInfoByGlueID(int glueID)
+        [HttpGet("GetMixingInfoByGlueID/{glueName}")]
+        public async Task<IActionResult> GetMixingInfoByGlueName(string glueName)
         {
-            return Ok(await _mixingInfoService.GetMixingInfoByGlueID(glueID));
+            return Ok(await _mixingInfoService.GetMixingInfoByGlueName(glueName));
         }
         [HttpGet("DeliveredHistory")]
         public IActionResult DeliveredHistory()

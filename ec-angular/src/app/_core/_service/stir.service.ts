@@ -23,4 +23,7 @@ export class StirService {
   getRPM(mixingInfoID, building, startTime, endTime ) {
     return this.http.get(`${this.baseUrl}Stir/GetRPM/${mixingInfoID}/${building}/${startTime}/${endTime}`);
   }
+  getRPMByMachineCode(machineCode, startTime, endTime) {
+    return this.http.get(`${this.baseUrl}Stir/GetRPMByMachineCode/${machineCode}/${startTime}/${endTime}`);
+  }
 }

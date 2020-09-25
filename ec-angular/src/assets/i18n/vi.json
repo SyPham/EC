@@ -88,7 +88,7 @@
     "History": "Lịch Sử",
     "MIXING": "Pha Keo",
     "OPTION": "Lựa Chọn",
-    "COUNT": "Số Lượng",
+    "COUNT": "SL",
     "TOTAL_COMSUMPTION": "Tổng Tiêu Thụ",
     "CHEMICAL": "Hóa Chất",
     "STANDARD": "Tiêu Thụ",
@@ -137,8 +137,10 @@
     "DUR_LABEL": "Khoảng TG",
     "STATUS_LABEL_STIR": "Trạng Thái",
     "MIXING_TIME_LABEL": "TG Trộn",
-    "GLUE_TYPE_LABEL": "Loại Máy",
-    "Building Setting": "Cài Đặt Máy Theo Tòa Nhà"
+    "GLUE_TYPE_LABEL": "Loại Keo",
+    "Building Setting": "Cài Đặt Máy Theo Tòa Nhà",
+    "ACTUAL_NOTE_LABEL": "Giao Lần Cuối",
+    "DELIVERED_TOTAL_COUNT_LABEL": "Tổng SL Đã Giao (Số Lần Giao)"
 
 
 

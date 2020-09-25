@@ -34,24 +34,24 @@
                   </ng-template>
                   <ng-template #template let-data>{{data.qty}} kg</ng-template>
                 </e-column>
-                <e-column field='startTime' textAlign='Center' type='dateTime' format='hh:mm:ss a' headerText='Start Time' width='120'>
+                <e-column field='startTime' textAlign='Center' type='dateTime' format='hh:mm:ss' headerText='Start Time' width='120'>
                   <ng-template #headerTemplate>
                     {{ 'START_TIME_LABEL' | translate }}
                   </ng-template>
-                  <ng-template #template let-data>{{data.startTime !== "0001-01-01T00:00:00" ? (data.startTime | date: 'hh:mm:ss a') : '#N/A'}}</ng-template>
+                  <ng-template #template let-data>{{data.startTime !== "0001-01-01T00:00:00" ? (data.startTime | date: 'hh:mm:ss') : '#N/A'}}</ng-template>
                 </e-column>
-                <e-column field='endTime' textAlign='Center' type='dateTime' format='hh:mm:ss a' headerText='End Time' width='120'>
+                <e-column field='endTime' textAlign='Center' type='dateTime' format='hh:mm:ss' headerText='End Time' width='120'>
                   <ng-template #headerTemplate>
                     {{ 'END_TIME_LABEL' | translate }}
                   </ng-template>
-                  <ng-template #template let-data>{{data.endTime !== "0001-01-01T00:00:00" ? (data.endTime | date: 'hh:mm:ss a') : '#N/A'}}</ng-template>
+                  <ng-template #template let-data>{{data.endTime !== "0001-01-01T00:00:00" ? (data.endTime | date: 'hh:mm:ss') : '#N/A'}}</ng-template>
                 </e-column>
                 <e-column field='mixingStatus' textAlign='Center' headerText='Mixing Status' width='130'>
                   <ng-template #headerTemplate>
                     {{ 'MIXING_STATUS_LABEL' | translate }}
                   </ng-template>
                   <ng-template #template let-data>
-                    <span [class]="data.mixingStatus === true ? 'badge badge-success' : 'badge badge-danger'">{{data.mixingStatus === true ? 'Stirred' : 'Not Stir Yet'}}</span>
+                    <span [class]="data.mixingStatus === STIRRED ? 'badge badge-success' : data.mixingStatus === NOT_STIRRED_YET ? 'badge badge-danger': 'badge badge-warning'">{{data.mixingStatus === STIRRED ? 'Stirred' : data.mixingStatus === NOT_STIRRED_YET ? 'Not Stir Yet' : '#N/A'}}</span>
                   </ng-template>
                 </e-column>
                 
@@ -76,21 +76,26 @@
                       [class]="data.status === true ? 'badge badge-success' : 'badge badge-danger'">{{data.status === true ? 'Valid' : 'Invalid'}}</span>
                   </ng-template>
                 </e-column>
-                <e-column field='createdTime' textAlign='Center' type='dateTime' format='hh:mm:ss a' headerText='Mixing Time' width='100'>
+                <e-column field='createdTime' textAlign='Center' type='dateTime' format='hh:mm:ss' headerText='Mixing Time' width='100'>
                   <ng-template #headerTemplate>
                     {{ 'MIXING_TIME_LABEL' | translate }}
                   </ng-template>
                 </e-column>
-                <e-column field='setting' textAlign='Center' headerText='Glue Type' width='130'>
+                <e-column field='setting' textAlign='Center' headerText='Glue Type' width='170'>
                   <ng-template #headerTemplate>
                     {{ 'GLUE_TYPE_LABEL' | translate }}
                   </ng-template>
                   <ng-template #template let-data>
                     <ng-container *ngFor="let item of settingData">
-                      <ejs-radiobutton  *ngIf="data.mixingStatus === false" [label]="item.machineType" name="stir" [checked]='data.settingID > 0' cssClass="e-success mr-2" [checked]='data.settingID === item.id' [value]="item.id" (change)='onChange($event, data)'>
+                      <ejs-radiobutton  *ngIf="data.mixingStatus === NOT_STIRRED_YET && data.stirID === 0" [label]="item.machineType" name="stir" [checked]='data.settingID > 0' cssClass="e-success mr-2" [checked]='data.settingID === item.id' [value]="item.id" (change)='onChange($event, data)'>
                       </ejs-radiobutton>
                     </ng-container>
-                    <span *ngIf="data.mixingStatus === true">{{data.settingID === 1 ? 'Oil' : 'Water'}}</span>
+                    <ejs-radiobutton *ngIf="data.mixingStatus === NOT_STIRRED_YET && data.stirID === 0" label="X"
+                      name="stir" cssClass="e-success" [checked]='data.x'
+                      value="NA" (change)='onChange($event, data)'>
+                    </ejs-radiobutton>
+                    <span *ngIf="data.mixingStatus > 0 && data.stirID > 0">{{data.machineType}}</span>
+                    <span *ngIf="data.mixingStatus === NA && data.stirID > 0">#N/A</span>
                   </ng-template>
                 </e-column>
                 <e-column field='option' textAlign='Center' headerText='Option' width='100'>
@@ -99,10 +104,10 @@
                   </ng-template>
                   <ng-template #template let-data>
                     <div class="btn-group mr-2" >
-                      <button type="button" [disabled]='data.mixingStatus == true' (click)='saveStir(data)' class="btn btn-xs btn-info"><i class="fa fa-save"></i></button>
+                      <button type="button" [disabled]='data.mixingStatus === NA || data.mixingStatus === STIRRED' (click)='saveStir(data)' class="btn btn-xs btn-info"><i class="fa fa-save"></i></button>
                     </div>
                     <div class="btn-group">
-                      <button type="button" [disabled]='data.mixingStatus == false' (click)='showModal(infoModal,data)' class="btn btn-xs btn-info"><i class="fa fa-search"></i></button>
+                      <button type="button" [disabled]='data.mixingStatus === NA || data.mixingStatus === NOT_STIRRED_YET' (click)='showModal(infoModal,data)' class="btn btn-xs btn-info"><i class="fa fa-search"></i></button>
                     </div>
                   </ng-template>
                 </e-column>

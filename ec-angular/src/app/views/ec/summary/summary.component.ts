@@ -1,5 +1,7 @@
 import { DataService } from './../../../_core/_service/data.service';
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, HostListener, ViewChildren, QueryList, ɵConsole, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit,
+  ViewChild, ElementRef, HostListener, ViewChildren,
+  QueryList, ɵConsole, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ColumnModel, GridComponent } from '@syncfusion/ej2-angular-grids';
 import { PlanService } from 'src/app/_core/_service/plan.service';
 import * as signalr from '../../../../assets/js/ec-client.js';
@@ -83,6 +85,8 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   modalReference: NgbModalRef;
   public editSettings: object;
   toolbarOptions: string[];
+  modelNameList: any;
+  rowParents: any;
   @HostListener('window:keyup.alt.enter', ['$event']) enter(e: KeyboardEvent) {
     if (!this.disabled) {
       this.Finish();
@@ -141,7 +145,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   public ngAfterViewInit(): void {
     console.log(screen.height);
     console.log(window.innerHeight);
-    this.screenHeight = window.innerHeight - 260;
+    this.screenHeight = window.innerHeight;
     console.log('ngAfterViewInit screen', this.screenHeight);
 
     $('input.mixing').tooltip({
@@ -151,7 +155,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   }
   actionBegin(args) {
     if (args.requestType === 'delete') {
-      const id = args.data.id;
+      const id = args.data[0].id;
       this.planService.deleteDelivered(id).subscribe(res => {
         if (res) {
           this.modalReference.close();
@@ -173,6 +177,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     }
   }
   showModal(name, value) {
+    console.log('show modal', value);
     this.modalReference = this.modalService.open(name, { size: 'lg' });
     this.deliveredData = value.deliveredInfos.map( (item: any) => {
       return {
@@ -239,8 +244,8 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   stirGlue(values) {
     // this.dataService.changeMessage(2);
     console.log('stir glue', values);
-    this.ingredientService.changeIngredient(values);
-    const url = '/ec/execution/todolist/stir/' + values.Chemical.glueName;
+    this.ingredientService.changeIngredient(values.glueName.glueName);
+    const url = '/ec/execution/todolist/stir/' + values.glueName.glueName;
     return this.router.navigate([url]);
   }
   summary() {
@@ -252,12 +257,16 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     }
     this.spinner.show();
     this.planService.summary(this.buildingID).subscribe((res: any) => {
+      console.log('summary: ', res);
       this.lineColumns = res.header;
       this.data = res.data;
-      this.linevalue = res.data;
-      if (this.linevalue.length === 0) {
-        this.hasWarning = true;
-      }
+      this.rowParents = res.rowParents;
+      console.log('rowParents: ', this.rowParents);
+
+      this.modelNameList = res.modelNameList;
+      // if (this.linevalue.length === 0) {
+      //   this.hasWarning = true;
+      // }
       this.spinner.hide();
     });
   }
@@ -337,7 +346,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     });
     // console.log('getCellValue', res.slice(1, res.length));
 
-    return res.slice(1, res.length);
+    return res;
   }
 
   getBuilding() {
@@ -408,12 +417,31 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       });
     }
   }
-  getGlueWithIngredientByGlueName(glueName: number) {
+  getGlueWithIngredientByGlueName(glueName: string) {
     this.makeGlueService.getGlueWithIngredientByGlueName(glueName).subscribe((res: any) => {
       this.show = true;
       this.existGlue = false;
       this.makeGlue = res;
-      this.ingredients = res.ingredients as IIngredient[];
+      this.ingredients = res.ingredients.map(item => {
+        return {
+          id: item.id,
+          scanStatus: item.position === 'A',
+          code: item.code,
+          scanCode: '',
+          name: item.name,
+          percentage: item.percentage,
+          position: item.position,
+          allow: item.allow,
+          expected: 0,
+          real: 0,
+          focusReal: false,
+          focusExpected: false,
+          valid: false,
+          info: '',
+          batch: ''
+        };
+      });
+
     });
   }
   getGlueWithIngredientByGlueID(glueID: number) {
@@ -566,8 +594,8 @@ export class SummaryComponent implements OnInit, AfterViewInit {
   }
 
   mixingSection(data) {
-    this.glueName = data.Chemical;
-    this.glueID = data.GlueID;
+    this.glueName = data.glueName.glueName;
+    this.glueID = data.glueID;
     this.glue = data;
     this.scanStatus = true;
     this.getGlueWithIngredientByGlueID(this.glueID);
@@ -906,7 +934,7 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     // }
   }
   pushHistory(data) {
-    this.router.navigate([`/ec/execution/todolist/history/${data.GlueID}`]);
+    this.router.navigate([`/ec/execution/todolist/history/${data.glueName.glueName}`]);
   }
 
   blurTd(data) {
@@ -946,6 +974,12 @@ export class SummaryComponent implements OnInit, AfterViewInit {
         return;
       }
       const remainingGlue = this.toFixedIfNecessary(data.maxReal - data.delivered, 3);
+      if (remainingGlue === 0) {
+        this.alertify.warning(`
+        Keo ${data.glueName} đã giao hết ${data.delivered}kg rồi!!!
+        `, true);
+        return;
+      }
       if (qty > remainingGlue) {
         this.alertify.warning(`
         Keo ${data.glueName} đã giao ${data.delivered}kg còn lại ${remainingGlue}kg. <br>
@@ -992,11 +1026,20 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     const t = this.tooltip.filter((item, index) => index === i)[0];
     t.content = 'Loading...';
     t.dataBind();
-    this.planService.getBPFCByGlue(data.glueName)
+    this.planService.getBPFCByGlue(data.glueName.glueName)
       .subscribe((res: any) => {
         t.content = res.join('<br>');
         t.dataBind();
       });
+  }
+  onBeforeRenderRow2(data) {
+    if (data.deliveredInfos.length > 0) {
+      const context = data.deliveredInfos.map(x => {
+        return x.qty + '(kg)';
+      });
+      return context.join(' , ');
+    }
+    return 'loading...';
   }
   toolbarClick(args): void {
     switch (args.item.text) {
