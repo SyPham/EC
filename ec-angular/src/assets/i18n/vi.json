@@ -140,7 +140,12 @@
     "GLUE_TYPE_LABEL": "Loại Keo",
     "Building Setting": "Cài Đặt Máy Theo Tòa Nhà",
     "ACTUAL_NOTE_LABEL": "Giao Lần Cuối",
-    "DELIVERED_TOTAL_COUNT_LABEL": "Tổng SL Đã Giao (Số Lần Giao)"
+    "DELIVERED_TOTAL_COUNT_LABEL": "Tổng SL Đã Giao (Số Lần Giao)",
+    "Stirred": "Đã Khuấy",
+    "Not Stirred Yet": "Chưa Khuấy",
+    "#N/A": "#N/A"
+    
+    
 
 
 

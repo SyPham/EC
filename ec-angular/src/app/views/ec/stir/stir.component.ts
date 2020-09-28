@@ -137,6 +137,7 @@ export class StirComponent implements OnInit {
           status: item.status,
           totalMinutes: item.totalMinutes,
           rpm: item.rpm,
+          machineType: item.machineType,
           x: false
         };
       });

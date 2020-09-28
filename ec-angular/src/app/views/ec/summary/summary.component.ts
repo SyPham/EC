@@ -410,12 +410,18 @@ export class SummaryComponent implements OnInit, AfterViewInit {
       this.makeGlueService.Guidance(this.guidances).subscribe((glue: any) => {
         this.alertify.success('The Glue has been finished successfully');
         this.showQRCode = true;
-        this.show = false;
-        this.expiredTime = glue.expiredTime;
+        this.show = true;
+        // this.expiredTime = glue.expiredTime;
         this.code = glue.code;
         this.summary();
       });
     }
+  }
+  gotoStir() {
+    // this.dataService.changeMessage(2);
+    console.log('stir glue', this.makeGlue.name);
+    const url = '/ec/execution/todolist/stir/' + this.makeGlue.name;
+    return this.router.navigate([url]);
   }
   getGlueWithIngredientByGlueName(glueName: string) {
     this.makeGlueService.getGlueWithIngredientByGlueName(glueName).subscribe((res: any) => {

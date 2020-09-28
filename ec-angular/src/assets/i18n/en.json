@@ -141,6 +141,9 @@
     "GLUE_TYPE_LABEL": "Glue Type",
     "Building Setting": "Building Setting",
     "ACTUAL_NOTE_LABEL": "Last Delivered Consumption",
-    "DELIVERED_TOTAL_COUNT_LABEL": "Delivered Total (Count)"
+    "DELIVERED_TOTAL_COUNT_LABEL": "Delivered Total (Count)",
+    "Stirred": "Stirred",
+    "Not Stir Yet": "Not Stirred Yet",
+    "#N/A": "#N/A"
 
 }

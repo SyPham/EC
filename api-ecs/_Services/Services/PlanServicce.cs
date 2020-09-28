@@ -667,12 +667,18 @@ namespace EC_API._Services.Services
                         GlueName = glue.Name,
                         line = line.Name,
                         lineID = line.ID,
-                        value = Math.Round(real, 3),
+                        value = real >= 1 && real < 10 ? Math.Round(real, 2) : real >= 10 ? Math.Round(real, 1) : Math.Round(real, 3),
                         count = listBuildingGlue.Count,
                         maxReal = realTotal,
                         delivered = Math.Round(deliver, 3),
-                        deliveredTotal = Math.Round(deliverdTotal, 3),
-                        deliveredInfos = listBuildingGlue,
+                        deliveredTotal = deliverdTotal >= 1 && deliverdTotal < 10 ? Math.Round(deliverdTotal, 2) : deliverdTotal >= 10 ? Math.Round(deliverdTotal, 1) : Math.Round(deliverdTotal, 3),
+                        deliveredInfos = listBuildingGlue.Select(x=> new DeliveredInfo {
+                            ID = x.ID,
+                            LineID = x.LineID,
+                            Qty = (x.Qty.ToDouble() >= 1 && x.Qty.ToDouble() < 10 ? Math.Round(x.Qty.ToDouble(), 2) : x.Qty.ToDouble() >= 10 ? Math.Round(x.Qty.ToDouble(), 1) : Math.Round(x.Qty.ToDouble(), 3)).ToSafetyString(),
+                            GlueName = x.GlueName,
+                            CreatedDate = x.CreatedDate
+                        }).ToList(),
                         consumption = comsumption / 1000
                     };
                     cellInfos.Add(dynamicCellInfo);

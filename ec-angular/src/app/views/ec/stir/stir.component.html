@@ -51,7 +51,7 @@
                     {{ 'MIXING_STATUS_LABEL' | translate }}
                   </ng-template>
                   <ng-template #template let-data>
-                    <span [class]="data.mixingStatus === STIRRED ? 'badge badge-success' : data.mixingStatus === NOT_STIRRED_YET ? 'badge badge-danger': 'badge badge-warning'">{{data.mixingStatus === STIRRED ? 'Stirred' : data.mixingStatus === NOT_STIRRED_YET ? 'Not Stir Yet' : '#N/A'}}</span>
+                    <span [class]="data.mixingStatus === STIRRED ? 'badge badge-success' : data.mixingStatus === NOT_STIRRED_YET ? 'badge badge-danger': 'badge badge-warning'">{{(data.mixingStatus === STIRRED ? 'Stirred' : data.mixingStatus === NOT_STIRRED_YET ? 'Not Stirred Yet' : '#N/A') | translate}}</span>
                   </ng-template>
                 </e-column>
                 
@@ -94,7 +94,7 @@
                       name="stir" cssClass="e-success" [checked]='data.x'
                       value="NA" (change)='onChange($event, data)'>
                     </ejs-radiobutton>
-                    <span *ngIf="data.mixingStatus > 0 && data.stirID > 0">{{data.machineType}}</span>
+                    <span *ngIf="data.mixingStatus === STIRRED && data.stirID > 0">{{data.machineType}}</span>
                     <span *ngIf="data.mixingStatus === NA && data.stirID > 0">#N/A</span>
                   </ng-template>
                 </e-column>
