@@ -32,6 +32,9 @@
                   <e-column field='glue' headerText='Glue Name' width='200' textAlign='Center' >
                   </e-column>
                   <e-column field='realTotal' headerText='Real Total' width='100' textAlign='Center' >
+                    <ng-template #template let-data>
+                      {{data.realTotal}} kg
+                    </ng-template>
                   </e-column>
                   <e-column field='mixBy' headerText='Mix By' width='100' textAlign='Center'>
                   </e-column>
