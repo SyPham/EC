@@ -239,10 +239,21 @@
                           (change)='onChangePosition($event,data, data.index)'>
                         </ejs-dropdownlist>
                       </ng-template>
+                      <ng-template #editTemplate let-data>
+                        <ejs-dropdownlist #positionDropdownlist [dataSource]='dataPosition' [value]='data.position' [fields]='fieldsPosition'
+                          [allowFiltering]='true' (change)='onChangePosition($event,data, data.index)'>
+                        </ejs-dropdownlist>
+                      </ng-template>
                     </e-column>
                     <e-column field='name' isPrimaryKey="true" headerText='Name' width=140 textAlign='Center'>
                       <ng-template #headerTemplate let-data>
                         {{'INGREDIENT_NAME' | translate}}
+                      </ng-template>
+                       <ng-template #editTemplate let-data>
+                        {{ data.name}}
+                      </ng-template>
+                      <ng-template #template let-data>
+                        {{ data.name}}
                       </ng-template>
                     </e-column>
                     <e-column field='percentage' headerText='%' textAlign='Center' width=60>
@@ -291,15 +302,25 @@
                         {{'ITEM' | translate}}
                       </ng-template>
                       <ng-template #template let-data>
-                        <ejs-dropdownlist #positionDropdownlist [dataSource]='dataPosition' [value]='data.position'
-                          [fields]='fieldsPosition' [allowFiltering]='true'
-                          (change)='onChangePosition($event,data, data.id)'>
+                        <ejs-dropdownlist #positionDropdownlist [dataSource]='dataPosition' [value]='data.position' [fields]='fieldsPosition'
+                          [allowFiltering]='true' (change)='onChangePosition($event,data, data.index)'>
+                        </ejs-dropdownlist>
+                      </ng-template>
+                      <ng-template #editTemplate let-data>
+                        <ejs-dropdownlist #positionDropdownlist [dataSource]='dataPosition' [value]='data.position' [fields]='fieldsPosition'
+                          [allowFiltering]='true' (change)='onChangePosition($event,data, data.index)'>
                         </ejs-dropdownlist>
                       </ng-template>
                     </e-column>
                     <e-column field='name' isPrimaryKey="true" headerText='Name' width=140 textAlign='Center'>
                       <ng-template #headerTemplate let-data>
                         {{'INGREDIENT_NAME' | translate}}
+                      </ng-template>
+                      <ng-template #editTemplate let-data>
+                        {{ data.name}}
+                      </ng-template>
+                      <ng-template #template let-data>
+                        {{ data.name}}
                       </ng-template>
                     </e-column>
                     <e-column field='percentage' headerText='%' textAlign='Center' width=60></e-column>
