@@ -126,7 +126,7 @@ namespace EC_API._Services.Services
         public async Task<bool> Create(BPFCHistoryDto entity)
         {
             var entitys = new BPFCHistory();
-            if (await _repoBPFCHistory.CheckGlueID(entity.GlueID))
+            if (!await _repoBPFCHistory.CheckGlueID(entity.GlueID))
             {
                 var checkBPFC = _repoBPFCEstablish.FindById(entity.BPFCEstablishID);
                 if (checkBPFC.FinishedStatus == true && checkBPFC.ApprovalStatus == true)
@@ -134,6 +134,13 @@ namespace EC_API._Services.Services
                     if (entity.Action == "Consumption")
                     {
                         entitys.Action = "Improve";
+                        entitys.Before = entity.Before;
+                        entitys.After = entity.After;
+                        entitys.BPFCEstablishID = entity.BPFCEstablishID;
+                        entitys.UserID = entity.UserID;
+                        entitys.GlueID = entity.GlueID;
+                    } else if (entity.Action == "Delete") {
+                        entitys.Action = "Delete";
                         entitys.Before = entity.Before;
                         entitys.After = entity.After;
                         entitys.BPFCEstablishID = entity.BPFCEstablishID;
@@ -163,6 +170,13 @@ namespace EC_API._Services.Services
                         entitys.BPFCEstablishID = entity.BPFCEstablishID;
                         entitys.UserID = entity.UserID;
                         entitys.GlueID = entity.GlueID;
+                    } else if (entity.Action == "Delete") {
+                        entitys.Action = "Delete";
+                        entitys.Before = entity.Before;
+                        entitys.After = entity.After;
+                        entitys.BPFCEstablishID = entity.BPFCEstablishID;
+                        entitys.UserID = entity.UserID;
+                        entitys.GlueID = entity.GlueID;
                     }
                     else
                     {
@@ -185,10 +199,16 @@ namespace EC_API._Services.Services
                         entitys.BPFCEstablishID = entity.BPFCEstablishID;
                         entitys.UserID = entity.UserID;
                         entitys.GlueID = entity.GlueID;
+                    } else if (entity.Action == "Delete") {
+                        entitys.Action = "Delete";
+                        entitys.Before = entity.Before;
+                        entitys.After = entity.After;
+                        entitys.BPFCEstablishID = entity.BPFCEstablishID;
+                        entitys.UserID = entity.UserID;
+                        entitys.GlueID = entity.GlueID;
                     }
                     else
                     {
-
                         entitys.Action = "Update";
                         entitys.Before = entity.BeforeAllow;
                         entitys.After = entity.AfterAllow;

@@ -546,8 +546,8 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       this.history.BPFCEstablishID = this.BPFCID;
       this.history.GlueID = this.glueid;
       this.history.After = `Consumption ${args.data.consumption}`;
-      this.glue.createdBy = JSON.parse(localStorage.getItem('user')).User.ID;
       this.history.UserID = JSON.parse(localStorage.getItem('user')).User.ID;
+      this.glue.createdBy = JSON.parse(localStorage.getItem('user')).User.ID;
       this.bPFCEstablishService.AddHistoryBPFC(this.history).subscribe(() => {
         const bpfcInfo = {
           modelNameID: this.modelNameID,
@@ -562,19 +562,27 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     if (args.requestType === 'delete') {
       if (args.data[0].id !== 0) {
         this.glueid = args.data[0].id;
-        this.glueService.delete(this.glueid).subscribe(
-          () => {
-            this.getAllGluesByBPFCID(this.BPFCID);
-            this.detailGlue = false;
-            this.removeLocalStore('details');
-            this.glueIngredientDetail = [];
-            this.oldDetail = [];
-            this.alertify.success('Glue has been deleted');
-          },
-          (error) => {
-            this.alertify.error('Failed to delete the Glue');
-          }
-        );
+        this.history.Action = 'Delete';
+        this.history.Before = args.data[0].name
+        this.history.BPFCEstablishID = this.BPFCID;
+        this.history.GlueID = this.glueid;
+        this.history.UserID = JSON.parse(localStorage.getItem('user')).User.ID;
+        this.bPFCEstablishService.AddHistoryBPFC(this.history).subscribe(() => {
+          this.glueService.delete(this.glueid).subscribe(
+            () => {
+              this.getAllGluesByBPFCID(this.BPFCID);
+              this.detailGlue = false;
+              this.removeLocalStore('details');
+              this.glueIngredientDetail = [];
+              this.oldDetail = [];
+              this.alertify.success('Glue has been deleted');
+            },
+            (error) => {
+              this.alertify.error('Failed to delete the Glue');
+            }
+          );
+        });
+
       }
     }
   }
