@@ -9,7 +9,7 @@ using EC_API._Repositories.Interface;
 using EC_API._Services.Interface;
 using EC_API.DTO;
 using EC_API.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;// nãy tự nhiên bị tắt máy à uk có mấy file bị doi ti
 
 namespace EC_API._Services.Services
 {

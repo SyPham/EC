@@ -12,4 +12,6 @@ export interface IIngredient  {
    daysToExpiration: number;
     materialNO: string;
     unit: number;
+    real: number;
+    cbd: number;
 }

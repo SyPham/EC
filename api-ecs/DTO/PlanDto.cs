@@ -22,6 +22,7 @@ namespace EC_API.DTO
         public int WorkingHour { get; set; }
         public int ModelNameID { get; set; }
         public int ModelNoID { get; set; }
+        public int Quantity { get; set; }
         public int ArticleNoID { get; set; }
         public int ArtProcessID { get; set; }
         public DateTime DueDate { get; set; }

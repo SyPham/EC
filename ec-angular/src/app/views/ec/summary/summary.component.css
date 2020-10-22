@@ -196,7 +196,6 @@ input.summary:focus {
   position: -webkit-sticky;
   position: sticky; 
   left:80px;
-  background-color: whitesmoke;
 
 }
 #todolist thead tr th[rowspan]:first-child,
@@ -205,7 +204,6 @@ input.summary:focus {
   position: sticky; 
   left:0;
   width: 80px;
-  background-color: whitesmoke;
 }
 
 

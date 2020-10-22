@@ -27,6 +27,8 @@ namespace EC_API.DTO
         public string MaterialNO { get; set; }
         public double Unit { get; set; }
 
+        public double Real { get; set; }
+        public double CBD { get; set; }
         public int DaysToExpiration { get; set; }
 
         public int ExpiredTime { get; set; }

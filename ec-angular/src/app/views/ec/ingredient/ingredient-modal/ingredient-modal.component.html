@@ -26,6 +26,14 @@
     <input type="text" [(ngModel)]="ingredient.unit" (blur)="onBlur($event)" class="form-control">
   </div>
   <div class="form-group">
+    <label for="">Real</label>
+    <input type="text" [(ngModel)]="ingredient.real" (blur)="onBlur($event)" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="">CBD</label>
+    <input type="text" [(ngModel)]="ingredient.cbd" (blur)="onBlur($event)" class="form-control">
+  </div>
+  <div class="form-group">
     <label for="">Expired Time (by mins)</label>
     <input type="text" [(ngModel)]="ingredient.expiredTime" class="form-control">
   </div>

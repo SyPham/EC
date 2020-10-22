@@ -13,6 +13,7 @@ namespace EC_API._Services.Interface
         Task<object> GetAllPlansByDate(string from, string to);
         Task<object> Summary(int building);
         Task<object> GetLines(int buildingID);
+        Task<Byte[]> Report(DateTime startDate, DateTime endDate);
         Task<List<GlueCreateDto1>> GetGlueByBuilding(int buildingID);
         Task<List<GlueCreateDto1>> GetGlueByBuildingModelName(int buildingID, int modelName);
 
@@ -24,6 +25,7 @@ namespace EC_API._Services.Interface
         Task<object> DeleteRange(List<int> plansDto);
         Task<object> GetBPFCByGlue(TooltipParams tooltip);
         Task<bool> EditDelivered(int id, string qty );
+        Task<bool> EditQuantity(int id, int qty );
         Task<bool> DeleteDelivered(int id);
 
     }

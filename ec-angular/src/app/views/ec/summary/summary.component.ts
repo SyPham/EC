@@ -239,6 +239,9 @@ export class SummaryComponent implements OnInit, AfterViewInit {
     if (text === 'Count') {
       return 'COUNT';
     }
+    if (text === 'Option') {
+      return 'OPTION';
+    }
     return text;
   }
   stirGlue(values) {

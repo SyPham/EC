@@ -100,7 +100,9 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
     expiredTime: 0,
     daysToExpiration: 0,
     materialNO: '',
-    unit: 0
+    unit: 0,
+    real: 0,
+    cbd: 0
   };
   Editpercentage = {
     glueID: 0,
@@ -658,7 +660,9 @@ export class GlueIngredientComponent implements OnInit, AfterViewInit {
             daysToExpiration: item.daysToExpiration,
             voc: item.voc,
             materialNO: '',
-            unit: 0
+            unit: 0,
+            real: 0,
+            cbd: 0
           };
           return ingredient;
         });

@@ -1,0 +1,125 @@
+<div class="row pt-2">
+  <div class="col-md-12 ">
+    <div class="card">
+      <!-- <div class="card-header">
+                <h5 class="card-title">
+                    {{'WORK_PLAN_LABEL' | translate}}
+                </h5>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div> -->
+
+      <div class="card-body table-responsive p-0">
+        <div class="row my-3" *ngIf="!hasWorker">
+          <div class="col-md-12">
+            <div class="col-md-8">
+              <div class="row">
+                <div class="col-md-1">
+                  <div class="font-weight-bold">{{'FILTER_LABEL' | translate}}:</div>
+                </div>
+                <div class="col-md-4">
+                  <ejs-datepicker [value]='startDate' (change)='startDateOnchange($event)' [(ngModel)]='startDate'>
+                  </ejs-datepicker>
+                </div>
+                <div class="col-md-4">
+                  <ejs-datepicker [value]='endDate' (change)='endDateOnchange($event)' [(ngModel)]='endDate'>
+                  </ejs-datepicker>
+                </div>
+                <div class="col-md-2">
+                  <button class="btn btn-sm btn-default" (click)='onClickDefault()'>
+                    <i class="fa fa-times"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <ejs-grid #grid [dataSource]='data' [searchSettings]="searchSettings" showColumnMenu='true'
+          [allowExcelExport]='true' allowPaging='true' allowSorting='true' allowResizing='true' gridLines='Both'
+          (actionBegin)="actionBegin($event)" (actionComplete)="actionComplete($event)" (recordDoubleClick)='onDoubleClick($event)'
+          (rowSelected)="rowSelected($event)" [toolbar]='toolbarOptions' (toolbarClick)='toolbarClick($event)'
+          [pageSettings]='pageSettings' [editSettings]='editSettings'>
+          <e-columns>
+            <e-column field='buildingName' headerText='Line' width='100' textAlign='Center'>
+              <ng-template #headerTemplate let-data>
+                {{'LINE_LABEL' | translate}}
+              </ng-template>
+              <ng-template #editTemplate let-data>
+               {{data.buildingName}}
+              </ng-template>
+            </e-column>
+            <e-column field='bpfcName' headerText='BPFC Name' width='290' textAlign='Center'>
+              <ng-template #headerTemplate let-data>
+                {{'BPFC_NAME_LABEL' | translate}}
+              </ng-template>
+              <ng-template #editTemplate let-data>
+                  {{data.bpfcName}}
+              </ng-template>
+              <ng-template let-data #template>
+                <ejs-tooltip [content]="tooltip(data.glues)">
+                  {{data.bpfcName || '#N/A'}}
+                </ejs-tooltip>
+              </ng-template>
+            </e-column>
+           
+            <e-column field='quantity' headerText='Quantity' width='170' textAlign='Center'>
+              <ng-template #headerTemplate let-data>
+                {{'OUTPUT_QUANTITY' | translate}}
+              </ng-template>
+            </e-column>
+            <e-column field='dueDate' type='date' format='dd MMM, yyyy' headerText='Due Date' width='160'
+              textAlign='Center'>
+              <ng-template #headerTemplate let-data>
+                {{'DUE_DATE_LABEL' | translate}}
+              </ng-template>
+              <ng-template #editTemplate let-data>
+                {{data.dueDate| date:'dd MMM, yyyy'}}
+              </ng-template>
+            </e-column>
+            <e-column field='createdDate' isPrimaryKey='true' type='date' format='dd MMM, yyyy HH:mm'
+              headerText='Created Date' width='200' textAlign='Center'>
+              <ng-template #headerTemplate let-data>
+                {{'CREATED_DATE_LABEL' | translate}}
+              </ng-template>
+                <ng-template #editTemplate let-data>
+                  {{data.createdDate| date:'dd MMM, yyyy HH:mm'}}
+                </ng-template>
+            </e-column>
+          </e-columns>
+        </ejs-grid>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<ng-template #cloneModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">
+      <i class="fas fa-plus"></i> Clone Work Plan
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="Name">DueDate</label>
+          <span style="color:red">(*)</span>
+          <ejs-datepicker [value]='date' (change)='onChangeDueDateClone($event)' format='dd MMM, yyyy'></ejs-datepicker>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    <button type="submit" (click)='onClickClone()' class="btn btn-primary">Clone</button>
+  </div>
+</ng-template>

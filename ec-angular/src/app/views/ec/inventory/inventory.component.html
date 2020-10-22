@@ -43,7 +43,7 @@
                 {{'TIME_LABEL' | translate}}
               </ng-template>
               <ng-template #template let-data>
-                {{data.createdTime | date:'yyyy-MM-dd , hh:mm:ss a'}}
+                {{data.createdTime | date:'dd MMM, yyyy , HH:mm'}}
               </ng-template>
 
             </e-column>
@@ -66,7 +66,7 @@
                 {{'PRODUCTION_DATE_LABEL' | translate}}
               </ng-template>
               <ng-template #template let-data>
-                {{data.manufacturingDate | date:'yyyy-MM-dd'}}
+                {{data.manufacturingDate | date:'dd MMM, yyyy'}}
               </ng-template>
             </e-column>
 
@@ -81,7 +81,7 @@
                 {{'EXPIRED_DATE_LABEL' | translate}}
               </ng-template>
               <ng-template #template let-data>
-                {{data.expiredTime | date:'yyyy-MM-dd'}}
+                {{data.expiredTime | date:'dd MMM, yyyy'}}
               </ng-template>
             </e-column>
 
@@ -120,7 +120,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let item of data | filter:searchText; let i=index">
-              <th scope="row" style="text-align: center;">{{item.createdTime | date:'yyyy-MM-dd , hh:mm:ss a'}}</th>
+              <th scope="row" style="text-align: center;">{{item.createdTime | date:'yyyy-MM-dd , HH:mm'}}</th>
               <td style="text-align: center;">{{item.supplierName}}</td>
               <td style="text-align: center;">{{item.name }}</td>
               <td style="text-align: center;">{{item.manufacturingDate | date:'yyyy-MM-dd'}}</td>

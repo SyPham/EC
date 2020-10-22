@@ -33,6 +33,7 @@ import { GlueHistoryComponent } from './summary/glue-history/glue-history.compon
 import { DeliveredHistoryComponent } from './delivered-history/delivered-history.component';
 import { IncomingComponent } from './incoming/incoming.component';
 import { BuildingSettingComponent } from './building-setting/building-setting.component';
+import { PlanOutputQuantityComponent } from './plan-output-quantity/plan-output-quantity.component';
 
 const routes: Routes = [
   {
@@ -344,6 +345,14 @@ const routes: Routes = [
             data: {
               title: 'Inventory',
               breadcrumb: 'Inventory'
+            },
+          },
+          {
+            path: 'output-quantity',
+            component: PlanOutputQuantityComponent,
+            data: {
+              title: 'Output Quantity',
+              breadcrumb: 'Output Quantity'
             }
           }
         ]

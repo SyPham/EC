@@ -4,14 +4,16 @@ using EC_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EC_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201020052524_addQuantityPlanTable")]
+    partial class addQuantityPlanTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -237,8 +239,6 @@ namespace EC_API.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("MixingInfoID");
-
                     b.ToTable("BuildingGlues");
                 });
 
@@ -392,9 +392,6 @@ namespace EC_API.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("CBD")
-                        .HasColumnType("float");
-
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
@@ -424,9 +421,6 @@ namespace EC_API.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Real")
-                        .HasColumnType("float");
 
                     b.Property<int>("SupplierID")
                         .HasColumnType("int");
@@ -1060,15 +1054,6 @@ namespace EC_API.Migrations
                     b.HasOne("EC_API.Models.ModelNo", "ModelNo")
                         .WithMany("BPFCEstablishes")
                         .HasForeignKey("ModelNoID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("EC_API.Models.BuildingGlue", b =>
-                {
-                    b.HasOne("EC_API.Models.MixingInfo", "MixingInfo")
-                        .WithMany("BuildingGlues")
-                        .HasForeignKey("MixingInfoID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -22,5 +22,6 @@ namespace EC_API.Models
         public int CreatedBy { get; set; }
         public int MixingInfoID { get; set; }
         public DateTime CreatedDate { get; set; }
+        public MixingInfo MixingInfo { get; set; }
     }
 }

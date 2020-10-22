@@ -7,7 +7,11 @@ namespace EC_API.DTO
 {
     public class HeaderForSummary
     {
-        public string field  { get; set; }
+        public string field { get; set; } = string.Empty;
+        public bool HasColspan  { get; set; }
+        public bool HasRowspan  { get; set; }
+        public int ColspanValue  { get; set; }
+        public int RowspanValue  { get; set; }
     }
     public class SummaryInfo
     {

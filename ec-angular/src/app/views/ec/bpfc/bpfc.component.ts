@@ -128,7 +128,9 @@ export class BpfcComponent implements OnInit, AfterViewInit {
     expiredTime: 0,
     daysToExpiration: 0,
     materialNO: '',
-    unit: 0
+    unit: 0,
+    real: 0,
+    cbd: 0
   };
   editPercentage = {
     glueID: 0,
@@ -563,7 +565,7 @@ export class BpfcComponent implements OnInit, AfterViewInit {
       if (args.data[0].id !== 0) {
         this.glueid = args.data[0].id;
         this.history.Action = 'Delete';
-        this.history.Before = args.data[0].name
+        this.history.Before = args.data[0].name;
         this.history.BPFCEstablishID = this.BPFCID;
         this.history.GlueID = this.glueid;
         this.history.UserID = JSON.parse(localStorage.getItem('user')).User.ID;
@@ -1576,7 +1578,9 @@ export class BpfcComponent implements OnInit, AfterViewInit {
                 daysToExpiration: item.daysToExpiration,
                 voc: item.voc,
                 materialNO: item.materialNO,
-                unit: item.unit
+                unit: item.unit,
+                real: item.real,
+                cbd: item.cbd
               };
               return ingredient;
             });

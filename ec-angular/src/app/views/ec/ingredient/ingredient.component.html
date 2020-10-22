@@ -167,7 +167,13 @@
           <e-column field='unit' headerText='Unit' textAlign='Center' width='100'>
             <ng-template #template let-data>{{data.unit}} kg</ng-template>
           </e-column>
-          <e-column field='createdDate' headerText='Created Date' textAlign='Center' type='dateTime' format='dd MMM, yyyy hh:mm:ss a' width='180'></e-column>
+          <e-column field='real' headerText='Real' textAlign='Center' width='100'>
+            <ng-template #template let-data>{{data.real}} U$</ng-template>
+          </e-column>
+          <e-column field='cbd' headerText='CBD' textAlign='Center' width='100'>
+            <ng-template #template let-data>{{data.cbd}} U$</ng-template>
+          </e-column>
+          <e-column field='createdDate' headerText='Created Date' textAlign='Center' type='dateTime' format='dd MMM, yyyy HH:mm' width='180'></e-column>
           <e-column field='Option' headerText='Option' textAlign='Center' width='130'>
             <ng-template let-data #template >
                 <div class="btn-group" data-toggle="tooltip" data-placement="top" title="Print QRCode">

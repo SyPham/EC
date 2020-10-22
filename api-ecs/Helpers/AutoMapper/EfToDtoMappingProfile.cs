@@ -29,7 +29,7 @@ namespace EC_API.Helpers.AutoMapper
 
             CreateMap<Line, LineDto>();
             CreateMap<Plan, PlanDto>()
-                 .ForMember(d => d.Glues, o => o.MapFrom(x => x.BPFCEstablish.Glues.Select(x=>x.Name)))
+                 .ForMember(d => d.Glues, o => o.MapFrom(x => x.BPFCEstablish.Glues.Where(x=>x.isShow).Select(x=>x.Name)))
                  .ForMember(d => d.ModelName, o => o.MapFrom(x => x.BPFCEstablish.ModelName.Name))
                 .ForMember(d => d.ModelNoName, o => o.MapFrom(x => x.BPFCEstablish.ModelNo.Name))
                 .ForMember(d => d.ArticleName, o => o.MapFrom(x => x.BPFCEstablish.ArticleNo.Name))

@@ -70,6 +70,8 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { SelectQrCodeDirective } from './select.qrcode.directive';
 import { IncomingComponent } from './incoming/incoming.component';
 import { BuildingSettingComponent } from './building-setting/building-setting.component';
+import { PlanOutputQuantityComponent } from './plan-output-quantity/plan-output-quantity.component';
+import { DatePipe } from '@angular/common';
 setCulture('de-DE');
 
 const lang = localStorage.getItem('lang');
@@ -80,6 +82,9 @@ if (lang) {
   defaultLang = 'en';
 }
 @NgModule({
+  providers: [
+    DatePipe,
+  ],
   imports: [
     ButtonModule,
     CommonModule,
@@ -154,6 +159,7 @@ if (lang) {
     StirComponent,
     SelectQrCodeDirective,
     IncomingComponent,
+    PlanOutputQuantityComponent,
     BuildingSettingComponent
   ]
 })

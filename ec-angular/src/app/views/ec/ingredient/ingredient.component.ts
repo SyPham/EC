@@ -54,7 +54,9 @@ export class IngredientComponent implements OnInit, AfterViewInit {
     daysToExpiration: 0,
     voc: 0,
     materialNO: '',
-    unit: 0
+    unit: 0,
+    real: 0,
+    cbd: 0
   };
   pagination: Pagination;
   page = 1;
@@ -124,7 +126,9 @@ export class IngredientComponent implements OnInit, AfterViewInit {
           expiredTime: 0,
           daysToExpiration: 0,
           materialNO: '',
-          unit: 0
+          unit: 0,
+          real: 0,
+          cbd: 0
         };
       }
     });
@@ -369,6 +373,8 @@ export class IngredientComponent implements OnInit, AfterViewInit {
             daysToExpiration: item.daysToExpiration,
             materialNO: item.materialNO,
             unit: item.unit,
+            real: item.real,
+            cbd: item.cbd,
             createdDate: new Date(item.createdDate),
           };
         });

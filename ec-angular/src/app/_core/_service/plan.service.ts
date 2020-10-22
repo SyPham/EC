@@ -82,6 +82,9 @@ export class PlanService {
   editDelivered(id, qty) {
     return this.http.get(`${this.baseUrl}Plan/EditDelivered/${id}/${qty}`, {});
   }
+  editQuantity(id, qty) {
+    return this.http.get(`${this.baseUrl}Plan/EditQuantity/${id}/${qty}`, {});
+  }
   deleteDelivered(id) {
     return this.http.delete(`${this.baseUrl}Plan/DeleteDelivered/${id}`, {});
   }

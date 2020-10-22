@@ -24,5 +24,8 @@ namespace EC_API.Models
         public int ModifiedBy { get; set; }
         public DateTime ModifiedDate { get; set; }
 
+        public double Real { get; set; }
+        public double CBD { get; set; }
+
     }
 }

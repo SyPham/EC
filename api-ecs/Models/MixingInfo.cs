@@ -26,5 +26,7 @@ namespace EC_API.Models
         public DateTime ExpiredTime { get; set; }
         public DateTime CreatedTime { get; set; }
         public Glue Glue { get; set; }
+        public virtual ICollection<BuildingGlue> BuildingGlues { get; set; }
+
     }
 }

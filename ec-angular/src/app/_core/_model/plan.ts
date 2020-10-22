@@ -4,6 +4,6 @@ export interface Plan {
     hourlyOutput: number;
     workingHour: number;
     BPFCEstablishID: number;
-    BPFCName: string,
+    BPFCName: string;
     dueDate: any;
 }

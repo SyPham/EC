@@ -147,6 +147,13 @@ namespace EC_API.Controllers
             var lists = await _planService.EditDelivered(id, qty);
             return Ok(lists);
         }
+
+        [HttpGet("{id}/{qty}")]
+        public async Task<IActionResult> EditQuantity(int id, int qty)
+        {
+            var lists = await _planService.EditQuantity(id, qty);
+            return Ok(lists);
+        }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDelivered(int id)
         {
@@ -159,6 +166,12 @@ namespace EC_API.Controllers
         {
             var lists = await _planService.GetAllPlanByDefaultRange();
             return Ok(lists);
+        }
+        [HttpGet("{startDate}/{endDate}")]
+        public async Task<IActionResult> Report(DateTime startDate, DateTime endDate)
+        {
+            var bin = await _planService.Report(startDate, endDate);
+            return File(bin, "application/octet-stream", "report.xlsx");
         }
     }
 }

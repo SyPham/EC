@@ -15,6 +15,7 @@ namespace EC_API.Models
         public int ID { get; set; }
         public int BuildingID { get; set; }
         public int BPFCEstablishID { get; set; }
+        public int Quantity { get; set; }
         public string BPFCName { get; set; }
         public int HourlyOutput { get; set; }
         public DateTime CreatedDate { get; set; }

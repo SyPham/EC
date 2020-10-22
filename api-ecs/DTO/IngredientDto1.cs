@@ -21,9 +21,9 @@ namespace EC_API.DTO
         public int DaysToExpiration { get; set; }
         public int ExpiredTime { get; set; }
         public DateTime ManufacturingDate { get; set; }
-
-
         public string Position { get; set; }
 
+        public double Real { get; set; }
+        public double CBD { get; set; }
     }
 }

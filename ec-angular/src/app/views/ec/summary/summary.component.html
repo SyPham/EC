@@ -26,18 +26,18 @@
             <thead class="thead-dark">
               <tr>
                 <ng-container *ngFor="let item of lineColumns; let i = index">
-                  <th scope="col" class="my-align my-sticky text-center">
+                  <th scope="col" *ngIf="item.hasRowspan" [attr.rowspan]="item.rowspanValue" [attr.colspan]="item.colspanValue" class="my-align my-sticky text-center">
+                    {{ labelLang(item.field) | translate }}</th>
+                  <th scope="col" *ngIf="!item.hasRowspan"  [attr.colspan]="item.colspanValue"
+                    class="my-align my-sticky text-center">
                     {{ labelLang(item.field) | translate }}</th>
                 </ng-container>
-                <th scope="col" class="my-align my-sticky text-center">{{ 'OPTION' | translate }}</th>
               </tr>
               <tr>
-                <th scope="col" class="text-center my-sticky-top"></th>
-                <th scope="col" class="text-center my-sticky-top"></th>
-                <th scope="col" class="text-center my-sticky-top" *ngFor="let item of modelNameList">{{item}}</th>
-                <th scope="col" class="text-center my-sticky-top"></th>
-                <th scope="col" class="text-center my-sticky-top"></th>
-                <th scope="col" class="text-center my-sticky-top"></th>
+                <ng-container *ngFor="let item of modelNameList; let i = index">
+                  <th scope="col" class="text-center my-sticky-top">
+                    {{ item.field}}</th>
+                </ng-container>
               </tr>
             </thead>
             <tbody>

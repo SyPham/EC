@@ -144,6 +144,7 @@
     "DELIVERED_TOTAL_COUNT_LABEL": "Delivered Total (Count)",
     "Stirred": "Stirred",
     "Not Stir Yet": "Not Stirred Yet",
-    "#N/A": "#N/A"
+    "#N/A": "#N/A",
+    "OUTPUT_QUANTITY": "Output Quantity"
 
 }

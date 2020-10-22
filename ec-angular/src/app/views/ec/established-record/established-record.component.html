@@ -71,9 +71,9 @@
                   <div>{{data.season == null ? '#N/A': data.season}}</div>
                 </ng-template>
               </e-column>
-              <e-column field='buildingDate' type='date' format='d MMM, yyyy hh:mm:ss a'  headerText='Established Time' textAlign='Center' isPrimaryKey='true' width=100>
+              <e-column field='buildingDate' type='date' format='d MMM, yyyy HH:mm'  headerText='Established Time' textAlign='Center' isPrimaryKey='true' width=100>
               </e-column>
-              <e-column field='modifiedDate'  type='date' format='d MMM, yyyy hh:mm:ss a'  headerText='Modified Time' textAlign='Center' isPrimaryKey='true' width=100>
+              <e-column field='modifiedDate'  type='date' format='d MMM, yyyy HH:mm'  headerText='Modified Time' textAlign='Center' isPrimaryKey='true' width=100>
                 <ng-template #template let-data>
                   <div>{{data.modifiedDate == null ? '#N/A': data.modifiedDate}}</div>
                 </ng-template>

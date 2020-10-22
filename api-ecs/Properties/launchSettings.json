@@ -27,7 +27,7 @@
       
       // "applicationUrl": "http://10.4.4.92:1002"
       // "applicationUrl": "http://10.4.0.76:1002"
-      "applicationUrl": "http://10.4.4.224:1002"
+      "applicationUrl": "http://10.4.4.224:10022"
     },
     "Docker": {
       "commandName": "Docker",
