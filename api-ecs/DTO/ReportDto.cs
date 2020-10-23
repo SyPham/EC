@@ -8,7 +8,14 @@ namespace EC_API.DTO
 {
     public class ReportBodyDto
     {
-        public PlanReportDto Plan { get; set; }
+        public int Day { get; set; }
+        public double CBD { get; set; }
+        public double Real { get; set; }
+        public string ModelName { get; set; }
+        public string ModelNo { get; set; }
+        public int Quantity { get; set; }
+        public string Line { get; set; }
+        public DateTime Date { get; set; }
         public List<double> Ingredients { get; set; } = new List<double>();
     }
     public class ReportHeaderDto
@@ -23,18 +30,7 @@ namespace EC_API.DTO
         public string Real { get; set; } = "Real U$";
         public List<string> Ingredients { get; set; }
     }
-    public class PlanReportDto
-    {
-        public int Day { get; set; }
-        public double CBD { get; set; }
-        public double Real { get; set; }
-        public string ModelName { get; set; }
-        public string ModelNo { get; set; }
-        public int Quantity { get; set; }
-        public string Line { get; set; }
-        public DateTime Date { get; set; }
-
-    }
+  
     public class IngredientReportDto
     {
         public double Real { get; set; }
